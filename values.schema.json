@@ -1,0 +1,89 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "IntershopPWAHelmValuesSchema",
+    "type": "object",
+    "title": "The Helm Values Schema",
+    "description": "The Helm Values Schema to define values necessary to deploy Intershops PWA.",
+    "required": [
+        "upstream",
+        "environment",
+        "cache"
+    ],
+    "properties": {
+        "upstream": {
+            "$id": "#/properties/upstream",
+            "type": "object",
+            "title": "The upstream schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "required": [
+                "icmBaseURL"
+            ],
+            "properties": {
+                "icm": {
+                    "$id": "#/properties/upstream/properties/icmBaseURL",
+                    "type": "string",
+                    "title": "The base URL of ICM",
+                    "description": "Deprecated use property icmBaseURL instead",
+                    "examples": [
+                        "https://system.cloud.intershop.com:9443/INTERSHOP/web/WFS/SLDSystem"
+                    ]
+                },
+                "icmBaseURL": {
+                    "$id": "#/properties/upstream/properties/icmBaseURL",
+                    "type": "string",
+                    "title": "The base URL of ICM",
+                    "description": "The base URL of your Intershop Commerce Management installation",
+                    "examples": [
+                        "https://system.cloud.intershop.com:9443/INTERSHOP/web/WFS/SLDSystem"
+                    ]
+                },
+                "cdnPrefixURL": {
+                    "$id": "#/properties/upstream/properties/cdnPrefixURL",
+                    "type": "string",
+                    "title": "The base URL of your CDN",
+                    "description": "The base URL of your used Content Delivery Network service.",
+                    "examples": [
+                        "https://www.example.com"
+                    ]
+                }
+            },
+            "additionalProperties": false
+        },
+        "environment": {
+            "$id": "#/properties/environment",
+            "type": "array",
+            "title": "Additional SSR process environment variables",
+            "description": "Additional SSR process environment variables to set.",
+            "default": [],
+            "additionalItems": true,
+            "items": {
+                "$id": "#/properties/environment/items"
+            }
+        },
+        "cache": {
+            "$id": "#/properties/cache",
+            "type": "object",
+            "title": "The cache schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "required": [ ],
+            "properties": {
+                "enabled": {
+                    "$id": "#/properties/cache/properties/enabled",
+                    "type": "boolean",
+                    "title": "Enable or disable NGinx deployment",
+                    "description": "Enable or disable NGinx deployment",
+                    "default": true
+                },
+                "channels": {
+                    "$id": "#/properties/cache/properties/channels",
+                    "type": "object",
+                    "title": "Configure upstream ICM sites (Pre PWA 0.25 way)",
+                    "description": "Deprecated use property \"environment\" instead.",
+                    "additionalProperties": true
+                }
+            }
+        }
+    }
+}

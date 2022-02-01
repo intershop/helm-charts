@@ -1,4 +1,4 @@
-{{- if .Values.cache.enabled -}}
+{{- if and .Values.cache.channels .Values.cache.enabled -}}
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -13,4 +13,3 @@ data:
     {{- toYaml . | nindent 2 }}
 {{- end }}
 {{- end -}}
-  
