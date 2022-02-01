@@ -1,0 +1,102 @@
+# Default values for pwa-main.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+
+image:
+  repository: pwa-main
+  tag: stable
+  pullPolicy: Always
+
+imagePullSecrets: []
+nameOverride: ''
+fullnameOverride: ''
+
+upstream:
+  icm: https://www.example.com
+  icmBaseURL: https://www.example.com
+  cdnPrefixURL: https://www.example.com
+service:
+  type: ClusterIP
+  port: 4200
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+environment: []
+
+livenessProbe: {}
+  # exec: 
+  #   command:
+  #   - /bin/sh
+  #   - -c
+  #   - netstat -an | egrep 4200.*LISTEN | grep 4200 
+  # initialDelaySeconds: 10
+  # periodSeconds: 30   
+
+readinessProbe: {}
+  # exec: 
+  #   command:
+  #   - /bin/sh
+  #   - -c
+  #   - netstat -an | egrep 4200.*LISTEN | grep 4200 
+  # initialDelaySeconds: 10
+  # periodSeconds: 30  
+
+cache:
+  enabled: false
+
+  channels: {}
+    # at least one channgel has to be configured
+    # mandantory
+    # PWA_1_SUBDOMAIN: b2b                    
+    # PWA_1_CHANNEL: inSPIRED-inTRONICS-Site  
+    # optional
+    # PWA_1_LANG: de_DE                           
+    # PWA_1_FEATURES: none 
+    # PWA_1_APPLICATION: smb-responsive    
+
+  replicaCount: 1
+
+  image:
+    repository: ishpwa.azurecr.io/pwa-nginx
+    tag: '20190930.4'
+    pullPolicy: Always
+
+  nameOverride: ''
+  fullnameOverride: ''
+
+  service:
+    type: ClusterIP
+    port: 4200
+
+  resources: {}
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  livenessProbe: {}
+
+  readinessProbe: {}
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: nginx
+    # traefik.ingress.kubernetes.io/frontend-entry-points: https,http
+  paths: ['/']
+  hosts:
+    - pwa-main.example.com
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
