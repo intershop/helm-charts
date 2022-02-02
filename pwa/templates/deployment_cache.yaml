@@ -28,6 +28,10 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.cache.image.repository }}:{{ .Values.cache.image.tag }}"
           imagePullPolicy: {{ .Values.cache.image.pullPolicy }}
+          volumeMounts:
+          - name: multi-channel-config
+            readOnly: true
+            mountPath: "/config"
           env:
           - name: HELM_RELEASE_REVISION
             value: "{{ .Release.Revision }}"
@@ -35,11 +39,15 @@ spec:
             value: "http://{{ include "pwa-main.fullname" . }}:{{ .Values.service.port }}"
           - name: ICM_BASE_URL
             value: "{{ coalesce .Values.upstream.icm .Values.upstream.icmBaseURL }}"
-          {{- if .Values.cache.channels }}
+          - name: MULTI_CHANNEL_SOURCE
+            value: "/config/multi-channel.yaml"
+          - name: CACHING_IGNORE_PARAMS_SOURCE
+            value: "/config/caching-ignore-params.yaml"
+        {{- if .Values.cache.channels }}
           envFrom:
           - configMapRef:
               name: {{ include "pwa-channels.fullname" . }}
-          {{- end }}
+        {{- end }}
           ports:
             - name: http
               containerPort: 80
@@ -60,6 +68,16 @@ spec:
             {{- end }}
           resources:
             {{- toYaml .Values.cache.resources | nindent 12 }}
+      volumes:
+      - name: multi-channel-config
+        configMap:
+            name: {{ include "pwa-cache.fullname" . }}-gomplate-datasources
+            items:
+              - key: multi-channel.yaml
+                path: multi-channel.yaml
+              - key: caching-ignore-params.yaml
+                path: caching-ignore-params.yaml
+
       {{- with .Values.cache.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
