@@ -1,6 +1,6 @@
 # Intershop PWA Helm Chart
 
-* Installs the Intershop PWA system [PWA](https://github.com/intershop/intershop-pwa)
+Installs the [Intershop PWA system](https://github.com/intershop/intershop-pwa) in a kubernetes cluster environment.
 
 ## Get Repo Info
 
@@ -11,6 +11,9 @@ helm repo update
 
 _See [helm repo](https://helm.sh/docs/helm/helm_repo/) for command documentation._
 
+## Prerequisites
+* Helm 3.2.0+
+* Kubernetes 1.19+
 ## Installing the Chart
 
 To install the chart with the release name `demo`:
@@ -34,8 +37,9 @@ The command removes all the Kubernetes components associated with the chart and 
 A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
 incompatible breaking change needing manual actions.
 
-## Configuration
+## Parameters
 
-| Parameter                                 | Description                                   | Default                                                 |
+| Name                                      | Description                                   |  Example Value                                          |
 |-------------------------------------------|-----------------------------------------------|---------------------------------------------------------|
-| `replicas`                                | Number of nodes                               | `1`                                                     |
+| `multiChannel`                            | Multi channel/site configuration object       | `.+:`<br>`channel: default`                             |
+| `cacheIgnoreParams`                       | NGinx ignore query parameters during caching  | `params:`<br>`- utm_source`<br>`- utm_campaign`         |
