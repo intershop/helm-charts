@@ -13,9 +13,11 @@ nameOverride: ''
 fullnameOverride: ''
 
 upstream:
-  icm: https://www.example.com
   icmBaseURL: https://www.example.com
-  cdnPrefixURL: https://www.example.com
+  ## @param cdnPrefixURL The base URL of your CDN
+  ## E.g:
+  ## cdnPrefixURL: "https://www.example.com"
+  cdnPrefixURL: ""
 service:
   type: ClusterIP
   port: 4200
@@ -27,39 +29,44 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
+## @param environment Extra environment variables to be set on SSR containers
+## E.g:
+## environment:
+##   - name: FOO
+##     value: BAR
+##
 environment: []
 
 livenessProbe: {}
-  # exec: 
+  # exec:
   #   command:
   #   - /bin/sh
   #   - -c
-  #   - netstat -an | egrep 4200.*LISTEN | grep 4200 
+  #   - netstat -an | egrep 4200.*LISTEN | grep 4200
   # initialDelaySeconds: 10
-  # periodSeconds: 30   
+  # periodSeconds: 30
 
 readinessProbe: {}
-  # exec: 
+  # exec:
   #   command:
   #   - /bin/sh
   #   - -c
-  #   - netstat -an | egrep 4200.*LISTEN | grep 4200 
+  #   - netstat -an | egrep 4200.*LISTEN | grep 4200
   # initialDelaySeconds: 10
-  # periodSeconds: 30  
+  # periodSeconds: 30
 
 cache:
-  enabled: false
+  enabled: true
 
   channels: {}
     # at least one channgel has to be configured
     # mandantory
-    # PWA_1_SUBDOMAIN: b2b                    
-    # PWA_1_CHANNEL: inSPIRED-inTRONICS-Site  
+    # PWA_1_SUBDOMAIN: b2b
+    # PWA_1_CHANNEL: inSPIRED-inTRONICS-Site
     # optional
-    # PWA_1_LANG: de_DE                           
-    # PWA_1_FEATURES: none 
-    # PWA_1_APPLICATION: smb-responsive    
+    # PWA_1_LANG: de_DE
+    # PWA_1_FEATURES: none
+    # PWA_1_APPLICATION: smb-responsive
 
   replicaCount: 1
 

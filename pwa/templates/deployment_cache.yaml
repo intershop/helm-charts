@@ -34,11 +34,12 @@ spec:
           - name: UPSTREAM_PWA
             value: "http://{{ include "pwa-main.fullname" . }}:{{ .Values.service.port }}"
           - name: ICM_BASE_URL
-            value: "{{ .Values.upstream.icmBaseURL }}"          
+            value: "{{ coalesce .Values.upstream.icm .Values.upstream.icmBaseURL }}"
+          {{- if .Values.cache.channels }}
           envFrom:
           - configMapRef:
               name: {{ include "pwa-channels.fullname" . }}
-
+          {{- end }}
           ports:
             - name: http
               containerPort: 80
@@ -48,14 +49,14 @@ spec:
             {{- else }}
               {{- with .Values.cache.livenessProbe }}
               {{- toYaml . | nindent 12 }}
-              {{- end }}  
+              {{- end }}
             {{- end }}
           readinessProbe:
             {{- if empty .Values.cache.readinessProbe }}
             {{- else }}
               {{- with .Values.cache.readinessProbe }}
               {{- toYaml . | nindent 12 }}
-              {{- end }}  
+              {{- end }}
             {{- end }}
           resources:
             {{- toYaml .Values.cache.resources | nindent 12 }}
