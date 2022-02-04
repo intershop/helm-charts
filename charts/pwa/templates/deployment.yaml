@@ -29,9 +29,11 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
           - name: ICM_BASE_URL
-            value: "{{ .Values.upstream.icm }}"
+            value: "{{ coalesce .Values.upstream.icm .Values.upstream.icmBaseURL }}"
+        {{- if .Values.upstream.cdnPrefixURL }}
           - name: CDN_PREFIX_URL
-            value: "{{ .Values.upstream.cdnPrefixURL }}"         
+            value: "{{ .Values.upstream.cdnPrefixURL }}"
+        {{- end }}
         {{- with .Values.environment }}
             {{- toYaml . | nindent 10 }}
         {{- end }}
@@ -49,7 +51,7 @@ spec:
             {{- else }}
               {{- with .Values.livenessProbe }}
               {{- toYaml . | nindent 12 }}
-              {{- end }}  
+              {{- end }}
             {{- end }}
           readinessProbe:
             {{- if empty .Values.readinessProbe }}
@@ -61,7 +63,7 @@ spec:
             {{- else }}
               {{- with .Values.readinessProbe }}
               {{- toYaml . | nindent 12 }}
-              {{- end }}  
+              {{- end }}
             {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

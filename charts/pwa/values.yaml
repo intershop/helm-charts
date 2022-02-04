@@ -13,9 +13,11 @@ nameOverride: ''
 fullnameOverride: ''
 
 upstream:
-  icm: https://www.example.com
   icmBaseURL: https://www.example.com
-  cdnPrefixURL: https://www.example.com
+  ## @param cdnPrefixURL The base URL of your CDN
+  ## E.g:
+  ## cdnPrefixURL: "https://www.example.com"
+  cdnPrefixURL: ""
 service:
   type: ClusterIP
   port: 4200
@@ -27,7 +29,12 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
+## @param environment Extra environment variables to be set on SSR containers
+## E.g:
+## environment:
+##   - name: FOO
+##     value: BAR
+##
 environment: []
 
 livenessProbe: {}
@@ -49,7 +56,7 @@ readinessProbe: {}
   # periodSeconds: 30
 
 cache:
-  enabled: false
+  enabled: true
 
   channels: {}
     # at least one channgel has to be configured
