@@ -78,14 +78,14 @@
                 },
                 "cacheIgnoreParams": {
                     "$id": "#/properties/cache/properties/cacheIgnoreParams",
-                    "type": "object",
+                    "type": "string",
                     "title": "Configure NGinx caching behavior",
                     "description": "NGinx ignore query parameters during caching",
                     "additionalProperties": true
                 },
                 "multiChannel": {
                     "$id": "#/properties/cache/properties/multiChannel",
-                    "type": "object",
+                    "type": "string",
                     "title": "Configure top-level URL to appserver URL mapping",
                     "description": "Multi channel/site configuration object",
                     "additionalProperties": true

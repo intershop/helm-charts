@@ -83,7 +83,7 @@ cache:
   ##     - code
   ##     - state
   ##     - session_state
-  cacheIgnoreParams: {}
+  cacheIgnoreParams: ""
 
   ####
   ## @param Multi channel/site configuration object
@@ -101,7 +101,7 @@ cache:
   ##      - baseHref: /b2b
   ##        channel: default
   ##        theme: blue
-  multiChannel: {}
+  multiChannel: ""
 
   ####
   ## @param DEPRECATED Use 'multiChannel' object when using PWA appVersion > 0.25
