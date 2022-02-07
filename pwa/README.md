@@ -45,3 +45,5 @@ incompatible breaking change needing manual actions.
 | `multiChannel`                            | Multi channel/site configuration object       | `.+:`<br>`channel: default`                             |
 | `cacheIgnoreParams`                       | NGinx ignore query parameters during caching  | `params:`<br>`- utm_source`<br>`- utm_campaign`         |
 | `extraEnvVars`                            | Extra environment variables to be set         | `extraEnvVars:`<br>`- name: FOO`<br>  ` value: BAR`     |
+
+Both `cacheIgnoreParams` and `multiChannel` parameters take precedence over any `extraEnvVars` value containing `MULTI_CHANNEL` or `CACHING_IGNORE_PARAMS` variables
