@@ -43,6 +43,10 @@ spec:
             value: "/config/multi-channel.yaml"
           - name: CACHING_IGNORE_PARAMS_SOURCE
             value: "/config/caching-ignore-params.yaml"
+        {{- range $key, $obj := .Values.cache.extraEnvVars }}
+          - name: {{ $obj.name }}
+            value: {{ $obj.value | quote }}
+        {{- end }}
         {{- if .Values.cache.channels }}
           envFrom:
           - configMapRef:

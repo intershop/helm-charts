@@ -9,8 +9,8 @@ image:
   pullPolicy: Always
 
 imagePullSecrets: []
-nameOverride: ''
-fullnameOverride: ''
+nameOverride: ""
+fullnameOverride: ""
 
 upstream:
   icmBaseURL: https://www.example.com
@@ -37,7 +37,8 @@ affinity: {}
 ##
 environment: []
 
-livenessProbe: {}
+livenessProbe:
+  {}
   # exec:
   #   command:
   #   - /bin/sh
@@ -46,7 +47,8 @@ livenessProbe: {}
   # initialDelaySeconds: 10
   # periodSeconds: 30
 
-readinessProbe: {}
+readinessProbe:
+  {}
   # exec:
   #   command:
   #   - /bin/sh
@@ -58,65 +60,87 @@ readinessProbe: {}
 cache:
   enabled: true
 
-  cacheIgnoreParams: |-
-    params:
-    - utm_source
-    - utm_campaign
-    - utm_medium
-    - utm_content
-    - utm_term
-    - utm_adgroup
-    - utm_id
-    - gclid
-    - gclsrc
-    - dclid
-    - fbclid
-    - gbraid
-    - wbraid
-    - _gac
-    - _gcl
-    - epik
-    - code
-    - state
-    - session_state
+  ####
+  ## @param NGinx ignore query parameters during caching
+  ##   cacheIgnoreParams: |-
+  ##     params:
+  ##     - utm_source
+  ##     - utm_campaign
+  ##     - utm_medium
+  ##     - utm_content
+  ##     - utm_term
+  ##     - utm_adgroup
+  ##     - utm_id
+  ##     - gclid
+  ##     - gclsrc
+  ##     - dclid
+  ##     - fbclid
+  ##     - gbraid
+  ##     - wbraid
+  ##     - _gac
+  ##     - _gcl
+  ##     - epik
+  ##     - code
+  ##     - state
+  ##     - session_state
+  cacheIgnoreParams: {}
 
-
+  ####
+  ## @param Multi channel/site configuration object
+  ##  multiChannel: |-
+  ##    .+:
+  ##      - baseHref: /en
+  ##        channel: default
+  ##        lang: en_US
+  ##      - baseHref: /de
+  ##        channel: default
+  ##        lang: de_DE
+  ##      - baseHref: /fr
+  ##        channel: default
+  ##        lang: fr_FR
+  ##      - baseHref: /b2b
+  ##        channel: default
+  ##        theme: blue
   multiChannel: {}
-  ##
-  # multiChannel: |-
-  #  .+:
-  #    - baseHref: /en
-  #      channel: default
-  #      lang: en_US
-  #    - baseHref: /de
-  #      channel: default
-  #      lang: de_DE
-  #    - baseHref: /fr
-  #      channel: default
-  #      lang: fr_FR
-  #    - baseHref: /b2b
-  #      channel: default
-  #      theme: blue
 
+  ####
+  ## @param DEPRECATED Use 'multiChannel' object when using PWA appVersion > 0.25
+  ##
+  ## mandantory
+  ## PWA_1_SUBDOMAIN: b2b
+  ## PWA_1_CHANNEL: inSPIRED-inTRONICS-Site
+  ## optional
+  ## PWA_1_LANG: de_DE
+  ## PWA_1_FEATURES: none
+  ## PWA_1_APPLICATION: smb-responsive
   channels: {}
-    # at least one channgel has to be configured
-    # mandantory
-    # PWA_1_SUBDOMAIN: b2b
-    # PWA_1_CHANNEL: inSPIRED-inTRONICS-Site
-    # optional
-    # PWA_1_LANG: de_DE
-    # PWA_1_FEATURES: none
-    # PWA_1_APPLICATION: smb-responsive
+
+  ####
+  ## @param extraEnvVars Extra environment variables to be set on NGINX containers
+  ## E.g:
+  ##  extraEnvVars:
+  ##    - name: "MULTI_CHANNEL"
+  ##      value: |-
+  ##        .+:
+  ##          - baseHref: /en
+  ##            channel: default
+  ##            lang: en_US
+  ##          - baseHref: /de
+  ##            channel: default
+  ##            lang: de_DE
+  ##    - name: "FOO"
+  ##      value: "BAR"
+  extraEnvVars: []
 
   replicaCount: 1
 
   image:
     repository: ishpwa.azurecr.io/pwa-nginx
-    tag: '20190930.4'
+    tag: "20190930.4"
     pullPolicy: Always
 
-  nameOverride: ''
-  fullnameOverride: ''
+  nameOverride: ""
+  fullnameOverride: ""
 
   service:
     type: ClusterIP
@@ -140,7 +164,7 @@ ingress:
     kubernetes.io/tls-acme: "true"
     kubernetes.io/ingress.class: nginx
     # traefik.ingress.kubernetes.io/frontend-entry-points: https,http
-  paths: ['/']
+  paths: ["/"]
   hosts:
     - pwa-main.example.com
   tls: []

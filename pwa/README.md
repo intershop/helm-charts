@@ -38,8 +38,10 @@ A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
 incompatible breaking change needing manual actions.
 
 ## Parameters
+### NGinx
 
 | Name                                      | Description                                   |  Example Value                                          |
 |-------------------------------------------|-----------------------------------------------|---------------------------------------------------------|
 | `multiChannel`                            | Multi channel/site configuration object       | `.+:`<br>`channel: default`                             |
 | `cacheIgnoreParams`                       | NGinx ignore query parameters during caching  | `params:`<br>`- utm_source`<br>`- utm_campaign`         |
+| `extraEnvVars`                            | Extra environment variables to be set         | `extraEnvVars:`<br>`- name: FOO`<br>  ` value: BAR`     |
