@@ -4,7 +4,7 @@
 replicaCount: 1
 
 image:
-  repository: pwa-main
+  repository: ishpwa.azurecr.io/pwa-main
   tag: stable
   pullPolicy: Always
 
@@ -136,7 +136,7 @@ cache:
 
   image:
     repository: ishpwa.azurecr.io/pwa-nginx
-    tag: "20190930.4"
+    tag: stable
     pullPolicy: Always
 
   nameOverride: ""
