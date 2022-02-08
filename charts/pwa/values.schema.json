@@ -76,11 +76,32 @@
                     "description": "Enable or disable NGinx deployment",
                     "default": true
                 },
+                "cacheIgnoreParams": {
+                    "$id": "#/properties/cache/properties/cacheIgnoreParams",
+                    "type": "string",
+                    "title": "Configure NGinx caching behavior",
+                    "description": "NGinx ignore query parameters during caching",
+                    "additionalProperties": true
+                },
+                "multiChannel": {
+                    "$id": "#/properties/cache/properties/multiChannel",
+                    "type": "string",
+                    "title": "Configure top-level URL to appserver URL mapping",
+                    "description": "Multi channel/site configuration object",
+                    "additionalProperties": true
+                },
                 "channels": {
                     "$id": "#/properties/cache/properties/channels",
                     "type": "object",
-                    "title": "Configure upstream ICM sites (Pre PWA 0.25 way)",
-                    "description": "Deprecated use property \"environment\" instead.",
+                    "title": "Deprecated: Configure top-level URL to appserver URL mapping (Pre PWA 0.25 way)",
+                    "description": "Deprecated use property \"multiChannel\" or \"extraEnvVars\" instead.",
+                    "additionalProperties": true
+                },
+                "extraEnvVars": {
+                    "$id": "#/properties/cache/properties/extraEnvVars",
+                    "type": "array",
+                    "title": "Extra environment variables to be set on NGINX containers",
+                    "description": "Extra environment variables to be set on NGINX containers",
                     "additionalProperties": true
                 }
             }
