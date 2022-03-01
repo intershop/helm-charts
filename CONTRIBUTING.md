@@ -1,10 +1,3 @@
-<!--
-kb_sync_latest_only
-kb_pwa
-kb_guide
-kb_everyone
--->
-
 # Contributing to the Intershop Helm Charts
 
 Thank you for your interest in Intershops helm-chart project.

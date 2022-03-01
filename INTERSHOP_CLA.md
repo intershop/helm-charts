@@ -1,13 +1,6 @@
-<!--
-kb_sync_latest_only
-kb_pwa
-kb_everyone
-kb_guide
--->
-
 # Intershop Contributor License Agreement
 
-Thank you for your interest in contributing to our open source software project ("project PWA storefront" or just "project") made available by Intershop Communications AG ("ISH"). This contributor license agreement ("agreement") sets out the terms governing any source code, object code, bug fixes, configuration changes, tools, specifications, documentation, data, materials, feedback, information or other works of authorship that you submit or have submitted, in any form and in any manner, to ISH in respect of the project PWA storefront (collectively "Contributions").
+Thank you for your interest in contributing to our open source software project ("project Helm Charts" or just "project") made available by Intershop Communications AG ("ISH"). This contributor license agreement ("agreement") sets out the terms governing any source code, object code, bug fixes, configuration changes, tools, specifications, documentation, data, materials, feedback, information or other works of authorship that you submit or have submitted, in any form and in any manner, to ISH in respect of the project Helm Charts (collectively "Contributions").
 
 With your click on the button you agree that the following terms apply to all of your Contributions to the project. Except for the licenses granted in this agreement, you retain all of your right, title and interest in and to your Contributions. You are aware that the project is also covering by the MIT-license.
 
@@ -15,7 +8,7 @@ sdf
 
 ## Contributions and copyright license
 
-You hereby grant to contribute your works and developments with respect to ISH PWA storefront project. You hereby grant, and agree to grant, to ISH non-exclusive, perpetual, irrevocable, worldwide, fully paid, royalty free, transferrable, copyright license to reproduce, prepare derivative works of, publicly display, publicly perform, and distribute your Contributions and such derivative works, with the right to sublicense the forgoing rights to multiple tiers of sub-licensees.
+You hereby grant to contribute your works and developments with respect to ISH Helm Charts project. You hereby grant, and agree to grant, to ISH non-exclusive, perpetual, irrevocable, worldwide, fully paid, royalty free, transferrable, copyright license to reproduce, prepare derivative works of, publicly display, publicly perform, and distribute your Contributions and such derivative works, with the right to sublicense the forgoing rights to multiple tiers of sub-licensees.
 
 ## Morale rights
 
@@ -57,7 +50,7 @@ Your Contributions are provided "as is" without warranties or conditions of any 
 
 ## No obligation of use or incorporation
 
-You acknowledge that ISH is under no event obliged to use or incorporate your Contributions to the ISH PWA storefront. The decision to use or incorporate your Contributions will be made at the sole discretion of ISH.
+You acknowledge that ISH is under no event obliged to use or incorporate your Contributions to the ISH Helm Charts project. The decision to use or incorporate your Contributions will be made at the sole discretion of ISH.
 
 ## Disputes
 

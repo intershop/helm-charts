@@ -1,10 +1,3 @@
-<!--
-kb_sync_latest_only
-kb_pwa
-kb_guide
-kb_everyone
--->
-
 # Contributor Covenant Code of Conduct
 
 ## Our Pledge
@@ -46,7 +39,7 @@ This Code of Conduct applies within all community spaces, and also applies when 
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement at pwa@intershop.de or by contacting one or more of the project maintainers. All complaints will be reviewed and investigated promptly and fairly.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement at devcommunity@intershop.de or by contacting one or more of the project maintainers. All complaints will be reviewed and investigated promptly and fairly.
 
 All community leaders are obligated to respect the privacy and security of the reporter of any incident.
 
