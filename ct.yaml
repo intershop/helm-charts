@@ -3,6 +3,6 @@ target-branch: main
 chart-dirs:
   - charts
 charts:
-  - pwa
+  - charts/pwa
 check-version-increment: false
 validate-maintainers: false
