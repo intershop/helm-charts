@@ -4,8 +4,8 @@
 replicaCount: 1
 
 image:
-  repository: pwa-main
-  tag: stable
+  repository: intershophub/intershop-pwa-ssr
+  tag: latest
   pullPolicy: Always
 
 imagePullSecrets: []
@@ -31,22 +31,22 @@ affinity: {}
 environment: []
 
 livenessProbe: {}
-  # exec: 
+  # exec:
   #   command:
   #   - /bin/sh
   #   - -c
-  #   - netstat -an | egrep 4200.*LISTEN | grep 4200 
+  #   - netstat -an | egrep 4200.*LISTEN | grep 4200
   # initialDelaySeconds: 10
-  # periodSeconds: 30   
+  # periodSeconds: 30
 
 readinessProbe: {}
-  # exec: 
+  # exec:
   #   command:
   #   - /bin/sh
   #   - -c
-  #   - netstat -an | egrep 4200.*LISTEN | grep 4200 
+  #   - netstat -an | egrep 4200.*LISTEN | grep 4200
   # initialDelaySeconds: 10
-  # periodSeconds: 30  
+  # periodSeconds: 30
 
 cache:
   enabled: false
@@ -54,18 +54,18 @@ cache:
   channels: {}
     # at least one channgel has to be configured
     # mandantory
-    # PWA_1_SUBDOMAIN: b2b                    
-    # PWA_1_CHANNEL: inSPIRED-inTRONICS-Site  
+    # PWA_1_SUBDOMAIN: b2b
+    # PWA_1_CHANNEL: inSPIRED-inTRONICS-Site
     # optional
-    # PWA_1_LANG: de_DE                           
-    # PWA_1_FEATURES: none 
-    # PWA_1_APPLICATION: smb-responsive    
+    # PWA_1_LANG: de_DE
+    # PWA_1_FEATURES: none
+    # PWA_1_APPLICATION: smb-responsive
 
   replicaCount: 1
 
   image:
-    repository: ishpwa.azurecr.io/pwa-nginx
-    tag: '20190930.4'
+    repository: intershophub/intershop-pwa-nginx
+    tag: latest
     pullPolicy: Always
 
   nameOverride: ''
@@ -95,7 +95,7 @@ ingress:
     # traefik.ingress.kubernetes.io/frontend-entry-points: https,http
   paths: ['/']
   hosts:
-    - pwa-main.example.com
+    - example.pwa.intershop.com
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
