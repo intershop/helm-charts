@@ -1,0 +1,9 @@
+Repo:
+  - '*'
+  - '.github/**'
+
+iom:
+  - charts/iom/**
+
+pwa:
+  - charts/pwa/**
