@@ -2,48 +2,46 @@
 
 Installs the [Intershop PWA system](https://github.com/intershop/intershop-pwa) in a kubernetes cluster environment.
 
-## Get Repo Info
-
-```console
-helm repo add intershop https://intershop.github.io/helm-charts
-helm repo update
+## TL;DR
+Via command line:
+```bash
+$ helm repo add intershop https://intershop.github.io/helm-charts
+$ helm repo update
+$ helm install my-release intershop/pwa --values=values.yaml --namespace pwa
 ```
+or via [Flux](https://fluxcd.io) configuration:
+```yaml
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: xxx-yyy
+  namespace: xxx-yyy
 
-_See [helm repo](https://helm.sh/docs/helm/helm_repo/) for command documentation._
-
-## Prerequisites
-* Helm 3.2.0+
-* Kubernetes 1.19+
-## Installing the Chart
-
-To install the chart with the release name `demo`:
-
-```console
-helm install demo intershop/pwa --values=values.yaml --namespace pwa --timeout 20m0s --wait
+spec:
+  rollback:
+    enable: true
+    force: true
+  wait: true
+  timeout: 270
+  releaseName: xxx-yyy
+  chart:
+    repository: https://intershop.github.io/helm-charts
+    name: pwa-main
+    version: 0.2.3
+  values:
 ```
-
-## Uninstalling the Chart
-
-To uninstall/delete the `demo` deployment:
-
-```console
-helm delete demo
-```
-
-The command removes all the Kubernetes components associated with the chart and deletes the release.
-
-## Upgrading an existing Release to a new major version
+## Upgrading an existing Release to a new Major Version
 
 A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
-incompatible breaking change needing manual actions.
+incompatible breaking change needing manual actions. These actions will be descibed as part of the release documentation available on GitHub.
 
 ## Parameters
 ### NGinx
 
 | Name                                      | Description                                   |  Example Value                                          |
 |-------------------------------------------|-----------------------------------------------|---------------------------------------------------------|
-| `multiChannel`                            | Multi channel/site configuration object       | `.+:`<br>`channel: default`                             |
-| `cacheIgnoreParams`                       | NGinx ignore query parameters during caching  | `params:`<br>`- utm_source`<br>`- utm_campaign`         |
-| `extraEnvVars`                            | Extra environment variables to be set         | `extraEnvVars:`<br>`- name: FOO`<br>  ` value: BAR`     |
+| `cache.multiChannel`                      | Multi channel/site configuration object       | `.+:`<br>`channel: default`                             |
+| `cache.cacheIgnoreParams`                 | NGinx ignore query parameters during caching  | `params:`<br>`- utm_source`<br>`- utm_campaign`         |
+| `cache.extraEnvVars`                      | Extra environment variables to be set         | `extraEnvVars:`<br>`- name: FOO`<br>  ` value: BAR`     |
 
 Both `cacheIgnoreParams` and `multiChannel` parameters take precedence over any `extraEnvVars` value containing `MULTI_CHANNEL` or `CACHING_IGNORE_PARAMS` variables
