@@ -1,25 +1,20 @@
-{{- if .Values.cache.enabled -}}
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: {{ include "pwa-cache.fullname" . }}-gomplate-datasources
+  name: {{ include "pwa_nginx.fullname" . }}-gomplate-datasources
   labels:
-    app.kubernetes.io/name: {{ include "pwa-cache.name" . }}
-    helm.sh/chart: {{ include "pwa-main.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "pwa_nginx.labels" . | nindent 4 }}
 data:
-  {{- if .Values.cache.multiChannel }}
-  multi-channel.yaml: {{- .Values.cache.multiChannel | toYaml | indent 4}}
+  {{- if .Values.pwa_nginx.multiChannel }}
+  multi-channel.yaml: {{- .Values.pwa_nginx.multiChannel | toYaml | indent 4}}
   {{- else }}
   multi-channel.yaml: |-
     .+:
       channel: default
   {{- end -}}
-  {{- if .Values.cache.cacheIgnoreParams }}
-  caching-ignore-params.yaml: {{- .Values.cache.cacheIgnoreParams | toYaml | indent 4}}
+  {{- if .Values.pwa_nginx.cacheIgnoreParams }}
+  caching-ignore-params.yaml: {{- .Values.pwa_nginx.cacheIgnoreParams | toYaml | indent 4}}
   {{- else }}
   caching-ignore-params.yaml: |-
     params: []
   {{- end -}}
-{{- end -}}

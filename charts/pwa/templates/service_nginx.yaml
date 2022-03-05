@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "pwa_nginx.fullname" . }}
+  labels:
+    {{- include "pwa_nginx.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.pwa_nginx.service.type }}
+  ports:
+    - port: {{ .Values.pwa_nginx.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "pwa_nginx.selectorLabels" . | nindent 4 }}
