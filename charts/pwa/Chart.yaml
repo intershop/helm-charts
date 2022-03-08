@@ -1,5 +1,11 @@
-apiVersion: v1
-appVersion: '1.0'
-description: Intershop Progressive Web App
-name: pwa-main
+apiVersion: v2
+name: intershop-pwa
 version: 0.2.4
+appVersion: 2.0.0
+description: The Intershop PWA is an Angular based progressive web app storefront for the Intershop Commerce Suite
+home: https://github.com/intershop/helm-charts/tree/main/charts/pwa
+icon: https://www.intershop.com/assets/images/4/logo_intershop_klein-bf151e60.svg
+sources:
+  - https://github.com/intershop/intershop-pwa
+  - https://github.com/intershop/helm-charts
+type: application

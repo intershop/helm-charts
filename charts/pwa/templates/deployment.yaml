@@ -1,81 +1,83 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "pwa-main.fullname" . }}
+  name: {{ include "intershop-pwa.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "pwa-main.name" . }}
-    helm.sh/chart: {{ include "pwa-main.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- include "intershop-pwa.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.pwa_ssr.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "pwa-main.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- include "intershop-pwa.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      {{- with .Values.pwa_ssr.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
-        app.kubernetes.io/name: {{ include "pwa-main.name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- include "intershop-pwa.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.imagePullSecrets }}
+      {{- with .Values.pwa_ssr.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.pwa_ssr.image.repository }}:{{ .Values.pwa_ssr.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.pwa_ssr.image.pullPolicy }}
           env:
           - name: ICM_BASE_URL
-            value: "{{ coalesce .Values.upstream.icm .Values.upstream.icmBaseURL }}"
+            value: "{{ .Values.pwa_ssr.upstream.icmBaseURL }}"
         {{- if .Values.upstream.cdnPrefixURL }}
           - name: CDN_PREFIX_URL
-            value: "{{ .Values.upstream.cdnPrefixURL }}"
+            value: "{{ .Values.pwa_ssr.upstream.cdnPrefixURL }}"
         {{- end }}
-        {{- with .Values.environment }}
-            {{- toYaml . | nindent 10 }}
+        {{- range $key, $obj := .Values.pwa_ssr.extraEnvVars }}
+          - name: {{ $obj.name }}
+            value: {{ $obj.value | quote }}
         {{- end }}
           ports:
             - name: http
               containerPort: 4200
               protocol: TCP
           livenessProbe:
-            {{- if empty .Values.livenessProbe }}
+            {{- if empty .Values.pwa_ssr.livenessProbe }}
             exec:
               command:
-              - /bin/sh
-              - -c
-              - netstat -an | egrep 4200.*LISTEN | grep 4200
+                - node
+                - /dist/livenessprobe.js
+            initialDelaySeconds: 10
+            periodSeconds: 5
             {{- else }}
-              {{- with .Values.livenessProbe }}
+              {{- with .Values.pwa_ssr.livenessProbe }}
               {{- toYaml . | nindent 12 }}
               {{- end }}
             {{- end }}
           readinessProbe:
-            {{- if empty .Values.readinessProbe }}
+            {{- if empty .Values.pwa_ssr.readinessProbe }}
             exec:
               command:
-              - /bin/sh
-              - -c
-              - netstat -an | egrep 4200.*LISTEN | grep 4200
+                - node
+                - /dist/readinessprobe.js
+            initialDelaySeconds: 10
+            periodSeconds: 5
             {{- else }}
-              {{- with .Values.readinessProbe }}
+              {{- with .Values.pwa_ssr.readinessProbe }}
               {{- toYaml . | nindent 12 }}
               {{- end }}
             {{- end }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
+            {{- toYaml .Values.pwa_ssr.resources | nindent 12 }}
+      {{- with .Values.pwa_ssr.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- with .Values.affinity }}
+      {{- with .Values.pwa_ssr.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
+      {{- end }}
+      {{- with .Values.pwa_ssr.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}

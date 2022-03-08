@@ -1,56 +1,47 @@
-{{- if .Values.cache.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "pwa-cache.fullname" . }}
+  name: {{ include "pwa_nginx.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "pwa-cache.name" . }}
-    helm.sh/chart: {{ include "pwa-main.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "pwa_nginx.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.cache.replicaCount }}
+  replicas: {{ .Values.pwa_nginx.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "pwa-cache.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- include "pwa_nginx.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      {{- with .Values.pwa_nginx.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
-        app.kubernetes.io/name: {{ include "pwa-cache.name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- include "pwa_nginx.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.imagePullSecrets }}
+      {{- with .Values.pwa_nginx.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.cache.image.repository }}:{{ .Values.cache.image.tag }}"
-          imagePullPolicy: {{ .Values.cache.image.pullPolicy }}
+        - name: {{ include "pwa_nginx.name" . }}
+          image: "{{ .Values.pwa_nginx.image.repository }}:{{ .Values.pwa_nginx.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.pwa_nginx.image.pullPolicy }}
           volumeMounts:
           - name: multi-channel-config
             readOnly: true
             mountPath: "/config"
           env:
-          - name: HELM_RELEASE_REVISION
-            value: "{{ .Release.Revision }}"
           - name: UPSTREAM_PWA
-            value: "http://{{ include "pwa-main.fullname" . }}:{{ .Values.service.port }}"
+            value: "http://{{ include "intershop-pwa.fullname" . }}:{{ .Values.pwa_ssr.service.port }}"
           - name: ICM_BASE_URL
             value: "{{ coalesce .Values.upstream.icm .Values.upstream.icmBaseURL }}"
           - name: MULTI_CHANNEL_SOURCE
             value: "/config/multi-channel.yaml"
           - name: CACHING_IGNORE_PARAMS_SOURCE
             value: "/config/caching-ignore-params.yaml"
-        {{- range $key, $obj := .Values.cache.extraEnvVars }}
+        {{- range $key, $obj := .Values.pwa_nginx.extraEnvVars }}
           - name: {{ $obj.name }}
             value: {{ $obj.value | quote }}
-        {{- end }}
-        {{- if .Values.cache.channels }}
-          envFrom:
-          - configMapRef:
-              name: {{ include "pwa-channels.fullname" . }}
         {{- end }}
           ports:
             - name: http
@@ -71,27 +62,25 @@ spec:
               {{- end }}
             {{- end }}
           resources:
-            {{- toYaml .Values.cache.resources | nindent 12 }}
+            {{- toYaml .Values.pwa_nginx.resources | nindent 12 }}
       volumes:
       - name: multi-channel-config
         configMap:
-            name: {{ include "pwa-cache.fullname" . }}-gomplate-datasources
+            name: {{ include "pwa_nginx.fullname" . }}-gomplate-datasources
             items:
               - key: multi-channel.yaml
                 path: multi-channel.yaml
               - key: caching-ignore-params.yaml
                 path: caching-ignore-params.yaml
-
-      {{- with .Values.cache.nodeSelector }}
+      {{- with .Values.pwa_nginx.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- with .Values.cache.affinity }}
+      {{- with .Values.pwa_nginx.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.cache.tolerations }}
+      {{- end }}
+      {{- with .Values.pwa_nginx.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-{{- end -}}
+      {{- end }}
