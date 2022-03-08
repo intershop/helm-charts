@@ -1,0 +1,61 @@
+replicaCount: 5
+image:
+  repository: intershophub/intershop-pwa-ssr
+  tag: latest
+upstream:
+  # icm: https://pwa-ish-demo.test.intershop.com
+  icm: https://intershop-n-ga.test.intershop.com
+environment:
+- name: 'SSR_MAX_MEM'
+  value: '800M'
+- name: 'MAX_MEMORY_READY'
+  value: '400M'
+readinessProbe:
+  exec:
+    command:
+    - node
+    - /dist/readinessprobe.js
+  initialDelaySeconds: 10
+  periodSeconds: 60
+  failureThreshold: 1
+  timeoutSeconds: 10
+
+cache:
+  enabled: true
+  channels:
+    CACHE: "0"
+    PWA_1_SUBDOMAIN: b2b
+    PWA_1_CHANNEL: inSPIRED-inTRONICS-Site
+
+  replicaCount: 1
+  multiChannel: |-
+    .+:
+      - baseHref: /en
+        channel: default
+        lang: en_US
+      - baseHref: /de
+        channel: default
+        lang: de_DE
+      - baseHref: /fr
+        channel: default
+        lang: fr_FR
+      - baseHref: /b2b
+        channel: default
+        theme: blue
+
+  image:
+    repository: intershophub/intershop-pwa-nginx
+    tag: latest
+
+ingress:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/configuration-snippet: |-
+      satisfy any;
+      allow 195.110.61.246;
+      allow 195.110.61.200;
+      deny all;
+  hosts:
+  - pwa.dev.local
+
