@@ -3,6 +3,15 @@ entries:
   pwa-main:
   - apiVersion: v1
     appVersion: "1.0"
+    created: "2022-03-22T17:15:23.563077545Z"
+    description: Intershop Progressive Web App
+    digest: 71b7cbcaf836ed10d27ae120d4bd2936f73934f593990ed7306158ce05e8be96
+    name: pwa-main
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.3.0/pwa-main-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v1
+    appVersion: "1.0"
     created: "2022-03-08T16:27:11.967590007Z"
     description: Intershop Progressive Web App
     digest: 7f2a8a6abfe666fe8ff15c4627dc307ff83622d973ad31f6b5dddde248e078c1
@@ -19,4 +28,4 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.2.3/pwa-main-0.2.3.tgz
     version: 0.2.3
-generated: "2022-03-08T16:27:11.967602007Z"
+generated: "2022-03-22T17:15:23.563091945Z"
