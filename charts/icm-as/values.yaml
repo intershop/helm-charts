@@ -80,9 +80,9 @@ affinity: {}
 #
 environment:
   INTERSHOP_DATABASETYPE: "mssql"
-  INTERSHOP_JDBC_URL: "jdbc:sqlserver://mssql-vm.test.intershop.com:1433;databaseName=intershop"
+  INTERSHOP_JDBC_URL: "jdbc:sqlserver://<ipaddress or hostname>:1433;databaseName=intershop"
   #INTERSHOP_DATABASETYPE: "oracle"
-  #INTERSHOP_JDBC_URL: "jdbc:oracle:thin:@127.0.0.1:1521:icm"
+  #INTERSHOP_JDBC_URL: "jdbc:oracle:thin:@<ipaddress or hostname>:1521:intershop"
   INTERSHOP_JDBC_USER: "intershop"
   INTERSHOP_JDBC_PASSWORD: "intershop"
   CARTRIDGE_LIST: "ft_icm_as"
@@ -90,7 +90,7 @@ environment:
 
   # Staging
   #STAGING_SYSTEM_TYPE: editing
-  #INTERSHOP_JDBC_USER_LIVE: "ISTE_ICM_DEV_LIVE"
+  #INTERSHOP_JDBC_USER_LIVE: "intershop_live"
   #INTERSHOP_WEBSERVERURL: http://icm-replication-icm-web-edit-wa:8080
   #INTERSHOP_WEBSERVERSECUREURL: https://icm-replication-icm-web-edit-wa:8443
   #INTERSHOP_WEBSERVERURL_LIVE: http://icm-replication-icm-web-live-wa:8080
