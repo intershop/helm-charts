@@ -1,0 +1,85 @@
+icm-edit:
+  icm-as:
+    nameOverride: icm-as-edit
+    image:
+      #secret: your secret
+      repository: intershophub/icm-as:11.0.0
+    replicaCount: 1
+    environment:
+      INTERSHOP_DATABASETYPE: "mssql"
+      INTERSHOP_JDBC_URL: "jdbc:sqlserver://<ipaddress>:1433;databaseName=intershop_edit"
+      #INTERSHOP_DATABASETYPE: "oracle"
+      #INTERSHOP_JDBC_URL: "jdbc:oracle:thin:@<ipaddress>:1521:icm"
+      INTERSHOP_JDBC_USER: "intershop_edit"
+      INTERSHOP_JDBC_PASSWORD: "intershop_edit"
+
+      # Staging
+      STAGING_SYSTEM_TYPE: editing
+      INTERSHOP_JDBC_USER_LIVE: "intershop_live"
+      INTERSHOP_WEBSERVERURL: http://icm-replication-icm-web-edit-wa:8080
+      INTERSHOP_WEBSERVERSECUREURL: https://icm-replication-icm-web-edit-wa:8443
+      INTERSHOP_WEBSERVERURL_LIVE: http://icm-replication-icm-web-live-wa:8080
+
+    ## @param persistence - Either choose local (default), cluster, azurefiles or nfs persitence layer
+    persistence:
+      size: 1Gi
+      local:
+        enabled: true
+        sites:
+          dir: <local folder>
+          size: 1Gi
+
+  icm-web:
+    nameOverride: icm-web-edit
+    webadapter:
+      replicaCount: 1
+      image:
+        repository: intershophub/icm-webadapter
+        tag: 2.3.0
+    agent:
+      replicaCount: 1
+      image:
+        repository: intershophub/icm-webadapteragent
+        tag: 4.0.0
+    appServerConnection:
+      serviceName: icm-as-edit
+
+icm-live:
+  icm-as:
+    nameOverride: icm-as-live
+    image:
+      #secret: your secret
+      repository: intershophub/icm-as:11.0.0
+    replicaCount: 1
+    environment:
+      INTERSHOP_DATABASETYPE: "mssql"
+      INTERSHOP_JDBC_URL: "jdbc:sqlserver://<ipaddress>:1433;databaseName=intershop_live"
+      #INTERSHOP_DATABASETYPE: "oracle"
+      #INTERSHOP_JDBC_URL: "jdbc:oracle:thin:@<ipaddress>:1521:icm"
+      INTERSHOP_JDBC_USER: "intershop_live"
+      INTERSHOP_JDBC_PASSWORD: "intershop_live"
+      STAGING_SYSTEM_TYPE: live
+
+    ## @param persistence - Either choose local (default), cluster, azurefiles or nfs persitence layer
+    persistence:
+      size: 1Gi
+      local:
+        enabled: true
+        sites:
+          dir: <local folder>
+          size: 1Gi
+
+  icm-web:
+    nameOverride: icm-web-live
+    webadapter:
+      replicaCount: 1
+      image:
+        repository: intershophub/icm-webadapter
+        tag: 2.3.0
+    agent:
+      replicaCount: 1
+      image:
+        repository: intershophub/icm-webadapteragent
+        tag: 4.0.0
+    appServerConnection:
+      serviceName: icm-as-live

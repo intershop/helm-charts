@@ -1,0 +1,10 @@
+dependencies:
+  - name: icm
+    version: 0.2.8
+    repository:  https://ishicmacr.azurecr.io/helm/v1/repo/
+    alias: icm-live
+  - name: icm
+    version: 0.2.8
+    repository:  https://ishicmacr.azurecr.io/helm/v1/repo/
+    alias: icm-edit
+

@@ -1,0 +1,11 @@
+{{- if eq .Values.license.type "configMap" -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "icm-as.fullname" . }}-license
+  labels:
+    app: {{ template "icm-as.fullname" . }}-license
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+data:
+  license.xml: {{ .Files.Get "configuration/license/license.xml" | quote }}
+{{- end -}}

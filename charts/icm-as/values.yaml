@@ -1,0 +1,162 @@
+# Default values for icm-as.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+#nodeSelector:
+#  agentpool: agentpool2
+
+image:
+  secret: icm-as-pullsecret
+  pullPolicy: IfNotPresent
+  # 'appServer' container provides the application / service endpoint
+  repository: intershophub/icm-as:7.11.0.0
+  command: |
+    /intershop/bin/intershop.sh
+
+# list of customization images each following the structure:
+#  <name>:
+#    repository: <repo incl. tag>
+#    secret: <optional pull secret>
+#    pullPolicy: <pullPolicy, default=IfNotPresent>
+customizations: []
+# e.g.:
+#  responsive:
+#    repository: responsive-repo:0.8.15
+#    secret: my-pullsecret1
+#    pullPolicy: IfNotPresent
+#  my-project:
+#    repository: my-project-repo:0.0.7
+#    secret: my-pullsecret2
+#  custom-adapter:
+#    repository: custom-adapter-repo:47.11.0
+#    pullPolicy: IfNotPresent
+
+debug:
+  enabled: false
+
+# if enabled, persistent volume(local, nfs or azurefiles) must be provided in persistence area
+test:
+  enabled: false
+
+nameOverride: ""
+
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext:
+  # intershop user - defined by icm-base-docker image
+  runAsUser: 150
+
+  # TODO: move to webserver configuration
+service:
+  type: ClusterIP
+  port: 8443
+  url: /INTERSHOP/web/WFS/SMC/
+  host: icmwebserver
+
+resources:
+  appServer:
+    limits:
+      cpu: 1000m
+      memory: 3Gi
+    requests:
+      cpu: 1000m
+      memory: 3Gi
+
+tolerations: []
+
+affinity: {}
+
+#
+environment:
+  INTERSHOP_DATABASETYPE: "mssql"
+  INTERSHOP_JDBC_URL: "jdbc:sqlserver://mssql-vm.test.intershop.com:1433;databaseName=intershop"
+  #INTERSHOP_DATABASETYPE: "oracle"
+  #INTERSHOP_JDBC_URL: "jdbc:oracle:thin:@127.0.0.1:1521:icm"
+  INTERSHOP_JDBC_USER: "intershop"
+  INTERSHOP_JDBC_PASSWORD: "intershop"
+  CARTRIDGE_LIST: "ft_icm_as"
+  #CLUSTERID: "e8fdd98df5264561ad7b4b2ac3170430"
+
+  # Staging
+  #STAGING_SYSTEM_TYPE: editing
+  #INTERSHOP_JDBC_USER_LIVE: "ISTE_ICM_DEV_LIVE"
+  #INTERSHOP_WEBSERVERURL: http://icm-replication-icm-web-edit-wa:8080
+  #INTERSHOP_WEBSERVERSECUREURL: https://icm-replication-icm-web-edit-wa:8443
+  #INTERSHOP_WEBSERVERURL_LIVE: http://icm-replication-icm-web-live-wa:8080
+
+# ICM license Configuration
+license:
+# type: configMap | csi
+  type: configMap
+  configMap:
+    defaultMode: 420
+  csi:
+    volumeAttributes:
+      secretProviderClass: "azure-license"
+    nodePublishSecretRef:
+      name: secrets-store-creds
+
+# jGroups folder
+jgroups:
+  size: 1Gi
+  cluster:
+    enabled: false
+    storageClass: azurefile
+    existingClaim: false
+
+# Persistence for site folder
+persistence:
+  size: 1Gi
+  nfs:
+    enabled: false
+    # existingClaim: helm-iste-icm-7-11-nfs-testdata-pvc
+    # server: 172.16.2.4
+    # path: /export/data/iste/test
+  azurefiles:
+    enabled: false
+    shareName: icm-as-share
+    secretName: icm-as-share-secret
+  # set enable true for local storage (.e.g. local testing)
+  # TODO remove from common chart
+  local:
+    enabled: true
+    sites:
+      dir: /D/tmp/pv/sites
+      size: 1Gi
+  cluster:
+    enabled: false
+    storageClass: azurefile
+
+customdata:
+  enabled: false
+  existingClaim: icm-as-cluster-customData-pvc
+  mountPoint: /data
+
+applicationServer:
+  enabled: true
+
+# Probes, all values are optional, below are the defaults
+probes:
+  startup: {}
+#    failureThreshold: 6
+#    initialDelaySeconds: 60
+#    periodSeconds: 10
+  liveness: {}
+#    failureThreshold: 3
+#    initialDelaySeconds: 0
+#    periodSeconds: 10
+  readiness: {}
+#    failureThreshold: 3
+#    initialDelaySeconds: 0
+#    periodSeconds: 5

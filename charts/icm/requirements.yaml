@@ -1,0 +1,7 @@
+dependencies:
+  - name: icm-as
+    version: 0.2.6
+    repository:  https://ishicmacr.azurecr.io/helm/v1/repo/
+  - name: icm-web
+    version: 0.1.30
+    repository:  https://ishicmacr.azurecr.io/helm/v1/repo/

@@ -1,0 +1,17 @@
+{{- if and (.Values.jgroups.cluster.enabled) (not .Values.jgroups.cluster.existingClaim) -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "icm-as.fullname" . }}-cluster-jgroups-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  {{- if .Values.jgroups.cluster.storageClass }}
+  storageClassName: {{ .Values.jgroups.cluster.storageClass | quote }}
+  {{- else }}
+  storageClassName: azurefile
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.jgroups.size }}
+{{- end -}}

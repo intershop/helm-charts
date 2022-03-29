@@ -1,0 +1,213 @@
+ {{- if .Values.applicationServer.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "icm-as.fullname" . }}
+  labels:
+    app: {{ include "icm-as.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  progressDeadlineSeconds: 600
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: {{ include "icm-as.fullname" . }}
+      release: {{ .Release.Name }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: {{ include "icm-as.fullname" . }}
+        release: {{ .Release.Name }}
+    spec:
+      {{- if .Values.nodeSelector}}
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | trim | nindent 8 }}
+      {{- end }}
+      {{- $customizationImagePullSecrets := list -}}
+      {{- if .Values.customizations -}}
+        {{- range $k, $v := .Values.customizations -}}
+          {{- if hasKey $v "secret" -}}
+            {{- $customizationImagePullSecrets = append $customizationImagePullSecrets $v.secret -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+      {{- if or (.Values.image.secret) ($customizationImagePullSecrets) }}
+      imagePullSecrets:
+        - name: {{ .Values.image.secret }}
+        {{- range $curr := $customizationImagePullSecrets }}
+        - name: {{ $curr }}
+        {{- end }}
+      {{- end }}
+      containers:
+        - name: icm-as-server
+          image: "{{ .Values.image.repository }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          command:
+          - "/bin/sh"
+          - "-c"
+          - {{- toYaml .Values.image.command | nindent 12 }}
+          env:
+          - name: IS_DBPREPARE
+            value: "false"
+          - name: SERVER_NAME
+            value: "appserver"
+          {{- if .Values.debug.enabled }}
+          - name: DEBUG_ICM
+            value: "true"
+          {{- end }}
+          {{- range $key, $value := .Values.environment }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+          ports:
+            # Servlet engine connector port
+            - name: http
+              containerPort: 7743
+              protocol: TCP
+          {{- if .Values.debug.enabled }}
+            # Java Debug port
+            - name: debug
+              containerPort: 7744
+              protocol: TCP
+          {{- end }}
+            # JMX port
+            - name: jmx
+              containerPort: 7745
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources.appServer | trim | nindent 12 }}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /intershop/license/license.xml
+              name: license-volume
+              readOnly: true
+              {{- if eq .Values.license.type "configMap" }}
+              subPath: license.xml
+              {{- else if eq .Values.license.type "csi" }}
+              subPath: license
+              {{- end }}
+            - mountPath: /intershop/sites
+              name: sites-volume
+          {{- if .Values.customdata.enabled }}
+            - mountPath: {{ .Values.customdata.mountPoint }}
+              name: custom-data-volume
+          {{- end }}
+            - mountPath: /intershop/customizations
+              name: customizations-volume
+            - mountPath: /intershop/jgroups-share
+              name: jgroups-volume
+          {{- if hasKey .Values.environment "STAGING_SYSTEM_TYPE" }}
+          {{- if eq .Values.environment.STAGING_SYSTEM_TYPE "editing" }}
+            - mountPath: /intershop/replication-conf/replication-clusters.xml
+              name: replication-volume
+              readOnly: true
+              subPath: replication-clusters.xml
+          {{- end }}
+          {{- end }}
+          startupProbe:
+            httpGet:
+              path: /status/LivenessProbe
+              port: http
+            # wait 60s then poll every 10s up to a total timeout of 120s
+            failureThreshold: {{ .Values.probes.startup.failureThreshold | default 6 }}
+            initialDelaySeconds: {{ .Values.probes.startup.initialDelaySeconds | default 60 }}
+            periodSeconds: {{ .Values.probes.startup.initialDelaySeconds | default 10 }}
+          livenessProbe:
+            httpGet:
+              path: /status/LivenessProbe
+              port: http
+            #after startup: poll every 10s up to a total timeout of 30s
+            failureThreshold: {{ .Values.probes.liveness.failureThreshold | default 3 }}
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds | default 0 }}
+            periodSeconds: {{ .Values.probes.liveness.initialDelaySeconds | default 10 }}
+          readinessProbe:
+            httpGet:
+              path: /status/ReadinessProbe
+              port: http
+            #wait 60s (startup min) then poll every 5s up to a total timeout of 15s
+            failureThreshold: {{ .Values.probes.readiness.failureThreshold | default 3 }}
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds | default 60 }}
+            periodSeconds: {{ .Values.probes.readiness.initialDelaySeconds | default 5 }}
+      initContainers:
+      {{- if .Values.customizations }}
+      {{- range $k, $v := .Values.customizations }}
+        - name: {{ $k }}
+          image: {{ $v.repository }}
+          imagePullPolicy: {{ $v.pullPolicy | default "IfNotPresent" }}
+          volumeMounts:
+            - mountPath: /customizations
+              name: customizations-volume
+      {{- end }}
+      {{- end }}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: license-volume
+        {{- if eq .Values.license.type "configMap" }}
+        configMap:
+          {{ toYaml .Values.license.configMap }}
+          name: {{ template "icm-as.fullname" . }}-license
+        {{- else if eq .Values.license.type "csi" }}
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+{{ toYaml .Values.license.csi | indent 10 }}
+        {{- end }}
+      - name: jgroups-volume
+        {{- if .Values.jgroups.cluster.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.jgroups.cluster.existingClaim }}
+          claimName: "{{ .Values.jgroups.cluster.existingClaim }}"
+          {{- else }}
+          claimName: "{{ template "icm-as.fullname" . }}-cluster-jgroups-pvc"
+          {{- end }}
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
+      - name: sites-volume
+        {{- if .Values.persistence.local.enabled }}
+        persistentVolumeClaim:
+          claimName: "{{ template "icm-as.fullname" . }}-local-sites-pvc"
+        {{- else if .Values.persistence.nfs.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.nfs.existingClaim }}
+          claimName: "{{ .Values.persistence.nfs.existingClaim }}"
+          {{- else }}
+          claimName: "{{ template "icm-as.fullname" . }}-nfs-sites-pvc"
+          {{- end }}
+        {{- else if .Values.persistence.cluster.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.cluster.existingClaim }}
+          claimName: "{{ .Values.persistence.cluster.existingClaim }}"
+          {{- else }}
+          claimName: "{{ template "icm-as.fullname" . }}-cluster-sites-pvc"
+          {{- end }}
+        {{- else if .Values.persistence.azurefiles.enabled }}
+        azureFile:
+          secretName: {{ .Values.persistence.azurefiles.secretName }}
+          shareName: {{ .Values.persistence.azurefiles.shareName }}
+          readOnly: false
+        {{- end }}
+        {{- if hasKey .Values.environment "STAGING_SYSTEM_TYPE" }}
+        {{- if eq .Values.environment.STAGING_SYSTEM_TYPE "editing" }}
+      - name: replication-volume
+        configMap:
+          name: {{ template "icm-as.fullname" . }}-replication-clusters-xml
+        {{- end }}
+        {{- end }}
+        {{- if .Values.customdata.enabled }}
+      - name: custom-data-volume
+        persistentVolumeClaim:
+          claimName: "{{ .Values.customdata.existingClaim }}"
+        {{- end }}
+      - name: customizations-volume
+        emptyDir: {}
+{{- end }}

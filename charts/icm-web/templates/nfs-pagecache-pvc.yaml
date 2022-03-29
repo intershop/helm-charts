@@ -1,0 +1,22 @@
+{{- if .Values.persistence.nfs.enabled -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "icm-web.fullname" . }}-nfs-pagecache-pvc
+  annotations:
+    # avoid deleting with helm update
+    "helm.sh/resource-policy": keep
+  labels:
+{{ include "icm-web.labels" . | indent 4 }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  volumeName: {{ include "icm-web.fullname" . }}-nfs-pagecache-pv
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size }}
+  selector:
+    matchLabels:
+      type: nfs
+{{- end -}}

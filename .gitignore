@@ -1,0 +1,6 @@
+**/charts/*.tgz
+**/requirements.lock
+environment/tmp_repo/**
+build/**
+.idea/
+.project

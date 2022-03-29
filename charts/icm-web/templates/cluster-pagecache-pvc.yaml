@@ -1,0 +1,17 @@
+{{- if and (.Values.persistence.cluster.enabled) (not .Values.persistence.cluster.existingClaim) -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "icm-web.fullname" . }}-cluster-pagecache-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  {{- if .Values.persistence.cluster.storageClass }}
+  storageClassName: {{ .Values.persistence.cluster.storageClass | quote }}
+  {{- else }}
+  storageClassName: azurefile
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size }}
+{{- end -}}

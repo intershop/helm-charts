@@ -1,0 +1,13 @@
+{{- if .Values.persistence.local.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "icm-web.fullname" . }}-local-pagecache-pvc
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size }}
+{{ end }}

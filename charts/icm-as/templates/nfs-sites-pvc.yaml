@@ -1,0 +1,22 @@
+{{- if and (.Values.persistence.nfs.enabled) (not .Values.persistence.nfs.existingClaim) -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "icm-as.fullname" . }}-nfs-sites-pvc
+  annotations:
+    # avoid deleting with helm update
+    "helm.sh/resource-policy": keep
+  labels:
+{{ include "icm-as.labels" . | indent 4 }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  volumeName: {{ template "icm-as.fullname" . }}-nfs-sites-pv
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size }}
+  selector:
+    matchLabels:
+      type: nfs
+{{- end -}}

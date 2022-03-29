@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "icm-as.fullname" . }}-test-connection"
+  labels:
+    {{- include "icm-as.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['https://{{ .Values.service.host }}:{{ .Values.service.port }}{{ .Values.service.url }}']
+  restartPolicy: OnFailure
