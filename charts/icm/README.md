@@ -1,5 +1,7 @@
 # Helm Chart Intershop Commerce Management
 
+Installs the ICM umbrella chart including application server, webadapter and webadapter agent.
+
 ## TL;DR
 Via command line:
 ```bash
