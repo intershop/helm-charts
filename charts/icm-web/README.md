@@ -27,3 +27,8 @@ Create a secret for a docker registry where the images are coming from. The name
 ```bash
 $ kubectl create secret docker-registry <yourDockerRegistryName> --docker-server=<yourDockerRegistryServer> --docker-username=<yourUsername> --docker-password=<yourPassword> --docker-email=<yourEmail>
 ```
+
+### Persistence
+
+`local`, `cluster`, `azurefiles`, `nfs` are possible persistence options.
+The default is `local` where `persistence.local.sites.dir` need to be set to a valid local folder.

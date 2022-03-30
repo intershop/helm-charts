@@ -8,10 +8,10 @@ replicaCount: 1
 #  agentpool: agentpool2
 
 image:
-  secret: icm-as-pullsecret
+  secret: dockerhub
   pullPolicy: IfNotPresent
   # 'appServer' container provides the application / service endpoint
-  repository: intershophub/icm-as:7.11.0.0
+  repository: intershophub/icm-as:11.0.0
   command: |
     /intershop/bin/intershop.sh
 
@@ -128,7 +128,7 @@ persistence:
   local:
     enabled: true
     sites:
-      dir: /D/tmp/pv/sites
+      dir: <local folder>
       size: 1Gi
   cluster:
     enabled: false
