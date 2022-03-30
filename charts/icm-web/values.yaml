@@ -50,7 +50,7 @@ persistence:
   # TODO remove local storage from common charts
   local:
     enabled: true
-    dir: /D/tmp/pv/pagecache
+    dir: <local folder>
   cluster:
     enabled: false
 
