@@ -36,10 +36,6 @@ customizations: []
 debug:
   enabled: false
 
-# if enabled, persistent volume(local, nfs or azurefiles) must be provided in persistence area
-test:
-  enabled: false
-
 nameOverride: ""
 
 fullnameOverride: ""

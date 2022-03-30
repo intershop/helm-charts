@@ -31,9 +31,6 @@ agent:
       /intershop/bin/start-waa.sh
   replicaCount: 1
 
-test:
-  enabled: false
-
 customdata:
   enabled: false
   existingClaim: icm-as-cluster-customData-pvc

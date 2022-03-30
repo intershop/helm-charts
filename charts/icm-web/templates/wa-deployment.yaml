@@ -55,16 +55,14 @@ spec:
             {{- end }}
           {{- end }}
         {{- end }}
-        {{- if .Values.test.enabled }}
+        {{- if .Values.customdata.enabled }}
       - name: custom-data-volume
-          {{- if .Values.customdata.enabled }}
         persistentVolumeClaim:
           claimName: "{{ .Values.customdata.existingClaim }}"
-          {{- end }}
         {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          {{- if and (.Values.webadapter.image.tag) (not .Values.test.enabled) }}
+          {{- if .Values.webadapter.image.tag }}
           image: "{{ .Values.webadapter.image.repository }}:{{ .Values.webadapter.image.tag }}"
           {{- else }}
           image: "{{ .Values.webadapter.image.repository }}"
