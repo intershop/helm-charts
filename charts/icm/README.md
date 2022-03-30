@@ -1,6 +1,6 @@
 # Helm Chart Intershop Commerce Management
 
-Installs the ICM umbrella chart including application server, webadapter and webadapter agent.
+Installs the ICM umbrella chart containing the [application server](../icm-as/README.md)-, [webadapter and webadapter agent](../icm-web/README.md)-chart.
 
 ## TL;DR
 Via command line:

@@ -26,8 +26,5 @@ icm-as:
 icm-web:
   webadapter:
     replicaCount: 1
-    image:
-      repository: intershophub/icm-webadapter
-      tag: 2.3.0
   agent:
     replicaCount: 1
