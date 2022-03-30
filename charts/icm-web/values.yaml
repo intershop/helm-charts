@@ -11,7 +11,7 @@ webadapter:
   image:
     repository: intershophub/icm-webadapter
     tag: 2.3.0
-    secret: wa-pullsecret
+    secret: dockerhub
     pullPolicy: IfNotPresent
     command: |
       /intershop/bin/intershop.sh
@@ -24,8 +24,8 @@ webadapter:
 agent:
   image:
     repository: intershophub/icm-webadapteragent
-    tag: 3.1.0
-    secret: waa-pullsecret
+    tag: 4.0.0
+    secret: dockerhub
     pullPolicy: IfNotPresent
     command: |
       /intershop/bin/start-waa.sh
