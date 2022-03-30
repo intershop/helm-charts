@@ -41,7 +41,7 @@ persistence:
   size: 1Gi
   nfs:
     enabled: false
-    # server: 127.0.0.1
+    # server: <ipaddress or hostname>
     # path: /export/pagecache
   azurefiles:
     enabled: false
