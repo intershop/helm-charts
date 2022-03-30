@@ -14,7 +14,7 @@ icm-as:
     INTERSHOP_JDBC_PASSWORD: "intershop"
 
 
-  ## @param persistence - Either choose local (default), cluster, azurefiles or nfs persitence layer
+  ## @param persistence - Either choose local (default), cluster, azurefiles or nfs persistence layer
   persistence:
     size: 1Gi
     local:
