@@ -1,6 +1,6 @@
 # Helm Chart Intershop Commerce Management - Application Server
 
-Installs the ICM application server indepentently.
+Installs the ICM application server independently.
 
 ## TL;DR
 Via command line:

@@ -1,6 +1,6 @@
 # Helm Chart Intershop Commerce Management - Web Adapter and Web Adapter Agent
 
-Installs the ICM web adapter and web adapter agent indepentently.
+Installs the ICM web adapter and web adapter agent independently.
 
 ## TL;DR
 Via command line:
