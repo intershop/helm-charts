@@ -96,7 +96,10 @@ license:
 # type: configMap | csi
   type: configMap
   configMap:
-    defaultMode: 420
+    include:
+      defaultMode: 420
+    content: |-
+      <your license>
   csi:
     volumeAttributes:
       secretProviderClass: "azure-license"

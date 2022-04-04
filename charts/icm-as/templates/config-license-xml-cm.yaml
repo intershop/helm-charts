@@ -7,5 +7,5 @@ metadata:
     app: {{ template "icm-as.fullname" . }}-license
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 data:
-  license.xml: {{ .Files.Get "configuration/license/license.xml" | quote }}
+  license.xml: {{ .Values.license.configMap.content | quote }}
 {{- end -}}

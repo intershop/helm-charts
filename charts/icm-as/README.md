@@ -29,7 +29,7 @@ $ kubectl create secret docker-registry <yourDockerRegistryName> --docker-server
 
 ### License file
 
-A license file could either be profided via configmap (see ./configuration/license/license.xml) or [Azure Key Vault Provider for Secrets Store CSI Driver](https://docs.microsoft.com/de-de/azure/aks/csi-secrets-store-driver).
+A license file could either be profided via configmap or [Azure Key Vault Provider for Secrets Store CSI Driver](https://docs.microsoft.com/de-de/azure/aks/csi-secrets-store-driver).
 
 ### Persistence
 
