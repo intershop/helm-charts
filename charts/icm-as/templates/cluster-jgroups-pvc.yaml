@@ -6,11 +6,8 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  {{- if .Values.jgroups.cluster.storageClass }}
   storageClassName: {{ .Values.jgroups.cluster.storageClass | quote }}
-  {{- else }}
-  storageClassName: azurefile
-  {{- end }}
+
   resources:
     requests:
       storage: {{ .Values.jgroups.size }}
