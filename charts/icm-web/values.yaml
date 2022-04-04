@@ -4,8 +4,9 @@
 
 replicaCount: 1
 
+# defined where the application shall run on
 #nodeSelector:
-#  agentpool: agentpool2
+#  agentpool: <your agentpool>
 
 webadapter:
   image:
@@ -22,6 +23,8 @@ webadapter:
   replicaCount: 1
 
 agent:
+  # in some REST-based environment the webadapteragent isn't mandatory
+  enabled: true
   image:
     repository: intershophub/icm-webadapteragent
     tag: 4.0.0
