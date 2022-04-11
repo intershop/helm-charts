@@ -97,8 +97,6 @@ license:
 # type: configMap | csi
   type: configMap
   configMap:
-    include:
-      defaultMode: 420
     content: |-
       <your license>
   csi:
