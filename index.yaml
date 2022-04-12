@@ -1,5 +1,26 @@
 apiVersion: v1
 entries:
+  icm-as:
+  - apiVersion: v2
+    appVersion: 11.0.0
+    created: "2022-04-12T14:18:32.341554504Z"
+    description: Intershop Commerce Management - AppServer
+    digest: 5c77e6b7fe3a18a173921a422c1e7f1d5d419f508ca655ab69bf75c60062c9ba
+    name: icm-as
+    type: application
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-as-0.2.6/icm-as-0.2.6.tgz
+    version: 0.2.6
+  icm-web:
+  - apiVersion: v1
+    appVersion: 11.0.0
+    created: "2022-04-12T14:18:32.564414238Z"
+    description: Intershop Commerce Management - Web Adapter and Web Adapter Agent
+    digest: 890fce35d655e7afa16dfb20d6f651406a694359db8df5d81bb53626cf15f0cc
+    name: icm-web
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-web-0.1.30/icm-web-0.1.30.tgz
+    version: 0.1.30
   pwa-main:
   - apiVersion: v1
     appVersion: "1.0"
@@ -28,4 +49,4 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.2.3/pwa-main-0.2.3.tgz
     version: 0.2.3
-generated: "2022-03-22T17:15:23.563091945Z"
+generated: "2022-04-12T14:18:32.564426338Z"
