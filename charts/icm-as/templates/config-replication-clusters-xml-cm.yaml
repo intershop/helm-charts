@@ -1,0 +1,54 @@
+{{- if hasKey .Values.environment "STAGING_SYSTEM_TYPE" -}}
+{{- if eq .Values.environment.STAGING_SYSTEM_TYPE "editing" -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "icm-as.fullname" . }}-replication-clusters-xml
+  labels:
+    app: {{ template "icm-as.fullname" . }}-replication-clusters-xml
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+data:
+{{- if eq .Values.environment.INTERSHOP_DATABASETYPE "mssql" }}
+  replication-clusters.xml:  |-
+    <?xml version="1.0"?>
+    <replication-configuration
+            xsi:schemaLocation="http://www.intershop.com/xml/ns/enfinity/7.5.0/core/replication replication.xsd"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://www.intershop.com/xml/ns/enfinity/7.5.0/core/replication">
+        <target-clusters>
+            <target-cluster id="Cluster42">
+                <target-systems>
+                    <target-system id="TargetSystem1" active="true">
+                        <webserver-url>{{ .Values.environment.INTERSHOP_WEBSERVERURL_LIVE }}</webserver-url>
+                        <source-server-group>BOS</source-server-group>
+                        <target-server-group>BOS</target-server-group>
+                        <source-database-link>{{ .Values.environment.INTERSHOP_JDBC_USER }}</source-database-link>
+                    </target-system>
+                </target-systems>
+            </target-cluster>
+        </target-clusters>
+    </replication-configuration>
+{{- end }} # else if fails with "INTERSHOP_DATABASETYPE is not a method but has arguments"
+{{- if eq .Values.environment.INTERSHOP_DATABASETYPE "oracle" }}
+  replication-clusters.xml:  |-
+    <?xml version="1.0"?>
+    <replication-configuration
+            xsi:schemaLocation="http://www.intershop.com/xml/ns/enfinity/7.5.0/core/replication replication.xsd"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://www.intershop.com/xml/ns/enfinity/7.5.0/core/replication">
+        <target-clusters>
+            <target-cluster id="Cluster42">
+                <target-systems>
+                    <target-system id="TargetSystem1" active="true">
+                        <webserver-url>{{ .Values.environment.INTERSHOP_WEBSERVERURL_LIVE }}</webserver-url>
+                        <source-server-group>BOS</source-server-group>
+                        <target-server-group>BOS</target-server-group>
+                        <target-database-user>{{ .Values.environment.INTERSHOP_JDBC_USER_LIVE }}</target-database-user>
+                    </target-system>
+                </target-systems>
+            </target-cluster>
+        </target-clusters>
+    </replication-configuration>
+{{- end }}
+{{- end -}}
+{{- end -}}

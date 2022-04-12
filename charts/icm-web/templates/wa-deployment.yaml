@@ -1,0 +1,116 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "icm-web.fullname" . }}-wa
+  labels:
+    app: {{ include "icm-web.fullname" . }}-wa
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  replicas: {{ .Values.webadapter.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "icm-web.fullname" . }}-wa
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "icm-web.fullname" . }}-wa
+        release: {{ .Release.Name }}
+    spec:
+      {{- if .Values.nodeSelector}}
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | trim | nindent 8 }}
+      {{- end }}
+      imagePullSecrets:
+        {{- if .Values.webadapter.image.secret }}
+        - name: "{{ .Values.webadapter.image.secret }}"
+        {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+      {{- if .Values.webadapter.customHttpdConfig }}
+      - name: httpd-config-volume
+        configMap:
+          name:  {{ template "icm-web.fullname" . }}-httpd-conf
+      {{- end }}
+      {{- if .Values.webadapter.customSSLCertificates }}
+      - name: ssl-config-volume
+        configMap:
+          name:  {{ template "icm-web.fullname" . }}-ssl-certificates
+      {{- end }}
+      - name: pagecache-volume
+        {{- if .Values.persistence.local.enabled }}
+        persistentVolumeClaim:
+          claimName: "{{ include "icm-web.fullname" . }}-local-pagecache-pvc"
+        {{- else }}
+          {{- if .Values.persistence.nfs.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ include "icm-web.fullname" . }}-nfs-pagecache-pvc
+          {{- else }}
+            {{- if .Values.persistence.azurefiles.enabled }}
+        azureFile:
+          secretName: {{ .Values.persistence.azurefiles.secretName }}
+          shareName: {{ .Values.persistence.azurefiles.shareName }}
+          readOnly: false
+            {{- end }}
+          {{- end }}
+        {{- end }}
+        {{- if .Values.customdata.enabled }}
+      - name: custom-data-volume
+        persistentVolumeClaim:
+          claimName: "{{ .Values.customdata.existingClaim }}"
+        {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          {{- if .Values.webadapter.image.tag }}
+          image: "{{ .Values.webadapter.image.repository }}:{{ .Values.webadapter.image.tag }}"
+          {{- else }}
+          image: "{{ .Values.webadapter.image.repository }}"
+          {{- end }}
+          imagePullPolicy: {{ .Values.webadapter.image.pullPolicy }}
+          command:
+          - "/bin/sh"
+          - "-c"
+          - {{- toYaml .Values.webadapter.image.command | nindent 12 }}
+          env:
+          - name: ICM_ICMSERVLETURLS
+            value: "cs.url.0=http://{{ .Release.Name }}-{{ .Values.appServerConnection.serviceName }}:{{ .Values.appServerConnection.port }}/servlet/ConfigurationServlet"
+          {{- if .Values.environment }}
+            {{- range $key, $value := .Values.environment }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+            {{- end }}
+          {{- end }}
+          volumeMounts:
+          {{- if .Values.webadapter.customHttpdConfig }}
+          - name: httpd-config-volume
+            mountPath: /intershop/conf
+          {{- end }}
+          {{- if .Values.webadapter.customSSLCertificates }}
+          - name: ssl-config-volume
+            mountPath: /intershop/webserver-certs
+          {{- end }}
+          - name: pagecache-volume
+            mountPath: /intershop/pagecache
+          {{- if .Values.customdata.enabled }}
+          - name: custom-data-volume
+            mountPath: {{ .Values.customdata.mountPoint }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            # TODO remove SSL support
+            - name: https
+              containerPort: 8443
+              protocol: TCP
+          {{- if .Values.resources.webadapter.enabled }}
+          resources:
+            limits:
+              memory: "{{ .Values.resources.webserver.memory_lim }}"
+            requests:
+              memory: "{{ .Values.resources.webserver.memory_req }}"
+          {{- else }}
+          resources: {}
+          {{- end }}
+

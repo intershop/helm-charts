@@ -1,0 +1,87 @@
+# Default values for icm-webadapter.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+# defined where the application shall run on
+#nodeSelector:
+#  agentpool: <your agentpool>
+
+webadapter:
+  image:
+    repository: intershophub/icm-webadapter
+    tag: 2.3.0
+    secret: dockerhub
+    pullPolicy: IfNotPresent
+    command: |
+      /intershop/bin/intershop.sh
+  customHttpdConfig: false
+  # provides custom certificates for webadapter
+  customSSLCertificates: false
+  overrideSSL: false
+  replicaCount: 1
+
+agent:
+  # in some REST-based environment the webadapteragent isn't mandatory
+  enabled: true
+  image:
+    repository: intershophub/icm-webadapteragent
+    tag: 4.0.0
+    secret: dockerhub
+    pullPolicy: IfNotPresent
+    command: |
+      /intershop/bin/start-waa.sh
+  replicaCount: 1
+
+customdata:
+  enabled: false
+  existingClaim: icm-as-cluster-customData-pvc
+  mountPoint: /data
+
+# Persistence for pagecache folder
+persistence:
+  size: 1Gi
+  nfs:
+    enabled: false
+    # server: <ipaddress or hostname>
+    # path: /export/pagecache
+  azurefiles:
+    enabled: false
+    # shareName: icm-web-pagecache
+    # secretName: icm-web-pagecache-secret
+  # TODO remove local storage from common charts
+  local:
+    enabled: true
+    dir: <local folder>
+  cluster:
+    enabled: false
+
+resources:
+  webadapter:
+    enabled: false
+    memory_lim: 100Mi
+    memory_req: 100Mi
+  agent:
+    enabled: false
+    memory_lim: 200Mi
+    memory_req: 200Mi
+
+ingress:
+  enabled: false
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  httpPort: 80
+  httpsPort: 443
+
+podSecurityContext:
+  # intershop user - defined by icm-base-docker image
+  runAsUser: 150
+
+appServerConnection:
+  serviceName: icm-as
+  port: 7743

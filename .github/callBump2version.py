@@ -22,7 +22,8 @@ class ProductType(Enum, metaclass=MyEnumMeta):
 	NONE = 'none'
 	IOM = 'iom'
 	PWA = 'pwa'
-	ICM = 'icm'
+	ICM_AS = 'icm-as'
+	ICM_WEB = 'icm-web'
 
 def handle_subprocess_error(subprocess_result, error_message):
     if subprocess_result.returncode != 0:

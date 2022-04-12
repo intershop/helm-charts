@@ -1,0 +1,18 @@
+ {{- if .Values.applicationServer.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "icm-as.fullname" . }}
+  labels:
+    app: {{ include "icm-as.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  ports:
+  - name: "7743"
+    port: 7743
+    targetPort: 7743
+  selector:
+    app: {{ include "icm-as.fullname" . }}
+status:
+  loadBalancer: {}
+{{- end }}

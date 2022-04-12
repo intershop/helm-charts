@@ -1,0 +1,17 @@
+{{- if and (.Values.persistence.nfs.enabled) (not .Values.persistence.nfs.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ template "icm-as.fullname" . }}-nfs-sites-pv
+  labels:
+    type: nfs
+{{ include "icm-as.labels" . | indent 4 }}
+spec:
+  capacity:
+    storage: {{ .Values.persistence.size }}
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: {{ .Values.persistence.nfs.server | quote }}
+    path: {{ .Values.persistence.nfs.path | quote }}
+{{- end -}}

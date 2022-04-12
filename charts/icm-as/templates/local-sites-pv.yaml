@@ -1,0 +1,17 @@
+{{- if .Values.persistence.local.enabled }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ template "icm-as.fullname" . }}-local-sites-pv
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: {{ .Values.persistence.local.sites.size }}
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Delete
+  hostPath:
+    path: "{{ .Values.persistence.local.sites.dir }}"
+{{ end }}

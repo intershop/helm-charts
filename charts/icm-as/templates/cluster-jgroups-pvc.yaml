@@ -1,0 +1,14 @@
+{{- if and (.Values.jgroups.cluster.enabled) (not .Values.jgroups.cluster.existingClaim) -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "icm-as.fullname" . }}-cluster-jgroups-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: {{ .Values.jgroups.cluster.storageClass | quote }}
+
+  resources:
+    requests:
+      storage: {{ .Values.jgroups.size }}
+{{- end -}}
