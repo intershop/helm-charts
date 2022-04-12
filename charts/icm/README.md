@@ -1,4 +1,4 @@
-# Helm Chart Intershop Commerce Management
+# Helm Chart Intershop Commerce Management - ICM
 
 ## TL;DR
 Via command line:
