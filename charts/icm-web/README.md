@@ -31,4 +31,4 @@ $ kubectl create secret docker-registry <yourDockerRegistryName> --docker-server
 ### Persistence
 
 `local`, `cluster`, `azurefiles`, `nfs` are possible persistence options.
-The default is `local` where `persistence.local.sites.dir` need to be set to a valid local folder.
+The default is `local` where `persistence.local.dir` need to be set to a valid local folder.
