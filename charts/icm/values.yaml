@@ -1,0 +1,33 @@
+icm-as:
+
+  image:
+    repository: intershophub/icm-as:11.0.0
+  replicaCount: 1
+
+  ## @param environment - Environment variables to be set on containers
+  environment:
+    INTERSHOP_DATABASETYPE: "mssql"
+    INTERSHOP_JDBC_URL: "jdbc:sqlserver://<ipaddress>:1433;databaseName=intershop"
+    #INTERSHOP_DATABASETYPE: "oracle"
+    #INTERSHOP_JDBC_URL: "jdbc:oracle:thin:@<ipaddress>:1521:intershop"
+    INTERSHOP_JDBC_USER: "intershop"
+    INTERSHOP_JDBC_PASSWORD: "intershop"
+
+
+  ## @param persistence - Either choose local (default), cluster, azurefiles or nfs persitence layer
+  persistence:
+    size: 1Gi
+    local:
+      enabled: true
+      sites:
+        dir: <local folder>
+        size: 1Gi
+
+icm-web:
+  webadapter:
+    replicaCount: 1
+    image:
+      repository: intershophub/icm-webadapter
+      tag: 2.3.0
+  agent:
+    replicaCount: 1
