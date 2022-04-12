@@ -22,6 +22,9 @@ class ProductType(Enum, metaclass=MyEnumMeta):
 	NONE = 'none'
 	IOM = 'iom'
 	PWA = 'pwa'
+	ICM = 'icm'
+	ICM = 'icm'
+	ICM_REPLICATION = 'icm-replication'
 	ICM_AS = 'icm-as'
 	ICM_WEB = 'icm-web'
 
