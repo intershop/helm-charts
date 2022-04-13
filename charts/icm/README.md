@@ -25,8 +25,15 @@ $ helm repo add intershop https://intershop.github.io/helm-charts
 $ helm repo update
 ```
 
-### Install Chart
-To install the chart with the release name `icm`
+### Install Chart via repository
+To install the chart with the release name `icm` execute
 ```bash
 $ helm install my-release intershop/icm --values=values.yaml --namespace icm
+```
+
+### Install Chart via cloned helm-charts repo
+```bash
+$ cd charts
+$ helm dependency update icm
+$ helm install my-release ./icm --values=values.yaml --namespace icm
 ```
