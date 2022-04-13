@@ -20,7 +20,7 @@ icm-as:
     local:
       enabled: true
       sites:
-        dir: <local folder>
+        dir: <local sites folder>
         size: 1Gi
 
 icm-web:
@@ -31,3 +31,8 @@ icm-web:
       tag: 2.3.0
   agent:
     replicaCount: 1
+  persistence:
+    size: 1Gi
+    local:
+      enabled: true
+      dir: <local pagecache folder>
