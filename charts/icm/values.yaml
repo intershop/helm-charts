@@ -32,6 +32,8 @@ icm-web:
       tag: 2.3.0
       secret: dockerhub
   agent:
+    # in some REST-based environment the webadapteragent isn't mandatory
+    enabled: true
     replicaCount: 1
     image:
       repository: intershophub/icm-webadapteragent
