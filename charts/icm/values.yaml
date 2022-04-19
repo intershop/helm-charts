@@ -2,6 +2,7 @@ icm-as:
 
   image:
     repository: intershophub/icm-as:11.0.0
+    secret: dockerhub
   replicaCount: 1
 
   ## @param environment - Environment variables to be set on containers
@@ -29,8 +30,13 @@ icm-web:
     image:
       repository: intershophub/icm-webadapter
       tag: 2.3.0
+      secret: dockerhub
   agent:
     replicaCount: 1
+    image:
+      repository: intershophub/icm-webadapteragent
+      tag: 4.0.0
+      secret: dockerhub
   persistence:
     size: 1Gi
     local:
