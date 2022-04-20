@@ -16,21 +16,21 @@ jobs:
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-          git pull
 
       - name: Install Helm
         uses: azure/setup-helm@v1
         with:
-          version: v3.7.1
+          version: v3.8.1
 
       - name: Add dependency chart repos
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.3.0
+        # switch back to helm/chart-releaser-action when #60 is fixed
+        # https://github.com/helm/chart-releaser-action/issues/60
+        uses: luisico/chart-releaser-action@on-tags
         with:
           charts_dir: "charts"
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-
