@@ -2,24 +2,17 @@
 
 Installs the ICM web adapter and web adapter agent independently.
 
-## TL;DR
-Via command line:
+## Prerequisites Details
 
-```bash
-$ helm repo add intershop https://intershop.github.io/helm-charts
-$ helm repo update
-$ helm install my-release intershop/icm-web --values=values.yaml --namespace icm
-```
+* helm+kubectl
+* Kubernetes 1.14+
 
-# Development
+## Chart Details
+This chart will do the following:
 
-## Prerequisites
+* Deploy an ICM Web Adapter and Web Adapter Agent
 
-Verify installation of:
-- helm
-- kubectl
-- kubernetes (e.g. can be enabled via docker for windows)
-
+## Installing the Chart
 
 ### Docker pull secret
 Create a secret for a docker registry where the images are coming from. The name of the secret must be equal to the configured secrets under `agent.image.secret` and `webadapter.image.secret` within the application deployment. By default the secret name is `dockerhub`.
@@ -32,3 +25,18 @@ $ kubectl create secret docker-registry <yourDockerRegistryName> --docker-server
 
 `local`, `cluster`, `azurefiles`, `nfs` are possible persistence options.
 The default is `local` where `persistence.local.dir` need to be set to a valid local folder.
+
+### Add the Intershop Helm repository
+
+Before installing Intershop helm charts, you need to add the [Intershop helm repository](https://intershop.github.io/helm-charts) to your helm client
+
+```bash
+$ helm repo add intershop https://intershop.github.io/helm-charts
+$ helm repo update
+```
+
+### Install Chart
+To install the chart with the release name `icm-web`
+```bash
+$ helm install my-release intershop/icm-web --values=values.yaml --namespace icm-web
+```
