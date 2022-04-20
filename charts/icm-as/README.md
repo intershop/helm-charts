@@ -2,23 +2,18 @@
 
 Installs the ICM application server independently.
 
-## TL;DR
-Via command line:
-```bash
-$ helm repo add intershop https://intershop.github.io/helm-charts
-$ helm repo update
-$ helm install my-release intershop/icm-as --values=values.yaml --namespace icm-as
-```
+## Prerequisites Details
 
-# Development
+* helm+kubectl
+* Kubernetes 1.14+
+* Valid license file
 
-## Prerequisites
+## Chart Details
+This chart will do the following:
 
-Verify installation of:
-- helm
-- kubectl
-- kubernetes (e.g. can be enabled via docker for windows)
+* Deploy an ICM Application Server
 
+## Installing the Chart
 
 ### Docker pull secret
 Create a secret for a docker registry where the images are coming from. The name of the secret must be equal to the configured secrets under `image.secret` within the application deployment. By default the secret name is `dockerhub`.
@@ -39,3 +34,18 @@ The default is `local` where `persistence.local.sites.dir` need to be set to a v
 ### Database
 
 The needed database connection could be configured via environment variables in the [values.yaml](values.yaml) (see `INTERSHOP_JDBC_*`).
+
+### Add the Intershop Helm repository
+
+Before installing Intershop helm charts, you need to add the [Intershop helm repository](https://intershop.github.io/helm-charts) to your helm client
+
+```bash
+$ helm repo add intershop https://intershop.github.io/helm-charts
+$ helm repo update
+```
+
+### Install Chart
+To install the chart with the release name `icm-as`
+```bash
+$ helm install my-release intershop/icm-as --values=values.yaml --namespace icm-as
+```
