@@ -1,7 +1,0 @@
-dependencies:
-  - name: icm-as
-    version: 0.2.6
-    repository:  https://intershop.github.io/helm-charts
-  - name: icm-web
-    version: 0.1.30
-    repository:  https://intershop.github.io/helm-charts
