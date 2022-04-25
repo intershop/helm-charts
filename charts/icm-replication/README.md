@@ -34,5 +34,6 @@ $ helm install my-release intershop/icm-replication --values=values.yaml --names
 ```bash
 $ cd charts
 $ helm dependency update icm
+$ helm dependency update icm-replication
 $ helm install my-release ./icm-replication --values=values.yaml --namespace icm-replication
 ```
