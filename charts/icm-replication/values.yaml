@@ -26,7 +26,7 @@ icm-edit:
       local:
         enabled: true
         sites:
-          dir: /d/tmp/pv/sites
+          dir: <local sites folder>
           size: 1Gi
 
   icm-web:
@@ -49,7 +49,7 @@ icm-edit:
       size: 1Gi
       local:
         enabled: true
-        dir: /d/tmp/pv/sites/pagecache
+        dir: <local pagecache folder>
 
 icm-live:
   icm-as:
@@ -73,7 +73,7 @@ icm-live:
       local:
         enabled: true
         sites:
-          dir: /d/tmp/pv/sites
+          dir: <local sites folder>
           size: 1Gi
 
   icm-web:
@@ -96,4 +96,4 @@ icm-live:
       size: 1Gi
       local:
         enabled: true
-        dir: /d/tmp/pv/sites/pagecache
+        dir: <local pagecache folder>
