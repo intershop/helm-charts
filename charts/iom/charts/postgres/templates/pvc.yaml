@@ -1,0 +1,54 @@
+{{- if .Values.persistence.enabled }}
+  {{- if .Values.persistence.hostPath }}
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: {{ include "postgres.fullname" . }}-data
+provisioner: docker.io/hostpath
+volumeBindingMode: WaitForFirstConsumer
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ include "postgres.fullname" . }}
+spec:
+  capacity:
+    storage: {{ .Values.persistence.storageSize }}
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: {{ include "postgres.fullname" . }}-data
+  hostPath:
+    path: {{ .Values.persistence.hostPath }}
+---
+  {{- end }}
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  annotations:
+    "helm.sh/hook": pre-install
+  {{- if .Values.persistence.annotations }}
+    {{ toYaml .Values.persistence.annotations | indent 4 }}
+  {{- end }}
+  name: {{ template "postgres.fullname" . }}
+  labels:
+    {{- include "postgres.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.storageSize | quote }}
+  {{- if .Values.persistence.hostPath }}
+  storageClassName: {{ include "postgres.fullname" . }}-data
+  {{- else }}
+    {{- if .Values.persistence.storageClass }}
+      {{- if (eq "-" .Values.persistence.storageClass) }}
+  storageClassName: ""
+      {{- else }}
+  storageClassName: "{{ .Values.persistence.storageClass }}"
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}

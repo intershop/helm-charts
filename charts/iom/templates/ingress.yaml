@@ -1,0 +1,104 @@
+{{- if .Values.ingress.enabled }}
+{{- $fullName := include "iom.fullname" . -}}
+{{- $svcPort := .Values.service.port -}}
+{{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
+  {{- end }}
+{{- end }}
+{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "iom.labels" . | nindent 4 }}
+  annotations:
+  {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- /* if integrated nginx ingress controller is enabled and working as a proy, this web-server will be responsible for session-affinity */ -}}
+  {{- if not ( and .Values.nginx.enabled .Values.nginx.proxy.enabled )}}
+    #
+    # provide session affinity
+    #
+    # https://github.com/kubernetes/ingress-nginx/issues/3989
+    # it's necessary to have a matching host-rule in order to get session-affinity working?
+    nginx.ingress.kubernetes.io/affinity: cookie
+    nginx.ingress.kubernetes.io/session-cookie-path: "/omt"
+    nginx.ingress.kubernetes.io/session-cookie-name: "route"
+    nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+  {{- end }}
+spec:
+  {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- end }}
+  {{- if .Values.ingress.tls }}
+  tls:
+    {{- range .Values.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+  rules:
+  {{- /* if internal nginx is enabled and acting as a proxy, the incoming requests have to be forwarded to this web-server, */ -}}
+  {{- /* instead of IOM application servers directly. */ -}}
+  {{- if and .Values.nginx.enabled .Values.nginx.proxy.enabled }}
+    {{- $release := .Release.Name -}}
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
+            pathType: {{ .pathType }}
+            {{- end }}
+            backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: "{{ $release }}-ingress-nginx-controller"
+                port:
+                  number: 80
+              {{- else }}
+              serviceName: "{{ $release }}-ingress-nginx-controller"
+              servicePort: 80
+              {{- end }}
+              {{- /* port cannot be accessed by variable name, since ingress-nginx contains a -, */ -}}
+              {{- /* which is not allowed in variable names. Otherwise it would be possible to   */ -}}
+              {{- /* use .Values.ingress-nginx.controller.service.ports.http                     */ -}}
+          {{- end }}
+    {{- end }}
+  {{- else }}
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
+            pathType: {{ .pathType }}
+            {{- end }}
+            backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $svcPort }}
+              {{- else }}
+              serviceName: {{ $fullName }}
+              servicePort: {{ $svcPort }}
+              {{- end }}
+          {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+
