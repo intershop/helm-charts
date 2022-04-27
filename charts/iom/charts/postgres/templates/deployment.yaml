@@ -1,0 +1,136 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "postgres.fullname" . }}
+  labels:
+    {{- include "postgres.labels" . | nindent 4 }}
+spec:
+  # number of replicas is fixed! We cannot handle a postgres cluster
+  # this way
+  replicas: 1
+
+  selector:
+    matchLabels:
+      {{- include "postgres.selectorLabels" . | nindent 6 }}
+  # there must not be two running postgres processes accessing the same data!
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "postgres.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "postgres.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+      {{- if .Values.persistence.hostPath }}
+      # Before usage, owner and group have to be changed!
+      - name: docker-mount-hack
+        image: busybox
+        command: ["sh", "-c", "chown -R 999:999 /pgdata"]
+        volumeMounts:
+        - name: pgdata
+          mountPath: /pgdata
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: postgres
+              containerPort: 5432
+              protocol: TCP
+          livenessProbe:
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+            exec:
+              command:
+                - su
+                - postgres
+                - "-c"
+                - pg_isready
+          readinessProbe:
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 1
+            successThreshold: 1
+            exec:
+              command:
+                - su
+                - postgres
+                - "-c"
+                - pg_isready
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          args: 
+            {{- toYaml .Values.args | nindent 12 }}
+          env:
+          
+            {{- if .Values.pg }}
+              {{- /* userSecretKeyRef has precedence over user */ -}}
+              {{- if .Values.pg.userSecretKeyRef }}
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                {{- toYaml .Values.pg.userSecretKeyRef | nindent 18 }}
+              {{- else if .Values.pg.user }}
+            - name: POSTGRES_USER
+              value: {{ .Values.pg.user }}
+              {{- end }}
+              {{- if .Values.pg.db }}
+            - name: POSTGRES_DB
+              value: {{ .Values.pg.db }}
+              {{- end }}
+              {{- /* passwdSecretKeyRef has precedence over passwd */ -}}
+              {{- if .Values.pg.passwdSecretKeyRef }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                {{- toYaml .Values.pg.passwdSecretKeyRef | nindent 18 }}
+              {{- else if .Values.pg.passwd }}
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.pg.passwd }}
+              {{- end }}
+            {{- end }}
+
+            # PostgreSQL data are not written into /var/pgdata directly. Since /var/pgdata is a mount point, it may
+            # contain other files/directories too, e.g. lost+found. In this case, PostgreSQL server would not be able
+            # to initialize the database.
+            - name: PGDATA
+              value: /var/pgdata/data
+          volumeMounts:
+            - name: pgdata
+              mountPath: /var/pgdata
+      volumes:
+      - name: pgdata
+        {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "postgres.fullname" . }}
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
+            
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
