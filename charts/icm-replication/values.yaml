@@ -20,6 +20,19 @@ icm-edit:
       INTERSHOP_WEBSERVERSECUREURL: https://icm-replication-icm-web-edit-wa:8443
       INTERSHOP_WEBSERVERURL_LIVE: http://icm-replication-icm-web-live-wa:8080
 
+    # ICM license Configuration
+    license:
+    # type: configMap | csi
+      type: configMap
+      configMap:
+        content: |-
+          <your license>
+      csi:
+        volumeAttributes:
+          secretProviderClass: "azure-license"
+        nodePublishSecretRef:
+          name: secrets-store-creds
+
     ## @param persistence - Either choose local (default), cluster, azurefiles or nfs persitence layer
     persistence:
       size: 1Gi
@@ -66,6 +79,19 @@ icm-live:
       INTERSHOP_JDBC_USER: "intershop_live"
       INTERSHOP_JDBC_PASSWORD: "intershop_live"
       STAGING_SYSTEM_TYPE: live
+
+    # ICM license Configuration
+    license:
+    # type: configMap | csi
+      type: configMap
+      configMap:
+        content: |-
+          <your license>
+      csi:
+        volumeAttributes:
+          secretProviderClass: "azure-license"
+        nodePublishSecretRef:
+          name: secrets-store-creds
 
     ## @param persistence - Either choose local (default), cluster, azurefiles or nfs persitence layer
     persistence:
