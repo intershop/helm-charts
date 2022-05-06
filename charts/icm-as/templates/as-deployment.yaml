@@ -70,12 +70,12 @@ spec:
           {{- if .Values.debug.enabled }}
             # Java Debug port
             - name: debug
-              containerPort: 7744
+              containerPort: 7746
               protocol: TCP
           {{- end }}
             # JMX port
             - name: jmx
-              containerPort: 7745
+              containerPort: 7747
               protocol: TCP
           resources:
             {{- toYaml .Values.resources.appServer | trim | nindent 12 }}
