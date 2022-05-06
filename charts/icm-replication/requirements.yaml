@@ -1,10 +1,10 @@
 dependencies:
   - name: icm
-    version: 0.2.9
+    version: 0.2.10
     repository: file://../icm
     alias: icm-live
   - name: icm
-    version: 0.2.9
+    version: 0.2.10
     repository: file://../icm
     alias: icm-edit
 
