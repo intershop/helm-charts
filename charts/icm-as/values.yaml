@@ -8,6 +8,22 @@ replicaCount: 1
 #nodeSelector:
 #  agentpool: <your agentpool>
 
+# define custom annotations for deployment and pods:
+#deploymentAnnotations:
+#  myAnnotation: true
+#podAnnotations:
+#  myAnnotation: true
+
+# define custom labels for deployment and pods:
+#deploymentLabels:
+#  tags.datadoghq.com/env: hell
+#  tags.datadoghq.com/service: icm-as
+#  tags.datadoghq.com/version: 11.0.0
+#podLabels:
+#  tags.datadoghq.com/env: hell
+#  tags.datadoghq.com/service: icm-as
+#  tags.datadoghq.com/version: 11.0.0
+
 image:
   secret: dockerhub
   pullPolicy: IfNotPresent
@@ -125,7 +141,6 @@ persistence:
     shareName: icm-as-share
     secretName: icm-as-share-secret
   # set enable true for local storage (.e.g. local testing)
-  # TODO remove from common chart
   local:
     enabled: true
     sites:

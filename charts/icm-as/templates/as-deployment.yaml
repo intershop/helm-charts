@@ -3,9 +3,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "icm-as.fullname" . }}
+  {{- if .Values.deploymentAnnotations }}
+  annotations:
+    {{- toYaml .Values.deploymentAnnotations | trim | nindent 4 }}
+  {{- end }}
   labels:
     app: {{ include "icm-as.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- if .Values.deploymentLabels }}
+      {{- toYaml .Values.deploymentLabels | trim | nindent 4 }}
+    {{- end }}
 spec:
   progressDeadlineSeconds: 600
   replicas: {{ .Values.replicaCount }}
@@ -18,9 +25,16 @@ spec:
     type: Recreate
   template:
     metadata:
+    {{- if .Values.podAnnotations }}
+      annotations:
+      {{- toYaml .Values.podAnnotations | trim | nindent 8 }}
+    {{- end }}
       labels:
         app: {{ include "icm-as.fullname" . }}
         release: {{ .Release.Name }}
+        {{- if .Values.podLabels }}
+          {{- toYaml .Values.podLabels | trim | nindent 8 }}
+        {{- end }}
     spec:
       {{- if .Values.nodeSelector}}
       nodeSelector:
