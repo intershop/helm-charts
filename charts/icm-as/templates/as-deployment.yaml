@@ -124,7 +124,7 @@ spec:
           {{- end }}
           startupProbe:
             httpGet:
-              path: /
+              path: /status/LivenessProbe
               port: http
             # wait 60s then poll every 10s up to a total timeout of 120s
             failureThreshold: {{ .Values.probes.startup.failureThreshold | default 6 }}
