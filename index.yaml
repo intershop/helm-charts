@@ -45,6 +45,16 @@ entries:
   icm-as:
   - apiVersion: v2
     appVersion: 11.0.0
+    created: "2022-05-09T10:36:09.819251503Z"
+    description: Intershop Commerce Management - AppServer
+    digest: 310fa58f7ad69e8ddd1eb6a3cd428b5f114cdaca7f66a8394aa54c39d7ebe8de
+    name: icm-as
+    type: application
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-as-0.2.8/icm-as-0.2.8.tgz
+    version: 0.2.8
+  - apiVersion: v2
+    appVersion: 11.0.0
     created: "2022-05-06T08:23:27.61241596Z"
     description: Intershop Commerce Management - AppServer
     digest: 28897c44fb13d44742f502fde0e05dae50968a5ad1d5d677c792677dcdb63721
@@ -138,4 +148,4 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.2.3/pwa-main-0.2.3.tgz
     version: 0.2.3
-generated: "2022-05-06T09:15:55.751739881Z"
+generated: "2022-05-09T10:36:09.819416813Z"
