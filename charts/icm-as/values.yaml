@@ -98,7 +98,6 @@ environment:
   INTERSHOP_JDBC_USER: "intershop"
   INTERSHOP_JDBC_PASSWORD: "intershop"
   CARTRIDGE_LIST: "ft_icm_as"
-  #CLUSTERID: "e8fdd98df5264561ad7b4b2ac3170430"
 
   # Staging
   #STAGING_SYSTEM_TYPE: editing
