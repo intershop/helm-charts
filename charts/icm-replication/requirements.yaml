@@ -1,10 +1,10 @@
 dependencies:
   - name: icm
     version: 0.2.12
-    repository: file://../icm
+    repository: https://intershop.github.io/helm-charts
     alias: icm-live
   - name: icm
     version: 0.2.12
-    repository: file://../icm
+    repository: https://intershop.github.io/helm-charts
     alias: icm-edit
 
