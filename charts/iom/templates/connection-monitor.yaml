@@ -1,0 +1,127 @@
+{{- if and (.Values.oms.db.connectionMonitor.enabled) (semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion) }}
+{{- if semverCompare ">=1.21-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: batch/v1
+{{- else if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: batch/v1beta1
+{{-  end }}
+kind: CronJob
+metadata:
+  name: {{ include "iom.fullname" . }}-connection-monitor
+  labels:
+    {{- include "iom.labels" . | nindent 4 }}
+spec:
+  schedule: "{{ .Values.oms.db.connectionMonitor.schedule }}"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: connection-monitor
+            {{- if .Values.config.enabled }}
+            image: "{{ .Values.config.image.repository }}:{{ .Values.config.image.tag | default .Chart.AppVersion }}"
+            imagePullPolicy: {{ .Values.config.image.pullPolicy }}
+            {{- else }}
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            {{- end }}
+            env:
+            {{- if .Values.postgres.enabled }}
+            #
+            # database settings, is sub-chart postgres is enabled
+            #
+            - name: OMS_DB_USER_CONNECTION_SUFFIX
+              value: ''
+            - name: OMS_DB_HOST
+              value: {{ .Release.Name }}-postgres
+            - name: OMS_DB_PORT
+              value: '5432'
+            {{- else }}
+            #
+            # database settings, if sub-chart postgres is disabled
+            #
+              {{- if .Values.pg }}
+                {{- if .Values.pg.userConnectionSuffix }}
+            - name: OMS_DB_USER_CONNECTION_SUFFIX
+              value: '{{ .Values.pg.userConnectionSuffix }}'
+                {{- end }}
+                {{- if .Values.pg.host }}
+            - name: OMS_DB_HOST
+              value: {{ .Values.pg.host }}
+                {{- end }}
+                {{- if .Values.pg.port }}
+            - name: OMS_DB_PORT
+              value: '{{ .Values.pg.port }}'
+                {{- end }}
+                {{- if .Values.pg.sslMode }}
+            - name: PGSSL_MODE
+              value: '{{ .Values.pg.sslMode }}'
+                {{- end }}
+                {{- if .Values.pg.sslCompression }}
+            - name: PGSSL_COMPRESSION
+              value: '{{ .Values.pg.sslCompression }}'
+                {{- end }}
+                {{- if .Values.pg.sslRootCert }}
+            - name: PGSSL_ROOTCERT
+              value: '{{ .Values.pg.sslRootCert | b64enc }}'
+                {{- end }}
+              {{- end }}
+            {{- end }}
+            #
+            # common database settings
+            #
+            {{- if .Values.oms }}
+              {{- if .Values.oms.db }}
+                {{- if .Values.oms.db.name }}
+            - name: OMS_DB_NAME
+              value: {{ .Values.oms.db.name }}
+                {{- end }}
+                {{- /* userSecretKeyRef has precedence over user */ -}}
+                {{- if .Values.oms.db.userSecretKeyRef }}
+            - name: OMS_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  {{- toYaml .Values.oms.db.userSecretKeyRef | nindent 18 }}
+                {{- else if .Values.oms.db.user }}
+            - name: OMS_DB_USER
+              value: {{ .Values.oms.db.user }}
+                {{- end }}
+                {{- /* passwdSecretKeyRef has precedence over passwd */ -}}
+                {{- if .Values.oms.db.passwdSecretKeyRef }}
+            - name: OMS_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  {{- toYaml .Values.oms.db.passwdSecretKeyRef | nindent 18 }}
+                {{- else if .Values.oms.db.passwd }}
+            - name: OMS_DB_PASS
+              value: {{ .Values.oms.db.passwd }}
+                {{- end }}
+                {{- if .Values.oms.db.connectTimeout }}
+            - name: OMS_DB_CONNECT_TIMEOUT
+              value: '{{ .Values.oms.db.connectTimeout }}'
+                {{- end }}
+              {{- end }}
+            {{- end }}
+            {{- if .Values.log }}
+            #
+            # log settings
+            #
+            - name: OMS_LOGLEVEL_SCRIPTS
+              value: INFO
+              {{- if .Values.log.metadata }}
+                {{- if .Values.log.metadata.tenant }}
+            - name: TENANT
+              value: {{ .Values.log.metadata.tenant }}
+                {{- end }}
+                {{- if .Values.log.metadata.environment }}
+            - name: ENVIRONMENT
+              value: {{ .Values.log.metadata.environment }}
+                {{- end }}
+              {{- end }}
+            {{- end }}
+            {{- if .Values.config.enabled }}
+            command: [ '/opt/connection_monitor.sh' ]
+            {{- else }}
+            command: [ '/opt/oms/bin/connection_monitor.sh' ]
+            {{- end }}
+          restartPolicy: Never
+{{- end }}

@@ -1,0 +1,70 @@
+{{- if and .Values.downtime (ne (quote .Values.replicaCount) "1") -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: iom-patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: iom-patch
+rules:
+- apiGroups:
+  - apps
+  resources:
+  - statefulsets
+  verbs:
+  - get
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: iom-patch
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: iom-patch
+subjects:
+- kind: ServiceAccount
+  name: iom-patch
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Release.Name }}"
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotations:
+    # This is what defines this resource as a hook. Without this line, the
+    # job is considered part of the release.
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
+spec:
+  template:
+    metadata:
+      name: "{{ .Release.Name }}"
+      labels:
+        app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    spec:
+      restartPolicy: Never
+      serviceAccountName: iom-patch
+      containers:
+      - name: patch-replica-count
+        image: "bitnami/kubectl"
+        args: 
+        - patch 
+        - --type=merge 
+        - sts 
+        - {{ include "iom.fullname" . }} 
+        - -n
+        - {{ .Release.Namespace }} 
+        - -p
+        - '{"spec":{"replicas":{{ .Values.replicaCount }}}}'
+{{- end }}
