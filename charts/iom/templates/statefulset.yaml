@@ -1,0 +1,995 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "iom.fullname" . }}
+  labels:
+    {{- include "iom.labels" . | nindent 4 }}
+spec:
+  podManagementPolicy: OrderedReady
+  serviceName: {{ include "iom.fullname" . }}
+  # after "helm upgrade" the replicaCount has to be restored, e.g. by executing:
+  # kubectl patch --type=merge sts $(release) -n $(namespace) -p '{"spec":{"replicas": $(replicaCount)}}'
+  replicas: {{ if .Values.downtime }}{{ 1 }}{{ else }}{{ .Values.replicaCount }}{{ end }}
+  selector:
+    matchLabels:
+      {{- include "iom.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "iom.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "iom.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # overwrite command defined by Dockerfile
+          # Only instance with hostname ending with -0 is executing the backend-applications.
+          {{- if not (kindIs "bool" .Values.oms.execBackendApps) }}
+            {{ fail "oms.execBackendApps contains a non boolean value!" }}
+          {{- end }}
+          {{- if .Values.config.enabled }}
+          command:
+            - /bin/sh
+            - "-c"
+            - export OMS_EXEC_BACKEND_APPS=false; if hostname -s | grep -q -- '-0$'; then export OMS_EXEC_BACKEND_APPS={{ .Values.oms.execBackendApps }}; fi; $OMS_HOME/bin/wildfly_start.sh
+          {{- else }}
+          args: [ "--run-in-statefulset" ]
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          {{- if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /monitoring/services/health/status
+              port: http
+              scheme: HTTP
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          {{- end }}
+          {{- if and .Values.startupProbe.enabled (not .Values.config.enabled) }}
+          startupProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: {{ .Values.startupProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.startupProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.startupProbe.failureThreshold }}
+            successThreshold: 1
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            {{- if and .Values.datadogApm.enabled }}
+            #
+            # datadog APM agent settings
+            # see https://docs.datadoghq.com/agent/kubernetes/apm/?tab=helm
+            # see https://app.datadoghq.eu/apm/docs?architecture=container-based&collection=Helm%20Chart%20%28Recommended%29&environment=kubernetes&language=java
+            # see https://docs.datadoghq.com/tracing/connect_logs_and_traces/java/?tab=log4j2
+            # see https://docs.datadoghq.com/tracing/troubleshooting/
+            # see https://docs.datadoghq.com/tracing/troubleshooting/tracer_debug_logs/
+            # see https://docs.datadoghq.com/tracing/troubleshooting/tracer_startup_logs/
+            # see https://docs.datadoghq.com/tracing/setup_overview/setup/java?tab=jboss
+            # see https://docs.datadoghq.com/getting_started/agent/autodiscovery/?tab=kubernetes
+            # see https://docs.datadoghq.com/tracing/trace_retention_and_ingestion/
+            #
+            - name: DD_APM_ENABLED
+              value: 'true'
+            - name: DD_APM_BACKEND_ONLY
+              {{- if .Values.datadogApm.backendOnly }}
+                {{- if not (kindIs "bool" .Values.datadogApm.backendOnly) }}
+                  {{ fail "datadogApm.backendOnly contains a non boolean value!" }}
+                {{- end }}
+              value: 'true'
+              {{- else }}
+              value: 'false'
+              {{- end }}
+              {{- if .Values.datadogApm.traceAgentHost }}
+            - name: DD_AGENT_HOST
+              value: '{{ .Values.datadogApm.traceAgentHost }}'
+              {{- end }}
+              {{- if .Values.datadogApm.traceAgentPort }}
+            - name: DD_TRACE_AGENT_PORT
+              value: '{{ .Values.datadogApm.traceAgentPort }}'
+              {{- end }}
+              {{- if .Values.datadogApm.traceAgentTimeout }}
+            - name: DD_TRACE_AGENT_TIMEOUT
+              value: '{{ .Values.datadogApm.traceAgentTimeout }}'
+              {{- end }}
+            - name: DD_LOGS_INJECTION
+              {{- if .Values.datadogApm.logsInjection }}
+                {{- if not (kindIs "bool" .Values.datadogApm.logsInjection) }}
+                  {{ fail "datadogApm.logsInjection contains a non boolean value!" }}
+                {{- end }}
+              value: 'true'
+              {{- else }}
+              value: 'false'
+              {{- end }}
+            - name: DD_TRACE_DEBUG
+              {{- if .Values.datadogApm.debug }}
+                {{- if not (kindIs "bool" .Values.datadogApm.debug) }}
+                  {{ fail "datadogApm.debug contains a non boolean value!" }}
+                {{- end }}
+              value: 'true'
+              {{- else }}
+              value: 'false'
+              {{- end }}
+            - name: DD_TRACE_STARTUP_LOGS
+              {{- if .Values.datadogApm.startupLogs }}
+                {{- if not (kindIs "bool" .Values.datadogApm.startupLogs) }}
+                  {{ fail "datadogApm.startupLogs contains a non boolean value!" }}
+                {{- end }}
+              value: 'true'
+              {{- else }}
+              value: 'false'
+              {{- end }}
+              {{- if .Values.datadogApm.tags }}
+            - name: DD_TAGS
+              value: '{{ .Values.datadogApm.tags }}'
+              {{- end }}
+            - name: DD_SERVICE_MAPPING
+              # TODO: where comes service name from?
+              # TODO: is service name postgresql is valid only, if internal postgres is used?
+              {{- if .Values.datadogApm.serviceMapping }}
+              value: '{{ .Values.datadogApm.serviceMapping }}'
+              {{- end }}
+              {{- if .Values.datadogApm.writerType }}
+            - name: DD_WRITER_TYPE
+              value: '{{ .Values.datadogApm.writerType }}'
+              {{- end }}
+              {{- if .Values.datadogApm.partialFlushMinSpans }}
+            - name: DD_TRACE_PARTIAL_FLUSH_MIN_SPANS
+              value: '{{ .Values.datadogApm.partialFlushMinSpans }}'
+              {{- end }}
+              {{- if .Values.datadogApm.dbClientSplitByInstance }}
+            - name: DD_TRACE_DB_CLIENT_SPLIT_BY_INSTANCE
+              value: '{{ .Values.datadogApm.dbClientSplitByInstance }}'
+              {{- end }}
+            - name: DD_TRACE_HEALTH_METRICS_ENABLED
+              {{- if .Values.datadogApm.healthMetricsEnabled }}
+                {{- if not (kindIs "bool" .Values.datadogApm.healthMetricsEnabled) }}
+                  {{ fail "datadogApm.healthMetricsEnabled contains a non boolean value!" }}
+                {{- end }}
+              value: 'true'
+              {{- else }}
+              value: 'false'
+              {{- end }}
+            - name: DD_TRACE_SERVLET_ASYNC_TIMEOUT_ERROR
+              {{- if .Values.datadogApm.servletAsyncTimeoutError }}
+                {{- if not (kindIs "bool" .Values.datadogApm.servletAsyncTimeoutError) }}
+                  {{ fail "datadogApm.servletAsyncTimeoutError contains a non boolean value!" }}
+                {{- end }}
+              value: 'true'
+              {{- else }}
+              value: 'false'
+              {{- end }}
+              {{- if .Values.datadogApm.sampleRate }}
+            - name: DD_TRACE_SAMPLE_RATE
+              value: '{{ .Values.datadogApm.sampleRate }}'
+              {{- end }}
+            - name: DD_JMXFETCH_ENABLED
+              {{- if .Values.datadogApm.jmxFetchEnabled }}
+                {{- if not (kindIs "bool" .Values.datadogApm.jmxFetchEnabled) }}
+                  {{ fail "datadogApm.jmxFetchEnabled contains a non boolean value!" }}
+                {{- end }}
+              value: 'true'
+              {{- else }}
+              value: 'false'
+              {{- end }}
+            {{- end }}
+            {{- if .Values.postgres.enabled }}
+            #
+            # database settings, if sub-chart postgres is enabled
+            #
+            - name: OMS_DB_USER_CONNECTION_SUFFIX
+              value: ''
+            - name: OMS_DB_HOSTLIST
+              value: {{ .Release.Name }}-postgres:5432
+            
+            # database settings, that were migrated from config image
+            
+              {{- if not .Values.config.enabled }}
+            - name: OMS_DB_HOST
+              value: {{ .Release.Name }}-postgres
+            - name: OMS_DB_PORT
+              value: '5432'
+              {{- end }}
+            {{- else }}
+            #
+            # database settings, if sub-chart postgres is disabled
+            #
+              {{- if .Values.pg }}
+                {{- if .Values.pg.userConnectionSuffix }}
+            - name: OMS_DB_USER_CONNECTION_SUFFIX
+              value: '{{ .Values.pg.userConnectionSuffix }}'
+                {{- end}}
+                {{- if and .Values.pg.host .Values.pg.port ( not .Values.oms.db.hostlist ) }}
+            - name: OMS_DB_HOSTLIST
+              value: {{ .Values.pg.host }}:{{ .Values.pg.port }}
+                {{- else if .Values.oms.db.hostlist }}
+            - name: OMS_DB_HOSTLIST
+              value: {{ .Values.oms.db.hostlist }}
+                {{- end }}
+              {{- end }}
+              
+              # database settings, that were migrated from config image
+              
+              {{- if not .Values.config.enabled }}
+                {{- if .Values.pg.host }}
+            - name: OMS_DB_HOST
+              value: {{ .Values.pg.host }}
+                {{- end }}
+                {{- if .Values.pg.port }}
+            - name: OMS_DB_PORT
+              value: '{{ .Values.pg.port }}'
+                {{- end }}
+                {{- if .Values.pg.sslMode }}
+            - name: PGSSL_MODE
+              value: '{{ .Values.pg.sslMode }}'
+                {{- end }}
+                {{- if .Values.pg.sslCompression }}
+            - name: PGSSL_COMPRESSION
+              value: '{{ .Values.pg.sslCompression }}'
+                {{- end }}
+                {{- if .Values.pg.sslRootCert }}
+            - name: PGSSL_ROOTCERT
+              value: '{{ .Values.pg.sslRootCert | b64enc }}'
+                {{- end }}
+              {{- end }}
+            {{- end }}
+            #
+            # common database settings
+            #
+            {{- if .Values.oms }}
+              {{- if .Values.oms.db }}
+                {{- if .Values.oms.db.name }}
+            - name: OMS_DB_NAME
+              value: {{ .Values.oms.db.name }}
+                {{- end }}
+                {{- /* userSecretKeyRef has precedence over user */ -}}
+                {{- if .Values.oms.db.userSecretKeyRef }}
+            - name: OMS_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  {{- toYaml .Values.oms.db.userSecretKeyRef | nindent 18 }}
+                {{- else if .Values.oms.db.user }}
+            - name: OMS_DB_USER
+              value: {{ .Values.oms.db.user }}
+                {{- end }}
+                {{- /* passwdSecretKeyRef has precedence over passwd */ -}}
+                {{- if .Values.oms.db.passwdSecretKeyRef }}
+            - name: OMS_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  {{- toYaml .Values.oms.db.passwdSecretKeyRef | nindent 18 }}
+                {{- else if .Values.oms.db.passwd }}
+            - name: OMS_DB_PASS
+              value: {{ .Values.oms.db.passwd }}
+                {{- end }}
+                {{- if .Values.oms.db.connectTimeout }}
+            - name: OMS_DB_CONNECT_TIMEOUT
+              value: '{{ .Values.oms.db.connectTimeout }}'
+                {{- end }}
+              {{- end }}
+            {{- end }}
+            {{- if not .Values.config.enabled }}
+              {{- if .Values.oms }}
+            #
+            # PlatformConfigProperties
+            #
+                {{- if .Values.oms.archiveOrderMessageLogMinAge }}
+            - name: OMS_ARCHIVE_ORDERMSGLOG_MIN_AGE
+              value: '{{ .Values.oms.archiveOrderMessageLogMinAge }}'
+                {{- end }}
+                {{- if .Values.oms.deleteOrderMessageLogMinAge }}
+            - name: OMS_DELETE_ORDERMSGLOG_MIN_AGE
+              value: '{{ .Values.oms.deleteOrderMessageLogMinAge }}'
+                {{- end }}
+                {{- if .Values.oms.archiveShopCustomerMailMinAge }}
+            - name: OMS_ARCHIVE_SHOPCUSTMAIL_MIN_AGE
+              value: '{{ .Values.oms.archiveShopCustomerMailMinAge }}'
+                {{- end }}
+                {{- if .Values.oms.archiveShopCustomerMailMaxCount }}
+            - name: OMS_ARCHIVE_SHOPCUSTMAIL_MAX_COUNT
+              value: '{{ .Values.oms.archiveShopCustomerMailMaxCount }}'
+                {{- end }}
+                {{- if .Values.oms.deleteShopCustomerMailMinAge }}
+            - name: OMS_DELETE_SHOPCUSTMAIL_MIN_AGE
+              value: '{{ .Values.oms.deleteShopCustomerMailMinAge }}'
+                {{- end }}
+              {{- end }}
+            {{- end }}
+            {{- if .Values.mailhog.enabled }}
+            #
+            # SMTP settings, if sub-chart mailhog is enabled
+            #
+            - name: OMS_SMTP_HOST
+              value: {{ .Release.Name }}-mailhog
+            - name: OMS_SMTP_PORT
+              value: '1025'
+            - name: OMS_SMTP_USER
+              value: ''
+            - name: OMS_SMTP_PASS
+              value: ''
+            {{- else }}
+            #
+            # SMTP settings, if sub-chart mailhog is disabled
+            #
+              {{- if .Values.oms }}
+                {{- if .Values.oms.smtp }}
+                  {{- if .Values.oms.smtp.host }}
+            - name: OMS_SMTP_HOST
+              value: {{ .Values.oms.smtp.host }}
+                  {{- end }}
+                  {{- if .Values.oms.smtp.port }}
+            - name: OMS_SMTP_PORT
+              value: '{{ .Values.oms.smtp.port }}'
+                  {{- end }}
+                  {{- /* userSecretKeyRef has precedence over user */ -}}
+                  {{- if .Values.oms.smtp.userSecretKeyRef }}
+            - name: OMS_SMTP_USER
+              valueFrom:
+                secretKeyRef:
+                    {{- toYaml .Values.oms.smtp.userSecretKeyRef | nindent 18 }}
+                  {{- else if .Values.oms.smtp.user }}
+            - name: OMS_SMTP_USER
+              value: {{ .Values.oms.smtp.user }}
+                  {{- end }}
+                  {{- /* passwdSecretKeyRef has precedence over passwd */ -}}
+                  {{- if .Values.oms.smtp.passwdSecretKeyRef }}
+            - name: OMS_SMTP_PASS
+              valueFrom:
+                secretKeyRef:
+                    {{- toYaml .Values.oms.smtp.passwdSecretKeyRef | nindent 18 }}
+                  {{- else if .Values.oms.smtp.passwd }}
+            - name: OMS_SMTP_PASS
+              value: {{ .Values.oms.smtp.passwd }}
+                  {{- end }}
+                {{- end }}
+              {{- end }}
+            {{- end }}
+            #
+            # general OMS settings
+            #
+            {{- if .Values.oms }}
+              {{- if .Values.oms.publicUrl }}
+            - name: OMS_PUBLIC_URL
+              value: {{ .Values.oms.publicUrl }}
+              {{- end }}
+              {{- if .Values.oms.mailResourcesBaseUrl }}
+            - name: OMS_MAIL_RESOURCES_BASE_URL
+              value: {{ .Values.oms.mailResourcesBaseUrl }}
+              {{- end }}
+              {{- /* jwtSecretKeyRef has precedence over jwtSecret */ -}}
+              {{- if .Values.oms.jwtSecretKeyRef }}
+            - name: OMS_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                {{- toYaml .Values.oms.jwtSecretKeyRef | nindent 18 }}
+              {{- else if .Values.oms.jwtSecret }}
+            - name: OMS_JWT_SECRET
+              value: {{ .Values.oms.jwtSecret }}
+              {{- end }}
+            - name: OMS_SECURE_COOKIES_ENABLED
+              {{- if .Values.oms.secureCookiesEnabled }}
+                {{- if not (kindIs "bool" .Values.oms.secureCookiesEnabled) }}
+                  {{ fail "oms.secureCookiesEnabled contains a non boolean value!" }}
+                {{- end }}
+              value: 'true'
+              {{- else }}
+              value: 'false'
+              {{- end }}
+            - name: OMS_EXEC_BACKEND_APPS
+              {{- if .Values.oms.execBackendApps }}
+                {{- if not (kindIs "bool" .Values.oms.execBackendApps) }}
+                  {{ fail "oms.execBackendApps contains a non boolean value!" }}
+                {{- end }}
+              value: 'true'
+              {{- else }}
+              value: 'false'
+              {{- end }}
+            {{- end }}
+            #
+            # other settings, that were migrated from config image
+            #
+            {{- if not .Values.config.enabled }}
+            - name: DB_READY_TIMEOUT
+              value: '300'
+            {{- end }}
+            {{- if .Values.jboss }}
+            #
+            # jboss settings
+            #
+              {{- if or .Values.jboss.javaOpts .Values.jboss.javaOptsAppend }}
+            - name: JBOSS_JAVA_OPTS
+              value: {{ .Values.jboss.javaOpts }} {{ .Values.jboss.javaOptsAppend }}
+              {{- end }}
+              {{- if .Values.jboss.opts }}
+            - name: JBOSS_OPTS
+              value: {{ .Values.jboss.opts }}
+              {{- end }}
+              {{- if .Values.jboss.xaPoolsizeMin }}
+            - name: JBOSS_XA_POOLSIZE_MIN
+              value: '{{ .Values.jboss.xaPoolsizeMin }}'
+              {{- end }}
+              {{- if .Values.jboss.xaPoolsizeMax }}
+            - name: JBOSS_XA_POOLSIZE_MAX
+              value: '{{ .Values.jboss.xaPoolsizeMax }}'
+              {{- end }}
+              {{- if .Values.jboss.activemqClientPoolSizeMax }}
+            - name: JBOSS_ACTIVEMQ_CLIENT_POOLSIZE_MAX
+              value: '{{ .Values.jboss.activemqClientPoolSizeMax }}'
+              {{- end }}
+              {{- if .Values.jboss.nodePrefix }}
+            - name: JBOSS_NODE_PREFIX
+              value: '{{ .Values.jboss.nodePrefix }}'
+              {{- end }}
+            {{- end }}
+            {{- if .Values.log }}
+            #
+            # log settings
+            #
+              {{- if .Values.log.access }}
+            - name: OMS_ACCESS_LOG_ENABLED
+                {{- if .Values.log.access.enabled }}
+                  {{- if not (kindIs "bool" .Values.log.access.enabled) }}
+                    {{ fail "log.access.enabled contains a non boolean value!" }}
+                  {{- end }}
+              value: 'true'
+                {{- else }}
+              value: 'false'
+                {{- end }}
+              {{- end }}
+              {{- if .Values.log.level }}
+                {{- if .Values.log.level.console }}
+            - name: OMS_LOGLEVEL_CONSOLE
+              value: {{ .Values.log.level.console }}
+                {{- end }}
+                {{- if .Values.log.level.iom }}
+            - name: OMS_LOGLEVEL_IOM
+              value: {{ .Values.log.level.iom }}
+                {{- end }}
+                {{- if .Values.log.level.hibernate }}
+            - name: OMS_LOGLEVEL_HIBERNATE
+              value: {{ .Values.log.level.hibernate }}
+                {{- end }}
+                {{- if .Values.log.level.quartz }}
+            - name: OMS_LOGLEVEL_QUARTZ
+              value: {{ .Values.log.level.quartz }}
+                {{- end }}
+                {{- if .Values.log.level.activeMQ }}
+            - name: OMS_LOGLEVEL_ACTIVEMQ
+              value: {{ .Values.log.level.activeMQ }}
+                {{- end }}
+                {{- if .Values.log.level.customization }}
+            - name: OMS_LOGLEVEL_CUSTOMIZATION
+              value: {{ .Values.log.level.customization }}
+                {{- end }}
+                {{- if .Values.log.level.scripts }}
+            - name: OMS_LOGLEVEL_SCRIPTS
+              value: {{ .Values.log.level.scripts }}
+                {{- end }}
+              {{- end }}
+              {{- if .Values.log.metadata }}
+                {{- if .Values.log.metadata.tenant }}
+            - name: TENANT
+              value: {{ .Values.log.metadata.tenant }}
+                {{- end }}
+                {{- if .Values.log.metadata.environment }}
+            - name: ENVIRONMENT
+              value: {{ .Values.log.metadata.environment }}
+                {{- end }}
+              {{- end }}
+              {{- if .Values.log.rest }}
+            - name: OMS_LOG_REST_IDS
+              value: {{ join "," .Values.log.rest }}
+              {{- end }}
+            {{- end }}
+            {{- if .Values.project }}
+            #
+            # project settings
+            #
+              {{- if .Values.project.envName }}
+                {{- if .Values.config.enabled }}
+            - name: CAAS_ENV_NAME
+                {{- else }}
+            - name: PROJECT_ENV_NAME
+                {{- end }}
+              value: {{ .Values.project.envName }}
+              {{- end }}
+              {{- if .Values.config.enabled }}
+            - name: CAAS_IMPORT_TEST_DATA
+              {{- else }}
+            - name: PROJECT_IMPORT_TEST_DATA
+              {{- end }}
+              {{- if and .Values.project.importTestData .Release.IsInstall }}
+                {{- if not (kindIs "bool" .Values.project.importTestData) }}
+                  {{ fail "project.importTestData contains a non boolean value!" }}
+                {{- end }}
+              value: 'true'
+              {{- else }}
+              value: 'false'
+              {{- end }}
+              {{- if .Values.project.importTestDataTimeout }}
+                {{- if .Values.config.enabled }}
+            - name: CAAS_IMPORT_TEST_DATA_TIMEOUT
+                {{- else }}
+            - name: PROJECT_IMPORT_TEST_DATA_TIMEOUT
+                {{- end }}
+              value: '{{ .Values.project.importTestDataTimeout }}'
+              {{- end }}
+            {{- end }}
+            #
+            # fixed settings
+            #
+            # deprecated: OMS_SHAREDFS_HEALTHCHECK was removed in IOM 3.1. For backward compatibility with IOM 3.0 the
+            # variable has still to be set.
+            - name: OMS_SHAREDFS_HEALTHCHECK
+              value: disabled
+            - name: OMS_HOME
+              value: '/opt/oms'
+            - name: OMS_ETC
+              value: '/opt/oms/etc'
+            # deprecated (currently still needed by IOM-Forrester-2020)
+            - name: OMS_SHARE
+              value: '/var/opt/share'
+              
+          volumeMounts:
+            - name: app-share-volume
+              mountPath: /var/opt/share
+
+          # deprecated (currently still needed by IOM-Forrester-2020)
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /bin/sh
+                  - "-c"
+                  - if [ -f /opt/oms/bin/iom_start_handler.sh ]; then export OMS_EXEC_BACKEND_APPS=false; if hostname | grep -q -- '-0$'; then export OMS_EXEC_BACKEND_APPS=true; fi; /opt/oms/bin/iom_start_handler.sh; fi
+                
+      initContainers:
+        {{- if .Values.persistence.hostPath }}
+        # Before usage, owner and group have to be changed!
+        - name: docker-mount-hack
+          image: busybox
+          command: ["sh", "-c", "chown -R 1000:1000 /share"]
+          volumeMounts:
+          - name: app-share-volume
+            mountPath: /share
+        {{- end }}
+        {{- if and .Values.dbaccount.enabled .Release.IsInstall }}
+        - name: dbaccount
+          imagePullPolicy: {{ .Values.dbaccount.image.pullPolicy }}
+          image: "{{ .Values.dbaccount.image.repository }}:{{ .Values.dbaccount.image.tag }}"
+
+          # overwrites the default command defined in Dockerfile
+          # dbaccount is only executed, if hostname ends with -0, which
+          # only is the case for the first server of a stateful set.
+          command:
+            - /bin/sh
+            - "-c"
+            - if hostname | grep -q -- '-0$'; then /opt/create_dbaccount.sh; fi
+          resources:
+            {{- toYaml .Values.dbaccount.resources | nindent 12 }}
+          env:
+            {{- if .Values.postgres.enabled }}
+            #
+            # database settings, if sub-chart postgres is enabled
+            #
+              {{- if .Values.postgres.pg }}
+                {{- /* userSecretKeyRef has precedence over user */ -}}
+                {{- if .Values.postgres.pg.userSecretKeyRef }}
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  {{- toYaml .Values.postgres.pg.userSecretKeyRef | nindent 18 }}
+                {{- else if .Values.postgres.pg.user }}
+            - name: PGUSER
+              value: {{ .Values.postgres.pg.user }}
+                {{- end }}
+                {{- if .Values.postgres.pg.db }}
+            - name: PGDATABASE
+              value: {{ .Values.postgres.pg.db }}
+                {{- end }}
+                {{- /* passwdSecretKeyRef has precedence over passwd */ -}}
+                {{- if .Values.postgres.pg.passwdSecretKeyRef }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  {{- toYaml .Values.postgres.pg.passwdSecretKeyRef | nindent 18 }}
+                {{- else if .Values.postgres.pg.passwd }}
+            - name: PGPASSWORD
+              value: {{ .Values.postgres.pg.passwd }}
+                {{- end }}
+            - name: PGHOST
+              value: {{ .Release.Name }}-postgres
+            - name: PGPORT
+              value: '5432'
+            - name: PGUSER_CONNECTION_SUFFIX
+              value: ''
+              {{- end }}
+            {{- else }}
+            #
+            # database settings, if sub-chart postgres is not enabled
+            #
+              {{- if .Values.pg }}
+                {{- if .Values.pg.sslMode }}
+            - name: PGSSL_MODE
+              value: '{{ .Values.pg.sslMode }}'
+                {{- end }}
+                {{- if .Values.pg.sslCompression }}
+            - name: PGSSL_COMPRESSION
+              value: '{{ .Values.pg.sslCompression }}'
+                {{- end }}
+                {{- if .Values.pg.sslRootCert }}
+            - name: PGSSL_ROOTCERT
+              value: '{{ .Values.pg.sslRootCert | b64enc }}'
+                {{- end }}
+                {{- /* userSecretKeyRef has precedence over user */ -}}
+                {{- if .Values.pg.userSecretKeyRef }}
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  {{- toYaml .Values.pg.userSecretKeyRef | nindent 18 }}
+                {{- else if .Values.pg.user }}
+            - name: PGUSER
+              value: {{ .Values.pg.user }}
+                {{- end }}
+                {{- if .Values.pg.db }}
+            - name: PGDATABASE
+              value: {{ .Values.pg.db }}
+                {{- end }}
+                {{- /* passwdSecretKeyRef has precendence over passwd */ -}}
+                {{- if .Values.pg.passwdSecretKeyRef }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  {{- toYaml .Values.pg.passwdSecretKeyRef | nindent 18 }}
+                {{- else if .Values.pg.passwd }}
+            - name: PGPASSWORD
+              value: {{ .Values.pg.passwd }}
+                {{- end }}
+                {{- if .Values.pg.host }}
+            - name: PGHOST
+              value: {{ .Values.pg.host }}
+                {{- end }}
+                {{- if .Values.pg.port }}
+            - name: PGPORT
+              value: '{{ .Values.pg.port }}'
+                {{- end }}
+                {{- if .Values.pg.userConnectionSuffix }}
+            - name: PGUSER_CONNECTION_SUFFIX
+              value: '{{ .Values.pg.userConnectionSuffix }}'
+                {{- end }}
+                {{- if .Values.dbaccount.tablespace }}
+            - name: OMS_DB_TABLESPACE
+              value: {{ .Values.dbaccount.tablespace }}
+                {{- end }}
+              {{- end }}
+            {{- end }}
+            #
+            # db settings, which do not depend on .Values.postgres.enabled 
+            #
+            - name: OMS_DB_RESET
+            {{- if .Values.dbaccount.resetData }}
+              {{- if not (kindIs "bool" .Values.dbaccount.resetData) }}
+                {{ fail "dbaccount.resetData contains a non boolean value!" }}
+              {{- end }}
+              value: 'true'
+            {{- else }}
+              value: 'false'
+            {{- end }}
+            {{- if .Values.dbaccount.options }}
+            - name: OMS_DB_OPTIONS
+              value: {{ .Values.dbaccount.options }}
+            {{- end }}
+            {{- if .Values.dbaccount.searchPath }}
+            - name: OMS_DB_SEARCHPATH
+              value: {{ .Values.dbaccount.searchPath }}
+            {{- end }}
+            {{- if .Values.oms }}
+              {{- if .Values.oms.db }}
+                {{- if .Values.oms.db.name }}
+            - name: OMS_DB_NAME
+              value: {{ .Values.oms.db.name }}
+                {{- end }}
+                {{- /* userSecretKeyRef has precedence over user */ -}}
+                {{- if .Values.oms.db.userSecretKeyRef }}
+            - name: OMS_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  {{- toYaml .Values.oms.db.userSecretKeyRef | nindent 18 }}
+                {{- else if .Values.oms.db.user }}
+            - name: OMS_DB_USER
+              value: {{ .Values.oms.db.user }}
+                {{- end }}
+                {{- /* passwdSecretKeyRef has precedence over passwd */ -}}
+                {{- if .Values.oms.db.passwdSecretKeyRef }}
+            - name: OMS_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  {{- toYaml .Values.oms.db.passwdSecretKeyRef | nindent 18 }}
+                {{- else if .Values.oms.db.passwd }}
+            - name: OMS_DB_PASS
+              value: {{ .Values.oms.db.passwd }}
+                {{- end }}
+                {{- if .Values.oms.db.connectTimeout }}
+            - name: OMS_DB_CONNECT_TIMEOUT
+              value: '{{ .Values.oms.db.connectTimeout }}'
+                {{- end }}
+              {{- end }}
+            {{- end }}
+            #
+            # log options
+            #
+            {{- if .Values.log }}
+              {{- if .Values.log.level }}
+                {{- if .Values.log.level.scripts }}
+            - name: OMS_LOGLEVEL_SCRIPTS
+              value: {{ .Values.log.level.scripts }}
+                {{- end }}
+              {{- end }}
+              {{- if .Values.log.metadata }}
+                {{- if .Values.log.metadata.tenant }}
+            - name: TENANT
+              value: {{ .Values.log.metadata.tenant }}
+                {{- end }}
+                {{- if .Values.log.metadata.environment }}
+            - name: ENVIRONMENT
+              value: {{ .Values.log.metadata.environment }}
+                {{- end }}
+              {{- end }}
+            {{- end }}
+            #
+            # fixed settings
+            #
+            - name: LOG_SHARE
+              value: '/tmp'
+            - name: DB_READY_TIMEOUT
+              value: '300'
+        {{- end }}
+        {{- if .Values.config.enabled }}
+        - name: config
+          imagePullPolicy: {{ .Values.config.image.pullPolicy }}
+          image: "{{ .Values.config.image.repository }}:{{ .Values.config.image.tag }}"
+          resources:
+            {{- toYaml .Values.config.resources | nindent 12 }}
+          env:
+            {{- if .Values.postgres.enabled }}
+            #
+            # database settings, is sub-chart postgres is enabled
+            #
+            - name: OMS_DB_USER_CONNECTION_SUFFIX
+              value: ''
+            - name: OMS_DB_HOST
+              value: {{ .Release.Name }}-postgres
+            - name: OMS_DB_PORT
+              value: '5432'
+            {{- else }}
+            #
+            # database settings, if sub-chart postgres is disabled
+            #
+              {{- if .Values.pg }}
+                {{- if .Values.pg.userConnectionSuffix }}
+            - name: OMS_DB_USER_CONNECTION_SUFFIX
+              value: '{{ .Values.pg.userConnectionSuffix }}'
+                {{- end }}
+                {{- if .Values.pg.host }}
+            - name: OMS_DB_HOST
+              value: {{ .Values.pg.host }}
+                {{- end }}
+                {{- if .Values.pg.port }}
+            - name: OMS_DB_PORT
+              value: '{{ .Values.pg.port }}'
+                {{- end }}
+                {{- if .Values.pg.sslMode }}
+            - name: PGSSL_MODE
+              value: '{{ .Values.pg.sslMode }}'
+                {{- end }}
+                {{- if .Values.pg.sslCompression }}
+            - name: PGSSL_COMPRESSION
+              value: '{{ .Values.pg.sslCompression }}'
+                {{- end }}
+                {{- if .Values.pg.sslRootCert }}
+            - name: PGSSL_ROOTCERT
+              value: '{{ .Values.pg.sslRootCert | b64enc }}'
+                {{- end }}
+              {{- end }}
+            {{- end }}
+            #
+            # common database settings
+            #
+            {{- if .Values.oms }}
+              {{- if .Values.oms.db }}
+                {{- if .Values.oms.db.name }}
+            - name: OMS_DB_NAME
+              value: {{ .Values.oms.db.name }}
+                {{- end }}
+                {{- /* userSecretKeyRef has precedence over user */ -}}
+                {{- if .Values.oms.db.userSecretKeyRef }}
+            - name: OMS_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  {{- toYaml .Values.oms.db.userSecretKeyRef | nindent 18 }}
+                {{- else if .Values.oms.db.user }}
+            - name: OMS_DB_USER
+              value: {{ .Values.oms.db.user }}
+                {{- end }}
+                {{- /* passwdSecretKeyRef has precedence over passwd */ -}}
+                {{- if .Values.oms.db.passwdSecretKeyRef }}
+            - name: OMS_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  {{- toYaml .Values.oms.db.passwdSecretKeyRef | nindent 18 }}
+                {{- else if .Values.oms.db.passwd }}
+            - name: OMS_DB_PASS
+              value: {{ .Values.oms.db.passwd }}
+                {{- end }}
+                {{- if .Values.oms.db.connectTimeout }}
+            - name: OMS_DB_CONNECT_TIMEOUT
+              value: '{{ .Values.oms.db.connectTimeout }}'
+                {{- end }}
+              {{- end }}
+            {{- end }}
+            {{- if .Values.oms }}
+            #
+            # PlatformConfigProperties
+            #
+              {{- if .Values.oms.archiveOrderMessageLogMinAge }}
+            - name: OMS_ARCHIVE_ORDERMSGLOG_MIN_AGE
+              value: '{{ .Values.oms.archiveOrderMessageLogMinAge }}'
+              {{- end }}
+              {{- if .Values.oms.deleteOrderMessageLogMinAge }}
+            - name: OMS_DELETE_ORDERMSGLOG_MIN_AGE
+              value: '{{ .Values.oms.deleteOrderMessageLogMinAge }}'
+              {{- end }}
+              {{- if .Values.oms.archiveShopCustomerMailMinAge }}
+            - name: OMS_ARCHIVE_SHOPCUSTMAIL_MIN_AGE
+              value: '{{ .Values.oms.archiveShopCustomerMailMinAge }}'
+              {{- end }}
+              {{- if .Values.oms.archiveShopCustomerMailMaxCount }}
+            - name: OMS_ARCHIVE_SHOPCUSTMAIL_MAX_COUNT
+              value: '{{ .Values.oms.archiveShopCustomerMailMaxCount }}'
+              {{- end }}
+              {{- if .Values.oms.deleteShopCustomerMailMinAge }}
+            - name: OMS_DELETE_SHOPCUSTMAIL_MIN_AGE
+              value: '{{ .Values.oms.deleteShopCustomerMailMinAge }}'
+              {{- end }}
+            {{- end }}
+            {{- if .Values.log }}
+            #
+            # log settings
+            #
+              {{- if .Values.log.level }}  
+                {{- if .Values.log.level.scripts }}
+            - name: OMS_LOGLEVEL_SCRIPTS
+              value: {{ .Values.log.level.scripts }}
+                {{- end }}
+              {{- end }}
+              {{- if .Values.log.metadata }}
+                {{- if .Values.log.metadata.tenant }}
+            - name: TENANT
+              value: {{ .Values.log.metadata.tenant }}
+                {{- end }}
+                {{- if .Values.log.metadata.environment }}
+            - name: ENVIRONMENT
+              value: {{ .Values.log.metadata.environment }}
+                {{- end }}
+              {{- end }}
+            {{- end }}
+            #
+            # control of update steps
+            #
+            - name: SKIP_PROCEDURES
+              {{- if .Values.config.skipProcedures }}
+                {{- if not (kindIs "bool" .Values.config.skipProcedures) }}
+                  {{ fail "config.skipProcedures contains a non boolean value!" }}
+                {{- end }}
+              value: 'true'
+              {{- else }}
+              value: 'false'
+              {{- end }}
+            - name: SKIP_MIGRATION
+              {{- if .Values.config.skipMigration }}
+                {{- if not (kindIs "bool" .Values.config.skipMigration) }}
+                  {{ fail "config.skipMigration contains a non boolean value!" }}
+                {{- end }}
+              value: 'true'
+              {{- else }}
+              value: 'false'
+              {{- end }}
+            - name: SKIP_CONFIG
+              {{- if .Values.config.skipConfig }}
+                {{- if not (kindIs "bool" .Values.config.skipConfig) }}
+                  {{ fail "config.skipConfig contains a non boolean value!" }}
+                {{- end }}
+              value: 'true'
+              {{- else }}
+              value: 'false'
+              {{- end }}
+            {{- if .Values.project }}
+            #
+            # project settings
+            #
+              {{- if .Values.project.envName }}
+            - name: CAAS_ENV_NAME
+              value: {{ .Values.project.envName }}
+              {{- end }}
+            {{- end }}
+            #
+            # execute dbmigrate?
+            # TODO: deprecated, still required for backward compatibilty with versions < 3.3.0.0
+            #
+            - name: OMS_DB_MIGRATION
+            {{- if or .Values.downtime .Release.IsInstall }}
+              value: 'true'
+            {{- else }}
+              value: 'false'
+            {{- end }}
+            #
+            # fixed settings
+            #
+            - name: LOG_SHARE
+              value: '/tmp'
+            - name: DB_READY_TIMEOUT
+              value: '300'
+              
+          # overwrites the default command defined in Dockerfile
+          # db initialization is only executed, if hostname ends with -0, which
+          # only the case for the first server of a stateful set.
+          # TODO: fixed binding on pod ending with "-0" is required for backward compatibility with
+          #   version < 3.3.0.0. Since 3.3.0.0 the file /opt/sql_sha256sum exists and the config
+          #   image is able to decide by himself if db-changes have to be rolled out or not.
+          command:
+            - /bin/sh
+            - "-c"
+            - if [ -f "/opt/sql_sha256sum" ]; then /opt/load_dbmigrate.sh; elif hostname -s | grep -q -- '-0$'; then /opt/load_dbmigrate.sh; fi
+        {{- end }}
+      volumes:
+        - name: app-share-volume
+          persistentVolumeClaim:
+            {{- if .Values.persistence.pvc }}
+            claimName: {{ .Values.persistence.pvc }}
+            {{- else }}
+            claimName: {{ include "iom.fullname" . }}
+            {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
