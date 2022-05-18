@@ -13,7 +13,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 upstream:
-  icmBaseURL: https://www.example.com
+  icmBaseURL: https://pwa-ish-demo.test.intershop.com
   ## @param cdnPrefixURL The base URL of your CDN
   ## E.g:
   ## cdnPrefixURL: "https://www.example.com"
