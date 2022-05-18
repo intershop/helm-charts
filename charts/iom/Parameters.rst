@@ -20,6 +20,7 @@
 |                                                  |* For the *downtime* parameter to work correctly, |                                                  |
 |                                                  |the `--wait` and `--timeout` command line         |                                                  |
 |                                                  |parameters must always be set when running Helm.  |                                                  |
+|                                                  |                                                  |                                                  |
 +--------------------------------------------------+--------------------------------------------------+--------------------------------------------------+
 |                                                  |                                                  |                                                  |
 |                                                  |                                                  |                                                  |
