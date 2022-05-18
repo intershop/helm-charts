@@ -1,280 +1,78 @@
 | Parameter | Description | Default Value |
-| --- | ––– | --- |
+| --- | --- | --- |
 | replicaCount | The number of IOM application server instances to run in parallel. | 2 |
-| downtime | The downtime parameter is a very critical one. Its goal and behavior is already described in Restrictions on Upgrade.
-Additional information:
-If downtime is set to false, the DBmigrate process, as part of the process the config init-container is executing, is skipped. This has no impact on the project configuration.
-For the downtime parameter to work correctly, the --wait and -- timeout command line parameters must always be set when running Helm. | 
-true |
-
-image.repository	
-Repository of the IOM app product/project image. 
-docker.intershop.de/intershophub/iom
-image.pullPolicy	Pull policy, to be applied when getting IOM product/project Docker image. For more information, see the official Kubernetes documentation.	IfNotPresent
-image.tag	
-The tag of IOM product/project image.
-4.0.0
-dbaccount	
-Parameters bundled by dbaccount are used to control the dbaccount init-container which creates the IOM database-user and the IOM database itself. To enable the dbaccount init-container to do this, it needs to get superuser access to the PostgreSQL server and it requires the according information about the IOM database. This information is not contained in dbaccount parameters. Instead, the general connection and superuser information are retrieved from pg or postgres.pg parameters (depending on postgres.enabled). All information about the IOM database user and database are provided by oms.db parameters.
-Once the IOM database is created, the dbaccount init-container is not needed any longer. Hence, all IOM installations, except really non-critical demo- and CI-setups, should enable dbaccount init-container only temporarily to initialize the database account.
-
-dbaccount.enabled	
-Controls if the dbaccount init-container should be executed or not. If enabled, dbaccount will only be executed when installing IOM, not on upgrade operations.
-false
-dbaccount.image.repository	
-Repository of the dbaccount image. 
-docker.intershop.de/intershophub/iom-dbaccount
-dbaccount.image.pullPolicy	Pull policy, to be applied when getting dbaccount Docker image. For more information, see the official Kubernetes documentation.	IfNotPresent
-dbaccount.image.tag	
-The tag of dbaccount image.
-1.4.0
-dbaccount.resetData	Controls if dbaccount init-container should reset an already existing IOM database during the installation process of IOM. If set to true, existing data is deleted without backup and further warning. 	false
-dbaccount.options
-When creating the IOM database, more options added to OWNER are required. Depending on the configuration of the PostgreSQL server, these options may differ. The default values can be used as they are for integrated PostgreSQL server, for Azure Database for PostgreSQL service, and for most other servers, too.
-See Options and Requirements of IOM database for details.
-"ENCODING='UTF8' LC_COLLATE='en_US.utf8' LC_CTYPE='en_US.utf8' CONNECTION LIMIT=-1 TEMPLATE=template0"
-dbaccount.searchPath
-In some circumstances, the search path for database objects has to be extended. This is the case if custom schemas are used for customizations or tests. To add more schemas to the search-path, set the current parameter to a string containing all additional schemas, separated by a comma, e.g. "tests, customschema". The additional entries are inserted at the beginning of the search-path, hence objects with the same name as standard objects of IOM are found first.	
-dbaccount.tablespace
-Use the passed tablespace as default for IOM database user and IOM database. Tablespace has to exist, it will not be created.
-Section Options and Requirements of IOM database will give you some more information.
-Ignored if postgres.enabled is true, since the integrated PostgreSQL server can never create a custom tablespace prior to the initialization of the IOM database user and IOM database.
-
-dbaccount.resources	Resource requests & limits	{}
-config	
-Parameters, bundled by config, are used to control the config init-container which fills the IOM database, to apply database migrations, and to roll out project configurations into the IOM database. To enable the config init-container to do this, it requires access to the IOM database. This information is not contained in config parameters. Instead, the general connection information is retrieved from pg or postgres.pg parameters. All information about the IOM database user and database are provided by oms.db parameters.
-The config init-container was removed along with IOM 4.0.0. The according functionality is now executed by the IOM container itself. The config parameter still exists for backward compatibility.
-
-config.enabled	
-The config init-container was removed along with IOM 4.0.0. For backward compatibility it can still be used, but has to be enabled explicitly now .
-Has to be set to true, when using Helm charts with an IOM version < 4.0.0.
-false
-config.image.repository	
-Repository of the IOM config product/project image. 
-docker.intershop.de/intershophub/iom-config
-config.image.pullPolicy	Pull policy, to be applied when getting the IOM config product/project Docker image. For more information, see the official Kubernetes documentation.	IfNotPresent
-config.image.tag	
-The tag of IOM config product/project image.
-
-config.resources	Resource requests & limits	{}
-oms.skipProcedures	
-Normally, when updating the config image of IOM, stored procedures, migration scripts, and project configuration are executed. Setting parameter oms.skipProcedures to true allows to skip the execution of stored procedures. You must not do this when updating IOM.
-Requires IOM >= 3.6.0.0 and < 4.0.0
-In IOM 4.0.0 and newer, execution of procedures, migration, and configuration is tracked internally and will not be executed if already applied. A manual control is not necessary any longer.
-false
-oms.skipMigration	
-Normally, when updating the config image of IOM, stored procedures, migration scripts, and project configuration are executed. Setting parameter oms.skipMigration to true allows to skip the execution of migration scripts. You must not do this when updating IOM.
-Requires IOM >= 3.6.0.0 and < 4.0.0
-In IOM 4.0.0 and newer, execution of procedures, migration, and configuration is tracked internally and will not be executed if already applied. A manual control is not necessary any longer.
-false
-oms.skipConfig	
-Normally, when updating the config image of IOM, stored procedures, migration scripts, and project configuration are executed. Setting parameter oms.skipConfig to true allows to skip the execution of configuration scripts. You must not do this when updating the project configuration.
-Requires IOM >= 3.6.0.0 and < 4.0.0
-In IOM 4.0.0 and newer, execution of procedures, migration, and configuration is tracked internally and will not be executed if already applied. A manual control is not necessary any longer.
-false
-pg
-This group of parameters bundles the information required to connect the PostgreSQL server, information about the superuser, and default database (management database, not the IOM database). 
-Not all clients need all information:
-The dbaccount init-container is the only client that needs access to the PostgreSQL server as a superuser. Hence, if you do not enable dbaccount, the parameters pg.user(SecretKeyRef), pg.passwd(SecretKeyRef) and pg.db should not be set at all.
-If integrated PostgreSQL server is enabled (postgres.enabled set to true), all parameters defined by pg are ignored completely. In this case, parameters defined by postgres.pg are used instead.
-
-pg.user	
-Name of the superuser.
-Required only if dbaccount.enabled is set to true.
-Ignored if postgres.enabled is set to true.
-Ignored if pg.userSecretKeyRef is set.
-postgres
-pg.userSecretKeyRef	
-Instead of storing the name of the user as plain text in the values file, a reference to a key within a secret can be used. For more information see section References to entries of Kubernetes secrets.
-Required only if dbaccount.enabled is set to true and pg.user is not set.
-Ignored if postgres.enabled is set to true.
-
-pg.passwd	
-The password of the superuser. 
-Required only if dbaccount.enabled is set to true.
-Ignored if postgres.enabled is set to true.
-Ignored if pg.passwdSecretKeyRef is set.
-postgres
-pg.passwdSecretKeyRef	
-Instead of storing the password as plain text in the values file, a reference to a key within a secret can be used. For more information see section References to entries of Kubernetes secrets.
-Required only if dbaccount.enabled is set to true and pg.passwd is not set.
-Ignored if postgres.enabled is set to true.
-
-pg.db	
-Name of the default (management) database.
-Required only if dbaccount.enabled is set to true.
-Ignored if postgres.enabled is set to true.
-postgres
-pg.host
-The hostname of the PostgreSQL server.	postgres-service
-pg.port	Port of the PostgreSQL server.	"5432"
-pg.userConnectionSuffix	When using the Azure Database for PostgreSQL service, user names have to be extended by a suffix, beginning with '@'. For more information, refer to the official Azure Database for PostgreSQL documentation.
-This suffix is not a part of the user name. It has to be used only when connecting to the database. For this reason, the parameter pg.userConnectionSuffix was separated from pg.user and oms.db.user.
-Example: "@mydemoserver"
-
-pg.sslMode	pg.sslMode has to contain one of the following values: disable, allow, prefer, require, verify-ca, verify-full. For a detailed description of settings, please see  the official PostgreSQL documentation.	prefer
-pg.sslCompression	
-If set to "1", data sent over SSL connections will be compressed. If set to "0", compression will be disabled. For a detailed description, please see the official PostgreSQL documentation.
-"0"
-pg.sslRootCert
-Azure Database for PostgreSQL service might require verification of the server certificate, see the official Azure Database for PostgreSQL documentation. To handle this case, it is possible to pass the SSL root certificate in pg.sslRootCert. 
-
-oms	Parameters of group oms are all related to the configuration of IOM.	
-oms.publicUrl	
-The publicly accessible base URL of IOM which could be the DNS name of the load balancer, etc. It is used internally for link generation.
-https://localhost
-oms.mailResourcesBaseUrl	The base path for e-mail resources that are loaded from the e-mail client, e.g., images or stylesheets. Also, see Concept - IOM Customer Emails.	https://localhost/mailimages/customers
-oms.jwtSecret	
-The shared secret for JSON Web Token (JWT) creation/validation. JWTs will be generated with the HMAC algorithm (HS256).
-Intershop strongly recommends to change the default shared secret used for the JSON Web Tokens creation/validation.
-To secure the JWT, a key of the same size as the hash output or larger must be used with the JWS HMAC SHA-2 algorithms (i.e, 256 bits for "HS256"), see JSON Web Algorithms (JWA) | 3.2. HMAC with SHA-2 Functions.
-Ignored if oms.jwtSecretKeyRef is set.
-length_must_be_at_least_32_chars
-oms.jwtSecretKeyRef	
-Instead of storing the JWT secret as plain text in the values file, a reference to a key within a secret can be used. For more information, see section References to entries of Kubernetes secrets.
-Only required if oms.jwtSecret is empty.
-
-oms.archiveOrderMessageLogMinAge	
-Number of days after which the entries in table "OrderMessageLogDO" should be exported 
-and the columns "request" and "response" set to 'archived' in order to reduce the table size. 
-Min. accepted value: 10
-Exported data are stored under share/archive
-Requires IOM 3.1.0.0 or newer
-Value has to match ^[1-9]([0-9]+)?
-"90"
-oms.deleteOrderMessageLogMinAge	
-Number of days after which the entries in table "OrderMessageLogDO" will definitely be deleted in order to reduce the table size. Must be greater than oms.archiveOrderMessageLogMinAge.
-Requires IOM 3.1.0.0 or newer
-Value has to match ^[1-9]([0-9]+)?
-"180"
-oms.archiveShopCustomerMailMinAge	
-Number of days after which the entries in table "ShopCustomerMailTransmissionDO" should be exported (Quartz job "ShopCustomerMailTransmissionArchive") and the column "message" set to ''deleted'' in order to reduce the table size. Default is 1826 for 5 years. However, the export will not take place if this property and oms.archiveShopCustomerMailMaxCount are not set. Min. accepted value: 10
-Exported data are stored under share/archive
-Requires IOM 3.1.0.0 or newer
-Value has to match ^[1-9]([0-9]+)$
-"1826"
-oms.archiveShopCustomerMailMaxCount	
-Maximum number of entries in table "ShopCustomerMailTransmissionDO" to be exported per run of the Quartz job "ShopCustomerMailTransmissionArchive".  Default is 10000, however, the export will not take place if this property and ''archive_ShopCustomerMailMinAge'' are not set.  Min. accepted value: 10
-Requires IOM 3.1.0.0 or newer
-Value has to match ^[1-9]([0-9]+)$
-"10000"
-oms.deleteShopCustomerMailMinAge	
-The number of days after which the entries in table "ShopCustomerMailTransmissionDO" will definitely be deleted in order to reduce the table size.  (Quartz job"ShopCustomerMailTransmissionArchive")  Default is 2190 for 6 years. However, the deletion will not take place if this property is not set.
-Requires IOM 3.1.0.0 or newer
-Value has to match ^[1-9]([0-9]+)$
-"2190"
-oms.secureCookiesEnabled	
-If set to true, cookies will be sent with secure flag. In this case OMT requires fully encrypted HTTP traffic in order to work properly.
-Requires IOM 3.2.0.0 or newer
-true
-oms.execBackendApps	
-If set to false, no backend applications will be executed in the current cluster. This is required by transregional installations of IOM only, where many local IOM clusters have to work together. In this case, only one of the clusters must execute backend applications.
-true
-oms.db
-Group oms.db bundles all parameters which are required to access the IOM database. General information required to connect the PostgreSQL server are stored at group pg.	
-oms.db.name	The name of the IOM database.	oms_db
-oms.db.user	
-The IOM database user .
-Ignored if oms.db.userSecretKeyRef is set.
-oms_user
-oms.db.userSecretKeyRef	
-Instead of storing the name of the user as plain text in the values file, a reference to a key within a secret can be used. For more information, see section References to entries of Kubernetes secrets.
-Only required if oms.db.user is not set.
-
-oms.db.passwd	The password of the IOM database user.	OmsDB
-oms.db.passwdSecretKeyRef	
-Instead of storing the password as plain text in the values file, a reference to a key within a secret can be used. For more information, see section References to entries of Kubernetes secrets.
-Only required if oms.db.passwd is not set.
-
-oms.db.hostlist	
-A comma-separated list of database servers. Each server entry consists of a hostname and port, separated by a colon. Setting the port is optional. If not set, standard port 5432 will be used.
-Only required if a high availability cluster of PostgreSQL servers is used, to list all possible connecting possibilities to this cluster.
-Affects IOM application servers only. All other database clients (config and dbaccount) are using connection information from pg parameters group only. The same is true for the IOM application server if oms.db.hostlist is empty.
-
-oms.db.connectionMonitor	
-Parameters in oms.db.connectionMonitor are dedicated to control a Kubernetes cronjob that is writing INFO log messages created by process connection_monitor.sh that provide information about database clients and the number of connections they are using. This information is written in CSV format with quoted newlines between records.
-Example:
-{"tenant":"company-name","environment":"system-name","logHost":"ci-iom-connection-monitor-27154801-c6lk4","logVersion":"1.0","appName":"iom-config","appVersion":"3.6.0.0","logType":"script","timestamp":"2021-08-18T12:01:01+00:00","level":"INFO","processName":"connection_monitor.sh","message":"count,application_name,client_addr\\n51,OMS_ci-iom-0,40.67.249.40\\n2,psql,40.67.249.40","configName":null}
-connection_monitor.sh ignores settings of parameter log.level.scripts. It always uses log level INFO.
-Requires IOM 3.6.0.0 or newer
-
-oms.db.connectionMonitor.enabled	
-Enables/disables Kubernetes cronjob providing the connection monitoring messages.
-Requires IOM 3.6.0.0 or newer
-false
-oms.db.connectionMonitor.schedule	
-Controls frequency of Kubernetes cronjob providing the connection monitoring messages.
-Requires IOM 3.6.0.0 or newer
-"*/1 * * * *"
-oms.db.connectTimeout	
-Controls connect timeout of database connections (jdbc- and psql-initiated connections). Value is defined in seconds. A value of 0 means to wait infinitely.
-Requires IOM 3.6.0.0 or newer
-Requires dbaccount 1.3.0.0 or newer
-10
-oms.smtp	
-Parameters in oms.smtp are bundling the information required to connect SMTP server. 
-If an integrated SMTP server is enabled (mailhog.enabled set to true), all parameters defined by oms.smtp are ignored completely. In this case, IOM will be automatically configured to use the integrated SMTP server.
-
-oms.smtp.host	
-The hostname of the mail server IOM uses to send e-mails.
-Ignored if mailhog.enabled is set to true.
-mail-service
-oms.smtp.port	
-The port of the mail server IOM uses to send e-mails.
-Ignored if mailhog.enabled is set to true.
-"1025"
-oms.smtp.user	
-The user name for mail server authentication.
-Only required if the SMTP server requires authentication.
-Ignored if mailhog.enabled is set to true.
-
-oms.smtp.userSecretKeyRef	
-Instead of storing the user name as plain text in the values file, a reference to a key within a secret can be used. For more information, see section References to entries of Kubernetes secrets.
-Only required if oms.smtp.user is not set and the SMTP server requires authentication.
-Ignored if mailhog.enabled is set to true.
-
-oms.smtp.passwd	
-The password for mail server authentication.
-Only required if the SMTP server requires authentication.
-Ignored if mailhog.enabled is set to true.
-
-oms.smtp.passwdSecretKeyRef	
-Instead of storing the password as plain text in the values file, a reference to a key within a secret can be used. For more information, see section References to entries of Kubernetes secrets.
-Only required if oms.smtp.passwd is not set and the SMTP server requires authentication.
-Ignored if mailhog.enabled is set to true.
-
-startupProbe	
-Group of parameters to fine-tune the startup probe of Kubernetes. The basic kind of probe is fixed and cannot be changed. For an overview of probes and pod lifecycle, see the official Kubernetes documentation.
-Startup probe was introduced with IOM Helm charts 2.0.0, when IOM config image was removed. All the functionality that was executed by the config image before is in IOM version 4.0.0 and the newer part of the IOM image. The startup probe must now be used to observe all the tasks (create db account, roll out dump, execute stored procedures, run database migrations, apply project configuration) that are done before the Wildfly application server is started. The startup probe must not finally fail before the  end of the startup phase, otherwise the pod will be ended and restarted. The startup phase ends when startup probe succeeds. To do so, you need to configure startupProbe in such a way that
-  initialDelaySeconds + periodSeconds * failureThreshold
-is larger than the time needed for the startup phase! The default values provided by IOM Helm charts provide an 11 minute timeframe for the startup phase: 60s + 10 * 60s = 660s = 11min. If your system needs more time for the startup phase, you have to adapt the parameters. It is recommended to increase startupProbe.failureThreshold only and to leave all other parameters unchanged.
-
-startupProbe.enabled	
-Enables to switch on/off the startup probe.
-Requires IOM 4.0.0 or newer
-Ignored if config.enabled is set to true (if an IOM of a version < 4.0.0 is used).
-true
-startupProbe.periodSeconds	
-How often (in seconds) to perform the probe. Minimum value is 1.
-Requires IOM 4.0.0 or newer
-Ignored if config.enabled is set to true (if an IOM of a version < 4.0.0 is used).
-10
-startupProbe.initialDelaySeconds	
-Number of seconds after the container has started before startup probes are initiated. Minimum value is 0.
-Requires IOM 4.0.0 or newer
-Ignored if config.enabled is set to true (if an IOM of a version < 4.0.0 is used).
-60
-startupProbe.timeoutSeconds	
-Number of seconds after which the probe times out. Default is set to 1 second. Minimum value is 1.
-Requires IOM 4.0.0 or newer
-Ignored if config.enabled is set to true (if an IOM of a version < 4.0.0 is used).
-5
-startupProbe.failureThreshold	
-When a probe fails, Kubernetes will try failureThreshold times before giving up. Giving up in case of startup probe means restarting the container. Minimum value is 1.
-Requires IOM 4.0.0 or newer
-Ignored if config.enabled is set to true (if an IOM of a version < 4.0.0 is used).
-60
-livenessProbe	Group of parameters to fine-tune the liveness probe of Kubernetes. The basic kind of probe is fixed and cannot be changed. For an overview of probes and pod lifecycle, see the official Kubernetes documentation.	
+| downtime | The *downtime* parameter is a very critical one. Its goal and behavior is already described in [Restrictions on Upgrade](TODO).<br/>Additional information:<br/>* If *downtime* is set to *false*, the DBmigrate process, as part of the process the config init-container is executing, is skipped. This has no impact on the project configuration.<br/>* For the *downtime* parameter to work correctly, the `--wait` and `--timeout` command line parameters must always be set when running Helm. | true |
+| image.repository | Repository of the IOM app product/project image. | docker.intershop.de/intershophub/iom |
+| image.pullPolicy | Pull policy, to be applied when getting IOM product/project Docker image. For more information, see the [official Kubernetes documentation](https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy). | IfNotPresent |
+| image.tag | The tag of IOM product/project image. | 4.0.0 |
+| dbaccount | Parameters bundled by dbaccount are used to control the dbaccount init-container which creates the IOM database-user and the IOM database itself. To enable the dbaccount init-container to do this, it needs to get superuser access to the PostgreSQL server and it requires the according information about the IOM database. This information is not contained in dbaccount parameters. Instead, the general connection and superuser information are retrieved from *pg* or *postgres.pg* parameters (depending on *postgres.enabled*). All information about the IOM database user and database are provided by *oms.db* parameters.<br/>Once the IOM database is created, the dbaccount init-container is not needed any longer. Hence, all IOM installations, except really non-critical demo- and CI-setups, should enable dbaccount init-container only temporarily to initialize the database account. ||
+| dbaccount.enabled | Controls if the dbaccount init-container should be executed or not. If enabled, dbaccount will only be executed when installing IOM, not on upgrade operations. | false |
+| dbaccount.image.repository | Repository of the dbaccount image. | docker.intershop.de/intershophub/iom-dbaccount |
+| dbaccount.image.pullPolicy | Pull policy, to be applied when getting dbaccount Docker image. For more information, see the [official Kubernetes documentation](https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy). | IfNotPresent |
+| dbaccount.image.tag | The tag of dbaccount image. | 1.4.0 |
+| dbaccount.resetData | Controls if dbaccount init-container should reset an already existing IOM database during the installation process of IOM. If set to *true*, existing data is deleted without backup and further warning. | false |
+| dbaccount.options | When creating the IOM database, more options added to OWNER are required. Depending on the configuration of the PostgreSQL server, these options may differ. The default values can be used as they are for integrated PostgreSQL server, for Azure Database for PostgreSQL service, and for most other servers, too.<br/>See [Options and Requirements of IOM database](TODO) for details. | "ENCODING='UTF8' LC_COLLATE='en_US.utf8' LC_CTYPE='en_US.utf8' CONNECTION LIMIT=-1 TEMPLATE=template0" |
+| dbaccount.searchPath | In some circumstances, the search path for database objects has to be extended. This is the case if custom schemas are used for customizations or tests. To add more schemas to the search-path, set the current parameter to a string containing all additional schemas, separated by a comma, e.g. "tests, customschema". The additional entries are inserted at the beginning of the search-path, hence objects with the same name as standard objects of IOM are found first. ||
+| dbaccount.tablespace | Use the passed tablespace as default for IOM database user and IOM database. Tablespace has to exist, it will not be created.<br/>Section [Options and Requirements of IOM database](TODO) will give you some more information.<br/>* Ignored if *postgres.enabled* is *true*, since the integrated PostgreSQL server can never create a custom tablespace prior to the initialization of the IOM database user and IOM database. ||
+| dbaccount.resources | Resource requests & limits | {} |
+| config | Parameters, bundled by config, are used to control the config init-container which fills the IOM database, to apply database migrations, and to roll out project configurations into the IOM database. To enable the config init-container to do this, it requires access to the IOM database. This information is not contained in config parameters. Instead, the general connection information is retrieved from *pg* or *postgres.pg* parameters. All information about the IOM database user and database are provided by *oms.db* parameters.<br/>The config init-container was removed along with IOM 4.0.0. The according functionality is now executed by the IOM container itself. The config parameter still exists for backward compatibility. ||
+| config.enabled | The config init-container was removed along with IOM 4.0.0. For backward compatibility it can still be used, but has to be enabled explicitly now.<br/>* Has to be set to *true*, when using Helm charts with an IOM version < 4.0.0. | false |
+| config.image.repository | Repository of the IOM config product/project image. | docker.intershop.de/intershophub/iom-config |
+| config.image.pullPolicy | Pull policy, to be applied when getting the IOM config product/project Docker image. For more information, see the [official Kubernetes documentation](https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy). | IfNotPresent |
+| config.image.tag | The tag of IOM config product/project image. ||
+| config.resources | Resource requests & limits | {} |
+| oms.skipProcedures | Normally, when updating the config image of IOM, stored procedures, migration scripts, and project configuration are executed. Setting parameter *oms.skipProcedures* to *true* allows to skip the execution of stored procedures. You must not do this when updating IOM.<br/>* Requires IOM >= 3.6.0.0 and < 4.0.0<br/>* In IOM 4.0.0 and newer, execution of procedures, migration, and configuration is tracked internally and will not be executed if already applied. A manual control is not necessary any longer. | false |
+| oms.skipMigration | Normally, when updating the config image of IOM, stored procedures, migration scripts, and project configuration are executed. Setting parameter *oms.skipMigration* to *true* allows to skip the execution of migration scripts. You must not do this when updating IOM.<br/>* Requires IOM >= 3.6.0.0 and < 4.0.0<br/>* In IOM 4.0.0 and newer, execution of procedures, migration, and configuration is tracked internally and will not be executed if already applied. A manual control is not necessary any longer. | false |
+| oms.skipConfig | Normally, when updating the config image of IOM, stored procedures, migration scripts, and project configuration are executed. Setting parameter *oms.skipConfig* to *true* allows to skip the execution of configuration scripts. You must not do this when updating the project configuration.<br/>* Requires IOM >= 3.6.0.0 and < 4.0.0<br/>* In IOM 4.0.0 and newer, execution of procedures, migration, and configuration is tracked internally and will not be executed if already applied. A manual control is not necessary any longer. | false |
+| pg | This group of parameters bundles the information required to connect the PostgreSQL server, information about the superuser, and default database (management database, not the IOM database).<br/>Not all clients need all information:<br/>The dbaccount init-container is the only client that needs access to the PostgreSQL server as a superuser. Hence, if you do not enable dbaccount, the parameters *pg.user(SecretKeyRef)*, *pg.passwd(SecretKeyRef)* and *pg.db* should not be set at all.<br/>If integrated PostgreSQL server is enabled (*postgres.enabled* set to *true*), all parameters defined by *pg* are ignored completely. In this case, parameters defined by *postgres.pg* are used instead. ||
+| pg.user | Name of the superuser.<br/>* Required only if *dbaccount.enabled* is set to *true*.<br/>* Ignored if *postgres.enabled* is set to *true*.<br/>* Ignored if *pg.userSecretKeyRef* is set. | postgres |
+| pg.userSecretKeyRef | Instead of storing the name of the user as plain text in the values file, a reference to a key within a secret can be used. For more information see section [References to entries of Kubernetes secrets](TODO).<br/>* Required only if *dbaccount.enabled* is set to *true* and *pg.user* is not set.<br/>* Ignored if *postgres.enabled* is set to *true*. ||
+| pg.passwd | The password of the superuser.<br/>* Required only if *dbaccount.enabled* is set to *true*.<br/>* Ignored if *postgres.enabled* is set to *true*.<br/>* Ignored if *pg.passwdSecretKeyRef* is set. | postgres |
+| pg.passwdSecretKeyRef	| Instead of storing the password as plain text in the values file, a reference to a key within a secret can be used. For more information see section [References to entries of Kubernetes secrets](TODO).<br/>* Required only if *dbaccount.enabled* is set to *true* and *pg.passwd* is not set.<br/>* Ignored if *postgres.enabled* is set to *true*. ||
+| pg.db	| Name of the default (management) database.<br/>* Required only if *dbaccount.enabled* is set to *true*.<br/>* Ignored if *postgres.enabled* is set to *true*. | postgres |
+| pg.host | The hostname of the PostgreSQL server. | postgres-service |
+| pg.port | Port of the PostgreSQL server. | "5432" |
+| pg.userConnectionSuffix | When using the Azure Database for PostgreSQL service, user names have to be extended by a suffix, beginning with '@'. For more information, refer to the [official Azure Database for PostgreSQL documentation](https://docs.microsoft.com/en-us/azure/postgresql/concepts-ssl-connection-security#applications-that-require-certificate-verification-for-tls-connectivity).<br/>This suffix is not a part of the user name. It has to be used only when connecting to the database. For this reason, the parameter *pg.userConnectionSuffix* was separated from *pg.user* and *oms.db.user*.<br/>Example: "@mydemoserver" ||
+| pg.sslMode | *pg.sslMode* has to contain one of the following values: *disable*, *allow*, *prefer*, *require*, *verify-ca*, *verify-full*. For a detailed description of settings, please see  the [official PostgreSQL documentation](https://www.postgresql.org/docs/12/libpq-connect.html#LIBPQ-CONNSTRING). | prefer |
+| pg.sslCompression | If set to *"1"*, data sent over SSL connections will be compressed. If set to *"0"*, compression will be disabled. For a detailed description, please see the [official PostgreSQL documentation](https://www.postgresql.org/docs/12/libpq-connect.html#LIBPQ-CONNSTRING). | "0" |
+| pg.sslRootCert | Azure Database for PostgreSQL service might require verification of the server certificate, see the [official Azure Database for PostgreSQL documentation](https://docs.microsoft.com/en-us/azure/postgresql/concepts-ssl-connection-security#applications-that-require-certificate-verification-for-tls-connectivity). To handle this case, it is possible to pass the SSL root certificate in *pg.sslRootCert*. ||
+| oms | Parameters of group oms are all related to the configuration of IOM. ||
+| oms.publicUrl	| The publicly accessible base URL of IOM which could be the DNS name of the load balancer, etc. It is used internally for link generation. | https://localhost |
+| oms.mailResourcesBaseUrl | The base path for e-mail resources that are loaded from the e-mail client, e.g., images or stylesheets. Also, see [Concept - IOM Customer Emails](TODO). | https://localhost/mailimages/customers |
+| oms.jwtSecret	| The shared secret for [JSON Web Token](https://jwt.io/) (JWT) creation/validation. JWTs will be generated with the HMAC algorithm (HS256).<br/>Intershop strongly recommends to change the default shared secret used for the [JSON Web Tokens](https://jwt.io/) creation/validation.<br/>To secure the JWT, a key of the same size as the hash output or larger must be used with the JWS HMAC SHA-2 algorithms (i.e, 256 bits for "HS256"), see [JSON Web Algorithms (JWA) | 3.2. HMAC with SHA-2 Functions](https://tools.ietf.org/html/rfc7518#section-3.2).<br/>* Ignored if *oms.jwtSecretKeyRef* is set. | length_must_be_at_least_32_chars |
+| oms.jwtSecretKeyRef | Instead of storing the JWT secret as plain text in the values file, a reference to a key within a secret can be used. For more information, see section [References to entries of Kubernetes secrets](TODO).<br/>* Only required if *oms.jwtSecret* is empty. ||
+| oms.archiveOrderMessageLogMinAge | Number of days after which the entries in table "OrderMessageLogDO" should be exported and the columns "request" and "response" set to 'archived' in order to reduce the table size.<br/>Min. accepted value: 10<br/>Exported data are stored under share/archive<br/>* Requires IOM 3.1.0.0 or newer<br/>* Value has to match `^[1-9]([0-9]+)?` | "90" |
+| oms.deleteOrderMessageLogMinAge | Number of days after which the entries in table "OrderMessageLogDO" will definitely be deleted in order to reduce the table size. Must be greater than *oms.archiveOrderMessageLogMinAge*.<br/>* Requires IOM 3.1.0.0 or newer<br/>* Value has to match `^[1-9]([0-9]+)?` | "180" |
+| oms.archiveShopCustomerMailMinAge | Number of days after which the entries in table "ShopCustomerMailTransmissionDO" should be exported (Quartz job "ShopCustomerMailTransmissionArchive") and the column "message" set to 'deleted' in order to reduce the table size. Default is 1826 for 5 years. However, the export will not take place if this property and *oms.archiveShopCustomerMailMaxCount* are not set.<br/>Min. accepted value: 10<br/>* Exported data are stored under share/archive<br/>* Requires IOM 3.1.0.0 or newer<br/>Value has to match `^[1-9]([0-9]+)$` | "1826" |
+| oms.archiveShopCustomerMailMaxCount | Maximum number of entries in table "ShopCustomerMailTransmissionDO" to be exported per run of the Quartz job "ShopCustomerMailTransmissionArchive". Default is 10000, however, the export will not take place if this property and 'archive_ShopCustomerMailMinAge' are not set.<br/>Min. accepted value: 10<br/>* Requires IOM 3.1.0.0 or newer<br/>* Value has to match `^[1-9]([0-9]+)$` | "10000" |
+| oms.deleteShopCustomerMailMinAge | The number of days after which the entries in table "ShopCustomerMailTransmissionDO" will definitely be deleted in order to reduce the table size. (Quartz job"ShopCustomerMailTransmissionArchive")  Default is 2190 for 6 years. However, the deletion will not take place if this property is not set.<br/>* Requires IOM 3.1.0.0 or newer<br/>* Value has to match `^[1-9]([0-9]+)$` | "2190" |
+| oms.secureCookiesEnabled | If set to *true*, cookies will be sent with secure flag. In this case OMT requires fully encrypted HTTP traffic in order to work properly.<br/>* Requires IOM 3.2.0.0 or newer | true |
+| oms.execBackendApps | If set to *false*, no backend applications will be executed in the current cluster. This is required by transregional installations of IOM only, where many local IOM clusters have to work together. In this case, only one of the clusters must execute backend applications. | true |
+| oms.db | Group *oms.db* bundles all parameters which are required to access the IOM database. General information required to connect the PostgreSQL server are stored at group *pg*. ||
+| oms.db.name | The name of the IOM database. | oms_db |
+| oms.db.user | The IOM database user.<br/>* Ignored if *oms.db.userSecretKeyRef* is set. | oms_user |
+| oms.db.userSecretKeyRef | Instead of storing the name of the user as plain text in the values file, a reference to a key within a secret can be used. For more information, see [section References to entries of Kubernetes secrets](TODO).<br/>* Only required if oms.db.user is not set. ||
+| oms.db.passwd | The password of the IOM database user. | OmsDB |
+| oms.db.passwdSecretKeyRef | Instead of storing the password as plain text in the values file, a reference to a key within a secret can be used. For more information, see section [References to entries of Kubernetes secrets](TODO).<br/>* Only required if oms.db.passwd is not set. ||
+| oms.db.hostlist | A comma-separated list of database servers. Each server entry consists of a hostname and port, separated by a colon. Setting the port is optional. If not set, standard port 5432 will be used.<br/>* Only required if a high availability cluster of PostgreSQL servers is used, to list all possible connecting possibilities to this cluster.<br/>* Affects IOM application servers only. All other database clients (config and dbaccount) are using connection information from *pg* parameters group only. The same is true for the IOM application server if *oms.db.hostlist* is empty. ||
+| oms.db.connectionMonitor | Parameters in *oms.db.connectionMonitor* are dedicated to control a Kubernetes cronjob that is writing *INFO log messages* created by process *connection_monitor.sh* that provide information about database clients and the number of connections they are using. This information is written in CSV format with quoted newlines between records.<br/>Example:<br/>`{"tenant":"company-name","environment":"system-name","logHost":"ci-iom-connection-monitor-27154801-c6lk4",`<br/>`"logVersion":"1.0","appName":"iom-config","appVersion":"3.6.0.0","logType":"script",`<br/>`"timestamp":"2021-08-18T12:01:01+00:00","level":"INFO","processName":"connection_monitor.sh",`<br/>`"message":"count,application_name,client_addr\\n51,OMS_ci-iom-0,40.67.249.40\\n2,psql,40.67.249.40",`<br/>`"configName":null}`<br/>*connection_monitor.sh* ignores settings of parameter *log.level.scripts*. It always uses log level *INFO*.<br/><br/>* Requires IOM 3.6.0.0 or newer ||
+| oms.db.connectionMonitor.enabled | Enables/disables Kubernetes cronjob providing the connection monitoring messages.<br/><br/>* Requires IOM 3.6.0.0 or newer | false |
+| oms.db.connectionMonitor.schedule | Controls frequency of Kubernetes cronjob providing the connection monitoring messages.<br/><br/>* Requires IOM 3.6.0.0 or newer | "*/1 * * * *" |
+| oms.db.connectTimeout	| Controls connect timeout of database connections (jdbc- and psql-initiated connections). Value is defined in seconds. A value of 0 means to wait infinitely.<br/><br/>* Requires IOM 3.6.0.0 or newer<br/>* Requires dbaccount 1.3.0.0 or newer | 10 |
+| oms.smtp | Parameters in *oms.smtp* are bundling the information required to connect SMTP server.<br/><br/>If an integrated SMTP server is enabled (*mailhog.enabled* set to *true*), all parameters defined by *oms.smtp* are ignored completely. In this case, IOM will be automatically configured to use the integrated SMTP server. ||
+| oms.smtp.host | The hostname of the mail server IOM uses to send e-mails.<br/><br/>* Ignored if *mailhog.enabled* is set to *true*. | mail-service |
+| oms.smtp.port	| The port of the mail server IOM uses to send e-mails.<br/><br/>* Ignored if mailhog.enabled is set to true. | "1025" |
+| oms.smtp.user | The user name for mail server authentication.<br/><br/>* Only required if the SMTP server requires authentication.<br/>* Ignored if *mailhog.enabled* is set to *true*. ||
+| oms.smtp.userSecretKeyRef | Instead of storing the user name as plain text in the values file, a reference to a key within a secret can be used. For more information, see section [References to entries of Kubernetes secrets](TODO).<br/><br/>* Only required if *oms.smtp.user* is not set and the SMTP server requires authentication.<br/>* Ignored if *mailhog.enabled* is set to *true*. ||
+| oms.smtp.passwd | The password for mail server authentication.<br/><br/>* Only required if the SMTP server requires authentication.<br/>* Ignored if *mailhog.enabled* is set to *true*. ||
+| oms.smtp.passwdSecretKeyRef | Instead of storing the password as plain text in the values file, a reference to a key within a secret can be used. For more information, see section [References to entries of Kubernetes secrets](TODO).<br/><br/>* Only required if *oms.smtp.passwd* is not set and the SMTP server requires authentication.<br/>* Ignored if *mailhog.enabled* is set to *true*. ||
+| startupProbe | Group of parameters to fine-tune the startup probe of Kubernetes. The basic kind of probe is fixed and cannot be changed. For an overview of probes and pod lifecycle, see the [official Kubernetes documentation](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#types-of-probe).<br/><br/>Startup probe was introduced with IOM Helm charts 2.0.0, when IOM config image was removed. All the functionality that was executed by the config image before is in IOM version 4.0.0 and the newer part of the IOM image. The startup probe must now be used to observe all the tasks (create db account, roll out dump, execute stored procedures, run database migrations, apply project configuration) that are done before the Wildfly application server is started. The startup probe must not finally fail before the  end of the startup phase, otherwise the pod will be ended and restarted. The startup phase ends when startup probe succeeds. To do so, you need to configure startupProbe in such a way that<br/>`initialDelaySeconds + periodSeconds * failureThreshold`<br/>is larger than the time needed for the startup phase! The default values provided by IOM Helm charts provide an 11 minute timeframe for the startup phase: 60s + 10 * 60s = 660s = 11min. If your system needs more time for the startup phase, you have to adapt the parameters. It is recommended to increase *startupProbe.failureThreshold* only and to leave all other parameters unchanged. ||
+| startupProbe.enabled | Enables to switch on/off the startup probe.<br/><br/>* Requires IOM 4.0.0 or newer<br/>* Ignored if *config.enabled* is set to *true* (if an IOM of a version < 4.0.0 is used). | true |
+| startupProbe.periodSeconds | How often (in seconds) to perform the probe. Minimum value is 1.<br/><br/>* Requires IOM 4.0.0 or newer<br/>* Ignored if *config.enabled* is set to *true* (if an IOM of a version < 4.0.0 is used). | 10 |
+| startupProbe.initialDelaySeconds | Number of seconds after the container has started before startup probes are initiated. Minimum value is 0.<br/><br/>* Requires IOM 4.0.0 or newer<br/>* Ignored if *config.enabled* is set to *true* (if an IOM of a version < 4.0.0 is used). | 60 |
+| startupProbe.timeoutSeconds | Number of seconds after which the probe times out. Default is set to 1 second. Minimum value is 1.<br/><br/>* Requires IOM 4.0.0 or newer<br/>* Ignored if *config.enabled* is set to *true* (if an IOM of a version < 4.0.0 is used). | 5 |
+| startupProbe.failureThreshold | When a probe fails, Kubernetes will try failureThreshold times before giving up. Giving up in case of startup probe means restarting the container. Minimum value is 1.<br/><br/>* Requires IOM 4.0.0 or newer<br/>* Ignored if *config.enabled* is set to *true* (if an IOM of a version < 4.0.0 is used). | 60 |
+| livenessProbe	| Group of parameters to fine-tune the liveness probe of Kubernetes. The basic kind of probe is fixed and cannot be changed. For an overview of probes and pod lifecycle, see the [official Kubernetes documentation](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#types-of-probe). ||	
 livenessProbe.enabled	
 Enables to switch on/off the liveness probe.
 true
