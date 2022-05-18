@@ -13,9 +13,9 @@
 |                                                  |Additional information:                           |                                                  |
 |                                                  |                                                  |                                                  |
 |                                                  |* If *downtime* is set to *false*, the DBmigrate  |                                                  |
-|                                                  |process, as part of the process the config        |                                                  |
-|                                                  |init-container is executing, is skipped. This has |                                                  |
-|                                                  |no impact on the project configuration.           |                                                  |
+|                                                  |  process, as part of the process the config      |                                                  |
+|                                                  |  init-container is executing, is skipped. This   |                                                  |
+|                                                  |  has no impact on the project configuration.     |                                                  |
 |                                                  |                                                  |                                                  |
 |                                                  |* For the *downtime* parameter to work correctly, |                                                  |
 |                                                  |the `--wait` and `--timeout` command line         |                                                  |
