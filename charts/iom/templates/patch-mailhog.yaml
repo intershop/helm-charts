@@ -2,12 +2,12 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: mailhog-patch
+  name: {{ .Release.Name }}-mailhog-patch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: mailhog-patch
+  name: {{ .Release.Name }}-mailhog-patch
 rules:
 - apiGroups:
   - apps
@@ -20,14 +20,14 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: mailhog-patch
+  name: {{ .Release.Name }}-mailhog-patch
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: mailhog-patch
+  name: {{ .Release.Name }}-mailhog-patch
 subjects:
 - kind: ServiceAccount
-  name: mailhog-patch
+  name: {{ .Release.Name }}-mailhog-patch
 ---
 apiVersion: batch/v1
 kind: Job
@@ -54,7 +54,7 @@ spec:
         helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     spec:
       restartPolicy: Never
-      serviceAccountName: mailhog-patch
+      serviceAccountName: {{ .Release.Name }}-mailhog-patch
       containers:
       - name: patch-mailhog-probes
         image: "bitnami/kubectl"
