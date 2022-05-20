@@ -1,12 +1,15 @@
-.. topic:: Navigation
++-------------------------+-----------------+--------------------------+
+|`< Back                  |`^ Up            |`Next >                   |
+|<ParametersNGINX.rst>`_  |<../README.rst>`_|<ParametersTests.rst>`_   |
++-------------------------+-----------------+--------------------------+
 
-  +-------------------------+-----------------+--------------------------+
-  |`< Back                  |`^ Up            |`Next >                   |
-  |<ParametersNGINX.rst>`_  |<../README.rst>`_|<ParametersTests.rst>`_   |
-  +-------------------------+-----------------+--------------------------+
+================================================
+Helm Charts for Intershop Order Management (IOM)
+================================================
 
-Integrated PostgreSQL Server
-****************************
+------------------------------------------
+Parameters of Integrated PostgreSQL Server
+------------------------------------------
 
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |Parameter                               |Description                                                                                    |Default Value                                 |
@@ -43,7 +46,7 @@ Integrated PostgreSQL Server
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.pg.userSecretKeyRef            |Instead of storing the name of the user as plain text in the values file, a reference to a key |                                              |
 |                                        |within a secret can be used. For more information, see section `References to entries of       |                                              |
-|                                        |Kubernetes secrets <TODO>`_.                                                                   |                                              |
+|                                        |Kubernetes secrets <SecretKeyRef.rst>`_.                                                       |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.pg.passwd                      |The password of the superuser. Password will be set when starting the Postgres server.         |postgres                                      |
 |                                        |                                                                                               |                                              |
@@ -51,7 +54,7 @@ Integrated PostgreSQL Server
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.pg.passwdSecretKeyRef          |Instead of storing the password as plain text in the values file, a reference to a key within a|                                              |
 |                                        |secret can be used. For more information, see section `References to entries of Kubernetes     |                                              |
-|                                        |secrets <TODO>`_.                                                                              |                                              |
+|                                        |secrets`_.                                                                                     |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.pg.db                          |Name of default (management) database which will be created when starting the Postgres server. |postgres                                      |
 |                                        |                                                                                               |                                              |
@@ -107,9 +110,7 @@ Integrated PostgreSQL Server
 |                                        |                                                                                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 
-.. topic:: Navigation
-
-  +-------------------------+-----------------+--------------------------+
-  |`< Back                  |`^ Up            |`Next >                   |
-  |<ParametersNGINX.rst>`_  |<../README.rst>`_|<ParametersTests.rst>`_   |
-  +-------------------------+-----------------+--------------------------+
++-------------------------+-----------------+--------------------------+
+|`< Back                  |`^ Up            |`Next >                   |
+|<ParametersNGINX.rst>`_  |<../README.rst>`_|<ParametersTests.rst>`_   |
++-------------------------+-----------------+--------------------------+

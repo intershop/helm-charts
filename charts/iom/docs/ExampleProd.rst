@@ -3,13 +3,18 @@
 |<ExampleDemo.rst>`_  |<../README.rst>`_|<ParametersIOM.rst>`_    |
 +---------------------+-----------------+-------------------------+
 
+================================================
+Helm Charts for Intershop Order Management (IOM)
+================================================
+
+----------------------------------------
 Production System Running in Azure Cloud
-****************************************
+----------------------------------------
 
 Preconditions
 =============
 
-Please keep in mind that these preconditions reflect the use case described in section `IOM Helm-Charts <TODO>`_. When using the Intershop Commerce Platform, these preconditions are all covered by Intershop.
+Please keep in mind that these preconditions reflect the use case described in section `IOM Helm-Charts <ToolsAndConcepts.rst#iom-helm-charts>`_. When using the Intershop Commerce Platform, these preconditions are all covered by Intershop.
 
 * Azure Kubernetes Service (AKS) and virtual machines of sufficient size. 
 * Access to a PostgreSQL server preferred as "Azure Database for PostgreSQL servers".
@@ -23,13 +28,13 @@ Please keep in mind that these preconditions reflect the use case described in s
 
   * see: https://helm.sh/docs/intro/install/
 * Access to AKS from the machine used for installation
-* Access to `IOM Docker images <TODO>`_
-* Access to `IOM Helm-charts <TODO>`_
+* Access to `IOM Docker images <ToolsAndConcepts.rst#iom-docker-images>`_
+* Access to `IOM Helm-charts`_
 
 Requirements and Characteristics of IOM Installation
 ====================================================
 
-Requirements and characteristics are numbered again. You will find these numbers in the `values file <TODO>`_ listed below in order to see the relation between requirement and current configuration.
+Requirements and characteristics are numbered again. You will find these numbers in the `values file`_ listed below in order to see the relation between requirement and current configuration.
 
 * Two IOM application servers must run in parallel.
 * Usage of an external PostgreSQL server (Azure Database for PostgreSQL server).
@@ -43,7 +48,7 @@ Requirements and characteristics are numbered again. You will find these numbers
 Values File
 ===========
 
-The values file shown below reflects the requirements of the straight Helm approach as described in section `IOM Helm-Charts <TODO>`_ to demonstrate this process in all its details. Within the `Intershop Commerce Platform <TODO>`_ environment you would edit the values file only. Any further actions are triggered automatically when pushing changes made in the file.
+The values file shown below reflects the requirements of the straight Helm approach as described in section `IOM Helm-Charts`_ to demonstrate this process in all its details. Within the `Intershop Commerce Platform <ToolsAndConcepts.rst#intershop-commerce-platform>`_ environment you would edit the values file only. Any further actions are triggered automatically when pushing changes made in the file.
 
 Of course, this values file cannot be copied as it is. It references external resources and external services, which do not exist in other environments. Additionally, the hostname iom.mycompany.com needs to be replaced to match your requirements.
 
@@ -143,7 +148,7 @@ Of course, this values file cannot be copied as it is. It references external re
 Installation of IOM
 ===================
 
-Create a file *values.yaml* and fill it with the `content listed above <TODO>`_. Adapt all the changes to the file that are required by your environment. After that, the installation process can be started.
+Create a file *values.yaml* and fill it with the content listed above in `Values File`_. Adapt all the changes to the file that are required by your environment. After that, the installation process can be started.
 
 .. code-block:: shell
 
@@ -194,9 +199,9 @@ When all pods are *Running* and *Ready*, the installation process has finished. 
 Upgrade of IOM
 ==============
 
-Now we repeat the upgrade process, which was already shown in the `previous example <TODO>`_. This simple example was chosen because from a *Helm* perspective, the rollout of any change in values or charts is an upgrade process. The process is identical, no matter if only a simple value is changed or if new Docker images of a new IOM release are rolled out.
+Now we repeat the upgrade process, which was already shown in the `previous example <ExampleDemo.rst>`_. This simple example was chosen because from a *Helm* perspective, the rollout of any change in values or charts is an upgrade process. The process is identical, no matter if only a simple value is changed or if new Docker images of a new IOM release are rolled out.
 
-Also setting the *downtime* parameter (see: `Restrictions on Upgrade <TODO>`_) is considered. A change of a log-level is an uncritical change which can be applied without downtime. Since we have more than one IOM application server, the upgrade process can now be executed without downtime.
+Also setting the *downtime* parameter (see: `Restrictions on Upgrade <ToolsAndConcepts.rst#restrictions-on-upgrade>`_) is considered. A change of a log-level is an uncritical change which can be applied without downtime. Since we have more than one IOM application server, the upgrade process can now be executed without downtime.
 
 Add the following lines to the *values.yaml*:
 
@@ -214,7 +219,7 @@ These changes are now rolled out by running the *Helm* upgrade process to the ex
 
 The upgrade process will take some minutes before being finished.
 
-In the `previous section <TODO>`_ you may have noticed that the behavior of pods during the installation process is identical no matter which Kubernetes environment was used (Docker Desktop, AKS). The same applies to the upgrade process. For this reason, the box "Observe progress" will be skipped in the current section.
+In the `previous example <ExampleDemo.rst>`_ you may have noticed that the behavior of pods during the installation process is identical no matter which Kubernetes environment was used (Docker Desktop, AKS). The same applies to the upgrade process. For this reason, the box "Observe progress" will be skipped in the current section.
 
 Uninstall IOM
 =============

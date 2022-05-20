@@ -1,10 +1,15 @@
-+------------------------+-----------------+-------------------------+
-|`< Back                 |`^ Up            |`Next >                  |
-|<ToolsAndConcepts.rst>`_|<../README.rst>`_|<ExampleProd.rst>`_      |
-+------------------------+-----------------+-------------------------+
++-----------------+-------------------------+
+|`^ Up            |`Next >                  |
+|<../README.rst>`_|<ExampleDemo.rst>`_      |
++-----------------+-------------------------+
 
+================================================
+Helm Charts for Intershop Order Management (IOM)
+================================================
+
+----------------
 Tools & Concepts
-****************
+----------------
 
 In order to understand this document, it is essential to know some basic tools and concepts. It is not the goal of this document to teach you all these tools and concepts. However, it is intended to provide an insight into how these tools and concepts are used in the context of Intershop Order Management.
 
@@ -22,7 +27,7 @@ Kubectl
 
 Kubectl is a command-line interface to control Kubernetes clusters. It is part of Kubernetes, see https://kubernetes.io/docs/reference/kubectl/overview/.
 
-Since it is a client which runs on the machine used to control the Kubernetes-cluster, it has to be installed separately. For this reason, it is listed as a separate tool. In the narrow sense, it is not required to operate IOM, but it is used in this document within the section `Examples <TODO>`_, to view the status of Kubernetes-objects.
+Since it is a client which runs on the machine used to control the Kubernetes-cluster, it has to be installed separately. For this reason, it is listed as a separate tool. In the narrow sense, it is not required to operate IOM, but it is used by `Example: local Demo running in Docker-Desktop <ExampleDemo.rst>`_ and `Example: Production System in AKS <ExampleProd.rst>`_, to view the status of Kubernetes-objects.
 
 Helm
 ====
@@ -39,7 +44,7 @@ The images are available at:
 * docker.intershop.de/intershophub/iom-dbaccount:1.4.0
 * docker.intershop.de/intershophub/iom:4.0.0
 
-.. note:: Adapt the tag (version number) if you use a newer version of IOM. For a full list of available versions see `Overview - IOM Public Release Notes <TODO>`_.
+.. note:: Adapt the tag (version number) if you use a newer version of IOM. For a full list of available versions see `Overview - IOM Public Release Notes <https://support.intershop.com/kb/283D59>`_.
 
 *docker.intershop.de* is a private Docker registry. Private Docker registries require authentication and sufficient rights to pull images from them. The according authentication data can be passed in a Kubernetes secret object, which has to be set using the Helm parameter *imagePullSecrets*.
 
@@ -72,7 +77,7 @@ IOM Helm-charts is a package containing the description of all Kubernetes-object
   # It is shown here only for demonstration of how to reference the IOM Helm-chart after adding the according repository.
   helm install demo intershop/iom --values=values.yaml --namespace iom --timeout 20m0s --wait		
 
-The following illustration shows the most important components and personas when operating IOM with Helm. The project owner has to define a values file (available configuration parameters are explained in section `Parameters <TODO>`_), which can be used along with IOM Helm-charts to install, upgrade, rollback, and uninstall IOM within a Kubernetes runtime environment.
+The following illustration shows the most important components and personas when operating IOM with Helm. The project owner has to define a values file (available configuration parameters are explained in `Helm parameters of IOM <ParametersIOM.rst>`_, `Helm parameters of Integrated SMTP server <dParametersMailhog.rst>`_, `Helm parameters of Integrated NGINX Ingress Controller <ParametersNGINX.rst>`_, `Helm parameters of Integrated PostgreSQL Server <ParametersPosgres.rst>`_ and `Helm parameters of IOM-Tests <ParametersTests.rst>`_), which can be used along with IOM Helm-charts to install, upgrade, rollback, and uninstall IOM within a Kubernetes runtime environment.
 
 This is a very generalized view which has some restrictions when used with IOM. The next section explains these restrictions in detail.
 
@@ -94,7 +99,7 @@ The same reasons that make the rollback process problematic also limit the upgra
 
 When executing the upgrade process, the standard behavior of Helm is to keep the application always online. The different IOM application servers are updated one after another. In case of incompatible database changes, this would lead to problems, since one of the following cases is unavoidable: an old IOM application server tries to work with an already updated IOM database or vice versa.
 
-To overcome this problem, IOM Helm-charts provide the parameter *downtime* (see TODO), which controls the behavior of the upgrade process. If *downtime* is set to *true*, the whole IOM cluster will be stopped during the upgrade process. The IOM database will be upgraded first and after that, the IOM application servers are started again. This setting should always be used when upgrading to a new IOM version unless stated otherwise.
+To overcome this problem, IOM Helm-charts provide the parameter *downtime* (see `Helm parameters of IOM`_), which controls the behavior of the upgrade process. If *downtime* is set to *true*, the whole IOM cluster will be stopped during the upgrade process. The IOM database will be upgraded first and after that, the IOM application servers are started again. This setting should always be used when upgrading to a new IOM version unless stated otherwise.
 
 Within the context of projects, many changes can be applied to the running IOM cluster without requiring a downtime. In this case, the value of *downtime* has to be set to *false* before starting the upgrade process.
 
@@ -106,7 +111,7 @@ Within the context of projects, many changes can be applied to the running IOM c
 Intershop Commerce Platform
 ===========================
 
-The previous section `IOM Helm-Charts <TODO>`_ gave a general view on Helm, the IOM Helm-charts, and the according processes. The Intershop Commerce Platform environment modifies this concept a little bit, as shown in the following illustration.
+The previous section `IOM Helm-Charts`_ gave a general view on Helm, the IOM Helm-charts, and the according processes. The Intershop Commerce Platform environment modifies this concept a little bit, as shown in the following illustration.
 
 Project owners are not able to trigger any processes directly. They can only manage a sub-set of values to be applied along with the IOM Helm-chart. The processes are triggered by a flux-controller that observes the Git repository holding the values files. Depending on the type of IOM installation (*INT*, *Pre-PROD*, *PROD*, etc.) processes might need to be triggered manually by Intershop Operations. Intershop Operations also maintains a values file, which has higher precedence than the file of the project owner. This way it is ensured that the project owner is not able to change any critical settings. Which ones are affected depends on the type of IOM installation (*INT*, *Pre-PROD*, *PROD*, etc.). For example, a project owner should never be able to set log-level to *DEBUG* or *TRACE* on *PROD* environments.
 
@@ -116,7 +121,7 @@ In short, this concept is well known as GitOps.
   :width: 700px
   :align: center
 
-+------------------------+-----------------+-------------------------+
-|`< Back                 |`^ Up            |`Next >                  |
-|<ToolsAndConcepts.rst>`_|<../README.rst>`_|<ExampleProd.rst>`_      |
-+------------------------+-----------------+-------------------------+
++-----------------+-------------------------+
+|`^ Up            |`Next >                  |
+|<../README.rst>`_|<ExampleDemo.rst>`_      |
++-----------------+-------------------------+

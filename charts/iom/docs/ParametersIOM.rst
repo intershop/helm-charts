@@ -3,8 +3,13 @@
 |<ExampleProd.rst>`_|<../README.rst>`_|<ParametersMailhog.rst>`_|
 +-------------------+-----------------+-------------------------+
   
-IOM
-***
+================================================
+Helm Charts for Intershop Order Management (IOM)
+================================================
+
+----------------------------
+Parameters of IOM Helm Chart
+----------------------------
 
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |Parameter                               |Description                                                                                    |Default Value                                 |
@@ -14,8 +19,8 @@ IOM
 |                                        |                                                                                               |                                              |
 |                                        |                                                                                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
-|downtime                                |The *downtime* parameter is a very critical one. Its goal and behavior is                      |true                                          |
-|                                        |already described in `Restrictions on Upgrade <TODO>`_.                                        |                                              |
+|downtime                                |The *downtime* parameter is a very critical one. Its goal and behavior is already described in |true                                          |
+|                                        |`Restrictions on Upgrade <ToolsAndConcepts.rst#restrictions-on-upgrade>`_.                     |                                              |
 |                                        |                                                                                               |                                              |
 |                                        |Additional information:                                                                        |                                              |
 |                                        |                                                                                               |                                              |
@@ -80,7 +85,7 @@ IOM
 |                                        |server, for Azure Database for PostgreSQL service, and for most other servers,                 |                                              |
 |                                        |too.                                                                                           |                                              |
 |                                        |                                                                                               |                                              |
-|                                        |See `Options and Requirements of IOM database <TODO>`_ for details.                            |                                              |
+|                                        |See `Options and Requirements of IOM database <IOMDatabase.rst>`_ for details.                 |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |dbaccount.searchPath                    |In some circumstances, the search path for database objects has to be                          |                                              |
 |                                        |extended. This is the case if custom schemas are used for customizations or                    |                                              |
@@ -93,12 +98,12 @@ IOM
 |dbaccount.tablespace                    |Use the passed tablespace as default for IOM database user and IOM                             |                                              |
 |                                        |database. Tablespace has to exist, it will not be created.                                     |                                              |
 |                                        |                                                                                               |                                              |
-|                                        |Section `Options and Requirements of IOM database <TODO>`_ will give you some                  |                                              |
-|                                        |more information.                                                                              |                                              |
+|                                        |`Options and Requirements of IOM database`_ will give you some more information.       |                                              |	
 |                                        |                                                                                               |                                              |
 |                                        |* Ignored if *postgres.enabled* is *true*, since the integrated PostgreSQL                     |                                              |
 |                                        |  server can never create a custom tablespace prior to the initialization of the               |                                              |
 |                                        |  IOM database user and IOM database.                                                          |                                              |
+|                                        |                                                                                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |dbaccount.resources                     |Resource requests & limits.                                                                    |{}                                            |
 |                                        |                                                                                               |                                              |
@@ -190,9 +195,9 @@ IOM
 |                                        |                                                                                               |                                              |
 |                                        |* Ignored if *pg.userSecretKeyRef* is set.                                                     |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
-|pg.userSecretKeyRef                     |Instead of storing the name of the user as plain text in the values file, a                    |                                              |
-|                                        |reference to a key within a secret can be used. For more information see section               |                                              |
-|                                        |`References to entries of Kubernetes secrets <TODO>`_.                                         |                                              |
+|pg.userSecretKeyRef                     |Instead of storing the name of the user as plain text in the values file, a reference to a key |                                              |
+|                                        |within a secret can be used. For more information see `References to entries of                |                                              |
+|                                        |Kubernetes secrets <SecretKeyRef.rst>`_.                                                       |                                              |
 |                                        |                                                                                               |                                              |
 |                                        |* Required only if *dbaccount.enabled* is set to *true* and *pg.user* is not set.              |                                              |
 |                                        |                                                                                               |                                              |
@@ -208,9 +213,9 @@ IOM
 |                                        |                                                                                               |                                              |
 |                                        |* Ignored if *pg.passwdSecretKeyRef* is set.                                                   |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
-|pg.passwdSecretKeyRef                   |Instead of storing the password as plain text in the values file, a reference to               |                                              |
-|                                        |a key within a secret can be used. For more information see section `References                |                                              |
-|                                        |to entries of Kubernetes secrets <TODO>`_.                                                     |                                              |
+|pg.passwdSecretKeyRef                   |Instead of storing the password as plain text in the values file, a reference to a key within a|                                              |
+|                                        |secret can be used. For more information see `References to entries of Kubernetes              |                                              |
+|                                        |secrets`_.                                                                                     |                                              |
 |                                        |                                                                                               |                                              |
 |                                        |* Required only if *dbaccount.enabled* is set to *true* and *pg.passwd* is not set.            |                                              |
 |                                        |                                                                                               |                                              |
@@ -264,7 +269,8 @@ IOM
 |                                        |etc. It is used internally for link generation.                                                |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |oms.mailResourcesBaseUrl                |The base path for e-mail resources that are loaded from the e-mail client, e.g., images or     |https://localhost/mailimages/customers        |
-|                                        |stylesheets. Also, see `Concept - IOM Customer Emails <TODO>`_.                                |                                              |
+|                                        |stylesheets. Also, see `Concept - IOM Customer Emails                                          |                                              |
+|                                        |<https://support.intershop.com/kb/2X8913>`_.                                                   |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |oms.jwtSecret                           |The shared secret for `JSON Web Token <https://jwt.io/>`_ (JWT) creation/validation. JWTs will |length_must_be_at_least_32_chars              |
 |                                        |be generated with the HMAC algorithm (HS256).                                                  |                                              |
@@ -279,9 +285,9 @@ IOM
 |                                        |* Ignored if *oms.jwtSecretKeyRef* is set.                                                     |                                              |
 |                                        |                                                                                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
-|oms.jwtSecretKeyRef                     |Instead of storing the JWT secret as plain text in the values file, a reference to a key       |                                              |
-|                                        |within a secret can be used. For more information, see section `References to entries of       |                                              |
-|                                        |Kubernetes secrets <TODO>`_.                                                                   |                                              |
+|oms.jwtSecretKeyRef                     |Instead of storing the JWT secret as plain text in the values file, a reference to a key within|                                              |
+|                                        |a secret can be used. For more information, see `References to entries of Kubernetes           |                                              |
+|                                        |secrets`_.                                                                                     |                                              |
 |                                        |                                                                                               |                                              |
 |                                        |* Only required if *oms.jwtSecret* is empty.                                                   |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
@@ -352,17 +358,17 @@ IOM
 |                                        |* Ignored if *oms.db.userSecretKeyRef* is set.                                                 |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |oms.db.userSecretKeyRef                 |Instead of storing the name of the user as plain text in the values file, a reference to a key |                                              |
-|                                        |within a secret can be used. For more information, see section `References to entries of       |                                              |
-|                                        |Kubernetes secrets <TODO>`_.                                                                   |                                              |
+|                                        |within a secret can be used. For more information, see `References to entries of               |                                              |
+|                                        |Kubernetes secrets`_.                                                                          |                                              |
 |                                        |                                                                                               |                                              |
 |                                        |* Only required if *oms.db.user* is not set.                                                   |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |oms.db.passwd                           |The password of the IOM database user.                                                         |OmsDB                                         |
 |                                        |                                                                                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
-|oms.db.passwdSecretKeyRef               |Instead of storing the password as plain text in the values file, a reference to a key within  |                                              |
-|                                        |a secret can be used. For more information, see section `References to entries of Kubernetes   |                                              |
-|                                        |secrets <TODO>`_.                                                                              |                                              |
+|oms.db.passwdSecretKeyRef               |Instead of storing the password as plain text in the values file, a reference to a key within a|                                              |
+|                                        |secret can be used. For more information, see `References to entries of Kubernetes             |                                              |
+|                                        |secrets`_.                                                                                     |                                              |
 |                                        |                                                                                               |                                              |
 |                                        |* Only required if *oms.db.passwd* is not set.                                                 |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
@@ -433,8 +439,8 @@ IOM
 |                                        |* Ignored if *mailhog.enabled* is set to *true*.                                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |oms.smtp.userSecretKeyRef               |Instead of storing the user name as plain text in the values file, a reference to a key within |                                              |
-|                                        |a secret can be used. For more information, see section `References to entries of Kubernetes   |                                              |
-|                                        |secrets <TODO>`_.                                                                              |                                              |
+|                                        |a secret can be used. For more information, see `References to entries of Kubernetes           |                                              |
+|                                        |secrets`_.                                                                                     |                                              |
 |                                        |                                                                                               |                                              |
 |                                        |* Only required if *oms.smtp.user* is not set and the SMTP server requires authentication.     |                                              |
 |                                        |                                                                                               |                                              |
@@ -447,8 +453,8 @@ IOM
 |                                        |* Ignored if *mailhog.enabled* is set to *true*.                                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |oms.smtp.passwdSecretKeyRef             |Instead of storing the password as plain text in the values file, a reference to a key within a|                                              |
-|                                        |secret can be used. For more information, see section `References to entries of Kubernetes     |                                              |
-|                                        |secrets <TODO>`_.                                                                              |                                              |
+|                                        |secret can be used. For more information, see `References to entries of Kubernetes             |                                              |
+|                                        |secrets`_.                                                                                     |                                              |
 |                                        |                                                                                               |                                              |
 |                                        |* Only required if *oms.smtp.passwd* is not set and the SMTP server requires authentication.   |                                              |
 |                                        |                                                                                               |                                              |
@@ -591,7 +597,8 @@ IOM
 |                                        |There are two use cases which might make it necessary to define *jboss.nodePrefix*:            |                                              |
 |                                        |                                                                                               |                                              |
 |                                        |1. If the hostname exceeds the length of 23 characters, it cannot be used as unique ID of the  |                                              |
-|                                        |   Wildfly application server. See `Infogix support article on wildfly not starting <TODO>`_.  |                                              |
+|                                        |   Wildfly application server. See `Infogix support article on wildfly not starting            |                                              |
+|                                        |   <https://support.infogix.com/hc/en-us/articles/360056492934->`_.                            |                                              |
 |                                        |                                                                                               |                                              |
 |                                        |2. If IOM is set up as a transregional installation, which uses different Kubernetes clusters  |                                              |
 |                                        |   in different regions, it has to be guaranteed that each IOM server has its unique ID. To do |                                              |
@@ -600,7 +607,6 @@ IOM
 |                                        |   two options **MUST** be used for a transregional installation.                              |                                              |
 |                                        |                                                                                               |                                              |
 |                                        |* Requires IOM 3.5.0.0 or newer                                                                |                                              |
-|                                        |                                                                                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |log                                     |Parameters of group log are all related to the configuration of the logging of IOM.            |                                              |
 |                                        |                                                                                               |                                              |

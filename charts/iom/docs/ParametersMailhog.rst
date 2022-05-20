@@ -1,12 +1,15 @@
-.. topic:: Navigation
++---------------------+-----------------+-------------------------+
+|`< Back              |`^ Up            |`Next >                  |
+|<ParametersIOM.rst>`_|<../README.rst>`_|<ParametersNGINX.rst>`_  |
++---------------------+-----------------+-------------------------+
 
-  +---------------------+-----------------+-------------------------+
-  |`< Back              |`^ Up            |`Next >                  |
-  |<ParametersIOM.rst>`_|<../README.rst>`_|<ParametersNGINX.rst>`_  |
-  +---------------------+-----------------+-------------------------+
+================================================
+Helm Charts for Intershop Order Management (IOM)
+================================================
 
-Integrated SMTP Server
-**********************
+------------------------------------
+Parameters of Integrated SMTP Server
+------------------------------------
 
 A complete list of parameters can be found here: https://github.com/codecentric/helm-charts/tree/master/charts/mailhog
 
@@ -45,9 +48,7 @@ The table below only lists parameters that have to be changed for different oper
 |                                        |                                                                                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 
-.. topic:: Navigation
-
-  +---------------------+-----------------+-------------------------+
-  |`< Back              |`^ Up            |`Next >                  |
-  |<ParametersIOM.rst>`_|<../README.rst>`_|<ParametersNGINX.rst>`_  |
-  +---------------------+-----------------+-------------------------+
++---------------------+-----------------+-------------------------+
+|`< Back              |`^ Up            |`Next >                  |
+|<ParametersIOM.rst>`_|<../README.rst>`_|<ParametersNGINX.rst>`_  |
++---------------------+-----------------+-------------------------+

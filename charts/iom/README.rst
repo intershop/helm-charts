@@ -2,7 +2,7 @@
 Helm Charts for Intershop Order Management (IOM)
 ================================================
 
-The following documents provide an extensive documentation of operating IOM with IOM Helm Charts:
+The following documents provide an extensive documentation how to operate IOM with IOM Helm Charts:
 
 1.  `Tools & Concepts <docs/ToolsAndConcepts.rst>`_
 2.  `Example: local Demo running in Docker-Desktop <docs/ExampleDemo.rst>`_
@@ -16,6 +16,7 @@ The following documents provide an extensive documentation of operating IOM with
 10. `PostgreSQL Server Configuration <docs/Postgresql.rst>`_
 11. `Options and Requirements of IOM Database <docs/IOMDatabase.rst>`_
 
+==============================
 Change-log and Migration Notes
 ==============================
 

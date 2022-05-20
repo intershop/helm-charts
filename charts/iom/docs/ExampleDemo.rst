@@ -3,8 +3,13 @@
 |<ToolsAndConcepts.rst>`_|<../README.rst>`_|<ExampleProd.rst>`_      |
 +------------------------+-----------------+-------------------------+
 
+================================================
+Helm Charts for Intershop Order Management (IOM)
+================================================
+
+-------------------------------------------------------
 Local Demo System Running in Docker Desktop on Mac OS X
-*******************************************************
+-------------------------------------------------------
 
 Preconditions
 =============
@@ -20,13 +25,13 @@ Preconditions
 * Installation of Helm: >= v3.6
 
   * See: https://helm.sh/docs/intro/install/
-* Access to `IOM Docker images <TODO>`_
-* Access to `IOM Helm-charts <TODO>`_
+* Access to `IOM Docker images <ToolsAndConcepts.rst#iom-docker-images>`_
+* Access to `IOM Helm-charts <ToolsAndConcepts.rst#iom-helm-charts>`_
 
 Requirements and Characteristics of IOM Installation
 ====================================================
 
-Requirements and characteristics are numbered. You will find these numbers also in the `values file <TODO>`_ listed below in order to see the relation between requirement and current configuration.
+Requirements and characteristics are numbered. You will find these numbers also in the `values file`_ listed below in order to see the relation between requirement and current configuration.
 Usage of integrated PostgreSQL server.
 
 * *PostgreSQL* data stored persistently.
@@ -165,7 +170,7 @@ The values file contains minimal settings only, except *dbaccount.resetData*, wh
 Installation of IOM
 ===================
 
-Create a file *values.yaml* and fill it with the content `listed above <TODO>`_. Adapt the settings of *persistence.hostPath* and *postgres.persistence.hostPath* to point to directories on your computer, which is shared with Docker Desktop. After that, the installation process of IOM can be started.
+Create a file *values.yaml* and fill it with the content shown in section `values file`_. Adapt the settings of *persistence.hostPath* and *postgres.persistence.hostPath* to point to directories on your computer, which is shared with Docker Desktop. After that, the installation process of IOM can be started.
 
 .. code-block:: shell
 
@@ -234,7 +239,7 @@ Upgrade IOM
 
 From a Helm perspective, the rollout of any change in values or charts is an upgrade process. The process is identical, no matter if only a simple value is changed or new Docker images of a new IOM release are rolled out. The example shown here will demonstrate how to change the log-level of the *Quartz* subsystem, running in the WildFly application server.
 
-Before the start, keep the `restrictions on upgrade <TODO>`_ in mind. A change of a log-level is an uncritical change that can be applied without downtime. But we have decided to use a single IOM application server only (see Requirement #8). When using a single IOM application server only, an upgrade process with downtime is inevitable. Hence, we do not have to think about the setting of parameter *downtime*.
+Before the start, keep the `restrictions on upgrade <ToolsAndConcepts.rst#restrictions-on-upgrade>`_ in mind. A change of a log-level is an uncritical change that can be applied without downtime. But we have decided to use a single IOM application server only (see Requirement #8). When using a single IOM application server only, an upgrade process with downtime is inevitable. Hence, we do not have to think about the setting of parameter *downtime*.
 
 1. Modify ``values.yaml`` by adding the following lines to the file:
 

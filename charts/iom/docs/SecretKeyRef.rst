@@ -1,12 +1,15 @@
-.. topic:: Navigation
++--------------------------+-----------------+--------------------------+
+|`< Back                   |`^ Up            |`Next > <Postgresql.rst>`_|
+|<ParametersTests.rst>`_   |<../README.rst>`_|                          |
++--------------------------+-----------------+--------------------------+
 
-  +--------------------------+-----------------+--------------------------+
-  |`< Back                   |`^ Up            |`Next > <Postgresql.rst>`_|
-  |<ParametersTests.rst>`_   |<../README.rst>`_|                          |
-  +--------------------------+-----------------+--------------------------+
+================================================
+Helm Charts for Intershop Order Management (IOM)
+================================================
 
+--------------------------------
 References to Kubernetes Secrets
-********************************
+--------------------------------
 
 All parameters ending by *SecretKeyRef* serve as an alternative way to provide secret information. Instead of storing entries as plain text in the values file, these parameters allow reference entries within Kubernetes secrets. For more information about secrets, see `public Kubernetes documentation <https://kubernetes.io/docs/concepts/configuration/secret/>`_.
 
@@ -56,9 +59,7 @@ Example: values file
     sslRootCert:
   ...
 
-.. topic:: Navigation
-
-  +--------------------------+-----------------+--------------------------+
-  |`< Back                   |`^ Up            |`Next > <Postgresql.rst>`_|
-  |<ParametersTests.rst>`_   |<../README.rst>`_|                          |
-  +--------------------------+-----------------+--------------------------+
++--------------------------+-----------------+--------------------------+
+|`< Back                   |`^ Up            |`Next > <Postgresql.rst>`_|
+|<ParametersTests.rst>`_   |<../README.rst>`_|                          |
++--------------------------+-----------------+--------------------------+

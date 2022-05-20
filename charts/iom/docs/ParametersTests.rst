@@ -1,12 +1,15 @@
-.. topic:: Navigation
++--------------------------+-----------------+--------------------------+
+|`< Back                   |`^ Up            |`Next >                   |
+|<ParametersPostgres.rst>`_|<../README.rst>`_|<SecretKeyRef.rst>`_      |
++--------------------------+-----------------+--------------------------+
 
-  +--------------------------+-----------------+--------------------------+
-  |`< Back                   |`^ Up            |`Next >                   |
-  |<ParametersPostgres.rst>`_|<../README.rst>`_|<SecretKeyRef.rst>`_      |
-  +--------------------------+-----------------+--------------------------+
+================================================
+Helm Charts for Intershop Order Management (IOM)
+================================================
 
-IOM Tests
-*********
+-----------------------
+Parameters of IOM Tests
+-----------------------
 
 The *iom-tests* sub-chart provides a very generic way to run tests on an IOM installation. The sub-chart and the according parameters are simply the pure skeleton, resulting from a helm create call.
 
@@ -117,9 +120,7 @@ The *iom-tests* sub-chart provides a very generic way to run tests on an IOM ins
 |                                                    |                                                                                               |                                              |
 +----------------------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 
-.. topic:: Navigation
-
-  +--------------------------+-----------------+--------------------------+
-  |`< Back                   |`^ Up            |`Next >                   |
-  |<ParametersPostgres.rst>`_|<../README.rst>`_|<SecretKeyRef.rst>`_      |
-  +--------------------------+-----------------+--------------------------+
++--------------------------+-----------------+--------------------------+
+|`< Back                   |`^ Up            |`Next >                   |
+|<ParametersPostgres.rst>`_|<../README.rst>`_|<SecretKeyRef.rst>`_      |
++--------------------------+-----------------+--------------------------+

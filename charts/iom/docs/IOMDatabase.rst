@@ -1,12 +1,15 @@
-.. topic:: Navigation
++--------------------------+-----------------+
+|`< Back <Postgresql.rst>`_|`^ Up            |
+|                          |<../README.rst>`_|
++--------------------------+-----------------+
 
-  +--------------------------+-----------------+
-  |`< Back <Postgresql.rst>`_|`^ Up            |
-  |                          |<../README.rst>`_|
-  +--------------------------+-----------------+
+================================================
+Helm Charts for Intershop Order Management (IOM)
+================================================
 
+----------------------------------------
 Options and Requirements of IOM Database
-****************************************
+----------------------------------------
 
 Tablespace
 ==========
@@ -58,9 +61,7 @@ Search-Path
 
 In some circumstances, the search path for database objects has to be extended. Search-Path is set by dbaccount init-image. This process can be configured by parameter *dbaccount.searchPath*.
 
-.. topic:: Navigation
-
-  +--------------------------+-----------------+
-  |`< Back <Postgresql.rst>`_|`^ Up            |
-  |                          |<../README.rst>`_|
-  +--------------------------+-----------------+
++--------------------------+-----------------+
+|`< Back <Postgresql.rst>`_|`^ Up            |
+|                          |<../README.rst>`_|
++--------------------------+-----------------+
