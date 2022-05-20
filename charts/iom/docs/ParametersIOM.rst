@@ -98,7 +98,7 @@ Parameters of IOM Helm Chart
 |dbaccount.tablespace                    |Use the passed tablespace as default for IOM database user and IOM                             |                                              |
 |                                        |database. Tablespace has to exist, it will not be created.                                     |                                              |
 |                                        |                                                                                               |                                              |
-|                                        |`Options and Requirements of IOM database`_ will give you some more information.       |                                              |	
+|                                        |`Options and Requirements of IOM database`_ will give you some more information.               |                                              |	
 |                                        |                                                                                               |                                              |
 |                                        |* Ignored if *postgres.enabled* is *true*, since the integrated PostgreSQL                     |                                              |
 |                                        |  server can never create a custom tablespace prior to the initialization of the               |                                              |
