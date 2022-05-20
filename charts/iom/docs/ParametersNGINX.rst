@@ -1,6 +1,9 @@
 .. topic:: Navigation
 
-  `< Back <ParametersMailhog.rst>`_ | `^ Up <../README.rst>`_ | `Next > <ParametersPostgres.rst>`_
+  +-------------------------+-----------------+--------------------------+
+  |`< Back                  |`^ Up            |`Next >                   |
+  |<ParametersMailhog.rst>`_|<../README.rst>`_|<ParametersPostgres.rst>`_|
+  +-------------------------+-----------------+--------------------------+
 
 Integrated NGINX Ingress Controller
 ***********************************
@@ -78,4 +81,7 @@ The table below only lists parameters that have to be changed for different oper
 
 .. topic:: Navigation
 
-  `< Back <ParametersMailhog.rst>`_ | `^ Up <../README.rst>`_ | `Next > <ParametersPostgres.rst>`_
+  +-------------------------+-----------------+--------------------------+
+  |`< Back                  |`^ Up            |`Next >                   |
+  |<ParametersMailhog.rst>`_|<../README.rst>`_|<ParametersPostgres.rst>`_|
+  +-------------------------+-----------------+--------------------------+

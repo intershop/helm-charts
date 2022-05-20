@@ -1,6 +1,9 @@
 .. topic:: Navigation
 
-  `< Back <SecretKeyRef.rst>`_ | `^ Up <../README.rst>`_ | `Next > <IOMDatabase.rst>`_
+  +--------------------------+-----------------+--------------------------+
+  |`< Back                   |`^ Up            |`Next >                   |
+  |<SecretKeyRef.rst>`_      |<../README.rst>`_|<IOMDatabase.rst>`_       |
+  +--------------------------+-----------------+--------------------------+
 
 PostgreSQL Server Configuration
 *******************************
@@ -126,4 +129,7 @@ Some aspects of data reliability are discussed in `PostgreSQL 12 | Chapter 29. R
 								 
 .. topic:: Navigation
 
-  `< Back <SecretKeyRef.rst>`_ | `^ Up <../README.rst>`_ | `Next > <IOMDatabase.rst>`_
+  +--------------------------+-----------------+--------------------------+
+  |`< Back                   |`^ Up            |`Next >                   |
+  |<SecretKeyRef.rst>`_      |<../README.rst>`_|<IOMDatabase.rst>`_       |
+  +--------------------------+-----------------+--------------------------+

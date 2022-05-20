@@ -1,6 +1,9 @@
 .. topic:: Navigation
 
-  `< Back <ParametersTests.rst>`_ | `^ Up <../README.rst>`_ | `Next > <Postgres.rst>`_
+  +--------------------------+-----------------+--------------------------+
+  |`< Back                   |`^ Up            |`Next > <Postgresql.rst>`_|
+  |<ParametersTests.rst>`_   |<../README.rst>`_|                          |
+  +--------------------------+-----------------+--------------------------+
 
 References to Kubernetes Secrets
 ********************************
@@ -55,4 +58,7 @@ Example: values file
 
 .. topic:: Navigation
 
-  `< Back <ParametersTests.rst>`_ | `^ Up <../README.rst>`_ | `Next > <Postgres.rst>`_
+  +--------------------------+-----------------+--------------------------+
+  |`< Back                   |`^ Up            |`Next > <Postgresql.rst>`_|
+  |<ParametersTests.rst>`_   |<../README.rst>`_|                          |
+  +--------------------------+-----------------+--------------------------+

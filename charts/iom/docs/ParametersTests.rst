@@ -1,6 +1,9 @@
 .. topic:: Navigation
 
-  `< Back <ParametersPostgres.rst>`_ | `^ Up <../README.rst>`_ | `Next > <SecretKeyRef.rst>`_
+  +--------------------------+-----------------+--------------------------+
+  |`< Back                   |`^ Up            |`Next >                   |
+  |<ParametersPostgres.rst>`_|<../README.rst>`_|<SecretKeyRef.rst>`_      |
+  +--------------------------+-----------------+--------------------------+
 
 IOM Tests
 *********
@@ -116,4 +119,7 @@ The *iom-tests* sub-chart provides a very generic way to run tests on an IOM ins
 
 .. topic:: Navigation
 
-  `< Back <ParametersPostgres.rst>`_ | `^ Up <../README.rst>`_ | `Next > <SecretKeyRef.rst>`_
+  +--------------------------+-----------------+--------------------------+
+  |`< Back                   |`^ Up            |`Next >                   |
+  |<ParametersPostgres.rst>`_|<../README.rst>`_|<SecretKeyRef.rst>`_      |
+  +--------------------------+-----------------+--------------------------+

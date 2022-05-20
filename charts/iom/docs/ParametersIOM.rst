@@ -1,7 +1,10 @@
 .. topic:: Navigation
 
-  `< Back <ExampleProd.rst>`_ | `^ Up <../README.rst>`_ | `Next > <ParametersMailhog.rst>`_
-
+  +-------------------+-----------------+-------------------------+
+  |`< Back            |`^ Up            |`Next >                  |
+  |<ExampleProd.rst>`_|<../README.rst>`_|<ParametersMailhog.rst>`_|
+  +-------------------+-----------------+-------------------------+
+  
 IOM
 ***
 
@@ -920,4 +923,7 @@ IOM
 
 .. topic:: Navigation
 
-  `< Back <ExampleProd.rst>`_ | `^ Up <../README.rst>`_ | `Next > <ParametersMailhog.rst>`_
+  +-------------------+-----------------+-------------------------+
+  |`< Back            |`^ Up            |`Next >                  |
+  |<ExampleProd.rst>`_|<../README.rst>`_|<ParametersMailhog.rst>`_|
+  +-------------------+-----------------+-------------------------+

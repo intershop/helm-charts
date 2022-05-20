@@ -1,7 +1,9 @@
 .. topic:: Navigation
 
-  `< Back <Postgres.rst>`_ | `^ Up <../README.rst>`_ | 
-
+  +--------------------------+-----------------+
+  |`< Back <Postgresql.rst>`_|`^ Up            |
+  |                          |<../README.rst>`_|
+  +--------------------------+-----------------+
 
 Options and Requirements of IOM Database
 ****************************************
@@ -58,4 +60,7 @@ In some circumstances, the search path for database objects has to be extended. 
 
 .. topic:: Navigation
 
-  `< Back <Postgres.rst>`_ | `^ Up <../README.rst>`_ | 
+  +--------------------------+-----------------+
+  |`< Back <Postgresql.rst>`_|`^ Up            |
+  |                          |<../README.rst>`_|
+  +--------------------------+-----------------+

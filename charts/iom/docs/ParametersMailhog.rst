@@ -1,6 +1,9 @@
 .. topic:: Navigation
 
-  `< Back <ParametersIOM.rst>`_ | `^ Up <../README.rst>`_ | `Next > <ParametersNGINX.rst>`_
+  +---------------------+-----------------+-------------------------+
+  |`< Back              |`^ Up            |`Next >                  |
+  |<ParametersIOM.rst>`_|<../README.rst>`_|<ParametersNGINX.rst>`_  |
+  +---------------------+-----------------+-------------------------+
 
 Integrated SMTP Server
 **********************
@@ -44,4 +47,7 @@ The table below only lists parameters that have to be changed for different oper
 
 .. topic:: Navigation
 
-  `< Back <ParametersIOM.rst>`_ | `^ Up <../README.rst>`_ | `Next > <ParametersNGINX.rst>`_
+  +---------------------+-----------------+-------------------------+
+  |`< Back              |`^ Up            |`Next >                  |
+  |<ParametersIOM.rst>`_|<../README.rst>`_|<ParametersNGINX.rst>`_  |
+  +---------------------+-----------------+-------------------------+
