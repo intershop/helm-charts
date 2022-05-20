@@ -1,3 +1,7 @@
+.. topic:: Navigation
+
+  `< Back <ParametersTests.rst>`_ | `^ Up <../README.rst>`_ | `Next > <Postgres.rst>`_
+
 References to Kubernetes Secrets
 ********************************
 
@@ -48,3 +52,7 @@ Example: values file
     sslCompression:     "1"
     sslRootCert:
   ...
+
+.. topic:: Navigation
+
+  `< Back <ParametersTests.rst>`_ | `^ Up <../README.rst>`_ | `Next > <Postgres.rst>`_

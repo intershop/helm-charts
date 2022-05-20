@@ -1,3 +1,7 @@
+.. topic:: Navigation
+
+  `< Back <SecretKeyRef.rst>`_ | `^ Up <../README.rst>`_ | `Next > <IOMDatabase.rst>`_
+
 PostgreSQL Server Configuration
 *******************************
 
@@ -120,3 +124,6 @@ Some aspects of data reliability are discussed in `PostgreSQL 12 | Chapter 29. R
 |                                        |hours, to clean up possible leftover sessions.                                                 |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+
 								 
+.. topic:: Navigation
+
+  `< Back <SecretKeyRef.rst>`_ | `^ Up <../README.rst>`_ | `Next > <IOMDatabase.rst>`_

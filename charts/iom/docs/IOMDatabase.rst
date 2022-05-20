@@ -1,3 +1,8 @@
+.. topic:: Navigation
+
+  `< Back <Postgres.rst>`_ | `^ Up <../README.rst>`_ | 
+
+
 Options and Requirements of IOM Database
 ****************************************
 
@@ -50,3 +55,7 @@ Search-Path
 ===========
 
 In some circumstances, the search path for database objects has to be extended. Search-Path is set by dbaccount init-image. This process can be configured by parameter *dbaccount.searchPath*.
+
+.. topic:: Navigation
+
+  `< Back <Postgres.rst>`_ | `^ Up <../README.rst>`_ | 

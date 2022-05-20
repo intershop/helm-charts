@@ -1,3 +1,7 @@
+.. topic:: Navigation
+
+  `< Back <ExampleProd.rst>`_ | `^ Up <../README.rst>`_ | `Next > <ParametersMailhog.rst>`_
+
 IOM
 ***
 
@@ -913,3 +917,7 @@ IOM
 |affinity                                |Node/pod affinities.                                                                           |{}                                            |
 |                                        |                                                                                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
+
+.. topic:: Navigation
+
+  `< Back <ExampleProd.rst>`_ | `^ Up <../README.rst>`_ | `Next > <ParametersMailhog.rst>`_

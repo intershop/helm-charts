@@ -1,3 +1,7 @@
+.. topic:: Navigation
+
+  `< Back <ParametersPostgres.rst>`_ | `^ Up <../README.rst>`_ | `Next > <SecretKeyRef.rst>`_
+
 IOM Tests
 *********
 
@@ -109,3 +113,7 @@ The *iom-tests* sub-chart provides a very generic way to run tests on an IOM ins
 |iom-tests.affinity                                  |Node/pod affinities (requires Kubernetes >=1.6).                                               |{}                                            |
 |                                                    |                                                                                               |                                              |
 +----------------------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
+
+.. topic:: Navigation
+
+  `< Back <ParametersPostgres.rst>`_ | `^ Up <../README.rst>`_ | `Next > <SecretKeyRef.rst>`_
