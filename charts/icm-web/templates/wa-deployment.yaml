@@ -75,6 +75,10 @@ spec:
           env:
           - name: ICM_ICMSERVLETURLS
             value: "cs.url.0=http://{{ .Release.Name }}-{{ .Values.appServerConnection.serviceName }}:{{ .Values.appServerConnection.port }}/servlet/ConfigurationServlet"
+          {{- if .Values.webadapter.useHTTP2 }}
+          - name: USEHTTP2
+            value: true
+          {{- end }}
           {{- if .Values.environment }}
             {{- range $key, $value := .Values.environment }}
           - name: {{ $key }}
