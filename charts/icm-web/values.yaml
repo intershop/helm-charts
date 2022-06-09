@@ -10,7 +10,7 @@ replicaCount: 1
 
 webadapter:
   image:
-    repository: intershophub/icm-webadapter:2.3.0
+    repository: intershophub/icm-webadapter:2.4.0
     secret: dockerhub
     pullPolicy: IfNotPresent
     command: |
