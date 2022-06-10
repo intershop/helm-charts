@@ -110,6 +110,10 @@ icm-live:
       replicaCount: 1
       image:
         repository: intershophub/icm-webadapter:2.4.0
+<<<<<<< HEAD
+=======
+        secret: dockerhub
+>>>>>>> 5751650 (ICM: Enable HTTP/2 protocol by default (#61))
     agent:
       replicaCount: 1
       image:
