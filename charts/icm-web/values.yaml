@@ -10,11 +10,13 @@ replicaCount: 1
 
 webadapter:
   image:
-    repository: intershophub/icm-webadapter:2.3.0
+    repository: intershophub/icm-webadapter:2.4.0
     secret: dockerhub
     pullPolicy: IfNotPresent
     command: |
       /intershop/bin/intershop.sh
+  # disable HTTP/2 protocol support if required
+  disableHTTP2: false
   customHttpdConfig: false
   # provides custom certificates for webadapter
   customSSLCertificates: false
