@@ -40,20 +40,9 @@ spec:
       nodeSelector:
         {{- toYaml .Values.nodeSelector | trim | nindent 8 }}
       {{- end }}
-      {{- $customizationImagePullSecrets := list -}}
-      {{- if .Values.customizations -}}
-        {{- range $k, $v := .Values.customizations -}}
-          {{- if hasKey $v "secret" -}}
-            {{- $customizationImagePullSecrets = append $customizationImagePullSecrets $v.secret -}}
-          {{- end -}}
-        {{- end -}}
-      {{- end -}}
-      {{- if or (.Values.image.secret) ($customizationImagePullSecrets) }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-        - name: {{ .Values.image.secret }}
-        {{- range $curr := $customizationImagePullSecrets }}
-        - name: {{ $curr }}
-        {{- end }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
         - name: icm-as-server
