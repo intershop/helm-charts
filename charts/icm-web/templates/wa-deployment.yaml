@@ -21,10 +21,12 @@ spec:
       nodeSelector:
         {{- toYaml .Values.nodeSelector | trim | nindent 8 }}
       {{- end }}
+      {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- if .Values.webadapter.image.secret }}
-        - name: "{{ .Values.webadapter.image.secret }}"
+        {{- range .Values.imagePullSecrets }}
+        - name: {{ . | quote }}
         {{- end }}
+      {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes:

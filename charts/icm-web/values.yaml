@@ -28,11 +28,15 @@ agent:
   enabled: true
   image:
     repository: intershophub/icm-webadapteragent:4.0.0
-    secret: dockerhub
     pullPolicy: IfNotPresent
     command: |
       /intershop/bin/start-waa.sh
   replicaCount: 1
+
+## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
+## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+imagePullSecrets:
+- "dockerhub"
 
 customdata:
   enabled: false

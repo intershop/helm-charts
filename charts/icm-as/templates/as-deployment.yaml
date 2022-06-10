@@ -40,19 +40,10 @@ spec:
       nodeSelector:
         {{- toYaml .Values.nodeSelector | trim | nindent 8 }}
       {{- end }}
-      {{- $customizationImagePullSecrets := list -}}
-      {{- if .Values.customizations -}}
-        {{- range $k, $v := .Values.customizations -}}
-          {{- if hasKey $v "secret" -}}
-            {{- $customizationImagePullSecrets = append $customizationImagePullSecrets $v.secret -}}
-          {{- end -}}
-        {{- end -}}
-      {{- end -}}
-      {{- if or (.Values.image.secret) ($customizationImagePullSecrets) }}
+      {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
-        - name: {{ .Values.image.secret }}
-        {{- range $curr := $customizationImagePullSecrets }}
-        - name: {{ $curr }}
+        {{- range .Values.imagePullSecrets }}
+        - name: {{ . | quote }}
         {{- end }}
       {{- end }}
       containers:

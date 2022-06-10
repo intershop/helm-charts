@@ -3,7 +3,8 @@ icm-edit:
     nameOverride: icm-as-edit
     image:
       repository: intershophub/icm-as:11.0.0
-      secret: dockerhub
+    imagePullSecrets:
+    - "dockerhub"
     replicaCount: 1
     environment:
       INTERSHOP_DATABASETYPE: "mssql"
@@ -44,6 +45,8 @@ icm-edit:
 
   icm-web:
     nameOverride: icm-web-edit
+    imagePullSecrets:
+    - "dockerhub"
     webadapter:
       replicaCount: 1
       image:
@@ -53,7 +56,6 @@ icm-edit:
       replicaCount: 1
       image:
         repository: intershophub/icm-webadapteragent:4.0.0
-        secret: dockerhub
     appServerConnection:
       serviceName: icm-as-edit
     persistence:
@@ -66,8 +68,9 @@ icm-live:
   icm-as:
     nameOverride: icm-as-live
     image:
-      #secret: your secret
       repository: intershophub/icm-as:11.0.0
+    imagePullSecrets:
+    - "dockerhub"
     replicaCount: 1
     environment:
       INTERSHOP_DATABASETYPE: "mssql"
@@ -102,6 +105,8 @@ icm-live:
 
   icm-web:
     nameOverride: icm-web-live
+    imagePullSecrets:
+    - "dockerhub"
     webadapter:
       replicaCount: 1
       image:
@@ -111,7 +116,6 @@ icm-live:
       replicaCount: 1
       image:
         repository: intershophub/icm-webadapteragent:4.0.0
-        secret: dockerhub
     appServerConnection:
       serviceName: icm-as-live
     persistence:

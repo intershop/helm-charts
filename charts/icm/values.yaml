@@ -2,7 +2,8 @@ icm-as:
 
   image:
     repository: intershophub/icm-as:11.0.0
-    secret: dockerhub
+  imagePullSecrets:
+  - "dockerhub"
   replicaCount: 1
 
   ## @param environment - Environment variables to be set on containers
@@ -37,6 +38,8 @@ icm-as:
         size: 1Gi
 
 icm-web:
+  imagePullSecrets:
+  - "dockerhub"
   webadapter:
     replicaCount: 1
     image:
@@ -48,7 +51,6 @@ icm-web:
     replicaCount: 1
     image:
       repository: intershophub/icm-webadapteragent:4.0.0
-      secret: dockerhub
   persistence:
     size: 1Gi
     local:
