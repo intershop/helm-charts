@@ -35,7 +35,7 @@ agent:
 ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
 ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
 imagePullSecrets:
-- dockerhub
+- "dockerhub"
 
 customdata:
   enabled: false
