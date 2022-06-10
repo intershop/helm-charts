@@ -7,4 +7,3 @@ dependencies:
     version: 0.2.13
     repository: file://../icm
     alias: icm-edit
-
