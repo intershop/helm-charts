@@ -51,6 +51,7 @@ icm-edit:
       replicaCount: 1
       image:
         repository: intershophub/icm-webadapter:2.4.0
+        secret: dockerhub
     agent:
       replicaCount: 1
       image:
@@ -110,6 +111,7 @@ icm-live:
       replicaCount: 1
       image:
         repository: intershophub/icm-webadapter:2.4.0
+        secret: dockerhub
     agent:
       replicaCount: 1
       image:

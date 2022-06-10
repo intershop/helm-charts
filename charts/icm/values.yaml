@@ -44,6 +44,7 @@ icm-web:
     replicaCount: 1
     image:
       repository: intershophub/icm-webadapter:2.4.0
+      secret: dockerhub
   agent:
     # in some REST-based environment the webadapteragent isn't mandatory
     enabled: true
