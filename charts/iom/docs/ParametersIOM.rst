@@ -726,9 +726,9 @@ Parameters of IOM Helm Chart
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |spreadPods.enabled                      |Enables/disabled *spreadPods*.                                                                 |false                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
-|spreadPods.topologySpreadConstraints    |List of contraints, that will be extended about selection of IOM pods of the current Helm      |.. code-block:: yaml                          |
-|                                        |release. The default value provides an even spreading of these pods over existing nodes based  |                                              |
-|                                        |on their hostnames.                                                                            |  - maxSkew: 1                                |
+|spreadPods.topologySpreadConstraints    |List of contraints, that will be extended with selection of IOM pods of the current Helm       |.. code-block:: yaml                          |
+|                                        |release. The default value provides an even spreading of IOM pods over existing nodes based on |                                              |
+|                                        |their hostnames.                                                                               |  - maxSkew: 1                                |
 |                                        |                                                                                               |    whenUnsatisfiable: ScheduleAnyway         |
 |                                        |                                                                                               |    topologyKey: kubernetes.io/hostname       |
 |                                        |                                                                                               |                                              |
