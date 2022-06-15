@@ -695,6 +695,41 @@ Parameters of IOM Helm Chart
 |                                        |* Requires IOM 3.6.0.0 or newer                                                                |                                              |
 |                                        |                                                                                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
+|podDisruptionBudget.maxUnavailable      |Defines the maximum number of unavailble IOM pods, that are allowed during a voluntary         |1                                             |
+|                                        |disruption of the Kubernets cluster.                                                           |                                              |
++----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
+|podAntiAffinity                         |Default values of *podAntiAffinity* are creating a rule, which prevents scheduling of more than|                                              |
+|                                        |one IOM pod of the current helm release onto one node. This way the IOM deployment is very     |                                              |
+|                                        |robust againts failures of single nodes.                                                       |                                              |
++----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
+|podAntiAffinity.enabled                 |Enables/disables *podAntiAffinity*.                                                            |true                                          |
++----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
+|podAntiAffinity.mode                    |There are two values allowed for *podAntiAffinity.mode*: *required* and *preferred*. In mode   |required                                      |
+|                                        |*required* the deployment fails, if not enough nodes are available to deploy all IOM pods. When|                                              |
+|                                        |using mode *preferred*, this kind of problem will be tolerated for the prize of lower          |                                              |
+|                                        |availability.                                                                                  |                                              |
++----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
+|podAntiAffinity.topologyKey             |*podAntyAffinity.toplogyKey* defines the name of the label to be used for anti-affinity. The   |kubernetes.io/hostname                        |
+|                                        |defaukt value *kubernetes.io/hostname* makes sure, that nodes with identical values of this    |                                              |
+|                                        |label, cannot host more than one IOM pod of the same Helm release.                             |                                              |
++----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
+|affinity:                               |Allows to define additional pod affinity rules.                                                |{}                                            |
++----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
+|spreadPods                              |*spreadPods* provides an alternative or additional method to spread IOM pods over nodes. In    |                                              |
+|                                        |difference to *podAntiAffinity* it is possible to run more than one pod per node. E.g. if there|                                              |
+|                                        |are 2 nodes and 4 pods, the pods are evenly spread over the nodes. Each node is then running 2 |                                              |
+|                                        |pods. Additionally it is very easy to combine different topologies, since                      |                                              |
+|                                        |*topologySpreadContraints* can hold a list of constraints.                                     |                                              |
++----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
+|spreadPods.enabled                      |Enables/disabled *spreadPods*.                                                                 |false                                         |
++----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
+|spreadPods.topologySpreadConstraints    |List of contraints, that will be extended by Helm charts about selection of IOM pods of the    |.. code-block:: yaml                          |
+|                                        |current Helm release. The default value provides an even spreading of these pods over the nodes|  - maxSkew: 1                                |
+|                                        |based on their hostnames.                                                                      |    whenUnsatisfiable: ScheduleAnyway         |
+|                                        |                                                                                               |    topologyKey: kubernetes.io/hostname       |
+|                                        |For more information, see `Introducing PodTopologySpread                                       |                                              |
+|                                        |<https://kubernetes.io/blog/2020/05/introducing-podtopologyspread/>`_.                         |                                              |
++----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |datadogApm                              |*datadogApm* bundles parameters required to configure datadog Application Performance          |                                              |
 |                                        |Monitoring (APM).                                                                              |                                              |
 |                                        |                                                                                               |                                              |
@@ -919,9 +954,6 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |tolerations                             |Node taints to tolerate.                                                                       |[]                                            |
-|                                        |                                                                                               |                                              |
-+----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
-|affinity                                |Node/pod affinities.                                                                           |{}                                            |
 |                                        |                                                                                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 
