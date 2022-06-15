@@ -29,6 +29,46 @@ spec:
       serviceAccountName: {{ include "iom.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      affinity:
+        {{- if .Values.podAntiAffinity.enabled }}
+        podAntiAffinity:
+          {{- if eq .Values.podAntiAffinity.mode "required" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          {{- else if eq .Values.podAntiAffinity.mode "preferred" }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+          {{- else }}
+            {{ fail "podAntiAffinity.mode contains invalid value! Allowed are required|failed." }}
+          {{- end }}
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                - {{ .Chart.Name }}
+              - key: app.kubernetes.io/instance
+                operator: In
+                values:
+                - {{ .Release.Name }}
+            topologyKey: {{ .Values.podAntiAffinity.topologyKey }}
+        {{- end }}
+      {{- with .Values.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.spreadPods.enabled }}
+      # see: https://kubernetes.io/blog/2020/05/introducing-podtopologyspread/
+      topologySpreadConstraints:
+        {{- $name := .Chart.Name }}
+        {{- $release := .Release.Name }}
+        {{- range .Values.spreadPods.topologySpreadConstraints }}
+      - maxSkew: {{ .maxSkew }}
+        topologyKey: {{ .topologyKey}}
+        whenUnsatisfiable: {{ .whenUnsatisfiable }}
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: {{ $name }}
+            app.kubernetes.io/instance: {{ $release }}
+        {{- end }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -983,10 +1023,6 @@ spec:
             {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.tolerations }}

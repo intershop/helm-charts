@@ -289,6 +289,32 @@ imagePullSecrets: []
 nameOverride: 
 fullnameOverride: 
 
+podDisruptionBudget:
+  maxUnavailable: 1
+
+# see: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+# If enabled, a podAntiAffinity rule is created, which prevents scheduling of more than ONE pod
+# of the current helm release onto one node (depending on the value of topologyKey).
+# The mode defines the strictness of this rule.
+podAntiAffinity:
+  enabled: true
+  # required | preferred
+  mode: required
+  topologyKey: kubernetes.io/hostname
+
+affinity: {}
+
+# see: https://kubernetes.io/blog/2020/05/introducing-podtopologyspread/
+# see: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
+# If enabled, pods of current Helm release are evenly spread over defined topology. Maximum
+# difference of count of pods per topology item is defined by maxSkew.
+spreadPods:
+  enabled: false
+  topologySpreadConstraints:
+  - maxSkew: 1
+    whenUnsatisfiable: ScheduleAnyway
+    topologyKey: kubernetes.io/hostname
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -318,8 +344,6 @@ service:
 nodeSelector: {}
 
 tolerations: []
-
-affinity: {}
 
 postgres:
   enabled: false
