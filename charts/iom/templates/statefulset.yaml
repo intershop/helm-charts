@@ -29,6 +29,7 @@ spec:
       serviceAccountName: {{ include "iom.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if or .Values.affinity .Values.podAntiAffinity.enabled }}
       affinity:
         {{- if .Values.podAntiAffinity.enabled }}
         podAntiAffinity:
@@ -64,8 +65,9 @@ spec:
             {{ fail "podAntiAffinity.mode contains invalid value! Allowed are required|failed." }}
           {{- end }}
         {{- end }}
-      {{- with .Values.affinity }}
-        {{- toYaml . | nindent 8 }}
+        {{- with .Values.affinity }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- end }}
       {{- if .Values.spreadPods.enabled }}
       # see: https://kubernetes.io/blog/2020/05/introducing-podtopologyspread/
