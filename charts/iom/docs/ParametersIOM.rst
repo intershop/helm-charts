@@ -700,7 +700,7 @@ Parameters of IOM Helm Chart
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |podAntiAffinity                         |Default values of *podAntiAffinity* are creating a rule, which prevents scheduling of more than|                                              |
 |                                        |one IOM pod of the current helm release onto one node. This way the IOM deployment becomes     |                                              |
-|                                        |robust againts failures of single nodes.                                                       |                                              |
+|                                        |robust againts failures of a single node.                                                      |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |podAntiAffinity.enabled                 |Enables/disables *podAntiAffinity*.                                                            |true                                          |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
@@ -708,6 +708,11 @@ Parameters of IOM Helm Chart
 |                                        |*required* the deployment fails, if not enough nodes are available to deploy all IOM pods. When|                                              |
 |                                        |using mode *preferred*, this kind of problem will be tolerated for the prize of lower          |                                              |
 |                                        |availability.                                                                                  |                                              |
+|                                        |                                                                                               |                                              |
+|                                        |The behavior of the two modes is very different when using a dynamically growing Kubernetes    |                                              |
+|                                        |cluster. In mode *required* the creation of a new node is forced, if all existing nodes are    |                                              |
+|                                        |already used for the current deployment. Mode *preferred* will not enforce the creation of new |                                              |
+|                                        |nodes in this case.                                                                            |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |podAntiAffinity.topologyKey             |*podAntyAffinity.topologyKey* defines the name of the label to be used for anti-affinity. The  |kubernetes.io/hostname                        |
 |                                        |default value *kubernetes.io/hostname* makes sure, that nodes with identical values of this    |                                              |
@@ -721,6 +726,10 @@ Parameters of IOM Helm Chart
 |                                        |pods. Additionally it is very easy to combine different topologies, since                      |                                              |
 |                                        |*topologySpreadContraints* can hold a list of constraints.                                     |                                              |
 |                                        |                                                                                               |                                              |
+|                                        |When using a dynamically growing Kubernetes cluster, this method spreads the pods only over    |                                              |
+|                                        |already existing nodes. *spreadPods* is not enforcing the creation of new nodes. The only way  |                                              |
+|                                        |to this, is the usage of *podAntiAffinity.mode: required*.                                     |                                              |
+|                                        |                                                                                               |                                              |
 |                                        |For more information, see `Introducing PodTopologySpread                                       |                                              |
 |                                        |<https://kubernetes.io/blog/2020/05/introducing-podtopologyspread/>`_.                         |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
@@ -728,7 +737,7 @@ Parameters of IOM Helm Chart
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |spreadPods.topologySpreadConstraints    |List of contraints, that will be extended with selection of IOM pods of the current Helm       |.. code-block:: yaml                          |
 |                                        |release. The default value provides an even spreading of IOM pods over existing nodes based on |                                              |
-|                                        |their hostnames.                                                                               |  - maxSkew: 1                                |
+|                                        |                                                                                               |  - maxSkew: 1                                |
 |                                        |                                                                                               |    whenUnsatisfiable: ScheduleAnyway         |
 |                                        |                                                                                               |    topologyKey: kubernetes.io/hostname       |
 |                                        |                                                                                               |                                              |
