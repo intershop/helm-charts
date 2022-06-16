@@ -1,3 +1,6 @@
+.. Can be locally rendered by "restview README.rst".
+   Requires port py-rstcheck
+
 ================================================
 Helm Charts for Intershop Order Management (IOM)
 ================================================
@@ -16,8 +19,38 @@ The following documents provide an extensive documentation how to operate IOM wi
 10. `PostgreSQL Server Configuration <docs/Postgresql.rst>`_
 11. `Options and Requirements of IOM Database <docs/IOMDatabase.rst>`_
 
-==============================
-Change-log and Migration Notes
-==============================
+======================    
+Dependency Information
+======================
 
+For the best compatibility between IOM Helm charts and IOM, please always use the newest version of IOM Helm charts,
+regardless of the IOM version you are currently using. To do so, please update IOM Helm charts as often as possible.
+
++-----+-----+-----+-----+-----+-----+
+|Helm |3.5  |3.6  |3.7  |4.0  |4.1  |
+|/ IOM|     |     |     |     |     |
+|     |     |     |     |     |     |
++=====+=====+=====+=====+=====+=====+
+|2.2  |[1]_ |[2]_ |     |     |     |
+|     |     |     |     |     |     |
+|     |     |     |     |     |     |
++-----+-----+-----+-----+-----+-----+
+|2.1  |[1]_ |[2]_ |     |     |     |
+|     |     |     |     |     |     |
+|     |     |     |     |     |     |
++-----+-----+-----+-----+-----+-----+
+|2.0  |[1]_ |[2]_ |     |     |x    |
+|     |     |     |     |     |     |
+|     |     |     |     |     |     |
++-----+-----+-----+-----+-----+-----+
+
+x: not supported
+
+.. [1] Helm parameters *log.rest*, *config.skip*, *oms.db.connectionMonitor.*, *oms.db.connectTimeout* do not work in this combination.
+.. [2] Helm parameter *jboss.activemqClientPoolSizeMax* does not work in this combination
+
+
+=============
+Known Defects
+=============
 
