@@ -34,11 +34,6 @@ spec:
         podAntiAffinity:
           {{- if eq .Values.podAntiAffinity.mode "required" }}
           requiredDuringSchedulingIgnoredDuringExecution:
-          {{- else if eq .Values.podAntiAffinity.mode "preferred" }}
-          preferredDuringSchedulingIgnoredDuringExecution:
-          {{- else }}
-            {{ fail "podAntiAffinity.mode contains invalid value! Allowed are required|failed." }}
-          {{- end }}
           - labelSelector:
               matchExpressions:
               - key: app.kubernetes.io/name
@@ -50,6 +45,24 @@ spec:
                 values:
                 - {{ .Release.Name }}
             topologyKey: {{ .Values.podAntiAffinity.topologyKey }}
+          {{- else if eq .Values.podAntiAffinity.mode "preferred" }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                  - {{ .Chart.Name }}
+                - key: app.kubernetes.io/instance
+                  operator: In
+                  values:
+                  - {{ .Release.Name }}
+              topologyKey: {{ .Values.podAntiAffinity.topologyKey }}
+          {{- else }}
+            {{ fail "podAntiAffinity.mode contains invalid value! Allowed are required|failed." }}
+          {{- end }}
         {{- end }}
       {{- with .Values.affinity }}
         {{- toYaml . | nindent 8 }}
