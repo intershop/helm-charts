@@ -146,6 +146,8 @@ Known Defects
 |        |                                                                                                |
 +--------+------------------------------------------------------------------------------------------------+
 
+Helm parameter *oms.mailResourcesBaseUrl* was removed.
+       
 =============
 Known Defects
 =============
