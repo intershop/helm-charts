@@ -170,6 +170,8 @@ Removal Notes
 
 Helm parameter *oms.mailResourcesBaseUrl* has been removed.
 
+Helm parameter *oms.mailResourcesBaseUrl* was removed.
+       
 =============
 Known Defects
 =============
