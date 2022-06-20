@@ -45,7 +45,12 @@ x: not supported
 .. [1] Helm parameters *log.rest*, *config.skip*, *oms.db.connectionMonitor.*, *oms.db.connectTimeout* do not work in this combination.
 .. [2] Helm parameter *jboss.activemqClientPoolSizeMax* does not work in this combination
 
+-------------
+Removal Notes
+-------------
 
+Helm parameter *oms.mailResourcesBaseUrl* was removed.
+       
 =============
 Known Defects
 =============
