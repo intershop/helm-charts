@@ -104,7 +104,6 @@ oms:
   # public URL of IOM
   # used internally by IOM for link generation.
   publicUrl:                       https://localhost
-  mailResourcesBaseUrl:            https://localhost/mailimages/customers
   # Shared secret for JWT creation / validation
   jwtSecret:                       length_must_be_at_least_32_chars
   jwtSecretKeyRef:                 {}

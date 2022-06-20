@@ -268,10 +268,6 @@ Parameters of IOM Helm Chart
 |oms.publicUrl                           |The publicly accessible base URL of IOM which could be the DNS name of the load balancer,      |https://localhost                             |
 |                                        |etc. It is used internally for link generation.                                                |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
-|oms.mailResourcesBaseUrl                |The base path for e-mail resources that are loaded from the e-mail client, e.g., images or     |https://localhost/mailimages/customers        |
-|                                        |stylesheets. Also, see `Concept - IOM Customer Emails                                          |                                              |
-|                                        |<https://support.intershop.com/kb/2X8913>`_.                                                   |                                              |
-+----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |oms.jwtSecret                           |The shared secret for `JSON Web Token <https://jwt.io/>`_ (JWT) creation/validation. JWTs will |length_must_be_at_least_32_chars              |
 |                                        |be generated with the HMAC algorithm (HS256).                                                  |                                              |
 |                                        |                                                                                               |                                              |

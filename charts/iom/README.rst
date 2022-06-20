@@ -98,6 +98,12 @@ Please check your cluster in advance. If the capacity is not sufficient, please 
 Fixed Defects
 -------------
 
+-------------
+Removal Notes
+-------------
+
+Helm parameter *oms.mailResourcesBaseUrl* has been removed.
+       
 =============
 Known Defects
 =============

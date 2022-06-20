@@ -439,10 +439,6 @@ spec:
             - name: OMS_PUBLIC_URL
               value: {{ .Values.oms.publicUrl }}
               {{- end }}
-              {{- if .Values.oms.mailResourcesBaseUrl }}
-            - name: OMS_MAIL_RESOURCES_BASE_URL
-              value: {{ .Values.oms.mailResourcesBaseUrl }}
-              {{- end }}
               {{- /* jwtSecretKeyRef has precedence over jwtSecret */ -}}
               {{- if .Values.oms.jwtSecretKeyRef }}
             - name: OMS_JWT_SECRET
