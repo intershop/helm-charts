@@ -2,9 +2,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "icm-web.fullname" . }}-wa
+  {{- if .Values.webadapter.deploymentAnnotations }}
+  annotations:
+    {{- toYaml .Values.webadapter.deploymentAnnotations | trim | nindent 4 }}
+  {{- end }}
   labels:
     app: {{ include "icm-web.fullname" . }}-wa
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- if .Values.webadapter.deploymentLabels }}
+      {{- toYaml .Values.webadapter.deploymentLabels | trim | nindent 4 }}
+    {{- end }}
 spec:
   replicas: {{ .Values.webadapter.replicaCount }}
   selector:
@@ -13,9 +20,16 @@ spec:
       release: {{ .Release.Name }}
   template:
     metadata:
+    {{- if .Values.webadapter.podAnnotations }}
+      annotations:
+      {{- toYaml .Values.webadapter.podAnnotations | trim | nindent 8 }}
+    {{- end }}
       labels:
         app: {{ include "icm-web.fullname" . }}-wa
         release: {{ .Release.Name }}
+        {{- if .Values.webadapter.podLabels }}
+          {{- toYaml .Values.webadapter.podLabels | trim | nindent 8 }}
+        {{- end }}
     spec:
       {{- if .Values.nodeSelector}}
       nodeSelector:
@@ -79,7 +93,7 @@ spec:
             value: "cs.url.0=http://{{ .Release.Name }}-{{ .Values.appServerConnection.serviceName }}:{{ .Values.appServerConnection.port }}/servlet/ConfigurationServlet"
           {{- if .Values.webadapter.disableHTTP2 }}
           - name: ICM_WEBSERVER_DISABLE_HTTP2
-            value: true
+            value: "true"
           {{- end }}
           {{- if .Values.environment }}
             {{- range $key, $value := .Values.environment }}
