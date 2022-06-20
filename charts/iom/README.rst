@@ -1,3 +1,6 @@
+.. Can be locally rendered by "restview README.rst".
+   Requires port py-rstcheck
+
 ================================================
 Helm Charts for Intershop Order Management (IOM)
 ================================================
@@ -16,9 +19,31 @@ The following documents provide an extensive documentation how to operate IOM wi
 10. `PostgreSQL Server Configuration <docs/Postgresql.rst>`_
 11. `Options and Requirements of IOM Database <docs/IOMDatabase.rst>`_
 
-======================
+======================    
 Dependency Information
 ======================
+
+For the best compatibility between IOM Helm charts and IOM, please always use the newest version of IOM Helm charts,
+regardless of the IOM version you are currently using. To do so, please update IOM Helm charts as often as possible.
+
++-------------+-----+-----+-----+-----+-----+
+|Helm / IOM   |3.5  |3.6  |3.7  |4.0  |4.1  |
+|             |     |     |     |     |     |
++=============+=====+=====+=====+=====+=====+
+|**2.2**      |[1]_ |[2]_ |     |     |     |
+|             |     |     |     |     |     |
++-------------+-----+-----+-----+-----+-----+
+|**2.1**      |[1]_ |[2]_ |     |     |     |
+|             |     |     |     |     |     |
++-------------+-----+-----+-----+-----+-----+
+|**2.0**      |[1]_ |[2]_ |     |     |x    |
+|             |     |     |     |     |     |
++-------------+-----+-----+-----+-----+-----+
+
+x: not supported
+
+.. [1] Helm parameters *log.rest*, *config.skip*, *oms.db.connectionMonitor.*, *oms.db.connectTimeout* do not work in this combination.
+.. [2] Helm parameter *jboss.activemqClientPoolSizeMax* does not work in this combination
 
 =============
 Version 2.2.0
@@ -73,5 +98,19 @@ Please check your cluster in advance. If the capacity is not sufficient, please 
 Fixed Defects
 -------------
 
+=============
+Known Defects
+=============
 
-
++--------+------------------------------------------------------------------------------------------------+
+|Key     |Summary                                                                                         |
+|        |                                                                                                |
++========+================================================================================================+
+|69933   |It is not possible to use the internal NGINX in combination with a global NGINX                 |
+|        |ingress-controller                                                                              |
+|        |                                                                                                |
++--------+------------------------------------------------------------------------------------------------+
+|76294   |Internal NGINX ingress-controller cannot use custom ingress-class nginx-iom (it is using class  |
+|        |nginx instead)                                                                                  |
+|        |                                                                                                |
++--------+------------------------------------------------------------------------------------------------+
