@@ -63,14 +63,13 @@ The following box shows an example of how to create a Kubernetes secret to be us
 IOM Helm-Charts
 ===============
 
-IOM Helm-charts is a package containing the description of all Kubernetes-objects required to run IOM in Kubernetes. IOM Helm-charts are provided by Intershop at https://repository.intershop.de/helm. To use IOM Helm-charts, you have to execute the following commands:
+IOM Helm-charts is a package containing the description of all Kubernetes-objects required to run IOM in Kubernetes. IOM Helm-charts are provided by Intershop at https://intershop.github.io/helm-charts. To use IOM Helm-charts, you have to execute the following commands:
 
 .. code-block:: shell
 
   # Add all Intershop charts
-  helm repo add intershop https://repository.intershop.de/helm \
-    --password '<password>' \
-    --username '<user name>'
+  helm repo add intershop https://intershop.github.io/helm-charts
+  helm repo update
 
   # Now the repo can be used to install IOM.
   # The following command was taken from the examples section. Without the preconditions described there, it will not work.
