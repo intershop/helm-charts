@@ -43,7 +43,7 @@ Requirements and characteristics are numbered again. You will find these numbers
 * Shared file system of IOM located on externally provided resources.
 * Usage of an external NGINX Ingress controller.
 * The system should be able to be upgraded without downtime.
-* Time for initialization, migration, and configuration has to be increased due to the specific characteristics of the project.
+* Time for initialization, migration, and configuration has to be adapted due to the specific characteristics of the project.
 
 Values File
 ===========
@@ -69,7 +69,7 @@ Of course, this values file cannot be copied as it is. It references external re
     repository: "project-repository/iom-project"
     tag: "1.0.0"
 
-  # increase the time that is available for initialization, migration, and
+  # specify the time that is available for initialization, migration, and
   # configuration (requirement #8)
   startupProbe:
     failureThreshold: 120
@@ -156,7 +156,7 @@ Create a file *values.yaml* and fill it with the content listed above in `Values
   kubectl create namespace mycompany-iom
  
   # install IOM into namespace mycompany-iom
-  helm install ci intershop/iom --values=values.yaml --namespace mycompany-iom --timeout 20m0s --wait		
+  helm install ci intershop/iom --values=values.yaml --namespace mycompany-iom --timeout 30m0s --wait		
 
 This installation process will now take some minutes to finish. In the meantime, the progress of the installation process can be observed within a second terminal window. Using *kubectl*, you can see the status of every Kubernetes object. For simplicity, the following example shows the status of pods only.
 
@@ -215,7 +215,7 @@ These changes are now rolled out by running the *Helm* upgrade process to the ex
 
 .. code-block: shell
 
-  helm upgrade ci intershop/iom --values=values.yaml --namespace mycompany-iom --timeout 20m0s --wait
+  helm upgrade ci intershop/iom --values=values.yaml --namespace mycompany-iom --timeout 30m0s --wait
 
 The upgrade process will take some minutes before being finished.
 

@@ -94,6 +94,15 @@ the required number of nodes, the deployment of IOM will fail.
 
 Please check your cluster in advance. If the capacity is not sufficient, please use *podAntiAffinity.mode: preferred* instead.
 
+Default value of *startupProbe.failureTreshold* was changed
+===========================================================
+
+The default value of *startupProbe.failureTreshold* was increased from 60 to 354, which increases the default timeout for database
+initialization and migration from 11 minutes to one hour. If the new default value is not matching the requirements, you have to set
+the right value within the values file.
+
+See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
+
 -------------
 Fixed Defects
 -------------
