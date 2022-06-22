@@ -3,9 +3,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "icm-web.fullname" . }}-waa
+  {{- if .Values.agent.deploymentAnnotations }}
+  annotations:
+    {{- toYaml .Values.agent.deploymentAnnotations | trim | nindent 4 }}
+  {{- end }}
   labels:
     app: {{ include "icm-web.fullname" . }}-waa
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- if .Values.agent.deploymentLabels }}
+      {{- toYaml .Values.agent.deploymentLabels | trim | nindent 4 }}
+    {{- end }}
 spec:
   replicas: {{ .Values.agent.replicaCount }}
   selector:
@@ -14,9 +21,16 @@ spec:
       release: {{ .Release.Name }}
   template:
     metadata:
+    {{- if .Values.agent.podAnnotations }}
+      annotations:
+      {{- toYaml .Values.agent.podAnnotations | trim | nindent 8 }}
+    {{- end }}
       labels:
         app: {{ include "icm-web.fullname" . }}-waa
         release: {{ .Release.Name }}
+        {{- if .Values.agent.podLabels }}
+          {{- toYaml .Values.agent.podLabels | trim | nindent 8 }}
+        {{- end }}
     spec:
       {{- if .Values.nodeSelector}}
       nodeSelector:
