@@ -64,6 +64,12 @@ The values file contains minimal settings only, except *dbaccount.resetData*, wh
     repository: "docker.intershop.de/intershophub/iom"
     tag: "4.0.0"
 
+  # define a timeout for startupProbe, that is matching the requirements of the current
+  # IOM installation. In combination with the default values, this configuration results
+  # in a timeout value of 11 minutes for the initialization and migration of the database.
+  startupProbe:
+    failureThreshold: 60
+    
   # remove resource binding for cpu. This makes the system significantly
   # faster, especially the startup.
   resources:

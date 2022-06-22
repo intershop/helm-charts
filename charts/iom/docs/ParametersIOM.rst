@@ -462,18 +462,18 @@ Parameters of IOM Helm Chart
 |                                        |<https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#types-of-probe>`_.          |                                              |
 |                                        |                                                                                               |                                              |
 |                                        |Startup probe was introduced with IOM Helm charts 2.0.0, when IOM config image was removed. All|                                              |
-|                                        |the functionality that was executed by the config image before is in IOM version 4.0.0 and the |                                              |
-|                                        |newer part of the IOM image. The startup probe must now be used to observe all the tasks       |                                              |
-|                                        |(create db account, roll out dump, execute stored procedures, run database migrations, apply   |                                              |
-|                                        |project configuration) that are done before the Wildfly application server is started. The     |                                              |
-|                                        |startup probe must not finally fail before the end of the startup phase, otherwise the pod will|                                              |
-|                                        |be ended and restarted. The startup phase ends when startup probe succeeds. To do so, you need |                                              |
-|                                        |to configure startupProbe in such a way that                                                   |                                              |
+|                                        |the functionality that was executed by the config image before is in IOM version >= 4.0.0 part |                                              |
+|                                        |of the IOM image. The startup probe must now be used to observe all the tasks (create db       |                                              |
+|                                        |account, roll out dump, execute stored procedures, run database migrations, apply project      |                                              |
+|                                        |configuration) that are done before the Wildfly application server is started. The startup     |                                              |
+|                                        |probe must not finally fail before the end of the startup phase, otherwise the pod will be     |                                              |
+|                                        |ended and restarted. The startup phase ends when startup probe succeeds. To do so, you need to |                                              |
+|                                        |configure startupProbe in such a way that                                                      |                                              |
 |                                        |                                                                                               |                                              |
 |                                        |  *initialDelaySeconds + periodSeconds * failureThreshold*                                     |                                              |
 |                                        |                                                                                               |                                              |
 |                                        |is larger than the time needed for the startup phase! The default values provided by IOM Helm  |                                              |
-|                                        |charts provide an 11 minute timeframe for the startup phase: 60s + 10 * 60s = 660s = 11min. If |                                              |
+|                                        |charts provide an 11 minute timeframe for the startup phase: 60s + 10s * 354 = 3600s = 1h. If  |                                              |
 |                                        |your system needs more time for the startup phase, you have to adapt the parameters. It is     |                                              |
 |                                        |recommended to increase *startupProbe.failureThreshold* only and to leave all other parameters |                                              |
 |                                        |unchanged.                                                                                     |                                              |
@@ -490,7 +490,7 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                               |                                              |
 |                                        |* Ignored if *config.enabled* is set to *true* (if an IOM of a version < 4.0.0 is used).       |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
-|startupProbe.initialDelaySeconds        |Number of seconds after the container has started before startup probes are initiated. Minimum |60                                            |
+|startupProbe.initialDelaySeconds        |Number of seconds after the container has started before startup probes are initiated. Minimum |354                                           |
 |                                        |value is 0.                                                                                    |                                              |
 |                                        |                                                                                               |                                              |
 |                                        |* Requires IOM 4.0.0 or newer                                                                  |                                              |
