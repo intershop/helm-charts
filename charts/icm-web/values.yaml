@@ -92,6 +92,7 @@ persistence:
     dir: <local folder>
   cluster:
     enabled: false
+    storageClass: azurefile
 
 resources:
   webadapter:
