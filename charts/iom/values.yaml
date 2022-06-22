@@ -27,7 +27,7 @@ startupProbe:
   periodSeconds: 10
   initialDelaySeconds: 60
   timeoutSeconds: 5
-  failureThreshold: 60
+  failureThreshold: 354
 
 # the type of test is fixed, as it is an important characteristics of the container.
 # to test liveness, the static HTML page at / of the wildfly application server is tested.
