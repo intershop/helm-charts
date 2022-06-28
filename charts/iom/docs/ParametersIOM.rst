@@ -490,7 +490,7 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                               |                                              |
 |                                        |* Ignored if *config.enabled* is set to *true* (if an IOM of a version < 4.0.0 is used).       |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
-|startupProbe.initialDelaySeconds        |Number of seconds after the container has started before startup probes are initiated. Minimum |354                                           |
+|startupProbe.initialDelaySeconds        |Number of seconds after the container has started before startup probes are initiated. Minimum |60                                            |
 |                                        |value is 0.                                                                                    |                                              |
 |                                        |                                                                                               |                                              |
 |                                        |* Requires IOM 4.0.0 or newer                                                                  |                                              |
@@ -504,7 +504,7 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                               |                                              |
 |                                        |* Ignored if *config.enabled* is set to *true* (if an IOM of a version < 4.0.0 is used).       |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
-|startupProbe.failureThreshold           |When a probe fails, Kubernetes will try *failureThreshold* times before giving up. Giving up in|60                                            |
+|startupProbe.failureThreshold           |When a probe fails, Kubernetes will try *failureThreshold* times before giving up. Giving up in|354                                           |
 |                                        |case of startup probe means restarting the container. Minimum value is 1.                      |                                              |
 |                                        |                                                                                               |                                              |
 |                                        |* Requires IOM 4.0.0 or newer                                                                  |                                              |
