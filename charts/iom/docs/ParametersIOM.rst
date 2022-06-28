@@ -473,7 +473,7 @@ Parameters of IOM Helm Chart
 |                                        |  *initialDelaySeconds + periodSeconds * failureThreshold*                                     |                                              |
 |                                        |                                                                                               |                                              |
 |                                        |is larger than the time needed for the startup phase! The default values provided by IOM Helm  |                                              |
-|                                        |charts provide an 11 minute timeframe for the startup phase: 60s + 10s * 354 = 3600s = 1h. If  |                                              |
+|                                        |charts provide an 1 hour timeframe for the startup phase: 60s + 10s * 354 = 3600s = 1h. If     |                                              |
 |                                        |your system needs more time for the startup phase, you have to adapt the parameters. It is     |                                              |
 |                                        |recommended to increase *startupProbe.failureThreshold* only and to leave all other parameters |                                              |
 |                                        |unchanged.                                                                                     |                                              |
