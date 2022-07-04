@@ -57,19 +57,18 @@ spec:
       - name: pagecache-volume
         {{- if .Values.persistence.local.enabled }}
         persistentVolumeClaim:
-          claimName: "{{ include "icm-web.fullname" . }}-local-pagecache-pvc"
-        {{- else }}
-          {{- if .Values.persistence.nfs.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ include "icm-web.fullname" . }}-nfs-pagecache-pvc
-          {{- else }}
-            {{- if .Values.persistence.azurefiles.enabled }}
+          claimName: "{{ .Values.persistence.existingClaim }}"
+        {{- else if eq .Values.persistence.type "azurefiles" }}
         azureFile:
           secretName: {{ .Values.persistence.azurefiles.secretName }}
           shareName: {{ .Values.persistence.azurefiles.shareName }}
           readOnly: false
-            {{- end }}
-          {{- end }}
+        {{- else if eq .Values.persistence.type "nfs" }}
+        persistentVolumeClaim:
+          claimName: "{{ template "icm-web.fullname" . }}-nfs-pagecache-pvc"
+        {{- else if eq .Values.persistence.type "cluster" }}
+        persistentVolumeClaim:
+          claimName: "{{ template "icm-web.fullname" . }}-cluster-pagecache-pvc"
         {{- end }}
         {{- if .Values.customdata.enabled }}
       - name: custom-data-volume

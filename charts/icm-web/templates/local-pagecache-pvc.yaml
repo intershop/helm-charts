@@ -1,4 +1,4 @@
-{{- if .Values.persistence.local.enabled }}
+{{- if eq .Values.persistence.type "local" -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -10,4 +10,4 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.size }}
-{{ end }}
+{{- end -}}

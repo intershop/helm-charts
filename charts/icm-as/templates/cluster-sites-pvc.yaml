@@ -1,4 +1,4 @@
-{{- if and (.Values.persistence.cluster.enabled) (not .Values.persistence.cluster.existingClaim) -}}
+{{- if eq .Values.persistence.type "cluster"  -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

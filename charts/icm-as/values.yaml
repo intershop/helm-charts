@@ -130,27 +130,22 @@ jgroups:
     storageClass: azurefile
     existingClaim: false
 
-# Persistence for site folder
+# Persistence for sites folder
 persistence:
   size: 1Gi
-  nfs:
-    enabled: false
-    # existingClaim: helm-iste-icm-7-11-nfs-testdata-pvc
-    # server: <<ipaddress or hostname>>
-    # path: /export/data/iste/test
+# type cluster | nfs | azurefiles | existingClaim | local
+  type: cluster
+  existingClaim: claimName
+  cluster:
+    storageClass: azurefile
   azurefiles:
-    enabled: false
     shareName: icm-as-share
     secretName: icm-as-share-secret
-  # set enable true for local storage (.e.g. local testing)
-  local:
-    enabled: true
-    sites:
-      dir: <local folder>
-      size: 1Gi
-  cluster:
-    enabled: false
-    storageClass: azurefile
+  nfs:
+    server: <ipaddress or hostname>
+    path: <server folder>
+  local :
+    path: <local folder>
 
 customdata:
   enabled: false

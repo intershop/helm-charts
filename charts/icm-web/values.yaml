@@ -78,21 +78,19 @@ customdata:
 # Persistence for pagecache folder
 persistence:
   size: 1Gi
-  nfs:
-    enabled: false
-    # server: <ipaddress or hostname>
-    # path: /export/pagecache
-  azurefiles:
-    enabled: false
-    # shareName: icm-web-pagecache
-    # secretName: icm-web-pagecache-secret
-  # TODO remove local storage from common charts
-  local:
-    enabled: true
-    dir: <local folder>
+# type cluster | nfs | azurefiles | existingClaim | local
+  type: local
+  existingClaim: claimName
   cluster:
-    enabled: false
     storageClass: azurefile
+  azurefiles:
+    shareName: icm-as-share
+    secretName: icm-as-share-secret
+  nfs:
+    server: <ipaddress or hostname>
+    path: <server folder>
+  local :
+    path: <local folder>
 
 resources:
   webadapter:

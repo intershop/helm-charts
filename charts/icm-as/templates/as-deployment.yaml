@@ -178,28 +178,23 @@ spec:
         emptyDir: {}
         {{- end }}
       - name: sites-volume
-        {{- if .Values.persistence.local.enabled }}
+        {{- if eq .Values.persistence.type "local" }}
         persistentVolumeClaim:
           claimName: "{{ template "icm-as.fullname" . }}-local-sites-pvc"
-        {{- else if .Values.persistence.nfs.enabled }}
+        {{- else if eq .Values.persistence.type "existingClaim" }}
         persistentVolumeClaim:
-          {{- if .Values.persistence.nfs.existingClaim }}
-          claimName: "{{ .Values.persistence.nfs.existingClaim }}"
-          {{- else }}
-          claimName: "{{ template "icm-as.fullname" . }}-nfs-sites-pvc"
-          {{- end }}
-        {{- else if .Values.persistence.cluster.enabled }}
-        persistentVolumeClaim:
-          {{- if .Values.persistence.cluster.existingClaim }}
-          claimName: "{{ .Values.persistence.cluster.existingClaim }}"
-          {{- else }}
-          claimName: "{{ template "icm-as.fullname" . }}-cluster-sites-pvc"
-          {{- end }}
-        {{- else if .Values.persistence.azurefiles.enabled }}
+          claimName: "{{ .Values.persistence.existingClaim }}"
+        {{- else if eq .Values.persistence.type "azurefiles" }}
         azureFile:
           secretName: {{ .Values.persistence.azurefiles.secretName }}
           shareName: {{ .Values.persistence.azurefiles.shareName }}
           readOnly: false
+        {{- else if eq .Values.persistence.type "nfs" }}
+        persistentVolumeClaim:
+          claimName: "{{ template "icm-as.fullname" . }}-nfs-sites-pvc"
+        {{- else if eq .Values.persistence.type "cluster" }}
+        persistentVolumeClaim:
+          claimName: "{{ template "icm-as.fullname" . }}-cluster-sites-pvc"
         {{- end }}
         {{- if hasKey .Values.environment "STAGING_SYSTEM_TYPE" }}
         {{- if eq .Values.environment.STAGING_SYSTEM_TYPE "editing" }}

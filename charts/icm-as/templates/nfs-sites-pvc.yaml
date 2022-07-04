@@ -1,4 +1,4 @@
-{{- if and (.Values.persistence.nfs.enabled) (not .Values.persistence.nfs.existingClaim) -}}
+{{- if eq .Values.persistence.type "nfs" -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
