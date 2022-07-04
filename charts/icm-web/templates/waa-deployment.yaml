@@ -46,6 +46,14 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes:
       - name: pagecache-volume
+        {{- if .Values.persistence.cluster.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.cluster.existingClaim }}
+          claimName: "{{ .Values.persistence.cluster.existingClaim }}"
+          {{- else }}
+          claimName: "{{ template "icm-as.fullname" . }}-cluster-pagecache-pvc"
+          {{- end }}
+        {{- end }}
         {{- if .Values.persistence.local.enabled }}
         persistentVolumeClaim:
           claimName: "{{ include "icm-web.fullname" . }}-local-pagecache-pvc"
