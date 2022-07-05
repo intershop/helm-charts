@@ -19,7 +19,7 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v1
         with:
-          version: v3.7.1
+          version: v3.8.2
 
       # Python is required because `ct lint` runs Yamale (https://github.com/23andMe/Yamale) and
       # yamllint (https://github.com/adrienverge/yamllint) which require Python
@@ -29,7 +29,7 @@ jobs:
           python-version: 3.7
 
       - name: Set up chart-testing
-        uses: helm/chart-testing-action@v2.2.0
+        uses: helm/chart-testing-action@v2.2.1
 
       - name: Run chart-testing (list-changed)
         id: list-changed
@@ -46,8 +46,8 @@ jobs:
         with:
           config: kind.yaml
         if: steps.list-changed.outputs.changed == 'true'
-
+        
       - name: Run chart-testing (install)
-        run: ct install --config ct_icm.yaml
+        run: ct lint --config ct_icm.yaml
         if: steps.list-changed.outputs.changed == 'true'
 
