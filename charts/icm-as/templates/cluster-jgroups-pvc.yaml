@@ -1,4 +1,4 @@
-{{- if and (.Values.jgroups.cluster.enabled) (not .Values.jgroups.cluster.existingClaim) -}}
+{{- if eq .Values.persistence.jgroups.type "cluster" -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -6,9 +6,9 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: {{ .Values.jgroups.cluster.storageClass | quote }}
+  storageClassName: {{ .Values.persistence.jgroups.cluster.storageClass | quote }}
 
   resources:
     requests:
-      storage: {{ .Values.jgroups.size }}
+      storage: {{ .Values.persistence.jgroups.size }}
 {{- end -}}

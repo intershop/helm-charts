@@ -9,6 +9,7 @@ Installs the ICM application server independently.
 * Valid license file
 
 ## Chart Details
+
 This chart will do the following:
 
 * Deploy an ICM Application Server
@@ -16,10 +17,11 @@ This chart will do the following:
 ## Installing the Chart
 
 ### Docker pull secret
+
 Create a secret for a docker registry where the images are coming from. The name of the secret must be equal to the configured secrets under `image.secret` within the application deployment. By default the secret name is `dockerhub`.
 
 ```bash
-$ kubectl create secret docker-registry <yourDockerRegistryName> --docker-server=<yourDockerRegistryServer> --docker-username=<yourUsername> --docker-password=<yourPassword> --docker-email=<yourEmail>
+kubectl create secret docker-registry <yourDockerRegistryName> --docker-server=<yourDockerRegistryServer> --docker-username=<yourUsername> --docker-password=<yourPassword> --docker-email=<yourEmail>
 ```
 
 ### License file
@@ -28,8 +30,15 @@ A license file could either be provided with `helm install ... --set-file licens
 
 ### Persistence
 
-`local`, `cluster`, `azurefiles`, `nfs` are possible persistence options.
-The default is `local` where `persistence.local.sites.dir` need to be set to a valid local folder.
+#### Sites
+
+`local`, `cluster`, `azurefiles`, `nfs`, `existingClaim` are possible persistence options.
+The default is `local` where `persistence.sites.local.path` need to be set to a valid local folder.
+
+#### jGroups
+
+`emptyDir`, `cluster`, `existingClaim` are possible persistence options.
+The default is `emptyDir`.
 
 ### Database
 
@@ -40,12 +49,14 @@ The needed database connection could be configured via environment variables in 
 Before installing Intershop helm charts, you need to add the [Intershop helm repository](https://intershop.github.io/helm-charts) to your helm client
 
 ```bash
-$ helm repo add intershop https://intershop.github.io/helm-charts
-$ helm repo update
+helm repo add intershop https://intershop.github.io/helm-charts
+helm repo update
 ```
 
 ### Install Chart
+
 To install the chart with the release name `icm-as`
+
 ```bash
-$ helm install my-release intershop/icm-as --values=values.yaml --namespace icm-as
+helm install my-release intershop/icm-as --values=values.yaml --namespace icm-as
 ```
