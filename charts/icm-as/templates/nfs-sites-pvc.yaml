@@ -1,4 +1,4 @@
-{{- if eq .Values.persistence.type "nfs" -}}
+{{- if eq .Values.persistence.sites.type "nfs" -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -15,7 +15,7 @@ spec:
   volumeName: {{ template "icm-as.fullname" . }}-nfs-sites-pv
   resources:
     requests:
-      storage: {{ .Values.persistence.size }}
+      storage: {{ .Values.persistence.sites.size }}
   selector:
     matchLabels:
       type: nfs

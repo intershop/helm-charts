@@ -1,4 +1,4 @@
-{{- if eq .Values.persistence.type "local" -}}
+{{- if eq .Values.persistence.sites.type "local" -}}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -8,7 +8,7 @@ metadata:
 spec:
   storageClassName: manual
   capacity:
-    storage: {{ .Values.persistence.size }}
+    storage: {{ .Values.persistence.sites.size }}
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Delete

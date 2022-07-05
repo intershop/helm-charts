@@ -122,35 +122,32 @@ license:
     nodePublishSecretRef:
       name: secrets-store-creds
 
-# jGroups folder
-jgroups:
-  size: 1Gi
-  cluster:
-    enabled: false
-    storageClass: azurefile
-    existingClaim: false
-
-# Persistence for sites folder
 persistence:
-  size: 1Gi
-# type cluster | nfs | azurefiles | existingClaim | local
-  type: cluster
-  existingClaim: claimName
-  cluster:
-    storageClass: azurefile
-  azurefiles:
-    shareName: icm-as-share
-    secretName: icm-as-share-secret
-  nfs:
-    server: <ipaddress or hostname>
-    path: <server folder>
-  local :
-    path: <local folder>
-
-customdata:
-  enabled: false
-  existingClaim: icm-as-cluster-customData-pvc
-  mountPoint: /data
+  sites:
+    size: 1Gi
+    # type cluster | nfs | azurefiles | existingClaim | local
+    type: cluster
+    existingClaim: claimName
+    cluster:
+      storageClass: azurefile
+    azurefiles:
+      shareName: icm-as-share
+      secretName: icm-as-share-secret
+    nfs:
+      server: <ipaddress or hostname>
+      path: <server folder>
+    local :
+      path: <local folder>
+  jgroups:
+    size: 1Gi
+    cluster:
+      enabled: false
+      storageClass: azurefile
+      existingClaim: false
+  customdata:
+    enabled: false
+    existingClaim: icm-as-cluster-customData-pvc
+    mountPoint: /data
 
 applicationServer:
   enabled: true
