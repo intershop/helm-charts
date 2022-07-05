@@ -5,7 +5,7 @@ on:
     - 'charts/pwa/**'
 
 jobs:
-  lint-test:
+  lint-test-pwa:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

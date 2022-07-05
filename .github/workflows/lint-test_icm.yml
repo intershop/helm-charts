@@ -8,7 +8,7 @@ on:
     - 'charts/icm-replication/**'
 
 jobs:
-  lint-test:
+  lint-test-icm:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
