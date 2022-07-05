@@ -1,4 +1,4 @@
-{{- if .Values.persistence.local.enabled }}
+{{- if eq .Values.persistence.sites.type "local" -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -9,5 +9,5 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: {{ .Values.persistence.local.sites.size }}
-{{ end }}
+      storage: {{ .Values.persistence.sites.size }}
+{{- end -}}
