@@ -36,12 +36,11 @@ icm-edit:
 
     ## @param persistence - Either choose local (default), cluster, azurefiles or nfs persitence layer
     persistence:
-      size: 1Gi
-      local:
-        enabled: true
-        sites:
-          dir: <local sites folder>
-          size: 1Gi
+      sites:
+        size: 1Gi
+        type: local
+        local:
+          path: <local folder>
 
   icm-web:
     nameOverride: icm-web-edit
@@ -59,10 +58,11 @@ icm-edit:
     appServerConnection:
       serviceName: icm-as-edit
     persistence:
-      size: 1Gi
-      local:
-        enabled: true
-        dir: <local pagecache folder>
+      pagecache:
+        size: 1Gi
+        type: local
+        local:
+          path: <local folder>
 
 icm-live:
   icm-as:
@@ -96,12 +96,11 @@ icm-live:
 
     ## @param persistence - Either choose local (default), cluster, azurefiles or nfs persitence layer
     persistence:
-      size: 1Gi
-      local:
-        enabled: true
-        sites:
-          dir: <local sites folder>
-          size: 1Gi
+      sites:
+        size: 1Gi
+        type: local
+        local:
+          path: <local folder>
 
   icm-web:
     nameOverride: icm-web-live
@@ -119,7 +118,8 @@ icm-live:
     appServerConnection:
       serviceName: icm-as-live
     persistence:
-      size: 1Gi
-      local:
-        enabled: true
-        dir: <local pagecache folder>
+      pagecache:
+        size: 1Gi
+        type: local
+        local:
+          path: <local folder>

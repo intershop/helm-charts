@@ -30,12 +30,11 @@ icm-as:
 
   ## @param persistence - Either choose local (default), cluster, azurefiles or nfs persitence layer
   persistence:
-    size: 1Gi
-    local:
-      enabled: true
-      sites:
-        dir: <local sites folder>
-        size: 1Gi
+    sites:
+      size: 1Gi
+      type: local
+      local:
+        path: <local folder>
 
 icm-web:
   imagePullSecrets:
@@ -52,7 +51,8 @@ icm-web:
     image:
       repository: intershophub/icm-webadapteragent:4.0.0
   persistence:
-    size: 1Gi
-    local:
-      enabled: true
-      dir: <local pagecache folder>
+    pagecache:
+      size: 1Gi
+      type: local
+      local:
+        path: <local folder>
