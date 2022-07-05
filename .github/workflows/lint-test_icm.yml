@@ -47,15 +47,10 @@ jobs:
           config: kind.yaml
         if: steps.list-changed.outputs.changed == 'true'
         
-      - name: Log into registry docker.io
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_ACCESSTOKEN }}
-        if: steps.list-changed.outputs.changed == 'true'
-
       - name: Run chart-testing (install)
         run: |
+          kubectl create secret docker-registry dockerhub --docker-username=${{ secrets.DOCKER_USER }} --docker-password=${{ secrets.DOCKER_ACCESSTOKEN }} --docker-email=eng-ateam@intershop.com
+          
           mkdir -p /tmp/sites
           mkdir -p /tmp/pagecache
           mkdir -p /tmp/icm/sites
