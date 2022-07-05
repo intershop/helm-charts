@@ -5,21 +5,21 @@
 replicaCount: 1
 
 # defined where the application shall run on
-#nodeSelector:
+nodeSelector: []
 #  agentpool: <your agentpool>
 
 # define custom annotations for deployment and pods:
-#deploymentAnnotations:
+deploymentAnnotations: []
 #  myAnnotation: true
-#podAnnotations:
+podAnnotations: []
 #  myAnnotation: true
 
 # define custom labels for deployment and pods:
-#deploymentLabels:
+deploymentLabels: []
 #  tags.datadoghq.com/env: hell
 #  tags.datadoghq.com/service: icm-as
 #  tags.datadoghq.com/version: 11.0.0
-#podLabels:
+podLabels: []
 #  tags.datadoghq.com/env: hell
 #  tags.datadoghq.com/service: icm-as
 #  tags.datadoghq.com/version: 11.0.0
@@ -122,40 +122,33 @@ license:
     nodePublishSecretRef:
       name: secrets-store-creds
 
-# jGroups folder
-jgroups:
-  size: 1Gi
-  cluster:
-    enabled: false
-    storageClass: azurefile
-    existingClaim: false
-
-# Persistence for site folder
 persistence:
-  size: 1Gi
-  nfs:
+  sites:
+    size: 1Gi
+    # type cluster | nfs | azurefiles | existingClaim | local
+    type: local
+    existingClaim: <claim name>
+    cluster:
+      storageClass: azurefile
+    azurefiles:
+      shareName: icm-as-share
+      secretName: icm-as-share-secret
+    nfs:
+      server: <ipaddress or hostname>
+      path: <server folder>
+    local :
+      path: <local folder>
+  jgroups:
+    size: 1Gi
+    #type emptyDir | existingClaim | cluster
+    type: emptyDir
+    existingClaim: <claim name>
+    cluster:
+      storageClass: azurefile
+  customdata:
     enabled: false
-    # existingClaim: helm-iste-icm-7-11-nfs-testdata-pvc
-    # server: <<ipaddress or hostname>>
-    # path: /export/data/iste/test
-  azurefiles:
-    enabled: false
-    shareName: icm-as-share
-    secretName: icm-as-share-secret
-  # set enable true for local storage (.e.g. local testing)
-  local:
-    enabled: true
-    sites:
-      dir: <local folder>
-      size: 1Gi
-  cluster:
-    enabled: false
-    storageClass: azurefile
-
-customdata:
-  enabled: false
-  existingClaim: icm-as-cluster-customData-pvc
-  mountPoint: /data
+    existingClaim: icm-as-cluster-customData-pvc
+    mountPoint: /data
 
 applicationServer:
   enabled: true

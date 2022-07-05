@@ -5,13 +5,12 @@
 replicaCount: 1
 
 # defined where the application shall run on
-#nodeSelector:
+nodeSelector: []
 #  agentpool: <your agentpool>
 
 webadapter:
   image:
     repository: intershophub/icm-webadapter:2.4.0
-    secret: dockerhub
     pullPolicy: IfNotPresent
     command: |
       /intershop/bin/intershop.sh
@@ -24,17 +23,17 @@ webadapter:
   replicaCount: 1
 
   # define custom annotations for deployment and pods:
-  #deploymentAnnotations:
+  deploymentAnnotations: []
   #  myAnnotation: true
-  #podAnnotations:
+  podAnnotations: []
   #  myAnnotation: true
 
   # define custom labels for deployment and pods:
-  #deploymentLabels:
+  deploymentLabels: []
   #  tags.datadoghq.com/env: hell
   #  tags.datadoghq.com/service: icm-web-waa
   #  tags.datadoghq.com/version: 11.0.0
-  #podLabels:
+  podLabels: []
   #  tags.datadoghq.com/env: hell
   #  tags.datadoghq.com/service: icm-web-waa
   #  tags.datadoghq.com/version: 11.0.0
@@ -50,17 +49,17 @@ agent:
   replicaCount: 1
 
   # define custom annotations for deployment and pods:
-  #deploymentAnnotations:
+  deploymentAnnotations: []
   #  myAnnotation: true
-  #podAnnotations:
+  podAnnotations: []
   #  myAnnotation: true
 
   # define custom labels for deployment and pods:
-  #deploymentLabels:
+  deploymentLabels: []
   #  tags.datadoghq.com/env: hell
   #  tags.datadoghq.com/service: icm-web
   #  tags.datadoghq.com/version: 11.0.0
-  #podLabels:
+  podLabels: []
   #  tags.datadoghq.com/env: hell
   #  tags.datadoghq.com/service: icm-web
   #  tags.datadoghq.com/version: 11.0.0
@@ -70,29 +69,26 @@ agent:
 imagePullSecrets:
 - "dockerhub"
 
-customdata:
-  enabled: false
-  existingClaim: icm-as-cluster-customData-pvc
-  mountPoint: /data
-
-# Persistence for pagecache folder
 persistence:
-  size: 1Gi
-  nfs:
+  pagecache:
+    size: 1Gi
+    # type cluster | nfs | azurefiles | existingClaim | local
+    type: local
+    existingClaim: claimName
+    cluster:
+      storageClass: azurefile
+    azurefiles:
+      shareName: icm-as-share
+      secretName: icm-as-share-secret
+    nfs:
+      server: <ipaddress or hostname>
+      path: <server folder>
+    local :
+      path: <local folder>
+  customdata:
     enabled: false
-    # server: <ipaddress or hostname>
-    # path: /export/pagecache
-  azurefiles:
-    enabled: false
-    # shareName: icm-web-pagecache
-    # secretName: icm-web-pagecache-secret
-  # TODO remove local storage from common charts
-  local:
-    enabled: true
-    dir: <local folder>
-  cluster:
-    enabled: false
-    storageClass: azurefile
+    existingClaim: icm-as-cluster-customData-pvc
+    mountPoint: /data
 
 resources:
   webadapter:
@@ -122,3 +118,5 @@ podSecurityContext:
 appServerConnection:
   serviceName: icm-as
   port: 7743
+
+environment: []

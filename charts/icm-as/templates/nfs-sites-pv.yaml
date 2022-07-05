@@ -1,4 +1,4 @@
-{{- if and (.Values.persistence.nfs.enabled) (not .Values.persistence.nfs.existingClaim) }}
+{{- if eq .Values.persistence.sites.type "nfs" -}}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -8,10 +8,10 @@ metadata:
 {{ include "icm-as.labels" . | indent 4 }}
 spec:
   capacity:
-    storage: {{ .Values.persistence.size }}
+    storage: {{ .Values.persistence.sites.size }}
   accessModes:
     - ReadWriteMany
   nfs:
-    server: {{ .Values.persistence.nfs.server | quote }}
-    path: {{ .Values.persistence.nfs.path | quote }}
+    server: {{ .Values.persistence.sites.nfs.server | quote }}
+    path: {{ .Values.persistence.sites.nfs.path | quote }}
 {{- end -}}

@@ -9,6 +9,7 @@ This is the ICM helm chart
 * Valid license file
 
 ## Chart Details
+
 This chart will do the following:
 
 * Deploy an ICM Application Server using the [intershop/icm-as](../icm-as) chart
@@ -21,19 +22,22 @@ This chart will do the following:
 Before installing Intershop helm charts, you need to add the [Intershop helm repository](https://intershop.github.io/helm-charts) to your helm client
 
 ```bash
-$ helm repo add intershop https://intershop.github.io/helm-charts
-$ helm repo update
+helm repo add intershop https://intershop.github.io/helm-charts
+helm repo update
 ```
 
 ### Install Chart via repository
+
 To install the chart with the release name `icm` execute
+
 ```bash
-$ helm install my-release intershop/icm --values=values.yaml --namespace icm
+helm install my-release intershop/icm --values=values.yaml --namespace icm
 ```
 
 ### Install Chart via cloned helm-charts repo
+
 ```bash
-$ cd charts
-$ helm dependency update icm
-$ helm install my-release ./icm --values=values.yaml --namespace icm
+cd charts
+helm dependency update icm
+helm install my-release ./icm --values=values.yaml --namespace icm
 ```
