@@ -126,8 +126,8 @@ persistence:
   sites:
     size: 1Gi
     # type cluster | nfs | azurefiles | existingClaim | local
-    type: cluster
-    existingClaim: claimName
+    type: local
+    existingClaim: <claim name>
     cluster:
       storageClass: azurefile
     azurefiles:
@@ -140,10 +140,11 @@ persistence:
       path: <local folder>
   jgroups:
     size: 1Gi
+    #type emptyDir | existingClaim | cluster
+    type: emptyDir
+    existingClaim: <claim name>
     cluster:
-      enabled: false
       storageClass: azurefile
-      existingClaim: false
   customdata:
     enabled: false
     existingClaim: icm-as-cluster-customData-pvc

@@ -26,7 +26,7 @@ kubectl create secret docker-registry <yourDockerRegistryName> --docker-server=<
 ### Persistence
 
 `local`, `cluster`, `azurefiles`, `nfs`, `existingClaim` are possible persistence options.
-The default is `local` where `persistence.local.path` need to be set to a valid local folder.
+The default is `local` where `persistence.pagecache.local.path` need to be set to a valid local folder.
 
 ### Add the Intershop Helm repository
 

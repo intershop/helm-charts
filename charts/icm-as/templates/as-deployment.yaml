@@ -167,15 +167,14 @@ spec:
 {{ toYaml .Values.license.csi | indent 10 }}
         {{- end }}
       - name: jgroups-volume
-        {{- if .Values.persistence.jgroups.cluster.enabled }}
-        persistentVolumeClaim:
-          {{- if .Values.persistence.jgroups.cluster.existingClaim }}
-          claimName: "{{ .Values.jgroups.cluster.existingClaim }}"
-          {{- else }}
-          claimName: "{{ template "icm-as.fullname" . }}-cluster-jgroups-pvc"
-          {{- end }}
-        {{- else }}
+        {{- if eq .Values.persistence.jgroups.type "emptyDir" }}
         emptyDir: {}
+        {{- else if eq .Values.persistence.jgroups.type "cluster" }}
+        persistentVolumeClaim:
+          claimName: "{{ template "icm-as.fullname" . }}-cluster-jgroups-pvc"
+        {{- else if eq .Values.persistence.jgroups.type "existingClaim" }}
+        persistentVolumeClaim:
+          claimName: "{{ .Values.jgroups.cluster.existingClaim }}"
         {{- end }}
       - name: sites-volume
         {{- if eq .Values.persistence.sites.type "local" }}

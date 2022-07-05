@@ -31,7 +31,7 @@ A license file could either be provided with `helm install ... --set-file licens
 ### Persistence
 
 `local`, `cluster`, `azurefiles`, `nfs`, `existingClaim` are possible persistence options.
-The default is `local` where `persistence.local.path` need to be set to a valid local folder.
+The default is `local` where `persistence.sites.local.path` need to be set to a valid local folder.
 
 ### Database
 

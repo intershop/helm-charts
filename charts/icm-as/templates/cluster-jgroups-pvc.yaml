@@ -1,4 +1,4 @@
-{{- if and (.Values.persistence.jgroups.cluster.enabled) (not .Values.persistence.jgroups.cluster.existingClaim) -}}
+{{- if eq .Values.persistence.jgroups.type "cluster" -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
