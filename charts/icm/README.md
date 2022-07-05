@@ -1,4 +1,4 @@
-# Helm Chart Intershop Commerce Management - ICM
+# Test Helm Chart Intershop Commerce Management - ICM
 
 This is the ICM helm chart
 
