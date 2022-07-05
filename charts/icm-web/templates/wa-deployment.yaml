@@ -63,7 +63,7 @@ spec:
           secretName: {{ .Values.persistence.pagecache.azurefiles.secretName }}
           shareName: {{ .Values.persistence.pagecache.azurefiles.shareName }}
           readOnly: false
-        {{- else if eq .Values.persistence.type "local" }}
+        {{- else if eq .Values.persistence.pagecache.type "local" }}
         persistentVolumeClaim:
           claimName: "{{ template "icm-web.fullname" . }}-local-pagecache-pvc"
         {{- else if eq .Values.persistence.type "nfs" }}
