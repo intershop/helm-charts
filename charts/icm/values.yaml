@@ -10,8 +10,8 @@ icm-as:
   environment:
     INTERSHOP_DATABASETYPE: "mssql"
     INTERSHOP_JDBC_URL: "jdbc:sqlserver://<ipaddress>:1433;databaseName=intershop"
-    #INTERSHOP_DATABASETYPE: "oracle"
-    #INTERSHOP_JDBC_URL: "jdbc:oracle:thin:@<ipaddress>:1521:intershop"
+    # INTERSHOP_DATABASETYPE: "oracle"
+    # INTERSHOP_JDBC_URL: "jdbc:oracle:thin:@<ipaddress>:1521:intershop"
     INTERSHOP_JDBC_USER: "intershop"
     INTERSHOP_JDBC_PASSWORD: "intershop"
 
