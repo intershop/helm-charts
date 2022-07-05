@@ -25,6 +25,8 @@ kubectl create secret docker-registry <yourDockerRegistryName> --docker-server=<
 
 ### Persistence
 
+#### PageCache
+
 `local`, `cluster`, `azurefiles`, `nfs`, `existingClaim` are possible persistence options.
 The default is `local` where `persistence.pagecache.local.path` need to be set to a valid local folder.
 

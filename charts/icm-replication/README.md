@@ -9,6 +9,7 @@ This is the ICM Replication helm chart
 * Valid license file
 
 ## Chart Details
+
 This chart will do the following:
 
 * Deploys two ICM [intershop/icm](../icm) charts, one as Edit- and one as Live-System
@@ -20,20 +21,23 @@ This chart will do the following:
 Before installing Intershop helm charts, you need to add the [Intershop helm repository](https://intershop.github.io/helm-charts) to your helm client
 
 ```bash
-$ helm repo add intershop https://intershop.github.io/helm-charts
-$ helm repo update
+helm repo add intershop https://intershop.github.io/helm-charts
+helm repo update
 ```
 
 ### Install Chart via repository
+
 To install the chart with the release name `icm` execute
+
 ```bash
-$ helm install my-release intershop/icm-replication --values=values.yaml --namespace icm-replication
+helm install my-release intershop/icm-replication --values=values.yaml --namespace icm-replication
 ```
 
 ### Install Chart via cloned helm-charts repo
+
 ```bash
-$ cd charts
-$ helm dependency update icm
-$ helm dependency update icm-replication
-$ helm install my-release ./icm-replication --values=values.yaml --namespace icm-replication
+cd charts
+helm dependency update icm
+helm dependency update icm-replication
+helm install my-release ./icm-replication --values=values.yaml --namespace icm-replication
 ```
