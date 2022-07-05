@@ -1,4 +1,4 @@
-{{- if eq .Values.persistence.type "nfs" -}}
+{{- if eq .Values.persistence.pagecache.type "nfs" -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -15,7 +15,7 @@ spec:
   volumeName: {{ include "icm-web.fullname" . }}-nfs-pagecache-pv
   resources:
     requests:
-      storage: {{ .Values.persistence.size }}
+      storage: {{ .Values.persistence.pagecache.size }}
   selector:
     matchLabels:
       type: nfs

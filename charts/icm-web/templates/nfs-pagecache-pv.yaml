@@ -1,4 +1,4 @@
-{{- if eq .Values.persistence.type "nfs" -}}
+{{- if eq .Values.persistence.pagecache.type "nfs" -}}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -8,10 +8,10 @@ metadata:
 {{ include "icm-web.labels" . | indent 4 }}
 spec:
   capacity:
-    storage: {{ .Values.persistence.size }}
+    storage: {{ .Values.persistence.pagecache.size }}
   accessModes:
     - ReadWriteMany
   nfs:
-    server: {{ .Values.persistence.nfs.server | quote }}
-    path: {{ .Values.persistence.nfs.path | quote }}
+    server: {{ .Values.persistence.pagecache.nfs.server | quote }}
+    path: {{ .Values.persistence.pagecache.nfs.path | quote }}
 {{- end -}}

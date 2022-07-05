@@ -1,4 +1,4 @@
- {{- if .Values.applicationServer.enabled }}
+ {{- if .Values.applicationServer.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -15,4 +15,4 @@ spec:
     app: {{ include "icm-as.fullname" . }}
 status:
   loadBalancer: {}
-{{- end }}
+{{- end -}}

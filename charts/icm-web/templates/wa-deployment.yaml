@@ -55,25 +55,28 @@ spec:
           name:  {{ template "icm-web.fullname" . }}-ssl-certificates
       {{- end }}
       - name: pagecache-volume
-        {{- if .Values.persistence.local.enabled }}
+        {{- if eq .Values.persistence.pagecache.type "existingClaim" }}
         persistentVolumeClaim:
-          claimName: "{{ .Values.persistence.existingClaim }}"
-        {{- else if eq .Values.persistence.type "azurefiles" }}
+          claimName: "{{ .Values.persistence.pagecache.existingClaim }}"
+        {{- else if eq .Values.persistence.pagecache.type "azurefiles" }}
         azureFile:
-          secretName: {{ .Values.persistence.azurefiles.secretName }}
-          shareName: {{ .Values.persistence.azurefiles.shareName }}
+          secretName: {{ .Values.persistence.pagecache.azurefiles.secretName }}
+          shareName: {{ .Values.persistence.pagecache.azurefiles.shareName }}
           readOnly: false
+        {{- else if eq .Values.persistence.type "local" }}
+        persistentVolumeClaim:
+          claimName: "{{ template "icm-web.fullname" . }}-local-pagecache-pvc"
         {{- else if eq .Values.persistence.type "nfs" }}
         persistentVolumeClaim:
           claimName: "{{ template "icm-web.fullname" . }}-nfs-pagecache-pvc"
-        {{- else if eq .Values.persistence.type "cluster" }}
+        {{- else if eq .Values.persistence.pagecache.type "cluster" }}
         persistentVolumeClaim:
           claimName: "{{ template "icm-web.fullname" . }}-cluster-pagecache-pvc"
         {{- end }}
-        {{- if .Values.customdata.enabled }}
+        {{- if .Values.persistence.customdata.enabled }}
       - name: custom-data-volume
         persistentVolumeClaim:
-          claimName: "{{ .Values.customdata.existingClaim }}"
+          claimName: "{{ .Values.persistence.customdata.existingClaim }}"
         {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -111,9 +114,9 @@ spec:
           {{- end }}
           - name: pagecache-volume
             mountPath: /intershop/pagecache
-          {{- if .Values.customdata.enabled }}
+          {{- if .Values.persistence.customdata.enabled }}
           - name: custom-data-volume
-            mountPath: {{ .Values.customdata.mountPoint }}
+            mountPath: {{ .Values.persistence.customdata.mountPoint }}
           {{- end }}
           ports:
             - name: http

@@ -5,21 +5,21 @@
 replicaCount: 1
 
 # defined where the application shall run on
-#nodeSelector:
+nodeSelector: []
 #  agentpool: <your agentpool>
 
 # define custom annotations for deployment and pods:
-#deploymentAnnotations:
+deploymentAnnotations: []
 #  myAnnotation: true
-#podAnnotations:
+podAnnotations: []
 #  myAnnotation: true
 
 # define custom labels for deployment and pods:
-#deploymentLabels:
+deploymentLabels: []
 #  tags.datadoghq.com/env: hell
 #  tags.datadoghq.com/service: icm-as
 #  tags.datadoghq.com/version: 11.0.0
-#podLabels:
+podLabels: []
 #  tags.datadoghq.com/env: hell
 #  tags.datadoghq.com/service: icm-as
 #  tags.datadoghq.com/version: 11.0.0
