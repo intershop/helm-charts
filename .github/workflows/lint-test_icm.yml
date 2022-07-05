@@ -21,13 +21,6 @@ jobs:
         with:
           version: v3.8.2
 
-      - name: Log into registry docker.io
-        uses: docker/login-action@v2
-        with:
-          registry: docker.io
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
       # Python is required because `ct lint` runs Yamale (https://github.com/23andMe/Yamale) and
       # yamllint (https://github.com/adrienverge/yamllint) which require Python
       - name: Set up Python
@@ -53,8 +46,34 @@ jobs:
         with:
           config: kind.yaml
         if: steps.list-changed.outputs.changed == 'true'
+        
+      - name: Log into registry docker.io
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+        if: steps.list-changed.outputs.changed == 'true'
 
       - name: Run chart-testing (install)
-        run: ct install --config ct_icm.yaml
+        run: |
+          mkdir -p /tmp/sites
+          mkdir -p /tmp/pagecache
+          mkdir -p /tmp/icm/sites
+          mkdir -p /tmp/icm/pagecache
+          mkdir -p /tmp/icm-edit/sites
+          mkdir -p /tmp/icm-edit/pagecache
+          mkdir -p /tmp/icm-live/sites
+          mkdir -p /tmp/icm-live/pagecache
+          
+          sed -i 's/<local folder>/\/tmp/sites' icm-as/values.yaml
+          sed -i 's/<local folder>/\/tmp/pagecache' icm-web/values.yaml
+          sed -i 's/<local sites folder>/\/tmp/icm/sites' icm/values.yaml
+          sed -i 's/<local pagecache folder>/\/tmp/icm/pagecache' icm/values.yaml
+          sed -i 's/<local sites live folder>/\/tmp/icm-live/sites' icm-replication/values.yaml
+          sed -i 's/<local pagecache live folder>/\/tmp/icm-live/pagecache' icm-replication/values.yaml
+          sed -i 's/<local sites edit folder>/\/tmp/icm-edit/sites' icm-replication/values.yaml
+          sed -i 's/<local pagecache edit folder>/\/tmp/icm-edit/pagecache' icm-replication/values.yaml
+          
+          ct install --config ct_icm.yaml
         if: steps.list-changed.outputs.changed == 'true'
 
