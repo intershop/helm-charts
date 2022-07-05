@@ -83,7 +83,7 @@ persistence:
     nfs:
       server: <ipaddress or hostname>
       path: <server folder>
-    local :
+    local:
       path: <local folder>
   customdata:
     enabled: false
