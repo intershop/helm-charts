@@ -1,0 +1,11 @@
+remote: origin
+target-branch: main
+chart-dirs:
+  - charts
+charts:
+  - charts/icm-as
+  - charts/icm-web
+  - charts/icm
+  - charts/icm-replication
+check-version-increment: false
+validate-maintainers: false
