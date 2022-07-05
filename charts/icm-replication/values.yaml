@@ -40,7 +40,7 @@ icm-edit:
         size: 1Gi
         type: local
         local:
-          path: <local folder>
+          path: <local sites edit folder>
 
   icm-web:
     nameOverride: icm-web-edit
@@ -62,7 +62,7 @@ icm-edit:
         size: 1Gi
         type: local
         local:
-          path: <local folder>
+          path: <local pagecache edit folder>
 
 icm-live:
   icm-as:
@@ -100,7 +100,7 @@ icm-live:
         size: 1Gi
         type: local
         local:
-          path: <local folder>
+          path: <local sites live folder>
 
   icm-web:
     nameOverride: icm-web-live
@@ -122,4 +122,4 @@ icm-live:
         size: 1Gi
         type: local
         local:
-          path: <local folder>
+          path: <local pagecache live folder>

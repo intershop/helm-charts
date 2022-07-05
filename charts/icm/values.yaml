@@ -34,7 +34,7 @@ icm-as:
       size: 1Gi
       type: local
       local:
-        path: <local folder>
+        path: <local sites folder>
 
 icm-web:
   imagePullSecrets:
@@ -55,4 +55,4 @@ icm-web:
       size: 1Gi
       type: local
       local:
-        path: <local folder>
+        path: <local pagecache folder>
