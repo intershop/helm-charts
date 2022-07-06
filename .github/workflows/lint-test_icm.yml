@@ -72,10 +72,6 @@ jobs:
           sed -i 's/<local sites edit folder>/\/tmp\/icm-edit\/sites/' charts/icm-replication/values.yaml
           sed -i 's/<local pagecache edit folder>/\/tmp\/icm-edit\/pagecache/' charts/icm-replication/values.yaml
           
-          sed -i 's/<your license>/${{ secrets.ICM_LICENSE }}/' charts/icm-as/values.yaml
-          sed -i 's/<your license>/${{ secrets.ICM_LICENSE }}/' charts/icm/values.yaml
-          sed -i 's/<your license>/${{ secrets.ICM_LICENSE }}/' charts/icm-replication/values.yaml
-          
           ct install --namespace=ct-icm-$random_value --config ct_icm.yaml
         if: steps.list-changed.outputs.changed == 'true'
 
