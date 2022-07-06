@@ -1,4 +1,4 @@
-# Helm Chart Intershop Commerce Management - Application Server
+# Test Helm Chart Intershop Commerce Management - Application Server
 
 Installs the ICM application server independently.
 
