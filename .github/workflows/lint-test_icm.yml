@@ -48,27 +48,6 @@ jobs:
         if: steps.list-changed.outputs.changed == 'true'
         
       - name: Run chart-testing (install)
-        run: |
-          kubectl create secret docker-registry dockerhub --docker-username=${{ secrets.DOCKER_USER }} --docker-password=${{ secrets.DOCKER_ACCESSTOKEN }} --docker-email=eng-ateam@intershop.com
-          
-          mkdir -p /tmp/sites
-          mkdir -p /tmp/pagecache
-          mkdir -p /tmp/icm/sites
-          mkdir -p /tmp/icm/pagecache
-          mkdir -p /tmp/icm-edit/sites
-          mkdir -p /tmp/icm-edit/pagecache
-          mkdir -p /tmp/icm-live/sites
-          mkdir -p /tmp/icm-live/pagecache
-          
-          sed -i 's/<local folder>/\/tmp\/sites/' charts/icm-as/values.yaml
-          sed -i 's/<local folder>/\/tmp\/pagecache/' charts/icm-web/values.yaml
-          sed -i 's/<local sites folder>/\/tmp\/icm\/sites/' charts/icm/values.yaml
-          sed -i 's/<local pagecache folder>/\/tmp\/icm\/pagecache/' charts/icm/values.yaml
-          sed -i 's/<local sites live folder>/\/tmp\/icm-live\/sites/' charts/icm-replication/values.yaml
-          sed -i 's/<local pagecache live folder>/\/tmp\/icm-live\/pagecache/' charts/icm-replication/values.yaml
-          sed -i 's/<local sites edit folder>/\/tmp\/icm-edit\/sites/' charts/icm-replication/values.yaml
-          sed -i 's/<local pagecache edit folder>/\/tmp\/icm-edit\/pagecache/' charts/icm-replication/values.yaml
-          
-          ct install --config ct_icm.yaml
+        run: ct lint --config ct_icm.yaml
         if: steps.list-changed.outputs.changed == 'true'
 
