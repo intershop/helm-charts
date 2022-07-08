@@ -41,21 +41,21 @@ IOM is provided in the form of Docker images. These images can be used directly,
 
 The images are available at:
 
-* docker.intershop.de/intershophub/iom-dbaccount:1.4.0
-* docker.intershop.de/intershophub/iom:4.0.0
+* docker.tools.intershop.com/iom/intershophub/iom-dbaccount:1.4.0
+* docker.tools.intershop.com/iom/intershophub/iom:4.0.0
 
 .. note:: Adapt the tag (version number) if you use a newer version of IOM. For a full list of available versions see `Overview - IOM Public Release Notes <https://support.intershop.com/kb/283D59>`_.
 
-*docker.intershop.de* is a private Docker registry. Private Docker registries require authentication and sufficient rights to pull images from them. The according authentication data can be passed in a Kubernetes secret object, which has to be set using the Helm parameter *imagePullSecrets*.
+*docker.tools.intershop.com* is a private Docker registry. Private Docker registries require authentication and sufficient rights to pull images from them. The according authentication data can be passed in a Kubernetes secret object, which has to be set using the Helm parameter *imagePullSecrets*.
 
 The document `Pull an Image from a Private Registry <https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/>`_ from Kubernetes documentation explains in general how to create Kubernetes secret objects, suitable to authenticate at a private Docker registry. `Pull images from an Azure container registry to a Kubernetes cluster <https://docs.microsoft.com/en-us/azure/container-registry/container-registry-auth-kubernetes>`_ from Microsoft Azure documentation explains how to apply this concept to private Azure container registries.
 
-The following box shows an example of how to create a Kubernetes secret to be used to access the private Docker registry *docker.intershop.de*. The name of the newly created secret is *intershop-pull-secret*, which has to be passed to Helm parameter *imagePullSecrets*. It has to reside within the same Kubernetes namespace as the IOM cluster which uses the secret.
+The following box shows an example of how to create a Kubernetes secret to be used to access the private Docker registry *docker.tools.intershop.com*. The name of the newly created secret is *intershop-pull-secret*, which has to be passed to Helm parameter *imagePullSecrets*. It has to reside within the same Kubernetes namespace as the IOM cluster which uses the secret.
 
 .. code-block:: shell
 
   kubectl create secret docker-registry intershop-pull-secret \
-      --docker-server=docker.intershop.de \
+      --docker-server=docker.tools.intershop.com \
       --docker-username='<user name>' \
       --docker-password='<password>' \
       -n <kubernetes namespace>	
