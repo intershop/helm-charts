@@ -142,7 +142,7 @@ Of course, this values file cannot be copied as it is. It references external re
   dbaccount:
     enabled: true
     image:
-      repository: docker.intershop.de/intershophub/iom-dbaccount
+      repository: docker.tools.intershop.com/iom/intershophub/iom-dbaccount
       tag: "1.4.0"
 
 Installation of IOM

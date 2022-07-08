@@ -61,7 +61,7 @@ The values file contains minimal settings only, except *dbaccount.resetData*, wh
     - name: intershop-pull-secret
 
   image:
-    repository: "docker.intershop.de/intershophub/iom"
+    repository: "docker.tools.intershop.com/iom/intershophub/iom"
     tag: "4.0.0"
 
   # define a timeout for startupProbe, that is matching the requirements of the current
@@ -103,7 +103,7 @@ The values file contains minimal settings only, except *dbaccount.resetData*, wh
     enabled: true
     resetData: false # optional, since false is default
     image:
-      repository: "docker.intershop.de/intershophub/iom-dbaccount"
+      repository: "docker.tools.intershop.com/iom/intershophub/iom-dbaccount"
       tag: "1.4.0"
 
   # use integrated PostgreSQL server (requirement #1).

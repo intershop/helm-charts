@@ -6,7 +6,7 @@ replicaCount: 2
 downtime: true
 
 image:
-  repository: docker.intershop.de/intershophub/iom
+  repository: docker.tools.intershop.com/iom/intershophub/iom
   # Overrides the image tag whose default is the chart version.
   tag:
   pullPolicy: IfNotPresent
@@ -61,7 +61,7 @@ dbaccount:
   # searchPath: "testcases"
   searchPath:
   image:
-    repository: docker.intershop.de/intershophub/iom-dbaccount
+    repository: docker.tools.intershop.com/iom/intershophub/iom-dbaccount
     tag:        1.4.0
     pullPolicy: IfNotPresent
   resources: {}
