@@ -103,6 +103,13 @@ the right value within the values file.
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
+Default values of *image.repository* and *dbaccount.image.repository* have changed
+==================================================================================
+
+The default values of *image.repository* and *dbaccount.image.repository* are now both referencing the new Intershop Docker
+repository at *docker.tools.intershop.com*. If you are using the default values of these parameters, you need to create a
+pull-secret, which has to set at *imagePullSecrets*.
+
 -------------
 Fixed Defects
 -------------
