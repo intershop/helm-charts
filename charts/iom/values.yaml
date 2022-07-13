@@ -11,6 +11,11 @@ image:
   tag:
   pullPolicy: IfNotPresent
 
+# sdf
+# sdfsdfsdfs sfsdf
+object:
+  key: value
+
 # the type of test is fixed. It's the same as used for livenessProbe.
 # As long startupProbe is in progess, no liveness-probes will be executed. This is very
 # important to delay liveness-probe until the initialization (database initialization,
