@@ -73,13 +73,6 @@ podSecurityContext:
   # intershop user - defined by icm-base-docker image
   runAsUser: 150
 
-  # TODO: move to webserver configuration
-service:
-  type: ClusterIP
-  port: 8443
-  url: /INTERSHOP/web/WFS/SMC/
-  host: icmwebserver
-
 resources:
   limits:
     cpu: 1000m
