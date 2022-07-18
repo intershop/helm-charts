@@ -2,10 +2,7 @@ name: "Lint and test icm charts"
 on:
   pull_request:
     paths: 
-    - 'charts/icm-as/**'
-    - 'charts/icm-web/**'
     - 'charts/icm/**'
-    - 'charts/icm-replication/**'
 
 jobs:
   lint-test-icm:
@@ -54,24 +51,17 @@ jobs:
           
           kubectl create secret docker-registry dockerhub --namespace=ct-icm-$random_value --docker-username=${{ secrets.DOCKER_USERNAME }} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=eng-ateam@intershop.com
           
-          mkdir -p /tmp/sites
-          mkdir -p /tmp/pagecache
           mkdir -p /tmp/icm/sites
           mkdir -p /tmp/icm/pagecache
-          mkdir -p /tmp/icm-live/sites
-          mkdir -p /tmp/icm-live/pagecache
-          mkdir -p /tmp/icm-edit/sites
-          mkdir -p /tmp/icm-edit/pagecache
-          
-          sed -i 's/<local folder>/\/tmp\/sites/' charts/icm-as/values.yaml
-          sed -i 's/<local folder>/\/tmp\/pagecache/' charts/icm-web/values.yaml
+
           sed -i 's/<local sites folder>/\/tmp\/icm\/sites/' charts/icm/values.yaml
           sed -i 's/<local pagecache folder>/\/tmp\/icm\/pagecache/' charts/icm/values.yaml
-          sed -i 's/<local sites live folder>/\/tmp\/icm-live\/sites/' charts/icm-replication/values.yaml
-          sed -i 's/<local pagecache live folder>/\/tmp\/icm-live\/pagecache/' charts/icm-replication/values.yaml
-          sed -i 's/<local sites edit folder>/\/tmp\/icm-edit\/sites/' charts/icm-replication/values.yaml
-          sed -i 's/<local pagecache edit folder>/\/tmp\/icm-edit\/pagecache/' charts/icm-replication/values.yaml
           
+          docker run -d -p 1433:1433 --name mssql-intershop --env ACCEPT_EULA=Y --env SA_PASSWORD=1nstershop5A --env ICM_DB_NAME=intershop --env ICM_DB_USER=intershop --env ICM_DB_PASSWORD=intershop intershophub/mssql-intershop:2019-1.0
+          
+          sed -i 's/<ipaddress or hostname>/localhost/' charts/icm-as/values.yaml
+          sed -i 's/<ipaddress or hostname>/localhost/' charts/icm/values.yaml
+                    
           ct install --namespace=ct-icm-$random_value --config ct_icm.yaml
         if: steps.list-changed.outputs.changed == 'true'
 
