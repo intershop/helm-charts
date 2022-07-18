@@ -28,7 +28,10 @@ data:
             </target-cluster>
         </target-clusters>
     </replication-configuration>
-{{- end }} # else if fails with "INTERSHOP_DATABASETYPE is not a method but has arguments"
+{{- end }} #
+{{- /*
+else if fails with "INTERSHOP_DATABASETYPE is not a method but has arguments"
+*/}}
 {{- if eq .Values.environment.INTERSHOP_DATABASETYPE "oracle" }}
   replication-clusters.xml:  |-
     <?xml version="1.0"?>
