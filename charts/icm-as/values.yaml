@@ -73,6 +73,11 @@ podSecurityContext:
   # intershop user - defined by icm-base-docker image
   runAsUser: 150
 
+testConnection:
+  port: 80
+  url: /INTERSHOP/wastatistics
+  serviceSuffix: -icm-web-wa
+
 resources:
   limits:
     cpu: 1000m

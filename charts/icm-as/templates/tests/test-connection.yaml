@@ -5,11 +5,12 @@ metadata:
   labels:
     {{- include "icm-as.labels" . | nindent 4 }}
   annotations:
-    "helm.sh/hook": test-success
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 spec:
   containers:
     - name: wget
       image: busybox
-      command: ['wget']
-      args: ['http://{{ .Release.Name }}-icm-web-wa:80/INTERSHOP/wastatistics']
+      command: ['wget', '--no-check-certificate']
+      args: ['http://{{ .Release.Name }}{{ .Values.testConnection.serviceSuffix }}:{{ .Values.testConnection.port }}{{ .Values.testConnection.url }}']
   restartPolicy: OnFailure
