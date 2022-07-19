@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['http://{{ .Release.Name }}-icm-web-wa:8080/INTERSHOP/wastatistics']
+      args: ['http://{{ .Release.Name }}-icm-web-wa:80/INTERSHOP/wastatistics']
   restartPolicy: OnFailure

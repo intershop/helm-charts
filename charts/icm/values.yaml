@@ -1,7 +1,7 @@
 icm-as:
 
   image:
-    repository: intershophub/icm-as:11.0.0
+    repository: intershophub/icm-as:11.0.5
   imagePullSecrets:
   - "dockerhub"
   replicaCount: 1
