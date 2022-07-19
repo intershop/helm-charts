@@ -15,11 +15,11 @@ spec:
     spec:
       template:
         spec:
+          {{- with .Values.imagePullSecrets }}
           imagePullSecrets:
-            {{- toYaml . | nindent 8 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           containers:
-            {{- with .Values.imagePullSecrets }}
           - name: connection-monitor
             {{- if .Values.config.enabled }}
             image: "{{ .Values.config.image.repository }}:{{ .Values.config.image.tag | default .Chart.AppVersion }}"
