@@ -53,6 +53,7 @@ jobs:
 
       - name: Run chart-testing (install)
         run: |
+          set -x
           random_value=`tr -dc 'a-z0-9' < /dev/urandom | head -c10`
           kubectl create namespace ct-icm-$random_value
           
