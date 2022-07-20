@@ -65,7 +65,7 @@ jobs:
           sed -i 's/<local pagecache folder>/\/tmp\/icm\/pagecache/' charts/icm/values.yaml
           
           license=${{ secrets.ICM_LICENSE }}
-          sed -i "s[<your license>[${license/$'\n'/}[" charts/icm/values.yaml
+          sed -i "s[<your license>[${license//$'\n'/}[" charts/icm/values.yaml
           
           docker run -d -p 1433:1433 --name mssql-intershop --env ACCEPT_EULA=Y --env SA_PASSWORD=1nstershop5A --env ICM_DB_NAME=intershop --env ICM_DB_USER=intershop --env ICM_DB_PASSWORD=intershop intershophub/mssql-intershop:2019-1.0
           ipaddress=`ip route | grep -Po '(?<=src )[^ ]+'`
