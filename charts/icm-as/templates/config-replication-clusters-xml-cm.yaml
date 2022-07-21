@@ -28,7 +28,7 @@ data:
             </target-cluster>
         </target-clusters>
     </replication-configuration>
-{{- end }} #
+{{- end }}
 {{- /*
 else if fails with "INTERSHOP_DATABASETYPE is not a method but has arguments"
 */}}
