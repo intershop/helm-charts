@@ -27,7 +27,7 @@ podLabels: []
 image:
   pullPolicy: IfNotPresent
   # 'appServer' container provides the application / service endpoint
-  repository: intershophub/icm-as:11.0.0
+  repository: intershophub/icm-as:11.0.5
   command: |
     /intershop/bin/intershop.sh
 
@@ -72,6 +72,7 @@ serviceAccount:
 podSecurityContext:
   # intershop user - defined by icm-base-docker image
   runAsUser: 150
+  runAsGroup: 150
 
 testConnection:
   port: 80
@@ -127,7 +128,7 @@ persistence:
     type: local
     existingClaim: <claim name>
     cluster:
-      storageClass: azurefile
+      storageClass: azurefile-intershop
     azurefiles:
       shareName: icm-as-share
       secretName: icm-as-share-secret
