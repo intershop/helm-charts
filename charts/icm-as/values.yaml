@@ -149,9 +149,6 @@ persistence:
     existingClaim: icm-as-cluster-customData-pvc
     mountPoint: /data
 
-applicationServer:
-  enabled: true
-
 # Probes, all values are optional, below are the defaults
 probes:
   startup: {}
