@@ -75,9 +75,10 @@ podSecurityContext:
   runAsGroup: 150
 
 testConnection:
-  port: 80
-  url: /INTERSHOP/wastatistics
-  serviceSuffix: -icm-web-wa
+  protocol: http
+  port: 7743
+  url: /servlet/ConfigurationServlet
+  serviceSuffix:
 
 resources:
   limits:

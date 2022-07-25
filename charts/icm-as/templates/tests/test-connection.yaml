@@ -10,7 +10,7 @@ metadata:
 spec:
   containers:
     - name: wget
-      image: busybox
+      image: inutano/wget
       command: ['wget', '--no-check-certificate']
-      args: ['http://{{ .Release.Name }}{{ .Values.testConnection.serviceSuffix }}:{{ .Values.testConnection.port }}{{ .Values.testConnection.url }}']
+      args: ['{{ .Values.testConnection.protocol }}://{{ .Release.Name }}{{ .Values.testConnection.serviceSuffix }}:{{ .Values.testConnection.port }}{{ .Values.testConnection.url }}']
   restartPolicy: OnFailure
