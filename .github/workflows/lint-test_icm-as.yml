@@ -5,7 +5,7 @@ on:
     - 'charts/icm-as/**'
 
 jobs:
-  lint-test-icm:
+  lint-test-icm-as:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
