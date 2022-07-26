@@ -36,6 +36,12 @@ icm-as:
       local:
         path: <local sites folder>
 
+  testConnection:
+    protocol: https
+    port: 443
+    url: /INTERSHOP/web/WFS/SMC
+    serviceSuffix: -icm-web-wa
+
 icm-web:
   imagePullSecrets:
   - "dockerhub"
