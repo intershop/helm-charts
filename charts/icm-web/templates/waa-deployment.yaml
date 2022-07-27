@@ -97,13 +97,6 @@ spec:
           - name: custom-data-volume
             mountPath: {{ .Values.persistence.customdata.mountPoint }}
           {{- end }}
-          {{- if .Values.resources.agent.enabled }}
           resources:
-            limits:
-              memory: "{{ .Values.resources.agent.memory_lim }}"
-            requests:
-              memory: "{{ .Values.resources.agent.memory_req }}"
-          {{- else }}
-          resources: {}
-          {{- end }}
+            {{- toYaml .Values.resources.webadapter | nindent 12 }}
 {{- end -}}
