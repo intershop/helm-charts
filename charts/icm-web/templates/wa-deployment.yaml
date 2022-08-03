@@ -137,13 +137,5 @@ spec:
             - name: https
               containerPort: 8443
               protocol: TCP
-          {{- if .Values.resources.webadapter.enabled }}
           resources:
-            limits:
-              memory: "{{ .Values.resources.webserver.memory_lim }}"
-            requests:
-              memory: "{{ .Values.resources.webserver.memory_req }}"
-          {{- else }}
-          resources: {}
-          {{- end }}
-
+            {{- toYaml .Values.resources.agent | nindent 12 }}
