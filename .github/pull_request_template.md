@@ -4,6 +4,7 @@ Please check if your PR fulfills the following requirements:
 
 [ ] The commit message follows our guidelines: https://github.com/intershop/helm-charts/blob/develop/CONTRIBUTING.md
 [ ] Docs have been added / updated (for bug fixes / features)
+[ ] Be sure to include PR label `major`, `minor` or `patch` when merging into `main`
 -->
 
 ## PR Type
@@ -21,6 +22,10 @@ Please check the one that applies to this PR using "x".
 [ ] CI-related changes
 [ ] Documentation content changes
 [ ] Application / infrastructure changes
+
+## Release ##
+
+Be sure to include PR label `major`, `minor` or `patch` when merging into `main`. This determines which part of the semantic version number needs to be bumped automatically.
 
 ## What Is the Current Behavior?
 
