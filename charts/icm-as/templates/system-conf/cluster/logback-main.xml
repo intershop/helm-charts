@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<included>
+	<!-- enable statusListener in case of issues with logback -->
+	<!--
+	<statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+	-->
+
+	<!-- overwrite converter for pattern '%ex' with own converter that can handle SQLExceptions -->
+	<conversionRule conversionWord="ex" converterClass="com.intershop.beehive.core.internal.log.SQLExceptionAwareThrowableProxyConverter" />
+
+	<appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>DEBUG</level>
+		</filter>
+		<!-- inside of container -->
+		<encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+		<!-- /inside of container -->
+		<!-- plain for developer
+		<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+			<layout class="ch.qos.logback.classic.PatternLayout">
+				<Pattern>
+					Console: [%date{yyyy-MM-dd HH:mm:ss.SSS Z}] %-5level %marker %logger - %msg%n
+				</Pattern>
+			</layout>
+		</encoder>
+		/plain for developer -->
+	</appender>
+
+	<root>
+		<!-- Do not change the level at the root category -->
+		<level value="TRACE" />
+		<appender-ref ref="Console" />
+	</root>
+
+	<!-- warn for all top level domains, we need to root=TRACE (don't know why) -->
+	<logger name="com"><level value="WARN" /></logger>
+	<logger name="jakarta"><level value="WARN" /></logger>
+	<logger name="javax"><level value="WARN" /></logger>
+	<logger name="java.awt"><level value="WARN" /></logger>
+	<logger name="jdk"><level value="WARN" /></logger>
+	<logger name="org"><level value="WARN" /></logger>
+	<logger name="sun"><level value="WARN" /></logger>
+
+	<!-- info for tomcat and intershop -->
+	<logger name="tomcat">
+	    <level value="INFO" />
+	</logger>
+
+	<logger name="com.intershop">
+		<level value="INFO" />
+	</logger>
+
+</included>

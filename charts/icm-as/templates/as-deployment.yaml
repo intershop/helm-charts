@@ -113,6 +113,20 @@ spec:
               subPath: replication-clusters.xml
           {{- end }}
           {{- end }}
+
+          {{- if .Values.provideCustomConfig }}
+          {{- range $k, $v := .Values.provideCustomConfig }}
+
+            - mountPath: {{ $v.mountPath}}{{ $k }}
+              name: {{ $k }}-volume
+              readOnly: true
+              subPath: {{ $k }}
+
+          {{- end }}
+          {{- end }}
+          {{- if .Values.provideCustomConfig.enabled }}
+             {{ .Values.provideCustomConfig.configMounts }}
+          {{- end }}
           startupProbe:
             httpGet:
               path: /status/LivenessProbe
@@ -155,6 +169,14 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       terminationGracePeriodSeconds: 30
       volumes:
+      {{- if .Values.provideCustomConfig }}
+      {{- range $k, $v := .Values.provideCustomConfig }}
+        - name: {{ $k }}-volume
+          configMap:
+            name: {{ template "icm-as.fullname" . }}-system-conf-cluster
+            defaultMode: 420
+      {{- end }}
+      {{- end }}
       - name: license-volume
         {{- if eq .Values.license.type "configMap" }}
         configMap:
