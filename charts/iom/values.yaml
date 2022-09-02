@@ -6,7 +6,7 @@ replicaCount: 2
 downtime: true
 
 image:
-  repository: docker.intershop.de/intershophub/iom
+  repository: docker.tools.intershop.com/iom/intershophub/iom
   # Overrides the image tag whose default is the chart version.
   tag:
   pullPolicy: IfNotPresent
@@ -27,7 +27,7 @@ startupProbe:
   periodSeconds: 10
   initialDelaySeconds: 60
   timeoutSeconds: 5
-  failureThreshold: 60
+  failureThreshold: 354
 
 # the type of test is fixed, as it is an important characteristics of the container.
 # to test liveness, the static HTML page at / of the wildfly application server is tested.
@@ -61,7 +61,7 @@ dbaccount:
   # searchPath: "testcases"
   searchPath:
   image:
-    repository: docker.intershop.de/intershophub/iom-dbaccount
+    repository: docker.tools.intershop.com/iom/intershophub/iom-dbaccount
     tag:        1.4.0
     pullPolicy: IfNotPresent
   resources: {}
@@ -104,7 +104,6 @@ oms:
   # public URL of IOM
   # used internally by IOM for link generation.
   publicUrl:                       https://localhost
-  mailResourcesBaseUrl:            https://localhost/mailimages/customers
   # Shared secret for JWT creation / validation
   jwtSecret:                       length_must_be_at_least_32_chars
   jwtSecretKeyRef:                 {}
@@ -289,6 +288,32 @@ imagePullSecrets: []
 nameOverride: 
 fullnameOverride: 
 
+podDisruptionBudget:
+  maxUnavailable: 1
+
+# see: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+# If enabled, a podAntiAffinity rule is created, which prevents scheduling of more than ONE pod
+# of the current helm release onto one node (depending on the value of topologyKey).
+# The mode defines the strictness of this rule.
+podAntiAffinity:
+  enabled: true
+  # required | preferred
+  mode: required
+  topologyKey: kubernetes.io/hostname
+
+affinity: {}
+
+# see: https://kubernetes.io/blog/2020/05/introducing-podtopologyspread/
+# see: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
+# If enabled, pods of current Helm release are evenly spread over defined topology. Maximum
+# difference of count of pods per topology item is defined by maxSkew.
+spreadPods:
+  enabled: false
+  topologySpreadConstraints:
+  - maxSkew: 1
+    whenUnsatisfiable: ScheduleAnyway
+    topologyKey: kubernetes.io/hostname
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -318,8 +343,6 @@ service:
 nodeSelector: {}
 
 tolerations: []
-
-affinity: {}
 
 postgres:
   enabled: false
