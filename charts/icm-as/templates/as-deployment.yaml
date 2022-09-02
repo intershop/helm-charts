@@ -1,4 +1,3 @@
- {{- if .Values.applicationServer.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -152,6 +151,16 @@ spec:
             initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds | default 60 }}
             periodSeconds: {{ .Values.probes.readiness.initialDelaySeconds | default 5 }}
       initContainers:
+      {{- if eq .Values.persistence.sites.type "local" }}
+        - name: sites-volume-mount-hack
+          image: busybox
+          command: ["sh", "-c", "chmod 777 /intershop/sites && chown -R 150:150 /intershop/sites"]
+          volumeMounts:
+          - name: sites-volume
+            mountPath: /intershop/sites
+          securityContext:
+            runAsUser: 0
+      {{- end }}
       {{- if .Values.customizations }}
       {{- range $k, $v := .Values.customizations }}
         - name: {{ $k }}
@@ -231,4 +240,3 @@ spec:
         {{- end }}
       - name: customizations-volume
         emptyDir: {}
-{{- end }}

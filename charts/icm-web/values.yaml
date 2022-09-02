@@ -10,7 +10,7 @@ nodeSelector: []
 
 webadapter:
   image:
-    repository: intershophub/icm-webadapter:2.4.0
+    repository: intershophub/icm-webadapter:2.4.1
     pullPolicy: IfNotPresent
     command: |
       /intershop/bin/intershop.sh
@@ -76,7 +76,7 @@ persistence:
     type: local
     existingClaim: claimName
     cluster:
-      storageClass: azurefile
+      storageClass: azurefile-intershop
     azurefiles:
       shareName: icm-as-share
       secretName: icm-as-share-secret
@@ -92,13 +92,19 @@ persistence:
 
 resources:
   webadapter:
-    enabled: false
-    memory_lim: 100Mi
-    memory_req: 100Mi
+    limits:
+      #cpu: 100m
+      memory: 100Mi
+    requests:
+      #cpu: 100m
+      memory: 100Mi
   agent:
-    enabled: false
-    memory_lim: 200Mi
-    memory_req: 200Mi
+    limits:
+      #cpu: 100m
+      memory: 200Mi
+    requests:
+      #cpu: 100m
+      memory: 200Mi
 
 ingress:
   enabled: false
@@ -114,6 +120,7 @@ service:
 podSecurityContext:
   # intershop user - defined by icm-base-docker image
   runAsUser: 150
+  runAsGroup: 150
 
 appServerConnection:
   serviceName: icm-as

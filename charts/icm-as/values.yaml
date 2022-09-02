@@ -27,7 +27,7 @@ podLabels: []
 image:
   pullPolicy: IfNotPresent
   # 'appServer' container provides the application / service endpoint
-  repository: intershophub/icm-as:11.0.0
+  repository: intershophub/icm-as:11.0.5
   command: |
     /intershop/bin/intershop.sh
 
@@ -78,13 +78,13 @@ serviceAccount:
 podSecurityContext:
   # intershop user - defined by icm-base-docker image
   runAsUser: 150
+  runAsGroup: 150
 
-  # TODO: move to webserver configuration
-service:
-  type: ClusterIP
-  port: 8443
-  url: /INTERSHOP/web/WFS/SMC/
-  host: icmwebserver
+testConnection:
+  protocol: http
+  port: 7743
+  url: /servlet/ConfigurationServlet
+  serviceSuffix:
 
 resources:
   limits:
@@ -135,7 +135,7 @@ persistence:
     type: local
     existingClaim: <claim name>
     cluster:
-      storageClass: azurefile
+      storageClass: azurefile-intershop
     azurefiles:
       shareName: icm-as-share
       secretName: icm-as-share-secret
@@ -155,9 +155,6 @@ persistence:
     enabled: false
     existingClaim: icm-as-cluster-customData-pvc
     mountPoint: /data
-
-applicationServer:
-  enabled: true
 
 # Probes, all values are optional, below are the defaults
 probes:

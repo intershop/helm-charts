@@ -3,7 +3,7 @@ target-branch: main
 chart-dirs:
   - charts
 charts:
-  - charts/icm
+  - charts/icm-as
 check-version-increment: false
 validate-maintainers: false
-helm-extra-args: --timeout 2400s
+helm-extra-args: --timeout 2000s
