@@ -53,11 +53,7 @@ customizations: []
 #    repository: custom-adapter-repo:47.11.0
 #    pullPolicy: IfNotPresent
 
-provideCustomConfig:
-  logback-main.xml:
-    mountPath: /intershop/system-conf/cluster/
-  report-confi.xml:
-    mountPath: /intershop/system-conf/cluster/
+
 
 debug:
   enabled: false
@@ -65,6 +61,12 @@ debug:
 nameOverride: ""
 
 fullnameOverride: ""
+
+
+provideCustomConfig:
+  logback-main:
+    mountPath: /intershop/system-conf/cluster/
+    fileName: logback-main.xml
 
 serviceAccount:
   # Specifies whether a service account should be created
