@@ -100,4 +100,5 @@ spec:
           {{- if .Values.resources.agent.enabled }}
           resources:
             {{- toYaml .Values.resources.agent | nindent 12 }}
+          {{- end }}
 {{- end -}}
