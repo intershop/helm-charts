@@ -9,7 +9,9 @@ icm-as:
   ## @param environment - Environment variables to be set on containers
   environment:
     INTERSHOP_DATABASETYPE: "mssql"
+
     INTERSHOP_JDBC_URL: "jdbc:sqlserver://<ipaddress or hostname>:1433;databaseName=intershop"
+
     # INTERSHOP_DATABASETYPE: "oracle"
     # INTERSHOP_JDBC_URL: "jdbc:oracle:thin:@<ipaddress>:1521:intershop"
     INTERSHOP_JDBC_USER: "intershop"

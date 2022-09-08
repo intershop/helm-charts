@@ -1,7 +1,7 @@
 name: "Lint and test icm charts"
 on:
   pull_request:
-    paths: 
+    paths:
     - 'charts/icm/**'
 
 jobs:
@@ -56,25 +56,23 @@ jobs:
           set -x
           random_value=`tr -dc 'a-z0-9' < /dev/urandom | head -c10`
           kubectl create namespace ct-icm-$random_value
-          
+
           kubectl create secret docker-registry dockerhub --namespace=ct-icm-$random_value --docker-username=${{ secrets.DOCKER_USERNAME }} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=eng-ateam@intershop.com
-          
+
           mkdir -p /tmp/icm/sites
           mkdir -p /tmp/icm/pagecache
-
           sed -i 's/<local sites folder>/\/tmp\/icm\/sites/' charts/icm/values.yaml
           sed -i 's/<local pagecache folder>/\/tmp\/icm\/pagecache/' charts/icm/values.yaml
-          
+
           license=$(cat << EOF
           ${{ secrets.ICM_LICENSE }}
           EOF
           )
           sed -i "s[<your license>[${license//$'\n'/}[" charts/icm/values.yaml
-          
+
           docker run -d -p 1433:1433 --name mssql-intershop --env ACCEPT_EULA=Y --env SA_PASSWORD=1nstershop5A --env ICM_DB_NAME=intershop --env ICM_DB_USER=intershop --env ICM_DB_PASSWORD=intershop intershophub/mssql-intershop:2019-1.0
           ipaddress=`ip route | grep -Po '(?<=src )[^ ]+' | head -n 1`
           sed -i "s/<ipaddress or hostname>/$ipaddress/" charts/icm/values.yaml
-                    
+
           ct install --namespace=ct-icm-$random_value --config ct_icm.yaml
         if: steps.list-changed.outputs.changed == 'true'
-

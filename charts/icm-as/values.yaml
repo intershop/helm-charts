@@ -53,12 +53,23 @@ customizations: []
 #    repository: custom-adapter-repo:47.11.0
 #    pullPolicy: IfNotPresent
 
+
+
 debug:
   enabled: false
 
 nameOverride: ""
 
 fullnameOverride: ""
+
+# provide custom cluster config from "icm-as.fullname"-system-conf-cluster configmap
+provideCustomConfig: []
+  # logback-main:
+  #   mountPath: /intershop/system-conf/cluster/
+  #   fileName: logback-main.xml
+  # urlrewriterules:
+  #   mountPath: /intershop/system-conf/cluster/
+  #   fileName: urlrewriterules.xml
 
 serviceAccount:
   # Specifies whether a service account should be created

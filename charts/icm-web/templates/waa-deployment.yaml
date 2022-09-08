@@ -97,6 +97,8 @@ spec:
           - name: custom-data-volume
             mountPath: {{ .Values.persistence.customdata.mountPoint }}
           {{- end }}
+          {{- if .Values.resources.agent.enabled }}
           resources:
-            {{- toYaml .Values.resources.webadapter | nindent 12 }}
+            {{- toYaml .Values.resources.agent | nindent 12 }}
+          {{- end }}
 {{- end -}}
