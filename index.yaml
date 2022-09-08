@@ -3,6 +3,22 @@ entries:
   icm:
   - apiVersion: v1
     appVersion: 11.0.0
+    created: "2022-09-08T08:46:31.86611277Z"
+    dependencies:
+    - name: icm-as
+      repository: file://../icm-as
+      version: 0.3.6
+    - name: icm-web
+      repository: file://../icm-web
+      version: 0.2.5
+    description: Intershop Commerce Management - ICM
+    digest: a73929e3bbc8cbeed44fb83052d375a637c6fdb625cce33ff3a7c704e1654671
+    name: icm
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-0.3.7/icm-0.3.7.tgz
+    version: 0.3.7
+  - apiVersion: v1
+    appVersion: 11.0.0
     created: "2022-09-02T10:11:24.838522089Z"
     dependencies:
     - name: icm-as
@@ -237,6 +253,16 @@ entries:
   icm-as:
   - apiVersion: v2
     appVersion: 11.0.0
+    created: "2022-09-08T08:46:32.185012029Z"
+    description: Intershop Commerce Management - AppServer
+    digest: d473db4112b7cb2a3b7dbf71e70d39fe095143eb7b943d62dbfb926f38620561
+    name: icm-as
+    type: application
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-as-0.3.6/icm-as-0.3.6.tgz
+    version: 0.3.6
+  - apiVersion: v2
+    appVersion: 11.0.0
     created: "2022-07-26T06:25:39.697265927Z"
     description: Intershop Commerce Management - AppServer
     digest: cb5200a18ba67c861db5a151566ed9b48f02424cd2f97607a77b5d63d13d7305
@@ -316,6 +342,24 @@ entries:
     - https://github.com/intershop/helm-charts/releases/download/icm-as-0.2.6/icm-as-0.2.6.tgz
     version: 0.2.6
   icm-replication:
+  - apiVersion: v1
+    appVersion: 11.0.0
+    created: "2022-09-08T08:46:32.504575693Z"
+    dependencies:
+    - alias: icm-live
+      name: icm
+      repository: file://../icm
+      version: 0.3.7
+    - alias: icm-edit
+      name: icm
+      repository: file://../icm
+      version: 0.3.7
+    description: Intershop Commerce Management - ICM Replication
+    digest: 20f74b5a3fa386559bac47310ef7fa656606eb290ad764ec194150a84c9cd3d1
+    name: icm-replication
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-replication-0.1.7/icm-replication-0.1.7.tgz
+    version: 0.1.7
   - apiVersion: v1
     appVersion: 11.0.0
     created: "2022-09-02T10:11:25.126444915Z"
@@ -535,6 +579,15 @@ entries:
   icm-web:
   - apiVersion: v1
     appVersion: 11.0.0
+    created: "2022-09-08T08:46:32.771345316Z"
+    description: Intershop Commerce Management - Web Adapter and Web Adapter Agent
+    digest: 5d4b1c78e9644e18ef4a8dc23e82465df397882b87207f8b5c784729e8f5c768
+    name: icm-web
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-web-0.2.5/icm-web-0.2.5.tgz
+    version: 0.2.5
+  - apiVersion: v1
+    appVersion: 11.0.0
     created: "2022-09-02T10:11:25.426815594Z"
     description: Intershop Commerce Management - Web Adapter and Web Adapter Agent
     digest: 858f21cfffe28b5e758e8d654696c4066a879160e1a507d0cf19c284fd4b4705
@@ -706,4 +759,4 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.2.3/pwa-main-0.2.3.tgz
     version: 0.2.3
-generated: "2022-09-02T10:11:25.726801444Z"
+generated: "2022-09-08T08:46:32.771588918Z"
