@@ -99,11 +99,5 @@ spec:
           {{- end }}
           {{- if .Values.resources.agent.enabled }}
           resources:
-            limits:
-              memory: "{{ .Values.resources.agent.memory_lim }}"
-            requests:
-              memory: "{{ .Values.resources.agent.memory_req }}"
-          {{- else }}
-          resources: {}
-          {{- end }}
+            {{- toYaml .Values.resources.agent | nindent 12 }}
 {{- end -}}
