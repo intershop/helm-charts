@@ -14,6 +14,11 @@ deploymentAnnotations: {}
 podAnnotations: {}
 #  myAnnotation: true
 
+# define podbinding if required
+podBinding:
+  enabled: false
+  binding: name-of-the-binding
+
 # define custom labels for deployment and pods:
 deploymentLabels: {}
 #  tags.datadoghq.com/env: hell

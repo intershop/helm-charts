@@ -30,6 +30,9 @@ spec:
         {{- if .Values.webadapter.podLabels }}
           {{- toYaml .Values.webadapter.podLabels | trim | nindent 8 }}
         {{- end }}
+        {{- if .Values.webadapter.podBinding.enabled }}
+        aadpodidbinding: {{ .Values.webadapter.podBinding.binding }}
+        {{- end }}
     spec:
       {{- if .Values.nodeSelector}}
       nodeSelector:
@@ -77,6 +80,14 @@ spec:
       - name: custom-data-volume
         persistentVolumeClaim:
           claimName: "{{ .Values.persistence.customdata.existingClaim }}"
+        {{- end }}
+        {{- if .Values.webadapter.sslCertificateRetrieval.enabled }}
+      - name: secrets-store-inline
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: "{{ .Values.webadapter.sslCertificateRetrieval.secretProviderClassName }}"
         {{- end }}
       initContainers:
       {{- if eq .Values.persistence.pagecache.type "local" }}
@@ -129,6 +140,10 @@ spec:
           - name: custom-data-volume
             mountPath: {{ .Values.persistence.customdata.mountPoint }}
           {{- end }}
+          {{- if .Values.webadapter.sslCertificateRetrieval.enabled }}
+          - name: secrets-store-inline
+            mountPath: /mnt/secrets          
+          {{- end }}
           ports:
             - name: http
               containerPort: 8080
@@ -138,4 +153,4 @@ spec:
               containerPort: 8443
               protocol: TCP
           resources:
-            {{- toYaml .Values.resources.agent | nindent 12 }}
+            {{- toYaml .Values.resources.webadapter | nindent 12 }}

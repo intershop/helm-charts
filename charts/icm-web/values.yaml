@@ -21,12 +21,27 @@ webadapter:
   customSSLCertificates: false
   overrideSSL: false
   replicaCount: 1
+  sslCertificateRetrieval: 
+    enabled: false
+    secretProviderClassName: <name-of-the-class>
+    secretName: <name-of-the-secret>
+    certificateName: <name-of-the-certificate>
+    keyvault:
+      tenantId: <tenant-ID-of-the-KeyVault>
+      subscriptionId: <subscription-ID-of-the-KeyVault>
+      resourceGroup: <resource-group-of-the-KeyVault>
+      keyvaultName: <name-of-the-KeyVault>
 
   # define custom annotations for deployment and pods:
   deploymentAnnotations: []
   #  myAnnotation: true
   podAnnotations: []
   #  myAnnotation: true
+
+  # define podbinding if required
+  podbinding:
+    enabled: false
+    binding: name-of-the-binding
 
   # define custom labels for deployment and pods:
   deploymentLabels: []
@@ -53,6 +68,11 @@ agent:
   #  myAnnotation: true
   podAnnotations: []
   #  myAnnotation: true
+
+  # define podBinding if required
+  podBinding:
+    enabled: false
+    binding: name-of-the-binding
 
   # define custom labels for deployment and pods:
   deploymentLabels: []
