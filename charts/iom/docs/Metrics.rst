@@ -22,7 +22,7 @@ provides information how to access the metrics directly at the HTTP endpoint.
 Integration into *Datadog*
 --------------------------
 
-*`Datadog <https://www.datadoghq.com>`_* is a monitoring system. The following example will demonstrate how to use the *IOM Helm Charts*
+`Datadog <https://www.datadoghq.com>`_ is a monitoring system. The following example will demonstrate how to use the *IOM Helm Charts*
 to integrate IOM metrics into *Datadog*
 
 The *Datadog* documentation about Kubernetes Integration by Autodiscovery <https://docs.datadoghq.com/containers/kubernetes/integrations/?tab=kubernetesadv1#>`_
