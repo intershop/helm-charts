@@ -65,7 +65,7 @@ The example above can now be translated into according Helm values to be used by
   - *"namespace": "iom.appserver"* is an example only. The value *iom.appserver* will be used as prefix, when showing the metrics in *Datadog*.
   - *"metrics": [ "application_\*", "base_gc_\*" ]* is an example only. This configuration selects the metrics to be shown in *Datadog*. The current configuration is
     showing all metrics, that are beginning with *application_* and *base_gc_*. In fact, at the time of writing, IOM provides more than 20.000 metrics. You have to
-    select in which ones you are interessted in. To get the full list of available metrics, please see
+    select the metrics, that you are interessted in. To get the full list of available metrics, please see
     `Quickstart guide of microprofile-metrics-smallrye <https://github.com/wildfly/quickstart/blob/main/microprofile-metrics/README.adoc#accessing-the-metrics>`_
     how to get the complete list.
 
