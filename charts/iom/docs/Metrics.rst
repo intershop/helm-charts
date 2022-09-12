@@ -7,9 +7,9 @@
 Helm Charts for Intershop Order Management (IOM)
 ================================================
 
--------
-Metrics
--------
+------------------
+Prometheus Metrics
+------------------
 
 IOM provides an HTTP endpoint */metrics* at port 9990, that delivers a huge amount of metrics. These metrics are provided in `Prometheus <https://prometheus.io>`_
 format, which is a widely used format, that can be understood by mostly all monitoring systems.
@@ -18,9 +18,9 @@ The metrics are provided by the *Wildfly* sub-system *microprofile-metrics-small
 `Quickstart guide <https://github.com/wildfly/quickstart/blob/main/microprofile-metrics/README.adoc#accessing-the-metrics>`_
 provides more information and also how to access the metrics directly at the HTTP endpoint.
 
---------------------------
-Integration with *Datadog*
---------------------------
+
+Example of Integration with *Datadog*
+=====================================
 
 `Datadog <https://www.datadoghq.com>`_ is a monitoring system. The following example will demonstrate how to use the *IOM Helm Charts*
 to integrate IOM metrics with *Datadog*
