@@ -69,9 +69,11 @@ The example above can now be translated into according Helm values to be used by
     `Quickstart guide of microprofile-metrics-smallrye <https://github.com/wildfly/quickstart/blob/main/microprofile-metrics/README.adoc#accessing-the-metrics>`_
     how to get the complete list.
 
+Finally, this is how the example from *Datadog* documentation is translated into Helm values suitable for *IOM Helm Charts*. For
+further usage of this piece of yaml-code, the values of *namespace* and *metrics* have to be adapted according the requirements.
+
 .. code-block:: yaml
 
-  # Example of yaml code to be inserted into the values file of *IOM Helm Charts*.
   podAnnotations:
     ad.datadoghq.com/iom.check_names: '["openmetrics"]'
     ad.datadoghq.com/iom.init_configs: '[{}]'
