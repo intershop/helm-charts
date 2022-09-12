@@ -11,8 +11,9 @@ Helm Charts for Intershop Order Management (IOM)
 Prometheus Metrics
 ------------------
 
-IOM provides an HTTP endpoint */metrics* at port 9990, that delivers a huge amount of metrics. These metrics are provided in `Prometheus <https://prometheus.io>`_
-format, which is a widely used format, that can be understood by mostly all monitoring systems.
+IOM version 4.2.0 and newer provides an HTTP endpoint */metrics* at port 9990, that delivers a huge amount of metrics. These metrics are
+provided in `Prometheus <https://prometheus.io>`_ format, which is a widely used format, that can be understood by mostly all
+monitoring systems.
 
 The metrics are provided by the *Wildfly* sub-system *microprofile-metrics-smallrye*. The according
 `Quickstart guide <https://github.com/wildfly/quickstart/blob/main/microprofile-metrics/README.adoc>`_
@@ -45,7 +46,7 @@ shows the following example:
       - name: '<CONTAINER_IDENTIFIER>'
   # (...)
 
-In case of integration with IOM, the placeholder *<CONTAINER_IDENTIFIER>* has to be replaced always by *iom* (when using IOM version >= 4).
+In case of integration with IOM, the placeholder *<CONTAINER_IDENTIFIER>* has to be always replaced by *iom*.
 
 According to *Datadogs* `Documentation about Prometheus and Openmetrics integration <https://docs.datadoghq.com/containers/kubernetes/prometheus/?tab=kubernetesadv1>`_, the placeholder *<INTEGRATION_NAME>* has to be replaced by *"openmetrics"*.
 
