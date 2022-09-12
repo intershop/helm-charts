@@ -52,7 +52,7 @@ According to *Datadogs* `Documentation about Prometheus and Openmetrics integrat
 
 The same document states, that *<INIT_CONFIG>* needs to be *{}*.
 
-Finally the *<INSTANCE_CONFIG>* has to be replaced by a structure of the tree elements: *openmetrics_endpoint*, *namespace* and *metrics*. Please refer `Documentation about Prometheus and Openmetrics integration <https://docs.datadoghq.com/containers/kubernetes/prometheus/?tab=kubernetesadv1>`_ for a detailed description of this configuration.
+Finally *<INSTANCE_CONFIG>* has to be replaced by a structure of the tree elements: *openmetrics_endpoint*, *namespace* and *metrics*. Please refer `Documentation about Prometheus and Openmetrics integration <https://docs.datadoghq.com/containers/kubernetes/prometheus/?tab=kubernetesadv1>`_ for a detailed description of this configuration.
 
 The example above can now be translated into according Helm values to be used by *IOM Helm Charts*. Please note the following remarks.
 
