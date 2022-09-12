@@ -15,8 +15,8 @@ IOM provides an HTTP endpoint */metrics* at port 9990, that delivers a huge amou
 format, which is a widely used format, that can be understood by mostly all monitoring systems.
 
 The metrics are provided by the *Wildfly* sub-system *microprofile-metrics-smallrye*. The according
-`Quickstart guide <https://github.com/wildfly/quickstart/blob/main/microprofile-metrics/README.adoc#accessing-the-metrics>`_
-provides more information and also how to access the metrics directly at the HTTP endpoint.
+`Quickstart guide <https://github.com/wildfly/quickstart/blob/main/microprofile-metrics/README.adoc>`_
+provides more information.
 
 
 Example of Integration with *Datadog*
