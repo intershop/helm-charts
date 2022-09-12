@@ -59,7 +59,7 @@ The example above can now be translated into according Helm values to be used by
 - *<CONTAINER_IDENTIFIER>* was replaced by *iom*. This value is fix and must not be changed.
 - *<INTEGRATION_NAME>* was replaced by *"openmetrics"*. This value is fix and must not be changed.
 - *<INIT_CONFIG>* was replaced by *{}*. This value is fix and must not be changed.
-- *<INSTANCE_CONFIG>* was replaced by *{ "openmetrics_endpoint": "http://%%host%%:9990/metrics", "namespace": "iom.appserver", "metrics": [ "application_*", "base_gc_*" ]}*.
+- *<INSTANCE_CONFIG>* was replaced by *{ "openmetrics_endpoint": "http://%%host%%:9990/metrics", "namespace": "iom.appserver", "metrics": [ "application_\*", "base_gc_\*" ]}*.
 
   - *"openmetrics_endpoint": "http://%%host%%:9990/metrics"* is fix and must not be changed.
   - *"namespace": "iom.appserver"* is an example only. The value *iom.appserver* will be used as prefix, when showing the metrics in *Datadog*.
