@@ -16,8 +16,9 @@ The following documents provide an extensive documentation how to operate IOM wi
 7.  `Helm parameters of Integrated PostgreSQL Server <docs/ParametersPosgres.rst>`_
 8.  `Helm parameters of IOM-Tests <docs/ParametersTests.rst>`_
 9.  `References to Kubernetes Secrets <docs/SecretKeyRef.rst>`_
-10. `PostgreSQL Server Configuration <docs/Postgresql.rst>`_
-11. `Options and Requirements of IOM Database <docs/IOMDatabase.rst>`_
+10. `Prometheus Metrics <docs/Metrics.rst>`_
+11. `PostgreSQL Server Configuration <docs/Postgresql.rst>`_
+12. `Options and Requirements of IOM Database <docs/IOMDatabase.rst>`_
 
 ======================    
 Dependency Information
@@ -26,19 +27,19 @@ Dependency Information
 For the best compatibility between IOM Helm charts and IOM, please always use the newest version of IOM Helm charts,
 regardless of the IOM version you are currently using. To do so, please update IOM Helm charts as often as possible.
 
-+-------------+-----+-----+-----+-----+-----+
-|Helm / IOM   |3.5  |3.6  |3.7  |4.0  |4.1  |
-|             |     |     |     |     |     |
-+=============+=====+=====+=====+=====+=====+
-|**2.2**      |[1]_ |[2]_ |     |     |     |
-|             |     |     |     |     |     |
-+-------------+-----+-----+-----+-----+-----+
-|**2.1**      |[1]_ |[2]_ |     |     |     |
-|             |     |     |     |     |     |
-+-------------+-----+-----+-----+-----+-----+
-|**2.0**      |[1]_ |[2]_ |     |     |x    |
-|             |     |     |     |     |     |
-+-------------+-----+-----+-----+-----+-----+
++-------------+-----+-----+-----+-----+-----+-----+
+|Helm / IOM   |3.5  |3.6  |3.7  |4.0  |4.1  |4.2  |
+|             |     |     |     |     |     |     |
++=============+=====+=====+=====+=====+=====+=====+
+|**2.2**      |[1]_ |[2]_ |     |     |     |     |
+|             |     |     |     |     |     |     |
++-------------+-----+-----+-----+-----+-----+-----+
+|**2.1**      |[1]_ |[2]_ |     |     |     |     |
+|             |     |     |     |     |     |     |
++-------------+-----+-----+-----+-----+-----+-----+
+|**2.0**      |[1]_ |[2]_ |     |     |x    |x    |
+|             |     |     |     |     |     |     |
++-------------+-----+-----+-----+-----+-----+-----+
 
 x: not supported
 
