@@ -1,0 +1,46 @@
+suite: test correctness of podSecurityContext
+templates:
+  - templates/as-deployment.yaml
+tests:
+  - it: default values
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: templates/as-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.securityContext.runAsUser
+          value: 150
+      - equal:
+          path: spec.template.spec.securityContext.runAsGroup
+          value: 150
+
+  - it: custom values
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      podSecurityContext.runAsUser: 1000
+      podSecurityContext.runAsGroup: 2000
+      podSecurityContext.fsGroup: 3000
+      podSecurityContext.allowPrivilegeEscalation: true
+    template: templates/as-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.securityContext.runAsUser
+          value: 1000
+      - equal:
+          path: spec.template.spec.securityContext.runAsGroup
+          value: 2000
+      - equal:
+          path: spec.template.spec.securityContext.fsGroup
+          value: 3000
+      - equal:
+          path: spec.template.spec.securityContext.allowPrivilegeEscalation
+          value: true

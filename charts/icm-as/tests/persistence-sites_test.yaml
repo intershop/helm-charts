@@ -1,0 +1,279 @@
+suite: tests correctness of persistence.sites section
+templates:
+  - templates/as-deployment.yaml
+  - templates/local-sites-pv.yaml
+  - templates/local-sites-pvc.yaml
+  - templates/cluster-sc.yaml
+  - templates/nfs-sites-pv.yaml
+  - templates/nfs-sites-pvc.yaml
+tests:
+  - it: type=local in as-deployment
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.sites.type: local
+    template: templates/as-deployment.yaml
+    asserts:
+      #spec.template.spec.volumes
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: sites-volume
+            persistentVolumeClaim:
+              claimName: "icm-as-local-sites-pvc"
+
+  - it: type=local in local-sites-pv
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.sites.type: local
+      persistence.sites.size: 1.5Gi
+      persistence.sites.local.path: /mnt/intershop/sites
+    template: templates/local-sites-pv.yaml
+    asserts:
+      - isKind:
+          of: PersistentVolume
+      - equal:
+          path: metadata.name
+          value: icm-as-local-sites-pv
+      #metadata.labels
+      - equal:
+          path: metadata.labels.type
+          value: local
+      #spec
+      - equal:
+          path: spec.storageClassName
+          value: standard
+      - equal:
+          path: spec.capacity.storage
+          value: 1.5Gi
+      - equal:
+          path: spec.accessModes[0]
+          value: ReadWriteMany
+      - equal:
+          path: spec.persistentVolumeReclaimPolicy
+          value: Delete
+      - equal:
+          path: spec.hostPath.path
+          value: "/mnt/intershop/sites"
+
+  - it: type=local in local-sites-pvc
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.sites.type: local
+      persistence.sites.size: 1.5Gi
+      persistence.sites.local.path: /mnt/intershop/sites
+    template: templates/local-sites-pvc.yaml
+    asserts:
+      - isKind:
+          of: PersistentVolumeClaim
+      - equal:
+          path: metadata.name
+          value: icm-as-local-sites-pvc
+      #spec
+      - equal:
+          path: spec.storageClassName
+          value: standard
+      - equal:
+          path: spec.accessModes[0]
+          value: ReadWriteMany
+      - equal:
+          path: spec.resources.requests.storage
+          value: 1.5Gi
+
+  - it: type=cluster in as-deployment
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.sites.type: cluster
+    template: templates/as-deployment.yaml
+    asserts:
+      #spec.template.spec.volumes
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: sites-volume
+            persistentVolumeClaim:
+              claimName: "icm-as-cluster-sites-pvc"
+
+  - it: type=cluster in cluster-sc
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.sites.type: cluster
+      persistence.sites.cluster.storageClass: "custom-storage-class-name"
+    template: templates/cluster-sc.yaml
+    asserts:
+      - isKind:
+          of: StorageClass
+      - equal:
+          path: metadata.name
+          value: "custom-storage-class-name"
+      - equal:
+          path: provisioner
+          value: kubernetes.io/azure-file
+      - equal:
+          path: allowVolumeExpansion
+          value: true
+      - equal:
+          path: mountOptions[0]
+          value: dir_mode=0777
+      - equal:
+          path: mountOptions[1]
+          value: file_mode=0777
+      - equal:
+          path: mountOptions[2]
+          value: uid=150
+      - equal:
+          path: mountOptions[3]
+          value: gid=150
+      - equal:
+          path: mountOptions[4]
+          value: mfsymlinks
+      - equal:
+          path: mountOptions[5]
+          value: cache=strict
+      - equal:
+          path: mountOptions[6]
+          value: actimeo=30
+      - equal:
+          path: parameters.skuName
+          value: Standard_LRS
+
+  - it: type=azurefiles in as-deployment
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.sites.type: azurefiles
+      persistence.sites.azurefiles.shareName: custom-share
+      persistence.sites.azurefiles.secretName: custom-secret
+    template: templates/as-deployment.yaml
+    asserts:
+      #spec.template.spec.volumes
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            azureFile:
+              readOnly: false
+              secretName: custom-secret
+              shareName: custom-share
+            name: sites-volume
+
+  - it: type=nfs in as-deployment
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.sites.type: nfs
+      persistence.sites.nfs.server: custom-host
+      persistence.sites.nfs.path: custom-path
+    template: templates/as-deployment.yaml
+    asserts:
+      #spec.template.spec.volumes
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: sites-volume
+            persistentVolumeClaim:
+              claimName: icm-as-nfs-sites-pvc
+
+  - it: type=nfs in nfs-sites-pv
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.sites.type: nfs
+      persistence.sites.size: 1.5Gi
+      persistence.sites.nfs.server: custom-host
+      persistence.sites.nfs.path: custom-path
+    template: templates/nfs-sites-pv.yaml
+    asserts:
+      - isKind:
+          of: PersistentVolume
+      - equal:
+          path: metadata.name
+          value: icm-as-nfs-sites-pv
+      #metadata.labels
+      - equal:
+          path: metadata.labels.type
+          value: nfs
+      #spec
+      - equal:
+          path: spec.capacity.storage
+          value: 1.5Gi
+      - equal:
+          path: spec.nfs.server
+          value: custom-host
+      - equal:
+          path: spec.nfs.path
+          value: custom-path
+
+  - it: type=nfs in nfs-sites-pvc
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.sites.type: nfs
+      persistence.sites.size: 1.5Gi
+      persistence.sites.nfs.server: custom-host
+      persistence.sites.nfs.path: custom-path
+    template: templates/nfs-sites-pvc.yaml
+    asserts:
+      - isKind:
+          of: PersistentVolumeClaim
+      - equal:
+          path: metadata.name
+          value: icm-as-nfs-sites-pvc
+      #metadata.annotations
+      - equal:
+          path: metadata.annotations.[helm.sh/resource-policy]
+          value: keep
+      #spec
+      - equal:
+          path: spec.accessModes[0]
+          value: ReadWriteMany
+      - isEmpty:
+          path: spec.storageClassName
+      - equal:
+          path: spec.volumeName
+          value: icm-as-nfs-sites-pv
+      - equal:
+          path: spec.resources.requests.storage
+          value: 1.5Gi
+      - equal:
+          path: spec.selector.matchLabels.type
+          value: nfs

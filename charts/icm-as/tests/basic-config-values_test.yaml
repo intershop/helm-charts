@@ -1,0 +1,133 @@
+suite: test with customized basic config values e.g. replicaCount > 1
+templates:
+  - templates/as-deployment.yaml
+tests:
+  - it: replicaCount > 1
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replicaCount: 4
+    template: templates/as-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 4
+
+  - it: nodeSelector not empty
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      nodeSelector.accelerator: nvidia-tesla-p100
+      nodeSelector.disktype: ssd
+    template: templates/as-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.nodeSelector.accelerator
+          value: nvidia-tesla-p100
+      - equal:
+          path: spec.template.spec.nodeSelector.disktype
+          value: ssd
+
+  - it: deploymentAnnotations not empty
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      deploymentAnnotations.annotation0: zero
+      deploymentAnnotations.annotation1: one
+    template: templates/as-deployment.yaml
+    asserts:
+      - equal:
+          path: metadata.annotations.annotation0
+          value: zero
+      - equal:
+          path: metadata.annotations.annotation1
+          value: one
+
+  - it: podAnnotations not empty
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      podAnnotations.annotation0: zero
+      podAnnotations.annotation1: one
+    template: templates/as-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.metadata.annotations.annotation0
+          value: zero
+      - equal:
+          path: spec.template.metadata.annotations.annotation1
+          value: one
+
+  - it: deploymentLabels not empty
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      deploymentLabels.label0: zero
+      deploymentLabels.label1: one
+    template: templates/as-deployment.yaml
+    asserts:
+      - equal:
+          path: metadata.labels.label0
+          value: zero
+      - equal:
+          path: metadata.labels.label1
+          value: one
+
+  - it: podLabels not empty
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      podLabels.label0: zero
+      podLabels.label1: one
+    template: templates/as-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.metadata.labels.label0
+          value: zero
+      - equal:
+          path: spec.template.metadata.labels.label1
+          value: one
+
+  - it: debug is enabled
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      debug.enabled: true
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: DEBUG_ICM
+            value: "true"
+
+# TODO tolerations
+# TODO affinity

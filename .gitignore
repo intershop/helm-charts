@@ -4,3 +4,4 @@ environment/tmp_repo/**
 build/**
 .idea/
 .project
+**/tests/__snapshot__
