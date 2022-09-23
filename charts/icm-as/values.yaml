@@ -4,7 +4,7 @@
 
 replicaCount: 1
 
-# defined where the application shall run on
+# define where the application shall run on
 nodeSelector: {}
 #  agentpool: <your agentpool>
 
