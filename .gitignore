@@ -5,3 +5,4 @@ build/**
 .idea/
 .project
 **/tests/__snapshot__
+**/tests/__results__
