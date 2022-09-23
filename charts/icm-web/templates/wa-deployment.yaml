@@ -87,7 +87,7 @@ spec:
           driver: secrets-store.csi.k8s.io
           readOnly: true
           volumeAttributes:
-            secretProviderClass: "{{ .Values.webadapter.sslCertificateRetrieval.secretProviderClassName }}"
+            secretProviderClass: {{ include "icm-web.fullname" . }}-wa-spc-cert
         {{- end }}
       initContainers:
       {{- if eq .Values.persistence.pagecache.type "local" }}
@@ -101,7 +101,7 @@ spec:
             runAsUser: 0
       {{- end }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: "{{ .Chart.Name }}-wa"
           {{- if .Values.webadapter.image.tag }}
           image: "{{ .Values.webadapter.image.repository }}:{{ .Values.webadapter.image.tag }}"
           {{- else }}

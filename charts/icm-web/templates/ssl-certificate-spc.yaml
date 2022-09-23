@@ -2,16 +2,20 @@
 apiVersion: secrets-store.csi.x-k8s.io/v1alpha1
 kind: SecretProviderClass
 metadata:
-  name: "{{ .Values.webadapter.sslCertificateRetrieval.secretProviderClassName }}"
+  name: {{ include "icm-web.fullname" . }}-wa-spc-cert
 spec:
   provider: azure
-  secretObjects:                                # secretObjects defines the desired state of synced K8s secret objects
-  - secretName: "{{ .Values.webadapter.sslCertificateRetrieval.secretName }}"
+  secretObjects:
+  {{- if .Values.ingress.enabled }}
+  - secretName: {{ .Values.ingress.secretName | default (printf "%s-wa-cert" (include "icm-web.fullname" .)) }}
+  {{ else }}
+  - secretName:  {{ .Values.webadapter.sslCertificateRetrieval.secretName | default (printf "%s-wa-cert" (include "icm-web.fullname" .)) }}
+  {{ end }}
     type: kubernetes.io/tls
     data:
-    - objectName: "{{ .Values.webadapter.sslCertificateRetrieval.certificateName }}"
+    - objectName: "{{ .Values.webadapter.sslCertificateRetrieval.keyvault.certificateName }}"
       key: tls.key
-    - objectName: "{{ .Values.webadapter.sslCertificateRetrieval.certificateName }}"
+    - objectName: "{{ .Values.webadapter.sslCertificateRetrieval.keyvault.certificateName }}"
       key: tls.crt
   parameters:
     usePodIdentity: "true"                                                                     # [OPTIONAL for Azure] if not provided, will default to "false"
@@ -24,6 +28,6 @@ spec:
     objects:  |
       array:
         - |
-          objectName: {{ .Values.webadapter.sslCertificateRetrieval.certificateName }}
+          objectName: {{ .Values.webadapter.sslCertificateRetrieval.keyvault.certificateName }}
           objectType: secret
 {{- end -}}

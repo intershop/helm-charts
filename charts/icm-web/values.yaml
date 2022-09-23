@@ -23,14 +23,13 @@ webadapter:
   replicaCount: 1
   sslCertificateRetrieval: 
     enabled: false
-    secretProviderClassName: <name-of-the-class>
-    secretName: <name-of-the-secret>
-    certificateName: <name-of-the-certificate>
+    # secretName: <explicit-ssl-secret-name>
     keyvault:
       tenantId: <tenant-ID-of-the-KeyVault>
       subscriptionId: <subscription-ID-of-the-KeyVault>
       resourceGroup: <resource-group-of-the-KeyVault>
       keyvaultName: <name-of-the-KeyVault>
+      certificateName: <name-of-the-certificate>
 
   # define custom annotations for deployment and pods:
   deploymentAnnotations: []
@@ -39,9 +38,9 @@ webadapter:
   #  myAnnotation: true
 
   # define podbinding if required
-  podbinding:
+  podBinding:
     enabled: false
-    binding: name-of-the-binding
+    binding: <name-of-the-binding>
 
   # define custom labels for deployment and pods:
   deploymentLabels: []
@@ -72,7 +71,7 @@ agent:
   # define podBinding if required
   podBinding:
     enabled: false
-    binding: name-of-the-binding
+    binding: <name-of-the-binding>
 
   # define custom labels for deployment and pods:
   deploymentLabels: []
@@ -128,6 +127,8 @@ resources:
 
 ingress:
   enabled: false
+  hostName: <dns-name-of-service>
+  # secretName: <explicit-ssl-secret-name>
 
 nameOverride: ""
 fullnameOverride: ""
