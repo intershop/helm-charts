@@ -7,10 +7,6 @@ on:
 jobs:
   lint-test-icm-as:
     runs-on: ubuntu-latest
-    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
-    defaults:
-      run:
-        shell: bash
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -72,8 +68,7 @@ jobs:
       - name: Run chart-testing (install)
         run: |
           set -x
-          random_value=`tr -dc a-z < /dev/urandom | fold -w ${1:-10} | head -n 1`
-          
+          random_value=`tr -dc 'a-z0-9' < /dev/urandom | head -c10`
           kubectl create namespace ct-icm-as-$random_value
           
           kubectl create secret docker-registry dockerhub --namespace=ct-icm-as-$random_value --docker-username=${{ secrets.DOCKER_USERNAME }} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=eng-ateam@intershop.com
