@@ -7,6 +7,10 @@ on:
 jobs:
   lint-test-icm-as:
     runs-on: ubuntu-latest
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -20,7 +24,7 @@ jobs:
 
       - name: Install Helm Unittest
         run: |
-          helm plugin install https://github.com/quintush/helm-unittest
+          helm plugin install https://github.com/quintush/helm-unittest --version=v0.2.8
 
       # Python is required because `ct lint` runs Yamale (https://github.com/23andMe/Yamale) and
       # yamllint (https://github.com/adrienverge/yamllint) which require Python
