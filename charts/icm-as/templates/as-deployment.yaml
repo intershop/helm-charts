@@ -49,6 +49,10 @@ spec:
         - name: icm-as-server
           image: "{{ .Values.image.repository }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          {{- if .Values.customCommand }}
+          command:
+            {{- toYaml .Values.customCommand | trim | nindent 10 }}
+          {{- end }}
           env:
           - name: IS_DBPREPARE
             value: "false"
