@@ -1,0 +1,51 @@
+suite: tests correctness of persistence.customdata section
+templates:
+  - templates/as-deployment.yaml
+tests:
+  - it: enabled=false in as-deployment
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: templates/as-deployment.yaml
+    asserts:
+      #spec.template.spec.containers[0].volumeMounts
+      - notContains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: custom-data-volume
+            mountPath: /data
+      #spec.template.spec.volumes
+      - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: custom-data-volume
+            persistentVolumeClaim:
+              claimName: "icm-as-cluster-customData-pvc"
+
+  - it: enabled=true in as-deployment
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.customdata.enabled: true
+      persistence.customdata.mountPoint: /custom/path
+    template: templates/as-deployment.yaml
+    asserts:
+      #spec.template.spec.containers[0].volumeMounts
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: custom-data-volume
+            mountPath: /custom/path
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: custom-data-volume
+            persistentVolumeClaim:
+              claimName: "icm-as-cluster-customData-pvc"
