@@ -5,106 +5,116 @@
     "title": "The Helm Values Schema",
     "description": "The Helm Values Schema to define values necessary to deploy Intershops PWA.",
     "required": [
-        "upstream",
-        "environment",
-        "cache"
+        "pwa_ssr",
+        "pwa_nginx"
     ],
     "properties": {
-        "upstream": {
-            "$id": "#/properties/upstream",
-            "type": "object",
-            "title": "The upstream schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": {},
-            "required": [
-                "icmBaseURL"
-            ],
-            "properties": {
-                "icm": {
-                    "$id": "#/properties/upstream/properties/icmBaseURL",
-                    "type": "string",
-                    "title": "The base URL of ICM",
-                    "description": "Deprecated use property icmBaseURL instead",
-                    "examples": [
-                        "https://system.cloud.intershop.com:9443/INTERSHOP/web/WFS/SLDSystem"
-                    ]
-                },
-                "icmBaseURL": {
-                    "$id": "#/properties/upstream/properties/icmBaseURL",
-                    "type": "string",
-                    "title": "The base URL of ICM",
-                    "description": "The base URL of your Intershop Commerce Management installation",
-                    "examples": [
-                        "https://system.cloud.intershop.com:9443/INTERSHOP/web/WFS/SLDSystem"
-                    ]
-                },
-                "cdnPrefixURL": {
-                    "$id": "#/properties/upstream/properties/cdnPrefixURL",
-                    "type": "string",
-                    "title": "The base URL of your CDN",
-                    "description": "The base URL of your used Content Delivery Network service.",
-                    "examples": [
-                        "https://www.example.com"
-                    ]
-                }
-            },
-            "additionalProperties": false
-        },
-        "environment": {
-            "$id": "#/properties/environment",
-            "type": "array",
-            "title": "Additional SSR process environment variables",
-            "description": "Additional SSR process environment variables to set.",
-            "default": [],
-            "additionalItems": true,
-            "items": {
-                "$id": "#/properties/environment/items"
-            }
-        },
-        "cache": {
-            "$id": "#/properties/cache",
-            "type": "object",
-            "title": "The cache schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": {},
-            "required": [ ],
-            "properties": {
-                "enabled": {
-                    "$id": "#/properties/cache/properties/enabled",
-                    "type": "boolean",
-                    "title": "Enable or disable NGinx deployment",
-                    "description": "Enable or disable NGinx deployment",
-                    "default": true
-                },
-                "cacheIgnoreParams": {
-                    "$id": "#/properties/cache/properties/cacheIgnoreParams",
-                    "type": "string",
-                    "title": "Configure NGinx caching behavior",
-                    "description": "NGinx ignore query parameters during caching",
-                    "additionalProperties": true
-                },
-                "multiChannel": {
-                    "$id": "#/properties/cache/properties/multiChannel",
-                    "type": "string",
-                    "title": "Configure top-level URL to appserver URL mapping",
-                    "description": "Multi channel/site configuration object",
-                    "additionalProperties": true
-                },
-                "channels": {
-                    "$id": "#/properties/cache/properties/channels",
-                    "type": "object",
-                    "title": "Deprecated: Configure top-level URL to appserver URL mapping (Pre PWA 0.25 way)",
-                    "description": "Deprecated use property \"multiChannel\" or \"extraEnvVars\" instead.",
-                    "additionalProperties": true
-                },
-                "extraEnvVars": {
-                    "$id": "#/properties/cache/properties/extraEnvVars",
-                    "type": "array",
-                    "title": "Extra environment variables to be set on NGINX containers",
-                    "description": "Extra environment variables to be set on NGINX containers",
-                    "additionalProperties": true
-                }
-            }
+      "pwa_ssr": {
+        "$id": "#/properties/pwa_ssr",
+        "type": "object",
+        "title": "The PWA SSR schema",
+        "description": "Describes the server-side-rendering (SSR) characteristics of the PWA",
+        "required": [
+            "upstream"
+        ],
+        "properties": {
+          "upstream": {
+              "$id": "#/properties/upstream",
+              "type": "object",
+              "title": "The upstream schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": {},
+              "required": [
+                  "icmBaseURL"
+              ],
+              "properties": {
+                  "icm": {
+                      "$id": "#/properties/upstream/properties/icmBaseURL",
+                      "type": "string",
+                      "title": "The base URL of ICM",
+                      "description": "Deprecated use property icmBaseURL instead",
+                      "examples": [
+                          "https://system.cloud.intershop.com:9443/INTERSHOP/web/WFS/SLDSystem"
+                      ]
+                  },
+                  "icmBaseURL": {
+                      "$id": "#/properties/upstream/properties/icmBaseURL",
+                      "type": "string",
+                      "title": "The base URL of ICM",
+                      "description": "The base URL of your Intershop Commerce Management installation",
+                      "examples": [
+                          "https://system.cloud.intershop.com:9443/INTERSHOP/web/WFS/SLDSystem"
+                      ]
+                  },
+                  "cdnPrefixURL": {
+                      "$id": "#/properties/upstream/properties/cdnPrefixURL",
+                      "type": "string",
+                      "title": "The base URL of your CDN",
+                      "description": "The base URL of your used Content Delivery Network service.",
+                      "examples": [
+                          "https://www.example.com"
+                      ]
+                  }
+              },
+              "additionalProperties": false
+          },
+          "extraEnvVars": {
+              "$id": "#/properties/environment",
+              "type": "array",
+              "title": "Additional SSR process environment variables",
+              "description": "Additional SSR process environment variables to set.",
+              "default": [],
+              "additionalItems": true,
+              "items": {
+                  "$id": "#/properties/environment/items"
+              }
+          }
         }
+      },
+      "pwa_nginx": {
+          "$id": "#/properties/cache",
+          "type": "object",
+          "title": "The PWA NGINX schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": {},
+          "required": [ ],
+          "properties": {
+              "enabled": {
+                  "$id": "#/properties/cache/properties/enabled",
+                  "type": "boolean",
+                  "title": "Enable or disable NGinx deployment",
+                  "description": "Enable or disable NGinx deployment",
+                  "default": true
+              },
+              "cacheIgnoreParams": {
+                  "$id": "#/properties/cache/properties/cacheIgnoreParams",
+                  "type": "string",
+                  "title": "Configure NGinx caching behavior",
+                  "description": "NGinx ignore query parameters during caching",
+                  "additionalProperties": true
+              },
+              "multiChannel": {
+                  "$id": "#/properties/cache/properties/multiChannel",
+                  "type": "string",
+                  "title": "Configure top-level URL to appserver URL mapping",
+                  "description": "Multi channel/site configuration object",
+                  "additionalProperties": true
+              },
+              "channels": {
+                  "$id": "#/properties/cache/properties/channels",
+                  "type": "object",
+                  "title": "Deprecated: Configure top-level URL to appserver URL mapping (Pre PWA 0.25 way)",
+                  "description": "Deprecated use property \"multiChannel\" or \"extraEnvVars\" instead.",
+                  "additionalProperties": true
+              },
+              "extraEnvVars": {
+                  "$id": "#/properties/cache/properties/extraEnvVars",
+                  "type": "array",
+                  "title": "Extra environment variables to be set on NGINX containers",
+                  "description": "Extra environment variables to be set on NGINX containers",
+                  "additionalProperties": true
+              }
+          }
+      }
     }
 }
