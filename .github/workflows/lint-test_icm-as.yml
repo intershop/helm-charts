@@ -62,6 +62,16 @@ jobs:
         with:
           files: charts/icm-as/tests/__results__/*.xml
 
+      - name: Run Helm Unittest
+        run: |
+          helm unittest --helm3  --output-file charts/icm-as/tests/__results__/junit.xml --output-type JUnit charts/icm-as
+
+      - name: Publish Helm Unittest Results
+        uses: EnricoMi/publish-unit-test-result-action/composite@v1
+        if: always()
+        with:
+          files: charts/icm-as/tests/__results__/*.xml
+
       - name: Create kind cluster
         uses: helm/kind-action@v1.3.0
         with:
