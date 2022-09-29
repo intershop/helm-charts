@@ -1,0 +1,66 @@
+suite: tests custom-image-related values
+templates:
+  - templates/as-deployment.yaml
+tests:
+  - it: custom image
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      image.repository: "registry/repo:0.8.15"
+    template: templates/as-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: "registry/repo:0.8.15"
+
+  - it: custom pull policy
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      image.pullPolicy: Always
+    template: templates/as-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: Always
+
+  - it: custom pullPolicy
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      image.pullPolicy: Always
+    template: templates/as-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: Always
+
+  - it: custom pull secrets
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+      # use a separate values-yaml because setting array values directly does not work
+      - values/imagePullSecrets.yaml
+    template: templates/as-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.imagePullSecrets[0].name
+          value: "dockerhub"
+      - equal:
+          path: spec.template.spec.imagePullSecrets[1].name
+          value: "custom-acr"
