@@ -120,6 +120,15 @@ oms:
   # local IOM clusters have to work together. In this case, only one of the local
   # clusters must execute backend-applications (IOM singleton applications).
   execBackendApps:                 true
+
+  # Settings related to Single-Sign-On (SSO)
+  sso:
+    enabled:    false
+    # allowed values are azure-ad|keycloak
+    type:       azure-ad
+    # pass a JSON structure similar to oidc.json,
+    # see: https://docs.wildfly.org/26/Admin_Guide.html#Elytron_OIDC_Client
+    oidcConfig:
   
   # IOM database related settings
   db:
