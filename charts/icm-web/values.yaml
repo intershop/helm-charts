@@ -5,7 +5,7 @@
 replicaCount: 1
 
 # defined where the application shall run on
-nodeSelector: []
+nodeSelector: {}
 #  agentpool: <your agentpool>
 
 webadapter:
@@ -32,9 +32,9 @@ webadapter:
       certificateName: <name-of-the-certificate>
 
   # define custom annotations for deployment and pods:
-  deploymentAnnotations: []
+  deploymentAnnotations: {}
   #  myAnnotation: true
-  podAnnotations: []
+  podAnnotations: {}
   #  myAnnotation: true
 
   # define podbinding if required
@@ -43,11 +43,11 @@ webadapter:
     binding: <name-of-the-binding>
 
   # define custom labels for deployment and pods:
-  deploymentLabels: []
+  deploymentLabels: {}
   #  tags.datadoghq.com/env: hell
   #  tags.datadoghq.com/service: icm-web-waa
   #  tags.datadoghq.com/version: 11.0.0
-  podLabels: []
+  podLabels: {}
   #  tags.datadoghq.com/env: hell
   #  tags.datadoghq.com/service: icm-web-waa
   #  tags.datadoghq.com/version: 11.0.0
@@ -63,9 +63,9 @@ agent:
   replicaCount: 1
 
   # define custom annotations for deployment and pods:
-  deploymentAnnotations: []
+  deploymentAnnotations: {}
   #  myAnnotation: true
-  podAnnotations: []
+  podAnnotations: {}
   #  myAnnotation: true
 
   # define podBinding if required
@@ -74,11 +74,11 @@ agent:
     binding: <name-of-the-binding>
 
   # define custom labels for deployment and pods:
-  deploymentLabels: []
+  deploymentLabels: {}
   #  tags.datadoghq.com/env: hell
   #  tags.datadoghq.com/service: icm-web
   #  tags.datadoghq.com/version: 11.0.0
-  podLabels: []
+  podLabels: {}
   #  tags.datadoghq.com/env: hell
   #  tags.datadoghq.com/service: icm-web
   #  tags.datadoghq.com/version: 11.0.0
