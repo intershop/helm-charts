@@ -88,5 +88,6 @@ jobs:
           sed -i "s/<ipaddress or hostname>/$ipaddress/" charts/icm-as/values.yaml
                     
           ct install --namespace=ct-icm-as-$random_value --config ct_icm-as.yaml
+          kubectl describe pods --namespace=ct-icm-as-$random_value
         if: steps.list-changed.outputs.changed == 'true'
 
