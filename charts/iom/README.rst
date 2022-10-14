@@ -27,24 +27,46 @@ Dependency Information
 For the best compatibility between IOM Helm charts and IOM, please always use the newest version of IOM Helm charts,
 regardless of the IOM version you are currently using. To do so, please update IOM Helm charts as often as possible.
 
-+-------------+-----+-----+-----+-----+-----+-----+
-|Helm / IOM   |3.5  |3.6  |3.7  |4.0  |4.1  |4.2  |
-|             |     |     |     |     |     |     |
-+=============+=====+=====+=====+=====+=====+=====+
-|**2.2**      |[1]_ |[2]_ |     |     |     |     |
-|             |     |     |     |     |     |     |
-+-------------+-----+-----+-----+-----+-----+-----+
-|**2.1**      |[1]_ |[2]_ |     |     |     |     |
-|             |     |     |     |     |     |     |
-+-------------+-----+-----+-----+-----+-----+-----+
-|**2.0**      |[1]_ |[2]_ |     |     |x    |x    |
-|             |     |     |     |     |     |     |
-+-------------+-----+-----+-----+-----+-----+-----+
++-------------+-----+-----+-----+-----+-----+-----+-----+
+|Helm / IOM   |3.5  |3.6  |3.7  |4.0  |4.1  |4.2  |4.3  |
+|             |     |     |     |     |     |     |     |
++=============+=====+=====+=====+=====+=====+-----+=====+
+|**2.3**      |[1]_ |[2]_ |[3]_ |[3]_ |[3]_ |[3]_ |     |
+|             |     |     |     |     |     |     |     |
++-------------+-----+-----+-----+-----+-----+-----+-----+
+|**2.2**      |[1]_ |[2]_ |     |     |     |     |     |
+|             |     |     |     |     |     |     |     |
++-------------+-----+-----+-----+-----+-----+-----+-----+
+|**2.1**      |[1]_ |[2]_ |     |     |     |     |     |
+|             |     |     |     |     |     |     |     |
++-------------+-----+-----+-----+-----+-----+-----+-----+
+|**2.0**      |[1]_ |[2]_ |     |     |x    |x    |x    |
+|             |     |     |     |     |     |     |     |
++-------------+-----+-----+-----+-----+-----+-----+-----+
 
 x: not supported
 
 .. [1] Helm parameters *log.rest*, *config.skip*, *oms.db.connectionMonitor.*, *oms.db.connectTimeout* do not work in this combination.
 .. [2] Helm parameter *jboss.activemqClientPoolSizeMax* does not work in this combination
+.. [3] Helm parameters *oms.sso.\** do not work in this combination.
+
+=============
+Version 2.3.0
+=============
+
+------------
+New Features
+------------
+
+Support for *Single-Sign On* (SSO) has been added
+=================================================
+
+The configuration of *Single-Sign On* (SSO) is now enabled by the new parameter group *oms.sso*.
+There are four new parameters, which control the configuration of IOM in combination with an Identity and
+Access Management System: *oms.sso.enabled*, *oms.sso.type*, *oms.sso.oidcConfig* and
+*oms.sso.oidcConfigSecretKeyRef*.
+
+For detailed description of these parameters, please see `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
 =============
 Version 2.2.0

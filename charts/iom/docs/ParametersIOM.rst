@@ -414,6 +414,46 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires dbaccount 1.3.0.0 or newer                                                          |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|oms.sso                                 |Parameters in *oms.sso* are bundling the configuration of *Single-Sign On* (SSO)               |                                                         |
+|                                        |                                                                                               |                                                         |
+|                                        |* Requires IOM 4.3.0 or newer                                                                  |                                                         |
++----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|oms.sso.enabled                         |Enabled/disables *Single-Sign On*                                                              |false                                                    |
+|                                        |                                                                                               |                                                         |
+|                                        |* Requires IOM 4.3.0 or newer                                                                  |                                                         |
++----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|oms.sso.type                            |Defines the type of *Single-Sign On* to be used. Allowed values are *azure-ad* and *keycloak*. |azure-ad                                                 |
+|                                        |                                                                                               |                                                         |
+|                                        |* Requires IOM 4.3.0 or newer                                                                  |                                                         |
++----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|oms.sso.oidcConfig                      |Defines the configuration of *Single-Sign On*. The value is a JSON structure similar to        |                                                         |
+|                                        |*oidc.json*. See `Elytron OpenID Connect Client Subsystem Configuration                        |                                                         |
+|                                        |<https://docs.wildfly.org/26/Admin_Guide.html#Elytron_OIDC_Client>`_. The value has to be      |                                                         |
+|                                        |passed as a string value.                                                                      |                                                         |
+|                                        |                                                                                               |                                                         |
+|                                        |Example                                                                                        |                                                         |
+|                                        |                                                                                               |                                                         |
+|                                        |.. code-block:: yaml                                                                           |                                                         |
+|                                        |                                                                                               |                                                         |
+|                                        |  sso:                                                                                         |                                                         |
+|                                        |    oidcConfig: |                                                                              |                                                         |
+|                                        |      { "client-id": "abc",                                                                    |                                                         |
+|                                        |        "credentials": {                                                                       |                                                         |
+|                                        |          "secret": "def"                                                                      |                                                         |
+|                                        |        },                                                                                     |                                                         |
+|                                        |        "provider-url": "https://login.provider",                                              |                                                         |
+|                                        |        "public-client": "false",                                                              |                                                         |
+|                                        |        "ssl-required": "EXTERNAL"                                                             |                                                         |
+|                                        |      }                                                                                        |                                                         |
+|                                        |                                                                                               |                                                         |
+|                                        |* Requires IOM 4.3.0 or newer                                                                  |                                                         |
++----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|oms.sso.oidcConfigSecretKeyRef          |Instead of storing the OIDC confoguration as plain text in the values file, a reference to a   |{}                                                       |
+|                                        |key within a *Kubernetest Secret* can be used. For more information see `References to         |                                                         |
+|                                        |Kubernetes secrets <SecretKeyRef.rst>`_.                                                       |                                                         |
+|                                        |                                                                                               |                                                         |
+|                                        |* Requires IOM 4.3.0 or newer                                                                  |                                                         |
++----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.smtp                                |Parameters in *oms.smtp* are bundling the information required to connect SMTP server.         |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |If an integrated SMTP server is enabled (*mailhog.enabled* set to *true*), all parameters      |                                                         |
