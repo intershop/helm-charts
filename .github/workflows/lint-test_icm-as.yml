@@ -87,7 +87,7 @@ jobs:
           ipaddress=`ip route | grep -Po '(?<=src )[^ ]+' | head -n 1`
           sed -i "s/<ipaddress or hostname>/$ipaddress/" charts/icm-as/values.yaml
                     
-          ct install --namespace=ct-icm-as-$random_value --config ct_icm-as.yaml
-          kubectl describe pods --namespace=ct-icm-as-$random_value
+          ct install --namespace=ct-icm-as-$random_value --config ct_icm-as.yaml \ 
+            || { kubectl describe pods --namespace=ct-icm-as-$random_value && exit 1 }
         if: steps.list-changed.outputs.changed == 'true'
 
