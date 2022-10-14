@@ -17,7 +17,7 @@ podAnnotations: {}
 # define podbinding if required
 podBinding:
   enabled: false
-  binding: name-of-the-binding
+  binding: <name-of-the-binding>
 
 # define custom labels for deployment and pods:
 deploymentLabels: {}
