@@ -448,8 +448,8 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires IOM 4.3.0 or newer                                                                  |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|oms.sso.oidcConfigSecretKeyRef          |Instead of storing the OIDC confoguration as plain text in the values file, a reference to a   |{}                                                       |
-|                                        |key within a *Kubernetest Secret* can be used. For more information see `References to         |                                                         |
+|oms.sso.oidcConfigSecretKeyRef          |Instead of storing the OIDC configuration as plain text in the values file, a reference to a   |{}                                                       |
+|                                        |key within a *Kubernetes Secret* can be used. For more information see `References to          |                                                         |
 |                                        |Kubernetes secrets <SecretKeyRef.rst>`_.                                                       |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires IOM 4.3.0 or newer                                                                  |                                                         |

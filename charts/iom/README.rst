@@ -66,7 +66,7 @@ There are four new parameters, which control the configuration of IOM in combina
 Access Management System: *oms.sso.enabled*, *oms.sso.type*, *oms.sso.oidcConfig* and
 *oms.sso.oidcConfigSecretKeyRef*.
 
-Usage of *SSO*-parameters requires the IOM 4.3.0 or newer.
+Usage of *SSO*-parameters requires IOM 4.3.0 or newer.
 
 For detailed description of these parameters, please see `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
