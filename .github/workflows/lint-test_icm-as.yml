@@ -90,8 +90,8 @@ jobs:
           set -x
           random_value=`tr -dc 'a-z0-9' < /dev/urandom | head -c10`
           export NAMESPACE=ct-icm-as-$random_value
-          echo "::set-env name=NAMESPACE::$NAMESPACE"
-          
+          echo "NAMESPACE=$NAMESPACE" >> $GITHUB_ENV
+           
           kubectl create namespace $NAMESPACE
           
           kubectl create secret docker-registry dockerhub --namespace=$NAMESPACE --docker-username=${{ secrets.DOCKER_USERNAME }} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=eng-ateam@intershop.com

@@ -56,7 +56,7 @@ jobs:
           set -x
           random_value=`tr -dc 'a-z0-9' < /dev/urandom | head -c10`
           export NAMESPACE=ct-icm-$random_value
-          echo "::set-env name=NAMESPACE::$NAMESPACE"
+          echo "NAMESPACE=$NAMESPACE" >> $GITHUB_ENV
           
           kubectl create namespace $NAMESPACE
 
