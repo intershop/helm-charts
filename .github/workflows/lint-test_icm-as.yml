@@ -69,9 +69,12 @@ jobs:
         run: |
           set -x
           random_value=`tr -dc 'a-z0-9' < /dev/urandom | head -c10`
-          kubectl create namespace ct-icm-as-$random_value
+          export NAMESPACE=ct-icm-as-$random_value
+          echo "::set-env name=NAMESPACE::$NAMESPACE"
           
-          kubectl create secret docker-registry dockerhub --namespace=ct-icm-as-$random_value --docker-username=${{ secrets.DOCKER_USERNAME }} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=eng-ateam@intershop.com
+          kubectl create namespace $NAMESPACE
+          
+          kubectl create secret docker-registry dockerhub --namespace=$NAMESPACE --docker-username=${{ secrets.DOCKER_USERNAME }} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=eng-ateam@intershop.com
           
           mkdir -p /tmp/icm/sites
 
@@ -87,7 +90,7 @@ jobs:
           ipaddress=`ip route | grep -Po '(?<=src )[^ ]+' | head -n 1`
           sed -i "s/<ipaddress or hostname>/$ipaddress/" charts/icm-as/values.yaml
                     
-          ct install --namespace=ct-icm-as-$random_value --config ct_icm-as.yaml
+          ct install --namespace=$NAMESPACE --config ct_icm-as.yaml
         if: steps.list-changed.outputs.changed == 'true'
       - name: Debug failure
         if: failure() && steps.list-changed.outputs.changed == 'true'
@@ -96,3 +99,4 @@ jobs:
           kubectl describe pod -A
           kubectl describe service -A
           kubectl describe daemonset -A
+          kubectl logs $(kubectl get pods -n $NAMESPACE -o jsonpath="{.items[0].metadata.name}")
