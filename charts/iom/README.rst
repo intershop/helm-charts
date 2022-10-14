@@ -61,10 +61,12 @@ New Features
 Support for *Single-Sign On* (SSO) has been added
 =================================================
 
-The configuration of *Single-Sign On* (SSO) is now enabled by the new parameter group *oms.sso*.
+The configuration of *Single-Sign On* (SSO) is now possible by the new parameter group *oms.sso*.
 There are four new parameters, which control the configuration of IOM in combination with an Identity and
 Access Management System: *oms.sso.enabled*, *oms.sso.type*, *oms.sso.oidcConfig* and
 *oms.sso.oidcConfigSecretKeyRef*.
+
+Usage of *SSO*-parameters requires the IOM 4.3.0 or newer.
 
 For detailed description of these parameters, please see `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
