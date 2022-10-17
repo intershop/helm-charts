@@ -21,7 +21,7 @@ webadapter:
   customSSLCertificates: false
   overrideSSL: false
   replicaCount: 1
-  sslCertificateRetrieval: 
+  sslCertificateRetrieval:
     enabled: false
     # secretName: <explicit-ssl-secret-name>
     keyvault:
@@ -129,6 +129,7 @@ ingress:
   enabled: false
   hostName: <dns-name-of-service>
   # secretName: <explicit-ssl-secret-name>
+  # ingressClassName: <explicit-ingress-class-name>
 
 nameOverride: ""
 fullnameOverride: ""
