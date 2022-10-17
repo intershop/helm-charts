@@ -2,7 +2,7 @@
 |`< Back            |`^ Up            |`Next >                  |
 |<ExampleProd.rst>`_|<../README.rst>`_|<ParametersMailhog.rst>`_|
 +-------------------+-----------------+-------------------------+
-  
+
 ================================================
 Helm Charts for Intershop Order Management (IOM)
 ================================================
@@ -98,7 +98,7 @@ Parameters of IOM Helm Chart
 |dbaccount.tablespace                    |Use the passed tablespace as default for IOM database user and IOM                             |                                                         |
 |                                        |database. Tablespace has to exist, it will not be created.                                     |                                                         |
 |                                        |                                                                                               |                                                         |
-|                                        |`Options and Requirements of IOM database`_ will give you some more information.               |                                                         |       
+|                                        |`Options and Requirements of IOM database`_ will give you some more information.               |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |* Ignored if *postgres.enabled* is *true*, since the integrated PostgreSQL                     |                                                         |
 |                                        |  server can never create a custom tablespace prior to the initialization of the               |                                                         |
@@ -418,7 +418,7 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires IOM 4.3.0 or newer                                                                  |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|oms.sso.enabled                         |Enabled/disables *Single-Sign On*                                                              |false                                                    |
+|oms.sso.enabled                         |Enables/disables *Single-Sign On*                                                              |false                                                    |
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires IOM 4.3.0 or newer                                                                  |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
@@ -501,7 +501,7 @@ Parameters of IOM Helm Chart
 |                                        |Kubernetes documentation on Pod-Lifecycle                                                      |                                                         |
 |                                        |<https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#types-of-probe>`_.          |                                                         |
 |                                        |                                                                                               |                                                         |
-|                                        |Startup probe was introduced with IOM Helm charts 2.0.0, when IOM config image was removed. All|                                                         |
+|                                        |Startup probe was introduced with IOM Helm charts 2.0.0 when IOM config image was removed. All |                                                         |
 |                                        |the functionality that was executed by the config image before is in IOM version >= 4.0.0 part |                                                         |
 |                                        |of the IOM image. The startup probe must now be used to observe all the tasks (create db       |                                                         |
 |                                        |account, roll out dump, execute stored procedures, run database migrations, apply project      |                                                         |
@@ -513,7 +513,7 @@ Parameters of IOM Helm Chart
 |                                        |  *initialDelaySeconds + periodSeconds * failureThreshold*                                     |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |is larger than the time needed for the startup phase! The default values provided by IOM Helm  |                                                         |
-|                                        |charts provide an 1 hour timeframe for the startup phase: 60s + 10s * 354 = 3600s = 1h. If     |                                                         |
+|                                        |charts provide an 1 hour time frame for the startup phase: 60s + 10s * 354 = 3600s = 1h. If    |                                                         |
 |                                        |your system needs more time for the startup phase, you have to adapt the parameters. It is     |                                                         |
 |                                        |recommended to increase *startupProbe.failureThreshold* only and to leave all other parameters |                                                         |
 |                                        |unchanged.                                                                                     |                                                         |
@@ -572,12 +572,12 @@ Parameters of IOM Helm Chart
 |livenessProbe.failureThreshold          |When a probe fails, Kubernetes will try *failureThreshold* times before giving up. Giving up in|3                                                        |
 |                                        |case of liveness probe means restarting the container. Minimum value is 1.                     |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|readinessProbe                          |Group of parameters to fine-tune the readinessprobe of Kubernetes. The basic kind of probe is  |                                                         |
+|readinessProbe                          |Group of parameters to fine-tune the readiness probe of Kubernetes. The basic kind of probe is |                                                         |
 |                                        |fixed and cannot be changed. For an overview of probes and pod lifecycle, see the `official    |                                                         |
 |                                        |Kubernetes documentation on Pod-Lifecycle                                                      |                                                         |
 |                                        |<https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#types-of-probe>`_.          |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|readinessProbe.enabled                  |Enables to switch on/off the readiness probe.                                                  |true                                                     |
+|readinessProbe.enabled                  |Allows to switch the readiness probe on/off.                                                   |true                                                     |
 |                                        |                                                                                               |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |readinessProbe.periodSeconds            |How often (in seconds) to perform the probe. Minimum value is 1.                               |10                                                       |
@@ -639,7 +639,7 @@ Parameters of IOM Helm Chart
 |                                        |2. If IOM is set up as a transregional installation, which uses different Kubernetes clusters  |                                                         |
 |                                        |   in different regions, it has to be guaranteed that each IOM server has its unique ID. To do |                                                         |
 |                                        |   so, every IOM cluster should use a unique value for *jboss.nodePrefix*. Alternatively, it is|                                                         |
-|                                        |   also possible to use different Helm deployment names in each cluster. At least, one of these|                                                         |
+|                                        |   also possible to use different Helm deployment names in each cluster. At least one of these |                                                         |
 |                                        |   two options **MUST** be used for a transregional installation.                              |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires IOM 3.5.0.0 or newer                                                                |                                                         |
@@ -731,12 +731,12 @@ Parameters of IOM Helm Chart
 |                                        |* Requires IOM 3.6.0.0 or newer                                                                |                                                         |
 |                                        |                                                                                               |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|podDisruptionBudget.maxUnavailable      |Defines the maximum number of unavailble IOM pods, that are allowed during a voluntary         |1                                                        |
-|                                        |disruption of the Kubernets cluster.                                                           |                                                         |
+|podDisruptionBudget.maxUnavailable      |Defines the maximum number of unavailable IOM pods, that are allowed during a voluntary        |1                                                        |
+|                                        |disruption of the Kubernetes cluster.                                                          |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |podAntiAffinity                         |Default values of *podAntiAffinity* are creating a rule, which prevents scheduling of more than|                                                         |
 |                                        |one IOM pod of the current helm release onto one node. This way the IOM deployment becomes     |                                                         |
-|                                        |robust againts failures of a single node.                                                      |                                                         |
+|                                        |robust against failures of a single node.                                                      |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |podAntiAffinity.enabled                 |Enables/disables *podAntiAffinity*.                                                            |true                                                     |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
@@ -751,8 +751,8 @@ Parameters of IOM Helm Chart
 |                                        |nodes in this case.                                                                            |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |podAntiAffinity.topologyKey             |*podAntyAffinity.topologyKey* defines the name of the label to be used for anti-affinity. The  |kubernetes.io/hostname                                   |
-|                                        |default value *kubernetes.io/hostname* makes sure, that nodes with identical values of this    |                                                         |
-|                                        |label, cannot host more than one IOM pod of the same Helm release.                             |                                                         |
+|                                        |default value *kubernetes.io/hostname* makes sure that nodes with identical values of this     |                                                         |
+|                                        |label cannot host more than one IOM pod of the same Helm release.                              |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |affinity                                |Allows to define additional pod affinity rules.                                                |{}                                                       |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
@@ -771,7 +771,7 @@ Parameters of IOM Helm Chart
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |spreadPods.enabled                      |Enables/disabled *spreadPods*.                                                                 |false                                                    |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|spreadPods.topologySpreadConstraints    |List of contraints, that will be extended with selection of IOM pods of the current Helm       |.. code-block:: yaml                                     |
+|spreadPods.topologySpreadConstraints    |List of constraints that will be extended with selection of IOM pods of the current Helm       |.. code-block:: yaml                                     |
 |                                        |release. The default value provides an even spreading of IOM pods over existing nodes based on |                                                         |
 |                                        |                                                                                               |  - maxSkew: 1                                           |
 |                                        |                                                                                               |    whenUnsatisfiable: ScheduleAnyway                    |
@@ -797,7 +797,7 @@ Parameters of IOM Helm Chart
 |                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.traceAgentHost               |This parameter is mapped to environment variable *DD_AGENT_HOST*. For more information, please |                                                         |
-|                                        |consult the official datadog documentation.                                                    |                                                         |
+|                                        |consult the official Datadog documentation.                                                    |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |Normally this environment variable is injected with the right value by the locally installed   |                                                         |
 |                                        |datadog daemon-set.                                                                            |                                                         |
@@ -805,7 +805,7 @@ Parameters of IOM Helm Chart
 |                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.traceAgentPort               |This parameter is mapped to environment variable *DD_TRACE_AGENT_PORT*. For more information,  |                                                         |
-|                                        |please consult the official datadog documentation.                                             |                                                         |
+|                                        |please consult the official Datadog documentation.                                             |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |Normally this environment variable is injected with the right value by the locally installed   |                                                         |
 |                                        |datadog daemon-set.                                                                            |                                                         |
@@ -813,67 +813,67 @@ Parameters of IOM Helm Chart
 |                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.traceAgentTimeout            |This parameter is mapped to environment variable *DD_TRACE_AGENT_TIMEOUT*. For more            |                                                         |
-|                                        |information, please consult the official datadog documentation.                                |                                                         |
+|                                        |information, please consult the official Datadog documentation.                                |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.logsInjection                |This parameter is mapped to environment variable *DD_LOGS_INJECTION*. For more information,    |false                                                    |
-|                                        |please consult the official datadog documentation.                                             |                                                         |
+|                                        |please consult the official Datadog documentation.                                             |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.debug                        |This parameter is mapped to environment variable *DD_TRACE_DEBUG*. For more information, please|false                                                    |
-|                                        |consult the official datadog documentation.                                                    |                                                         |
+|                                        |consult the official Datadog documentation.                                                    |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.startupLogs                  |This parameter is mapped to environment variable *DD_TRACE_STARTUP_LOGS*. For more information,|true                                                     |
-|                                        |please consult the official datadog documentation.                                             |                                                         |
+|                                        |please consult the official Datadog documentation.                                             |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.tags                         |This parameter is mapped to environment variable *DD_TAGS*. For more information, please       |                                                         |
-|                                        |consult the official datadog documentation.                                                    |                                                         |
+|                                        |consult the official Datadog documentation.                                                    |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.serviceMapping               |This parameter is mapped to environment variable *DD_SERVICE_MAPPING*. For more information,   |                                                         |
-|                                        |please consult the official datadog documentation.                                             |                                                         |
+|                                        |please consult the official Datadog documentation.                                             |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.writerType                   |This parameter is mapped to environment variable *DD_WRITER_TYPE*. For more information, please|                                                         |
-|                                        |consult the official datadog documentation.                                                    |                                                         |
+|                                        |consult the official Datadog documentation.                                                    |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.partialFlushMinSpan          |This parameter is mapped to environment variable *DD_TRACE_PARTIAL_FLUSH_MIN_SPANS*. For more  |                                                         |
-|                                        |information, please consult the official datadog documentation.                                |                                                         |
+|                                        |information, please consult the official Datadog documentation.                                |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.dbClientSplitByInstance      |This parameter is mapped to environment variable *DD_TRACE_DB_CLIENT_SPLIT_BY_INSTANCE*. For   |                                                         |
-|                                        |more information, please consult the official datadog documentation.                           |                                                         |
+|                                        |more information, please consult the official Datadog documentation.                           |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.healthMetricsEnabled         |This parameter is mapped to environment variable *DD_TRACE_HEALTH_METRICS_ENABLED*. For more   |false                                                    |
-|                                        |information, please consult the official datadog documentation.                                |                                                         |
+|                                        |information, please consult the official Datadog documentation.                                |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.servletAsyncTimeoutError     |This parameter is mapped to environment variable *DD_TRACE_SERVLET_ASYNC_TIMEOUT_ERROR*. For   |true                                                     |
-|                                        |more information, please consult the official datadog documentation.                           |                                                         |
+|                                        |more information, please consult the official Datadog documentation.                           |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.sampleRate                   |This parameter is mapped to environment variable *DD_TRACE_SAMPLE_RATE*. For more information, |'1.0'                                                    |
-|                                        |please consult the official datadog documentation.                                             |                                                         |
+|                                        |please consult the official Datadog documentation.                                             |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.jmsFetchEnabled              |This parameter is mapped to environment variable *DD_JMXFETCH_ENABLED*. For more information,  |true                                                     |
-|                                        |please consult the official datadog documentation.                                             |                                                         |
+|                                        |please consult the official Datadog documentation.                                             |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+

@@ -20,12 +20,12 @@ The following documents provide an extensive documentation how to operate IOM wi
 11. `PostgreSQL Server Configuration <docs/Postgresql.rst>`_
 12. `Options and Requirements of IOM Database <docs/IOMDatabase.rst>`_
 
-======================    
+======================
 Dependency Information
 ======================
 
-For the best compatibility between IOM Helm charts and IOM, please always use the newest version of IOM Helm charts,
-regardless of the IOM version you are currently using. To do so, please update IOM Helm charts as often as possible.
+For the best compatibility between IOM Helm Charts and IOM, please always use the newest version of IOM Helm Charts,
+regardless of the IOM version you are currently using. Therefore, update IOM Helm Charts as often as possible.
 
 +-------------+-----+-----+-----+-----+-----+-----+-----+
 |Helm / IOM   |3.5  |3.6  |3.7  |4.0  |4.1  |4.2  |4.3  |
@@ -61,14 +61,14 @@ New Features
 Support for *Single-Sign On* (SSO) has been added
 =================================================
 
-The configuration of *Single-Sign On* (SSO) is now possible by the new parameter group *oms.sso*.
-There are four new parameters, which control the configuration of IOM in combination with an Identity and
+You can now configure *Single-Sign On* (SSO) via the new parameter group *oms.sso*.
+There are four new parameters that control the configuration of IOM in combination with an Identity and
 Access Management System: *oms.sso.enabled*, *oms.sso.type*, *oms.sso.oidcConfig* and
 *oms.sso.oidcConfigSecretKeyRef*.
 
-Usage of *SSO*-parameters requires IOM 4.3.0 or newer.
+Using *SSO*-parameters requires IOM 4.3.0 or newer.
 
-For detailed description of these parameters, please see `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
+For a detailed description of these parameters, see `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
 =============
 Version 2.2.0
@@ -81,8 +81,8 @@ New Features
 New Parameter *podDisruptionBudget.maxUnavailable* has been added
 =================================================================
 
-*PodDisruptionBudget* has been added to IOM Helm Charts. *PodDisruptionBudgets* define the behavior of pods during a
-voluntary disruption of the Kubernetes Cluster. The default value of parameter *podDisruptionBudget.maxUnavailable*
+*PodDisruptionBudget* has been added to IOM Helm Charts. *PodDisruptionBudgets* defines the behavior of pods during a
+voluntary disruption of the Kubernetes Cluster. The default value of the parameter *podDisruptionBudget.maxUnavailable*
 is 1, which guarantees that only one IOM pod will be unavailable during a voluntary disruption of the Kubernetes cluster.
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
@@ -91,18 +91,18 @@ New Parameter-Group *podAntiAffinity* has been added
 ====================================================
 
 Parameter-group *podAntiAffinity* along with the according default values, prevents scheduling of more than one IOM
-pod of current helm release onto one node. This way the IOM deployment becomes robuts againts failures of a single node.
+pod of current helm release onto one node. In this way, the IOM deployment is secured against failures of a single node.
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
 New Parameter-Group *spreadPods* has been added
 ===============================================
 
-*spreadPods* provides an alternative or additional method to spread IOM pods over nodes. In difference to *podAntiAffinity*
-it is possible to run more than one pod per node. E.g. if there are 2 nodes and 4 pods the pods are evenly spread over the
-nodes. Each node is then running 2 pods. Additionally it is very easy to combine different topologies.
+*spreadPods* provides an alternative or additional method to spread IOM pods over nodes. Contrary to *podAntiAffinity*
+it is possible to run more than one pod per node. For example, if there are 2 nodes and 4 pods, the pods are evenly spread across the
+nodes. Each node is then running 2 pods. Additionally, it is very easy to combine different topologies.
 
-In difference to *podAntiAffinity*, *spreadPods* is disabled on default.
+Unlike *podAntiAffinity*, *spreadPods* is disabled by default.
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
@@ -110,20 +110,20 @@ See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 Migration Notes
 ---------------
 
-*podAntiAffinity* is enabled and uses *mode: required* on default
+*podAntiAffinity* is enabled and uses *mode: required* by default
 =================================================================
 
-*podAntiAffinity* is enabled and uses *mode: required* on default, which makes the IOM deployment instantly more robust against
-failures of a single node. Each IOM pod requires it's own node in this case. But, if the according Kubernetes cluster does not provide
+*podAntiAffinity* is enabled and uses *mode: required* by default, which makes the IOM deployment instantly more robust against
+failures of a single node. Each IOM pod requires its own node in this case. However, if the corresponding Kubernetes cluster does not provide
 the required number of nodes, the deployment of IOM will fail.
 
 Please check your cluster in advance. If the capacity is not sufficient, please use *podAntiAffinity.mode: preferred* instead.
 
-Default value of *startupProbe.failureTreshold* was changed
+Default value of *startupProbe.failureThreshold* was changed
 ===========================================================
 
-The default value of *startupProbe.failureTreshold* was increased from 60 to 354, which increases the default timeout for database
-initialization and migration from 11 minutes to one hour. If the new default value is not matching the requirements, you have to set
+The default value of *startupProbe.failureThreshold* was increased from 60 to 354, which increases the default timeout for database
+initialization and migration from 11 minutes to one hour. If the new default value does not meet the requirements, you must set
 the right value within the values file.
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
@@ -131,9 +131,9 @@ See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 Default values of *image.repository* and *dbaccount.image.repository* have changed
 ==================================================================================
 
-The default values of *image.repository* and *dbaccount.image.repository* are now both referencing the new Intershop Docker
-repository at *docker.tools.intershop.com*. If you are using the default values of these parameters, you need to create a
-pull-secret, which has to set at *imagePullSecrets*.
+The default values of *image.repository* and *dbaccount.image.repository* now both point to the new Intershop Docker
+repository at *docker.tools.intershop.com*. If you use the default values of these parameters, you need to create a
+pull-secret, which has to be set at *imagePullSecrets*.
 
 -------------
 Fixed Defects
@@ -152,7 +152,7 @@ Removal Notes
 -------------
 
 Helm parameter *oms.mailResourcesBaseUrl* has been removed.
-       
+
 =============
 Known Defects
 =============
