@@ -1,7 +1,7 @@
 name: "Lint and test icm-as charts"
 on:
   pull_request:
-    paths: 
+    paths:
     - 'charts/icm-as/**'
 
 jobs:
@@ -9,12 +9,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
       - name: Install Helm
-        uses: azure/setup-helm@v1
+        uses: azure/setup-helm@v3
         with:
           version: v3.8.2
 
@@ -25,7 +25,7 @@ jobs:
       # Python is required because `ct lint` runs Yamale (https://github.com/23andMe/Yamale) and
       # yamllint (https://github.com/adrienverge/yamllint) which require Python
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: 3.7
 
@@ -91,25 +91,25 @@ jobs:
           random_value=`tr -dc 'a-z0-9' < /dev/urandom | head -c10`
           export NAMESPACE=ct-icm-as-$random_value
           echo "NAMESPACE=$NAMESPACE" >> $GITHUB_ENV
-           
+
           kubectl create namespace $NAMESPACE
-          
+
           kubectl create secret docker-registry dockerhub --namespace=$NAMESPACE --docker-username=${{ secrets.DOCKER_USERNAME }} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=eng-ateam@intershop.com
-          
+
           mkdir -p /tmp/icm/sites
 
           sed -i 's/<local folder>/\/tmp\/icm\/sites/' charts/icm-as/values.yaml
-          
+
           license=$(cat << EOF
           ${{ secrets.ICM_LICENSE }}
           EOF
           )
           sed -i "s[<your license>[${license//$'\n'/}[" charts/icm-as/values.yaml
-          
+
           docker run -d -p 1433:1433 --name mssql-intershop --env ACCEPT_EULA=Y --env SA_PASSWORD=1nstershop5A --env ICM_DB_NAME=intershop --env ICM_DB_USER=intershop --env ICM_DB_PASSWORD=intershop intershophub/mssql-intershop:2019-1.0
           ipaddress=`ip route | grep -Po '(?<=src )[^ ]+' | head -n 1`
           sed -i "s/<ipaddress or hostname>/$ipaddress/" charts/icm-as/values.yaml
-                    
+
           ct install --namespace=$NAMESPACE --config ct_icm-as.yaml
         if: steps.list-changed.outputs.changed == 'true'
       - name: Debug failure
