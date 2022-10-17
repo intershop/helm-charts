@@ -129,7 +129,7 @@ ingress:
   enabled: false
   hostName: <dns-name-of-service>
   # secretName: <explicit-ssl-secret-name>
-  # ingressClassName: <explicit-ingress-class-name>
+  # className: <explicit-ingress-class-name>
 
 nameOverride: ""
 fullnameOverride: ""
