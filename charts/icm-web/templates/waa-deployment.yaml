@@ -31,6 +31,9 @@ spec:
         {{- if .Values.agent.podLabels }}
           {{- toYaml .Values.agent.podLabels | trim | nindent 8 }}
         {{- end }}
+        {{- if .Values.agent.podBinding.enabled }}
+        aadpodidbinding: {{ .Values.agent.podBinding.binding }}
+        {{- end }}
     spec:
       {{- if .Values.nodeSelector}}
       nodeSelector:

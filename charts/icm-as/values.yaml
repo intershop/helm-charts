@@ -14,6 +14,11 @@ deploymentAnnotations: {}
 podAnnotations: {}
 #  myAnnotation: true
 
+# define podbinding if required
+podBinding:
+  enabled: false
+  binding: <name-of-the-binding>
+
 # define custom labels for deployment and pods:
 deploymentLabels: {}
 #  tags.datadoghq.com/env: hell
@@ -54,7 +59,7 @@ customizations: {}
 
 ## Optionally specify a custom command that controls which entrypoint is called inside the container during startup
 ## (see Deployment/spec.template.spec.container.command)
-#customCommand: ["/bin/sh", "-c", "/custom-dir/custom-script.sh"]
+# customCommand: ["/bin/sh", "-c", "/custom-dir/custom-script.sh"]
 
 debug:
   enabled: false

@@ -1,0 +1,33 @@
+{{- if .Values.webadapter.sslCertificateRetrieval.enabled }}
+apiVersion: secrets-store.csi.x-k8s.io/v1alpha1
+kind: SecretProviderClass
+metadata:
+  name: {{ include "icm-web.fullname" . }}-wa-spc-cert
+spec:
+  provider: azure
+  secretObjects:
+  {{- if .Values.ingress.enabled }}
+  - secretName: {{ .Values.ingress.secretName | default (printf "%s-wa-cert" (include "icm-web.fullname" .)) }}
+  {{ else }}
+  - secretName:  {{ .Values.webadapter.sslCertificateRetrieval.secretName | default (printf "%s-wa-cert" (include "icm-web.fullname" .)) }}
+  {{ end }}
+    type: kubernetes.io/tls
+    data:
+    - objectName: "{{ .Values.webadapter.sslCertificateRetrieval.keyvault.certificateName }}"
+      key: tls.key
+    - objectName: "{{ .Values.webadapter.sslCertificateRetrieval.keyvault.certificateName }}"
+      key: tls.crt
+  parameters:
+    usePodIdentity: "true"                                                                     # [OPTIONAL for Azure] if not provided, will default to "false"
+    tenantId: "{{ .Values.webadapter.sslCertificateRetrieval.keyvault.tenantId }}"             # the tenant ID of the KeyVault
+    subscriptionId: "{{ .Values.webadapter.sslCertificateRetrieval.keyvault.subscriptionId }}" # [REQUIRED for version < 0.0.4] the subscription ID of the KeyVault
+    resourceGroup: "{{ .Values.webadapter.sslCertificateRetrieval.keyvault.resourceGroup }}"   # [REQUIRED for version < 0.0.4] the resource group of the KeyVault
+    keyvaultName: "{{ .Values.webadapter.sslCertificateRetrieval.keyvault.keyvaultName }}"     # the name of the KeyVault
+    cloudName: ""          # [OPTIONAL available for version > 0.0.4] if not provided, azure environment will default to AzurePublicCloud
+    cloudEnvFileName: ""   # [OPTIONAL available for version > 0.0.7] use to define path to file for populating azure environment
+    objects:  |
+      array:
+        - |
+          objectName: {{ .Values.webadapter.sslCertificateRetrieval.keyvault.certificateName }}
+          objectType: secret
+{{- end -}}
