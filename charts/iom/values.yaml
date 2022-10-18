@@ -121,7 +121,7 @@ oms:
   # clusters must execute backend-applications (IOM singleton applications).
   execBackendApps:                 true
 
-  # Settings related to Single-Sign-On (SSO)
+  # Settings related to single sign-on (SSO)
   sso:
     enabled:                false
     # Allowed values are azure-ad|keycloak

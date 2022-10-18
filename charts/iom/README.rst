@@ -58,10 +58,10 @@ Version 2.3.0
 New Features
 ------------
 
-Support for *Single-Sign On* (SSO) has been added
+Added Support for *Single-Sign On* (SSO)
 =================================================
 
-You can now configure *Single-Sign On* (SSO) via the new parameter group *oms.sso*.
+You can now configure *single sign-on* (SSO) via the new parameter group *oms.sso*.
 There are four new parameters that control the configuration of IOM in combination with an Identity and
 Access Management System: *oms.sso.enabled*, *oms.sso.type*, *oms.sso.oidcConfig* and
 *oms.sso.oidcConfigSecretKeyRef*.
@@ -78,7 +78,7 @@ Version 2.2.0
 New Features
 ------------
 
-New Parameter *podDisruptionBudget.maxUnavailable* has been added
+Added New Parameter *podDisruptionBudget.maxUnavailable*
 =================================================================
 
 *PodDisruptionBudget* has been added to IOM Helm Charts. *PodDisruptionBudgets* defines the behavior of pods during a
@@ -87,7 +87,7 @@ is 1, which guarantees that only one IOM pod will be unavailable during a volunt
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
-New Parameter-Group *podAntiAffinity* has been added
+Added New Parameter-Group *podAntiAffinity*
 ====================================================
 
 Parameter-group *podAntiAffinity* along with the according default values, prevents scheduling of more than one IOM
@@ -95,7 +95,7 @@ pod of current helm release onto one node. In this way, the IOM deployment is se
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
-New Parameter-Group *spreadPods* has been added
+Added New Parameter-Group *spreadPods*
 ===============================================
 
 *spreadPods* provides an alternative or additional method to spread IOM pods over nodes. Contrary to *podAntiAffinity*
@@ -110,7 +110,7 @@ See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 Migration Notes
 ---------------
 
-*podAntiAffinity* is enabled and uses *mode: required* by default
+*podAntiAffinity* is Enabled and Uses *mode: required* by Default
 =================================================================
 
 *podAntiAffinity* is enabled and uses *mode: required* by default, which makes the IOM deployment instantly more robust against
@@ -119,7 +119,7 @@ the required number of nodes, the deployment of IOM will fail.
 
 Please check your cluster in advance. If the capacity is not sufficient, please use *podAntiAffinity.mode: preferred* instead.
 
-Default value of *startupProbe.failureThreshold* was changed
+Changed Default Value of *startupProbe.failureThreshold*
 ===========================================================
 
 The default value of *startupProbe.failureThreshold* was increased from 60 to 354, which increases the default timeout for database
@@ -128,7 +128,7 @@ the right value within the values file.
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
-Default values of *image.repository* and *dbaccount.image.repository* have changed
+Changed Default Values of *image.repository* and *dbaccount.image.repository*
 ==================================================================================
 
 The default values of *image.repository* and *dbaccount.image.repository* now both point to the new Intershop Docker

@@ -414,19 +414,19 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires dbaccount 1.3.0.0 or newer                                                          |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|oms.sso                                 |Parameters in *oms.sso* are bundling the configuration of *Single-Sign On* (SSO)               |                                                         |
+|oms.sso                                 |Parameters in *oms.sso* are bundling the configuration of *single sign-on* (SSO)               |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires IOM 4.3.0 or newer                                                                  |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|oms.sso.enabled                         |Enables/disables *Single-Sign On*                                                              |false                                                    |
+|oms.sso.enabled                         |Enables/disables *single sign-on*                                                              |false                                                    |
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires IOM 4.3.0 or newer                                                                  |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|oms.sso.type                            |Defines the type of *Single-Sign On* to be used. Allowed values are *azure-ad* and *keycloak*. |azure-ad                                                 |
+|oms.sso.type                            |Defines the type of *single sign-on* to be used. Allowed values are *azure-ad* and *keycloak*. |azure-ad                                                 |
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires IOM 4.3.0 or newer                                                                  |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|oms.sso.oidcConfig                      |Defines the configuration of *Single-Sign On*. The value is a JSON structure similar to        |                                                         |
+|oms.sso.oidcConfig                      |Defines the configuration of *single sign-on*. The value is a JSON structure similar to        |                                                         |
 |                                        |*oidc.json*. See `Elytron OpenID Connect Client Subsystem Configuration                        |                                                         |
 |                                        |<https://docs.wildfly.org/26/Admin_Guide.html#Elytron_OIDC_Client>`_. The value has to be      |                                                         |
 |                                        |passed as a string value.                                                                      |                                                         |
