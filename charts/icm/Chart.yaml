@@ -2,4 +2,4 @@ apiVersion: v1
 appVersion: "11.0.0"
 description: Intershop Commerce Management - ICM
 name: icm
-version: 0.4.0
+version: 0.5.0
