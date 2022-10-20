@@ -773,7 +773,7 @@ Parameters of IOM Helm Chart
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |spreadPods.topologySpreadConstraints    |List of constraints that will be extended with selection of IOM pods of the current Helm       |.. code-block:: yaml                                     |
 |                                        |release. The default value provides an even spreading of IOM pods over existing nodes based on |                                                         |
-|                                        |                                                                                               |  - maxSkew: 1                                           |
+|                                        |hostname.                                                                                      |  - maxSkew: 1                                           |
 |                                        |                                                                                               |    whenUnsatisfiable: ScheduleAnyway                    |
 |                                        |                                                                                               |    topologyKey: kubernetes.io/hostname                  |
 |                                        |                                                                                               |                                                         |

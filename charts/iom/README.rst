@@ -58,7 +58,7 @@ Version 2.3.0
 New Features
 ------------
 
-Added Support for *Single-Sign On* (SSO)
+Added Support for *Single Sign-On* (SSO)
 =================================================
 
 You can now configure *single sign-on* (SSO) via the new parameter group *oms.sso*.
