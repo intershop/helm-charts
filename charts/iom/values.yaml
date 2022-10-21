@@ -11,15 +11,15 @@ image:
   tag:
   pullPolicy: IfNotPresent
 
-# the type of test is fixed. It's the same as used for livenessProbe.
-# As long startupProbe is in progess, no liveness-probes will be executed. This is very
-# important to delay liveness-probe until the initialization (database initialization,
+# The type of test is fixed. It's the same as used for livenessProbe.
+# As long as startupProbe is in progress, no liveness-probes will be executed. This is very
+# important to delay the liveness-probe until the initialization (database initialization,
 # database migration, project configuration) is finished.
 # If the liveness-probe finally fails during pod start, it will be killed and caught in
-# an invinite loop of starting and killing.
-# It's essential, that startup-probe will not finally fail during initialization (before
-# Wildfly application server has startet). To do so, you need to configure startupProbe,
-# that
+# an infinite loop of starting and killing.
+# It is essential that the startup-probe will not finally fail during initialization (before
+# WildFly application server has started). To do so, you need to configure startupProbe,
+# so that
 #   initialDelaySeconds + periodSeconds * failureThreshold
 # is larger than initialization time!
 startupProbe:
@@ -29,8 +29,8 @@ startupProbe:
   timeoutSeconds: 5
   failureThreshold: 354
 
-# the type of test is fixed, as it is an important characteristics of the container.
-# to test liveness, the static HTML page at / of the wildfly application server is tested.
+# The type of test is fixed, as it is an important characteristics of the container.
+# To test liveness, the static HTML page at / of the WildFly application server is tested.
 livenessProbe:
   enabled: true
   periodSeconds: 10
@@ -38,8 +38,8 @@ livenessProbe:
   timeoutSeconds: 5
   failureThreshold: 3
 
-# the type of test is fixed, as it is an important characteristics of the container.
-# to test readiness, the healthckeck service of IOM is tested.
+# The type of test is fixed, as it is an important characteristics of the container.
+# To test readiness, the health check service of IOM is tested.
 readinessProbe:
   enabled: true
   periodSeconds: 10
@@ -49,13 +49,13 @@ readinessProbe:
   successThreshold: 1
 
 dbaccount:
-  # if enabled, dbaccount will be executed during installation process only, not on upgrade!
+  # If enabled, dbaccount will be executed during the installation process only, not on upgrade!
   enabled: false
-  # reinitialize database
+  # Reinitialize database
   resetData: false
-  # name of dedicated tablespace
+  # Name of dedicated tablespace
   tablespace:
-  # options allows to set database options.
+  # Options allows to set database options.
   options: "ENCODING='UTF8' LC_COLLATE='en_US.utf8' LC_CTYPE='en_US.utf8' CONNECTION LIMIT=-1 TEMPLATE=template0"
   # searchPath extends the search-path for DB objects, e.g.:
   # searchPath: "testcases"
@@ -65,22 +65,22 @@ dbaccount:
     tag:        1.4.0
     pullPolicy: IfNotPresent
   resources: {}
-  
+
 config:
   enabled: false
   image:
-    repository: 
+    repository:
     tag:
     pullPolicy: IfNotPresent
   resources: {}
-  # allow skipping of initialization steps
+  # Allow skipping of initialization steps
   skipProcedures: false
   skipMigration:  false
   skipConfig:     false
 
-# general postgres settings, required to connect to postgres server
+# General postgres settings, required to connect to postgres server
 # If postgres sub-chart is enabled, these settings are ignored by all other
-# components, including dbaccount job. Instead of it, the settings defined
+# components, including the dbaccount job. Instead, the settings defined
 # by the postgres sub-chart will be used.
 pg:
   host:               postgres-service
@@ -90,7 +90,7 @@ pg:
   sslCompression:     "0"
   sslRootCert:
   #
-  # all following pg parameters are used only by dbaccount. Hence, if
+  # All following pg parameters are used only by dbaccount. Hence, if
   # dbaccount.enabled is false, they are ignored completely.
   #
   # super-user access to postgres server
@@ -99,10 +99,10 @@ pg:
   passwd:             postgres
   passwdSecretKeyRef: {}
   db:                 postgres
-  
+
 oms:
-  # public URL of IOM
-  # used internally by IOM for link generation.
+  # Public URL of IOM
+  # Used internally by IOM for link generation.
   publicUrl:                       https://localhost
   # Shared secret for JWT creation / validation
   jwtSecret:                       length_must_be_at_least_32_chars
@@ -112,15 +112,26 @@ oms:
   archiveShopCustomerMailMinAge:   "1826"
   archiveShopCustomerMailMaxCount: "10000"
   deleteShopCustomerMailMinAge:    "2190"
-  # if set to true, secure flag is set to cookies. if secure flag is set, OMT
+  # If set to true, the secure flag is set to cookies. If the secure flag is set, OMT
   # requires HTTPS to function properly.
   secureCookiesEnabled:            true
-  # if set to false, no backend-applications will be executed in whole cluster.
-  # this is required in transregional installations of IOM only, where many
+  # If set to false, no backend-applications will be executed in the whole cluster.
+  # This is required in transregional installations of IOM only, where many
   # local IOM clusters have to work together. In this case, only one of the local
   # clusters must execute backend-applications (IOM singleton applications).
   execBackendApps:                 true
-  
+
+  # Settings related to single sign-on (SSO)
+  sso:
+    enabled:                false
+    # Allowed values are azure-ad|keycloak
+    type:                   azure-ad
+    # Pass a JSON structure similar to oidc.json,
+    # see: https://docs.wildfly.org/26/Admin_Guide.html#Elytron_OIDC_Client
+    oidcConfig:             ''
+    oidcConfigSecretKeyRef: {}
+
+
   # IOM database related settings
   db:
     name:               oms_db
@@ -128,19 +139,19 @@ oms:
     userSecretKeyRef:   {}
     passwd:             OmsDB
     passwdSecretKeyRef: {}
-    # defaults to combination of pg.host and pg.port, which are used by the config-container.
-    # can be overwritten to enable failover of the app-container 
+    # Defaults to a combination of pg.host and pg.port, which are used by the config-container.
+    # Can be overwritten to enable failover of the app-container
     hostlist:
     connectionMonitor:
       enabled:          false
       schedule:         "*/1 * * * *"
-    # connect timeout in seconds, a value of 0 indicates to wait indefinitely.
-    # timeout is passed to jdbc and psql connections
+    # Connect timeout in seconds, a value of 0 indicates to wait indefinitely.
+    # Timeout is passed to jdbc and psql connections
     connectTimeout:     "10"
-    
-  # mail-server related settings
-  # if mailhog sub-chart is enabled, these settings are ignored.
-  # Instead of it, the values of mailhog sub-chart will be used.
+
+  # Mail-server related settings
+  # If the mailhog sub-chart is enabled, these settings are ignored.
+  # Instead, the values of the mailhog sub-chart will be used.
   smtp:
     host:               mail-service
     port:               "1025"
@@ -151,30 +162,30 @@ oms:
 
 # Wildfly related settings
 jboss:
-  # set java options
+  # Set java options
   javaOpts: "-XX:+UseContainerSupport -XX:MinRAMPercentage=85 -XX:MaxRAMPercentage=85"
-  # provide the possibility to append java options w/o the need to overwrite javaOpts
+  # Provide the possibility to append java options w/o the need to overwrite javaOpts
   javaOptsAppend:
-  # set options for wildfly application server, e.g.:
+  # Set options for wildfly application server, e.g.:
   # opt: "--debug *:8787"
   opts:
-  # set pool-size of XA-datasource:
+  # Set pool-size of XA-datasource:
   xaPoolsizeMin: "50"
   xaPoolsizeMax: "125"
-  # set size of ActiveMQ client thread pool
+  # Set size of ActiveMQ client thread pool
   activemqClientPoolSizeMax: "50"
-  # if set, according value will be used to provide unique values for
+  # If set, the according value will be used to provide unique values for
   # jboss.node.name and jboss.tx.node.id. nodePrefix will be extended by the node-number
   # of the pod within the stateful set.
-  # if left empty, current hostname is used.
+  # If left empty, current hostname is used.
   nodePrefix:
 
 # IOM logging related settings
 log:
   level:
-    # log-level for scripts can be one of: ERROR, WARN, INFO, DEBUG
+    # Log-level for scripts can be one of: ERROR, WARN, INFO, DEBUG
     scripts:       INFO
-    # log-level for following scopes can be one of: FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL
+    # Log-level for following scopes can be one of: FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL
     console:       WARN
     iom:           WARN
     hibernate:     WARN
@@ -183,16 +194,16 @@ log:
     customization: WARN
   access:
     enabled:       true
-  # deprecated since iom-helm-charts 1.3.0
+  # Deprecated since iom-helm-charts 1.3.0
   metadata:
     tenant:        company-name
     environment:   system-name
-  # list of operationIDs
-  # if an entry matches the operationID of a REST interface, request and response
+  # List of operationIDs
+  # If an entry matches the operationID of a REST interface, request and response
   # of according requests are logged at level DEBUG
   rest: []
 
-# datadog APM related settings
+# Datadog APM related settings
 datadogApm:
   # APM library is installed only on host, with name ending on -0.
   backendOnly: true
@@ -207,40 +218,40 @@ datadogApm:
   traceAgentPort:
   # Is mapped to DD_TRACE_AGENT_TIMEOUT
   traceAgentTimeout:
-  # is mapped to DD_LOGS_INJECTION
+  # Is mapped to DD_LOGS_INJECTION
   logsInjection: false
-  # is mapped to DD_TRACE_DEBUG
+  # Is mapped to DD_TRACE_DEBUG
   debug: false
-  # is mapped to DD_TRACE_STARTUP_LOGS
+  # Is mapped to DD_TRACE_STARTUP_LOGS
   startupLogs: true
-  # is mapped to DD_TAGS
+  # Is mapped to DD_TAGS
   tags:
-  # is mapped to DD_SERVICE_MAPPING
+  # Is mapped to DD_SERVICE_MAPPING
   serviceMapping:
-  # is mapped to DD_WRITER_TYPE
-  # use LoggingWriter print APM traces to console instead of sending them to datadog agent
+  # Is mapped to DD_WRITER_TYPE
+  # Use LoggingWriter print APM traces to console instead of sending them to datadog agent
   writerType:
-  # is mapped to DD_TRACE_PARTIAL_FLUSH_MIN_SPANS
+  # Is mapped to DD_TRACE_PARTIAL_FLUSH_MIN_SPANS
   partialFlushMinSpan:
-  # is mapped to DD_TRACE_DB_CLIENT_SPLIT_BY_INSTANCE
+  # Is mapped to DD_TRACE_DB_CLIENT_SPLIT_BY_INSTANCE
   dbClientSplitByInstance:
-  # is mapped to DD_TRACE_HEALTH_METRICS_ENABLED
+  # Is mapped to DD_TRACE_HEALTH_METRICS_ENABLED
   healthMetricsEnabled: false
-  # is mapped to DD_TRACE_SERVLET_ASYNC_TIMEOUT_ERROR
+  # Is mapped to DD_TRACE_SERVLET_ASYNC_TIMEOUT_ERROR
   servletAsyncTimeoutError: true
-  # is mapped to DD_TRACE_SAMPLE_RATE
+  # Is mapped to DD_TRACE_SAMPLE_RATE
   sampleRate: '1.0'
-  # is mapped to DD_JMXFETCH_ENABLED
+  # Is mapped to DD_JMXFETCH_ENABLED
   jmxFetchEnabled: true
 
-# project related settings
+# Project-related settings
 project:
-  # IOM projects are supporting different settings for different environments
-  # envName defined, which one has to be used.
+  # IOM projects are supporting different settings for different environments,
+  # envName defines which one must be used.
   envName:               env-name
-  # controls the import of test data, which are part of the project.
+  # Controls the import of test data that are part of the project.
   importTestData:        false
-  # number of seconds after that the import of test-data has to be finished.
+  # Number of seconds after which the import of test-data has to be finished.
   # If not, the container will end with an error.
   importTestDataTimeout: 300
 
@@ -248,10 +259,10 @@ persistence:
   storageClass: azurefile
   storageSize: 1Gi
   # To be used in simple environments (e.g. demos) to persist data on local host.
-  # if set, storageClass will be ignored.
+  # If set, storageClass will be ignored.
   hostPath:
   # To be used in multi-regional installations to persist data in different clusters.
-  # if set, storageClass and hostPath are ignored.
+  # If set, storageClass and hostPath are ignored.
   pvc:
 
 ingress:
@@ -260,7 +271,7 @@ ingress:
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  # paths are treated as list of prefixes. Any URL matching one of the prefixes will
+  # Paths are treated as list of prefixes. Any URL matching one of the prefixes will
   # be forwared to IOM.
   hosts:
     - host: iom.example.local
@@ -285,8 +296,8 @@ resources:
     memory: 2000Mi
 
 imagePullSecrets: []
-nameOverride: 
-fullnameOverride: 
+nameOverride:
+fullnameOverride:
 
 podDisruptionBudget:
   maxUnavailable: 1
@@ -376,12 +387,12 @@ mailhog:
 iom-tests:
   enabled: false
 
-# internal ingress-nginx controller
-# this ingress-nginx controller cannot be globally used, it is restricted to the namespace
-# There is also a strong problem with the name "ingress-nginx". It contains a '-', which is
+# Internal ingress-nginx controller
+# This ingress-nginx controller cannot be globally used, it is restricted to the namespace.
+# There is also a major problem with the name "ingress-nginx". It contains a '-', which is
 # invalid for names of variables, hence these variables cannot be accessed within templates!
 # As a workaround "nginx" was added. Therefore ingress-nginx is only used to configure the
-# nginx-controller statically. 
+# nginx-controller statically.
 ingress-nginx:
   rbac:
     create: true
@@ -399,11 +410,11 @@ ingress-nginx:
       # increase verbosity
       # v: 3
     replicaCount: 2
-    # watch only for ingress in current namespace
+    # Watch only for ingress in current namespace
     scope:
       enabled: true
     service:
-      # internal ingress-nginx controller must never be accessed from public network
+      # Internal ingress-nginx controller must never be accessed from public network
       type: "ClusterIP"
 
 # Workaround to overcome the problem with '-' in names of variables.
@@ -411,7 +422,7 @@ ingress-nginx:
 # They are provided to be used in templates.
 nginx:
   enabled: false
-  # for very simple (demo-)installations, the internal nginx-controller can be used as public
+  # For very simple (demo-)installations, the internal nginx-controller can be used as public
   # ingress too, if proxy.enabled is set to false.
   proxy:
     enabled: true
