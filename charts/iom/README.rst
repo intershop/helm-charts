@@ -27,28 +27,31 @@ Dependency Information
 For the best compatibility between IOM Helm Charts and IOM, please always use the newest version of IOM Helm Charts,
 regardless of the IOM version you are currently using. Therefore, update IOM Helm Charts as often as possible.
 
-+-------------+-----+-----+-----+-----+-----+-----+-----+
-|Helm / IOM   |3.5  |3.6  |3.7  |4.0  |4.1  |4.2  |4.3  |
-|             |     |     |     |     |     |     |     |
-+=============+=====+=====+=====+=====+=====+=====+=====+
-|**2.3**      |[1]_ |[2]_ |[3]_ |[3]_ |[3]_ |[3]_ |     |
-|             |     |     |     |     |     |     |     |
-+-------------+-----+-----+-----+-----+-----+-----+-----+
-|**2.2**      |[1]_ |[2]_ |     |     |     |     |     |
-|             |     |     |     |     |     |     |     |
-+-------------+-----+-----+-----+-----+-----+-----+-----+
-|**2.1**      |[1]_ |[2]_ |     |     |     |     |     |
-|             |     |     |     |     |     |     |     |
-+-------------+-----+-----+-----+-----+-----+-----+-----+
-|**2.0**      |[1]_ |[2]_ |     |     |x    |x    |x    |
-|             |     |     |     |     |     |     |     |
-+-------------+-----+-----+-----+-----+-----+-----+-----+
+..
+   Table is commented out, it's used as an internal reference only.
 
-x: not supported
+   +-------------+-----+-----+-----+-----+-----+-----+-----+
+   |Helm / IOM   |3.5  |3.6  |3.7  |4.0  |4.1  |4.2  |4.3  |
+   |             |     |     |     |     |     |     |     |
+   +=============+=====+=====+=====+=====+=====+=====+=====+
+   |**2.3**      |[1]_ |[2]_ |[3]_ |[3]_ |[3]_ |[3]_ |     |
+   |             |[3]_ |[3]_ |     |     |     |     |     |
+   +-------------+-----+-----+-----+-----+-----+-----+-----+
+   |**2.2**      |[1]_ |[2]_ |     |     |     |     |     |
+   |             |     |     |     |     |     |     |     |
+   +-------------+-----+-----+-----+-----+-----+-----+-----+
+   |**2.1**      |[1]_ |[2]_ |     |     |     |     |     |
+   |             |     |     |     |     |     |     |     |
+   +-------------+-----+-----+-----+-----+-----+-----+-----+
+   |**2.0**      |[1]_ |[2]_ |     |     |x    |x    |x    |
+   |             |     |     |     |     |     |     |     |
+   +-------------+-----+-----+-----+-----+-----+-----+-----+
 
-.. [1] Helm parameters *log.rest*, *config.skip*, *oms.db.connectionMonitor.*, *oms.db.connectTimeout* do not work in this combination.
-.. [2] Helm parameter *jboss.activemqClientPoolSizeMax* does not work in this combination
-.. [3] Helm parameters *oms.sso.\** do not work in this combination.
+   x: not supported
+
+   .. [1] Helm parameters *log.rest*, *config.skip*, *oms.db.connectionMonitor.*, *oms.db.connectTimeout* do not work in this combination.
+   .. [2] Helm parameter *jboss.activemqClientPoolSizeMax* does not work in this combination
+   .. [3] Helm parameters *oms.sso.\** do not work in this combination.
 
 =============
 Version 2.3.0
