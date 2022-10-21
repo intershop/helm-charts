@@ -27,10 +27,6 @@ Dependency Information
 For the best compatibility between IOM Helm Charts and IOM, please always use the newest version of IOM Helm Charts,
 regardless of the IOM version you are currently using. Therefore, update IOM Helm Charts as often as possible.
 
-The current version of Helm Charts is backward compatible with all versions of IOM since 3.5. But only the newest
-IOM version, which is 4.3.0 at the time of writing, supports all features that the Helm Charts are offering. For more
-information, please consult the reference documentation of `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
-
 ..
    Table is commented out, it's used as an internal reference only.
 
@@ -70,7 +66,7 @@ Added Support for *Single Sign-On* (SSO)
 
 You can now configure *single sign-on* (SSO) via the new parameter group *oms.sso*.
 There are four new parameters that control the configuration of IOM in combination with an Identity and
-Access Management System: *oms.sso.enabled*, *oms.sso.type*, *oms.sso.oidcConfig*, and
+Access Management System: *oms.sso.enabled*, *oms.sso.type*, *oms.sso.oidcConfig* and
 *oms.sso.oidcConfigSecretKeyRef*.
 
 Using *SSO*-parameters requires IOM 4.3.0 or newer.
@@ -86,6 +82,7 @@ Changed default values of *image.tag* and *dbaccount.image.tag*
 
 Default value of IOM version (parameter *image.tag*) was changed to 4.3.0 and default value of dbaccount version
 (parameter *dbaccount.image.tag*) was updated to 1.6.0.
+=======
 
 =============
 Version 2.2.0
@@ -107,7 +104,7 @@ See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 Added New Parameter-Group *podAntiAffinity*
 ====================================================
 
-Parameter-group *podAntiAffinity*, along with the according default values, prevents scheduling of more than one IOM
+Parameter-group *podAntiAffinity* along with the according default values, prevents scheduling of more than one IOM
 pod of current helm release onto one node. In this way, the IOM deployment is secured against failures of a single node.
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
@@ -169,7 +166,7 @@ Removal Notes
 -------------
 
 Helm parameter *oms.mailResourcesBaseUrl* has been removed.
-       
+
 =============
 Known Defects
 =============
