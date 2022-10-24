@@ -42,7 +42,7 @@ Parameters of IOM Helm Chart
 |                                        |more information, see the `official Kubernetes documentation                                   |                                                         |
 |                                        |<https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy>`_.                  |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|image.tag                               |The tag of IOM product/project image.                                                          |4.0.0                                                    |
+|image.tag                               |The tag of IOM product/project image.                                                          |4.3.0                                                    |
 |                                        |                                                                                               |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |dbaccount                               |Parameters bundled by dbaccount are used to control the dbaccount init-container               |                                                         |
@@ -72,7 +72,7 @@ Parameters of IOM Helm Chart
 |                                        |information, see the `official Kubernetes documentation                                        |                                                         |
 |                                        |<https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy>`_.                  |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|dbaccount.image.tag                     |The tag of dbaccount image.                                                                    |1.4.0                                                    |
+|dbaccount.image.tag                     |The tag of dbaccount image.                                                                    |1.6.0                                                    |
 |                                        |                                                                                               |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |dbaccount.resetData                     |Controls if dbaccount init-container should reset an already existing IOM                      |false                                                    |

@@ -77,6 +77,16 @@ Using *SSO*-parameters requires IOM 4.3.0 or newer.
 
 For a detailed description of these parameters, see `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
+---------------
+Migration Notes
+---------------
+
+Changed default values of *image.tag* and *dbaccount.image.tag*
+===============================================================
+
+Default value of IOM version (parameter *image.tag*) was changed to 4.3.0 and default value of dbaccount version
+(parameter *dbaccount.image.tag*) was updated to 1.6.0.
+
 =============
 Version 2.2.0
 =============
