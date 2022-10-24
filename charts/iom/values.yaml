@@ -62,7 +62,7 @@ dbaccount:
   searchPath:
   image:
     repository: docker.tools.intershop.com/iom/intershophub/iom-dbaccount
-    tag:        1.4.0
+    tag:        1.6.0
     pullPolicy: IfNotPresent
   resources: {}
 
