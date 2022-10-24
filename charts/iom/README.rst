@@ -86,7 +86,6 @@ Changed default values of *image.tag* and *dbaccount.image.tag*
 
 Default value of IOM version (parameter *image.tag*) was changed to 4.3.0 and default value of dbaccount version
 (parameter *dbaccount.image.tag*) was updated to 1.6.0.
-=======
 
 =============
 Version 2.2.0
