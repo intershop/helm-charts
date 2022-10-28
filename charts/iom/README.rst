@@ -28,7 +28,7 @@ For the best compatibility between IOM Helm Charts and IOM, please always use th
 regardless of the IOM version you are currently using. Therefore, update IOM Helm Charts as often as possible.
 
 The current version of Helm Charts is backward compatible with all versions of IOM since 3.5. But only the newest
-IOM version, which is 4.3.0 at the time of writing, supports all features, that the Helm Charts are offering. For more
+IOM version, which is 4.3.0 at the time of writing, supports all features that the Helm Charts are offering. For more
 information, please consult the reference documentation of `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
 ..
@@ -54,7 +54,7 @@ information, please consult the reference documentation of `Helm parameters of I
    x: not supported
 
    .. [1] Helm parameters *log.rest*, *config.skip*, *oms.db.connectionMonitor.*, *oms.db.connectTimeout* do not work in this combination.
-   .. [2] Helm parameter *jboss.activemqClientPoolSizeMax* does not work in this combination
+   .. [2] Helm parameter *jboss.activemqClientPoolSizeMax* does not work in this combination.
    .. [3] Helm parameters *oms.sso.\** do not work in this combination.
 
 =============
@@ -70,7 +70,7 @@ Added Support for *Single Sign-On* (SSO)
 
 You can now configure *single sign-on* (SSO) via the new parameter group *oms.sso*.
 There are four new parameters that control the configuration of IOM in combination with an Identity and
-Access Management System: *oms.sso.enabled*, *oms.sso.type*, *oms.sso.oidcConfig* and
+Access Management System: *oms.sso.enabled*, *oms.sso.type*, *oms.sso.oidcConfig*, and
 *oms.sso.oidcConfigSecretKeyRef*.
 
 Using *SSO*-parameters requires IOM 4.3.0 or newer.
@@ -107,7 +107,7 @@ See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 Added New Parameter-Group *podAntiAffinity*
 ====================================================
 
-Parameter-group *podAntiAffinity* along with the according default values, prevents scheduling of more than one IOM
+Parameter-group *podAntiAffinity*, along with the according default values, prevents scheduling of more than one IOM
 pod of current helm release onto one node. In this way, the IOM deployment is secured against failures of a single node.
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
@@ -116,8 +116,8 @@ Added New Parameter-Group *spreadPods*
 ===============================================
 
 *spreadPods* provides an alternative or additional method to spread IOM pods over nodes. Contrary to *podAntiAffinity*
-it is possible to run more than one pod per node. For example, if there are 2 nodes and 4 pods, the pods are evenly spread across the
-nodes. Each node is then running 2 pods. Additionally, it is very easy to combine different topologies.
+it is possible to run more than one pod per node. For example, if there are two nodes and four pods, the pods are evenly spread across the
+nodes. Each node is running two pods. Additionally, it is very easy to combine different topologies.
 
 Unlike *podAntiAffinity*, *spreadPods* is disabled by default.
 
@@ -139,7 +139,7 @@ Please check your cluster in advance. If the capacity is not sufficient, please 
 Changed Default Value of *startupProbe.failureThreshold*
 ===========================================================
 
-The default value of *startupProbe.failureThreshold* was increased from 60 to 354, which increases the default timeout for database
+The default value of *startupProbe.failureThreshold* has been increased from 60 to 354, which increases the default timeout for database
 initialization and migration from 11 minutes to one hour. If the new default value does not meet the requirements, you must set
 the right value within the values file.
 
@@ -186,4 +186,3 @@ Known Defects
 |        |nginx instead)                                                                                  |
 |        |                                                                                                |
 +--------+------------------------------------------------------------------------------------------------+
-
