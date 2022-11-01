@@ -7,7 +7,7 @@ Via command line:
 ```bash
 $ helm repo add intershop https://intershop.github.io/helm-charts
 $ helm repo update
-$ helm install my-release intershop/pwa --values=values.yaml --namespace pwa
+$ helm install my-release intershop/pwa-main
 ```
 or via [Flux](https://fluxcd.io) configuration:
 ```yaml
@@ -27,7 +27,7 @@ spec:
   chart:
     repository: https://intershop.github.io/helm-charts
     name: pwa-main
-    version: 0.3.0
+    version: 0.3.1
   values:
 ```
 ## Upgrading an existing Release to a new Major Version

@@ -7,3 +7,4 @@ charts:
 check-version-increment: false
 validate-maintainers: false
 helm-extra-args: --timeout 2400s
+skip-clean-up: true

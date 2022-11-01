@@ -5,7 +5,7 @@
 replicaCount: 1
 
 # defined where the application shall run on
-nodeSelector: []
+nodeSelector: {}
 #  agentpool: <your agentpool>
 
 webadapter:
@@ -21,19 +21,33 @@ webadapter:
   customSSLCertificates: false
   overrideSSL: false
   replicaCount: 1
+  sslCertificateRetrieval:
+    enabled: false
+    # secretName: <explicit-ssl-secret-name>
+    keyvault:
+      tenantId: <tenant-ID-of-the-KeyVault>
+      subscriptionId: <subscription-ID-of-the-KeyVault>
+      resourceGroup: <resource-group-of-the-KeyVault>
+      keyvaultName: <name-of-the-KeyVault>
+      certificateName: <name-of-the-certificate>
 
   # define custom annotations for deployment and pods:
-  deploymentAnnotations: []
+  deploymentAnnotations: {}
   #  myAnnotation: true
-  podAnnotations: []
+  podAnnotations: {}
   #  myAnnotation: true
 
+  # define podbinding if required
+  podBinding:
+    enabled: false
+    binding: <name-of-the-binding>
+
   # define custom labels for deployment and pods:
-  deploymentLabels: []
+  deploymentLabels: {}
   #  tags.datadoghq.com/env: hell
   #  tags.datadoghq.com/service: icm-web-waa
   #  tags.datadoghq.com/version: 11.0.0
-  podLabels: []
+  podLabels: {}
   #  tags.datadoghq.com/env: hell
   #  tags.datadoghq.com/service: icm-web-waa
   #  tags.datadoghq.com/version: 11.0.0
@@ -49,17 +63,22 @@ agent:
   replicaCount: 1
 
   # define custom annotations for deployment and pods:
-  deploymentAnnotations: []
+  deploymentAnnotations: {}
   #  myAnnotation: true
-  podAnnotations: []
+  podAnnotations: {}
   #  myAnnotation: true
 
+  # define podBinding if required
+  podBinding:
+    enabled: false
+    binding: <name-of-the-binding>
+
   # define custom labels for deployment and pods:
-  deploymentLabels: []
+  deploymentLabels: {}
   #  tags.datadoghq.com/env: hell
   #  tags.datadoghq.com/service: icm-web
   #  tags.datadoghq.com/version: 11.0.0
-  podLabels: []
+  podLabels: {}
   #  tags.datadoghq.com/env: hell
   #  tags.datadoghq.com/service: icm-web
   #  tags.datadoghq.com/version: 11.0.0
@@ -108,6 +127,9 @@ resources:
 
 ingress:
   enabled: false
+  hostName: <dns-name-of-service>
+  # secretName: <explicit-ssl-secret-name>
+  # className: <explicit-ingress-class-name>
 
 nameOverride: ""
 fullnameOverride: ""
