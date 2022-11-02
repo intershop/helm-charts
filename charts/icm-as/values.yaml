@@ -61,8 +61,24 @@ customizations: {}
 ## (see Deployment/spec.template.spec.container.command)
 # customCommand: ["/bin/sh", "-c", "/custom-dir/custom-script.sh"]
 
-debug:
-  enabled: false
+## Control options regarding the java-vm running the ICM-AS
+jvm:
+  debug:
+    # enable/disable to java-vm-debugging
+    enabled: false
+  heap:
+    # minimum heap (Xms, default see container)
+    min: 2048M
+    # maximum heap (Xmx, default see container)
+    max: 4608M
+    # make the jvm write a heap dump on OOM  (written to /intershop/logs, default false)
+    enableDump: false
+  # garbage collector settings
+  garbageCollector:
+    # define the garbage collector to be used (default see container)
+    type: ShenandoahGC
+    # make the jvm write a GC log (default false)
+    enableLog: false
 
 nameOverride: ""
 
@@ -100,9 +116,11 @@ testConnection:
 resources:
   limits:
     cpu: 1000m
-    memory: 3Gi
+    # recommended: jvm.heap.max + 1.5G
+    memory: 6Gi
   requests:
     cpu: 1000m
+    # recommended: jvm.heap.min + 1G
     memory: 3Gi
 
 environment:

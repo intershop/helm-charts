@@ -61,8 +61,28 @@ spec:
             value: "false"
           - name: SERVER_NAME
             value: "appserver"
-          {{- if .Values.debug.enabled }}
+          {{- if .Values.jvm.debug.enabled }}
           - name: DEBUG_ICM
+            value: "true"
+          {{- end }}
+          {{- if .Values.jvm.heap.min }}
+          - name: XMS
+            value: {{ printf "%s%s" "-Xms" .Values.jvm.heap.min | quote }}
+          {{- end }}
+          {{- if .Values.jvm.heap.max }}
+          - name: XMX
+            value: {{ printf "%s%s" "-Xmx" .Values.jvm.heap.max | quote }}
+          {{- end }}
+          {{- if .Values.jvm.heap.enableDump }}
+          - name: ENABLE_HEAPDUMP
+            value: "true"
+          {{- end }}
+          {{- if .Values.jvm.garbageCollector.type }}
+          - name: GARBAGECOLLECTOR          
+            value: {{ printf "%s%s" "-XX:+Use" .Values.jvm.garbageCollector.type | quote }}
+          {{- end }}
+          {{- if .Values.jvm.garbageCollector.enableLog }}
+          - name: ENABLE_GCLOG
             value: "true"
           {{- end }}
           {{- range $key, $value := .Values.environment }}
@@ -74,7 +94,7 @@ spec:
             - name: http
               containerPort: 7743
               protocol: TCP
-          {{- if .Values.debug.enabled }}
+          {{- if .Values.jvm.debug.enabled }}
             # Java Debug port
             - name: debug
               containerPort: 7746
