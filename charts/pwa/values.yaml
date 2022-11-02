@@ -22,6 +22,17 @@ service:
   type: ClusterIP
   port: 4200
 
+##
+## @param hybrid Set to enabled PWA hybrid mode. This means pages are produced by PWA or ICM.
+## You must specify the icm-web chart's wa-service reference. Communication cannot be routed through
+## ICM ingress controller.
+##
+hybrid:
+  enabled: false
+  backend: {}
+#    service: icm-web
+#    port: 443
+
 resources: {}
 
 nodeSelector: {}

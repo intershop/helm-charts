@@ -6,6 +6,7 @@
     "description": "The Helm Values Schema to define values necessary to deploy Intershops PWA.",
     "required": [
         "upstream",
+        "hybrid",
         "environment",
         "cache"
     ],
@@ -49,6 +50,42 @@
                 }
             },
             "additionalProperties": false
+        },
+        "hybrid": {
+          "$id": "#/properties/hybrid",
+          "type": "object",
+          "title": "The hybrid schema",
+          "description": "Activate the so called hybrid mode of PWA (needs ICM deployed in the same namespace)",
+          "required": [ "enabled", "backend" ],
+          "properties": {
+              "enabled": {
+                  "$id": "#/properties/hybrid/properties/enabled",
+                  "type": "boolean",
+                  "title": "Enable or disable hybrid mode deployment",
+                  "description": "Enable or disable hybrid mode deployment",
+                  "default": false
+              },
+              "backend": {
+                "$id": "#/properties/hybrid/properties/backend",
+                "type": "object",
+                "title": "ICM Web Adapter service connection reference",
+                "required": [ ],
+                "properties": {
+                  "service": {
+                    "$id": "#/properties/hybrid/properties/backend/properties/service",
+                    "type": "string",
+                    "title": "ICM Web Adapter service name",
+                    "default": "icm-web"
+                  },
+                  "port": {
+                    "$id": "#/properties/hybrid/properties/backend/properties/port",
+                    "type": "integer",
+                    "title": "ICM Web Adapter service port",
+                    "default": "443"
+                  }
+                }
+              }
+            }
         },
         "environment": {
             "$id": "#/properties/environment",
