@@ -34,6 +34,12 @@ spec:
           - name: CDN_PREFIX_URL
             value: "{{ .Values.upstream.cdnPrefixURL }}"
         {{- end }}
+        {{- if .Values.hybrid.enabled }}
+          - name: SSR_HYBRID_BACKEND
+            value: "https://{{ include "pwa-main.hybridname" . }}-wa:{{ default 443 .Values.hybrid.backend.port}}"
+          - name: SSR_HYBRID
+            value: "true"
+        {{- end }}
         {{- with .Values.environment }}
             {{- toYaml . | nindent 10 }}
         {{- end }}
