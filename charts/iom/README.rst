@@ -78,10 +78,15 @@ following cases:
    setup a little bit easier, since the installation of a cluster wide Ingress controller could be skipped.
 
 If an installation is currently using the internal NGINX (parameter *nginx.enabled* is set to *true*), then measures
-have to be taken, before using IOM Helm Charts 3.0.0. Depending on the use-case, which lead to the usage of the internal
+have to be taken before using IOM Helm Charts 3.0.0. Depending on the use-case, which lead to the usage of the internal
 NGINX, the measures are different.
 
-1. 
+1. Session stickiness has to be provided by the Ingress controller, otherwise IOM can not be operated. If an NGINX Ingress
+   controller is used, the IOM Helm Charts are already provide the required configuration settings. If any other Ingress
+   controller is used, you have to determine how to configure it in order to provide session stickiness. The according
+   configuration has then to be applied in the Helm values.
+2. Simple demo and test installations have now to use a separately installed Ingress controller. Preferred is an NGINX
+   Ingress controller, since the required configuration for session stickiness is already provided by IOM Helm Charts.
 
 =============
 Version 2.3.0
