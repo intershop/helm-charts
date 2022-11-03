@@ -27,7 +27,7 @@ dependencies:
   - name: mailhog
     # https://github.com/codecentric/helm-charts
     repository: https://codecentric.github.io/helm-charts
-    version: 5.0.6
+    version: 5.2.0
     condition: mailhog.enabled
   - name: iom-tests
     version: 1.0.0
