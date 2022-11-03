@@ -435,6 +435,31 @@ spec:
             # general OMS settings
             #
             {{- if .Values.oms }}
+              {{- if .Values.oms.sso }}
+            - name: OMS_SSO_ENABLED
+                {{- if .Values.oms.sso.enabled }}
+                  {{- if not (kindIs "bool" .Values.oms.sso.enabled) }}
+                    {{ fail "oms.sso.enabled contains a non boolean value!" }}
+                  {{- end }}
+              value: 'true'
+                {{- else }}
+              value: 'false'
+                {{- end }}
+                {{- if .Values.oms.sso.type }}
+            - name: OMS_SSO_TYPE
+              value: {{ .Values.oms.sso.type }}
+                {{- end }}
+                {{- /* oidcConfigSecretKeyRef has precedence over oidcConfig */ -}}
+                {{- if .Values.oms.sso.oidcConfigSecretKeyRef }}
+            - name: OMS_SSO_OIDC_CONFIG
+              valueFrom:
+                secretKeyRef:
+                  {{- toYaml .Values.oms.sso.oidcConfigSecretKeyRef | nindent 18 }}
+                {{- else if .Values.oms.sso.oidcConfig }}
+            - name: OMS_SSO_OIDC_CONFIG
+              value: {{ .Values.oms.sso.oidcConfig | toPrettyJson }}
+                {{- end }}
+              {{- end }}
               {{- if .Values.oms.publicUrl }}
             - name: OMS_PUBLIC_URL
               value: {{ .Values.oms.publicUrl }}
