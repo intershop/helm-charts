@@ -107,6 +107,11 @@ Within the context of projects, many changes can be applied to the running IOM c
   For security reasons, the default value of *downtime* is *true* to avoid any inconsistencies.
   Once you have understood the concept of the *downtime* parameter, you should set it to *false* to avoid downtimes as often as possible, and only set it to *true* when really required.
 
+Preconditions
+-------------
+
+IOM relies on sticky sessions, a functionality which has to be provided by the *Ingress Controller*. It is recommended to use *NGINX Ingress Controller*. In this case, IOM Helm Charts will configure the *Ingress Controller* properly out of the box. When using any other type of *Ingress Controller*, the user is responsible to configure the *Ingress Controller* in a way, that it is providing sticky sessions for IOM.
+
 Intershop Commerce Platform
 ===========================
 
