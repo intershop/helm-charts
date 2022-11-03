@@ -775,6 +775,33 @@ entries:
     version: 0.1.30
   iom:
   - apiVersion: v2
+    appVersion: 4.3.0
+    created: "2022-11-03T09:16:41.285872419Z"
+    dependencies:
+    - condition: nginx.enabled
+      name: ingress-nginx
+      repository: https://kubernetes.github.io/ingress-nginx
+      version: 4.0.19
+    - condition: mailhog.enabled
+      name: mailhog
+      repository: https://codecentric.github.io/helm-charts
+      version: 5.0.6
+    - condition: iom-tests.enabled
+      name: iom-tests
+      repository: ""
+      version: 1.0.0
+    - condition: postgres.enabled
+      name: postgres
+      repository: ""
+      version: 1.0.0
+    description: A Helm chart for operation of Intershop Order Management
+    digest: 4ccd89c6d0a91cb5d54e9f29bd5cd2275e06a0cc12c28769dc8fe5c754bf4185
+    name: iom
+    type: application
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/iom-2.3.0/iom-2.3.0.tgz
+    version: 2.3.0
+  - apiVersion: v2
     appVersion: 4.0.0
     created: "2022-09-02T10:11:25.726643632Z"
     dependencies:
@@ -879,4 +906,4 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.2.3/pwa-main-0.2.3.tgz
     version: 0.2.3
-generated: "2022-11-02T16:22:38.813190692Z"
+generated: "2022-11-03T09:16:41.285976019Z"
