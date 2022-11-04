@@ -122,13 +122,6 @@ Default value of IOM version (parameter *image.tag*) was changed to 4.3.0 and de
 Version 2.2.0
 =============
 
----------------
-Migration Notes
----------------
-
-The internal NGINX was removed from the IOM Helm Charts. The internal NGINX was an optional component, which could be
-used in 
-
 ------------
 New Features
 ------------
