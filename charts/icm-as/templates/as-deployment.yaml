@@ -191,7 +191,10 @@ spec:
 {{ toYaml .Values.license.csi | indent 10 }}
         {{- end }}
       - name: jgroups-volume
-        {{- if eq .Values.persistence.jgroups.type "emptyDir" }}
+        {{- if eq .Values.persistence.jgroups.type "local" }}
+        persistentVolumeClaim:
+          claimName: "{{ template "icm-as.fullname" . }}-local-jgroups-pvc"
+        {{- else if eq .Values.persistence.jgroups.type "emptyDir" }}
         emptyDir: {}
         {{- else if eq .Values.persistence.jgroups.type "cluster" }}
         persistentVolumeClaim:
