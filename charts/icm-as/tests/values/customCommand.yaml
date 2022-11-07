@@ -1,0 +1,11 @@
+# used for test:
+# custom-command_test.yaml/customComamnd is provided
+#
+# the following does not work as expected:
+# ----------------------------------------
+#tests:
+#  - it: custom pull secrets
+#    set:
+#      customComamnd: ["/bin/sh", "-c", "/custom-dir/custom-script.sh"]
+
+customCommand: ["/bin/sh", "-c", "/custom-dir/custom-script.sh"]

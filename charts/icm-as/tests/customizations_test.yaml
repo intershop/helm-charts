@@ -1,0 +1,85 @@
+suite: tests customization related values
+templates:
+  - templates/as-deployment.yaml
+tests:
+  - it: no customizations at all
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      customizations: {}
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.initContainers
+          content:
+            name: sites-volume-mount-hack
+          count: 1
+          any: true
+
+  - it: one customization with default pullPolicy
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      customizations.responsive.repository: responsive-repo:0.8.15
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.initContainers
+          content:
+            name: sites-volume-mount-hack
+          any: true
+      - contains:
+          path: spec.template.spec.initContainers
+          content:
+            name: responsive
+            image: responsive-repo:0.8.15
+            imagePullPolicy: IfNotPresent
+            volumeMounts:
+              - mountPath: /customizations
+                name: customizations-volume
+
+  - it: two customizations with custom pullPolicy
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      customizations.responsive.repository: responsive-repo:0.8.15
+      customizations.responsive.pullPolicy: Always
+      customizations.solrcloud.repository: solrcloud-repo:1.2.3
+      customizations.solrcloud.pullPolicy: Never
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.initContainers
+          content:
+            name: sites-volume-mount-hack
+          any: true
+      - contains:
+          path: spec.template.spec.initContainers
+          content:
+            name: responsive
+            image: responsive-repo:0.8.15
+            imagePullPolicy: Always
+            volumeMounts:
+              - mountPath: /customizations
+                name: customizations-volume
+      - contains:
+          path: spec.template.spec.initContainers
+          content:
+            name: solrcloud
+            image: solrcloud-repo:1.2.3
+            imagePullPolicy: Never
+            volumeMounts:
+              - mountPath: /customizations
+                name: customizations-volume

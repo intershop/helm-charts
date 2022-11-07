@@ -1,0 +1,63 @@
+suite: tests correctness of persistence.jgroups section
+templates:
+  - templates/as-deployment.yaml
+tests:
+  - it: type=emptyDir in as-deployment
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.jgroups.type: emptyDir
+    template: templates/as-deployment.yaml
+    asserts:
+      #spec.template.spec.volumes
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: jgroups-volume
+            emptyDir: {}
+
+  - it: type=existingClaim in as-deployment
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.jgroups.type: existingClaim
+      persistence.jgroups.size: 1.5Gi
+      persistence.jgroups.existingClaim: custom-claim
+    template: templates/as-deployment.yaml
+    asserts:
+      #spec.template.spec.volumes
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: jgroups-volume
+            persistentVolumeClaim:
+              claimName: "custom-claim"
+
+  - it: type=cluster in as-deployment
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.jgroups.type: existingClaim
+      persistence.jgroups.size: 1.5Gi
+      persistence.jgroups.existingClaim: custom-claim
+    template: templates/as-deployment.yaml
+    asserts:
+      #spec.template.spec.volumes
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: jgroups-volume
+            persistentVolumeClaim:
+              claimName: "custom-claim"

@@ -4,22 +4,27 @@
 
 replicaCount: 1
 
-# defined where the application shall run on
-nodeSelector: []
+# define where the application shall run on
+nodeSelector: {}
 #  agentpool: <your agentpool>
 
 # define custom annotations for deployment and pods:
-deploymentAnnotations: []
+deploymentAnnotations: {}
 #  myAnnotation: true
-podAnnotations: []
+podAnnotations: {}
 #  myAnnotation: true
 
+# define podbinding if required
+podBinding:
+  enabled: false
+  binding: <name-of-the-binding>
+
 # define custom labels for deployment and pods:
-deploymentLabels: []
+deploymentLabels: {}
 #  tags.datadoghq.com/env: hell
 #  tags.datadoghq.com/service: icm-as
 #  tags.datadoghq.com/version: 11.0.0
-podLabels: []
+podLabels: {}
 #  tags.datadoghq.com/env: hell
 #  tags.datadoghq.com/service: icm-as
 #  tags.datadoghq.com/version: 11.0.0
@@ -28,8 +33,6 @@ image:
   pullPolicy: IfNotPresent
   # 'appServer' container provides the application / service endpoint
   repository: intershophub/icm-as:11.0.5
-  command: |
-    /intershop/bin/intershop.sh
 
 ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
 ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -42,7 +45,7 @@ imagePullSecrets:
 #    repository: <repo incl. tag>
 #    secret: <optional pull secret>
 #    pullPolicy: <pullPolicy, default=IfNotPresent>
-customizations: []
+customizations: {}
 # e.g.:
 #  responsive:
 #    repository: responsive-repo:0.8.15
@@ -54,6 +57,9 @@ customizations: []
 #    pullPolicy: IfNotPresent
 
 
+## Optionally specify a custom command that controls which entrypoint is called inside the container during startup
+## (see Deployment/spec.template.spec.container.command)
+# customCommand: ["/bin/sh", "-c", "/custom-dir/custom-script.sh"]
 
 debug:
   enabled: false
@@ -63,7 +69,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 # provide custom cluster config from "icm-as.fullname"-system-conf-cluster configmap
-provideCustomConfig: []
+provideCustomConfig: {}
   # logback-main:
   #   mountPath: /intershop/system-conf/cluster/
   #   fileName: logback-main.xml
@@ -99,11 +105,6 @@ resources:
     cpu: 1000m
     memory: 3Gi
 
-tolerations: []
-
-affinity: {}
-
-#
 environment:
   INTERSHOP_DATABASETYPE: "mssql"
   INTERSHOP_JDBC_URL: "jdbc:sqlserver://<ipaddress or hostname>:1433;databaseName=intershop"

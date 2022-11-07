@@ -1,0 +1,52 @@
+suite: tests correctness of resources
+templates:
+  - templates/as-deployment.yaml
+tests:
+  - it: default values
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: templates/as-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.cpu
+          value: 1000m
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.memory
+          value: 3Gi
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+          value: 1000m
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.memory
+          value: 3Gi
+
+  - it: custom values
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      resources.limits.cpu: 500m
+      resources.limits.memory: 2Gi
+      resources.requests.cpu: 250m
+      resources.requests.memory: 1Gi
+    template: templates/as-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.cpu
+          value: 500m
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.memory
+          value: 2Gi
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+          value: 250m
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.memory
+          value: 1Gi

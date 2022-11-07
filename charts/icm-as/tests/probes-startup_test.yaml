@@ -1,0 +1,59 @@
+suite: tests correctness of probes.startup section
+templates:
+  - templates/as-deployment.yaml
+tests:
+  - it: default values in as-deployment
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: templates/as-deployment.yaml
+    asserts:
+      #spec.template.spec.containers[0].startupProbe
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.httpGet.path
+          value: /status/LivenessProbe
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.httpGet.port
+          value: http
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.failureThreshold
+          value: 6
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.initialDelaySeconds
+          value: 60
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.periodSeconds
+          value: 10
+
+  - it: custom values in as-deployment
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      probes.startup.failureThreshold: 12
+      probes.startup.initialDelaySeconds: 120
+      probes.startup.periodSeconds: 20
+    template: templates/as-deployment.yaml
+    asserts:
+      #spec.template.spec.containers[0].startupProbe
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.httpGet.path
+          value: /status/LivenessProbe
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.httpGet.port
+          value: http
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.failureThreshold
+          value: 12
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.initialDelaySeconds
+          value: 120
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.periodSeconds
+          value: 20

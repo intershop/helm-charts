@@ -24,10 +24,13 @@ spec:
     type: Recreate
   template:
     metadata:
-    {{- if .Values.podAnnotations }}
+      {{- if .Values.podAnnotations }}
       annotations:
       {{- toYaml .Values.podAnnotations | trim | nindent 8 }}
-    {{- end }}
+      {{- end }}
+      {{- if .Values.podBinding.enabled }}
+      aadpodidbinding: {{ .Values.podBinding.binding }}
+      {{- end }}
       labels:
         app: {{ include "icm-as.fullname" . }}
         release: {{ .Release.Name }}
@@ -49,10 +52,10 @@ spec:
         - name: icm-as-server
           image: "{{ .Values.image.repository }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          {{- if .Values.customCommand }}
           command:
-          - "/bin/sh"
-          - "-c"
-          - {{- toYaml .Values.image.command | nindent 12 }}
+            {{- toYaml .Values.customCommand | trim | nindent 10 }}
+          {{- end }}
           env:
           - name: IS_DBPREPARE
             value: "false"
@@ -126,7 +129,7 @@ spec:
             # wait 60s then poll every 10s up to a total timeout of 120s
             failureThreshold: {{ .Values.probes.startup.failureThreshold | default 6 }}
             initialDelaySeconds: {{ .Values.probes.startup.initialDelaySeconds | default 60 }}
-            periodSeconds: {{ .Values.probes.startup.initialDelaySeconds | default 10 }}
+            periodSeconds: {{ .Values.probes.startup.periodSeconds | default 10 }}
           livenessProbe:
             httpGet:
               path: /status/LivenessProbe
@@ -134,7 +137,7 @@ spec:
             #after startup: poll every 10s up to a total timeout of 30s
             failureThreshold: {{ .Values.probes.liveness.failureThreshold | default 3 }}
             initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds | default 0 }}
-            periodSeconds: {{ .Values.probes.liveness.initialDelaySeconds | default 10 }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds | default 10 }}
           readinessProbe:
             httpGet:
               path: /status/ReadinessProbe
@@ -142,9 +145,15 @@ spec:
             #wait 60s (startup min) then poll every 5s up to a total timeout of 15s
             failureThreshold: {{ .Values.probes.readiness.failureThreshold | default 3 }}
             initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds | default 60 }}
-            periodSeconds: {{ .Values.probes.readiness.initialDelaySeconds | default 5 }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds | default 5 }}
       initContainers:
       {{- if eq .Values.persistence.sites.type "local" }}
+        # the following container
+        # 1) only is active if local storage is enabled
+        # 2) applies permission 777 to sites volume
+        # 3) makes user/group intershop owner of sites volume
+        # !) This is necessary for Windows users with Docker Desktop using WSL[2] backend because:
+        #    Docker Desktop with WSL[2] creates folders for local volume mounts assigning the user root and permissions 700
         - name: sites-volume-mount-hack
           image: busybox
           command: ["sh", "-c", "chmod 777 /intershop/sites && chown -R 150:150 /intershop/sites"]
@@ -201,7 +210,7 @@ spec:
           claimName: "{{ template "icm-as.fullname" . }}-cluster-jgroups-pvc"
         {{- else if eq .Values.persistence.jgroups.type "existingClaim" }}
         persistentVolumeClaim:
-          claimName: "{{ .Values.jgroups.cluster.existingClaim }}"
+          claimName: "{{ .Values.persistence.jgroups.existingClaim }}"
         {{- end }}
       - name: sites-volume
         {{- if eq .Values.persistence.sites.type "local" }}
