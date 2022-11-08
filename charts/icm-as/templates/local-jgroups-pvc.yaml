@@ -1,0 +1,13 @@
+{{- if eq .Values.persistence.jgroups.type "local" -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "icm-as.fullname" . }}-local-jgroups-pvc
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.persistence.jgroups.size }}
+{{- end -}}

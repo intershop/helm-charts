@@ -1,0 +1,17 @@
+{{- if eq .Values.persistence.jgroups.type "local" -}}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ template "icm-as.fullname" . }}-local-jgroups-pv
+  labels:
+    type: local
+spec:
+  storageClassName: standard
+  capacity:
+    storage: {{ .Values.persistence.jgroups.size }}
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Delete
+  hostPath:
+    path: "{{ .Values.persistence.jgroups.local.path }}"
+{{- end -}}

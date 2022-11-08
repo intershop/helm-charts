@@ -152,7 +152,7 @@ persistence:
       path: <local folder>
   jgroups:
     size: 1Gi
-    # type emptyDir | existingClaim | cluster
+    # type emptyDir | existingClaim | cluster | local
     type: emptyDir
     existingClaim: <claim name>
     cluster:
