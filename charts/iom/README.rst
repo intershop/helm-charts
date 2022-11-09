@@ -89,6 +89,60 @@ NGINX, the measures are different.
    Ingress controller, since the required configuration for session stickiness is already provided by IOM Helm Charts.
 
 =============
+Version 3.0.0
+=============
+
+------------
+New Features
+------------
+
+Updated *mailhog* sub-chart to version 5.2.0
+============================================
+
+
+---------------
+Migration Notes
+---------------
+
+Changed configuration of mailhog probes
+=======================================
+
+The upgrade to version 5.2.0 of *mailhog* brought for the first time the ability to configure *mailhogs*"
+liveness and readiness probes. The according Helm parameters (*mailhog.livenessProbe* and *mailhog.readinessProbe*)
+will now be used to control these probes.
+
+Former versions of IOM Helm Charts provided the parameter *mailhog.probes.enabled* to control execution of
+*mailhogs* liveness and readiness probes. This parameter became obsolete now and was removed.
+
+*Mailhog* probes are producing lots of log-messages. Since this has not changed in the
+current version of *mailhog* and *mailhog* is an optional component for non-production installations only, the
+probes are disabled on default now.
+
+For the reason mentioned above, it's recommended to use the new default settings for *mailhog* probes.
+
+If you really want to execute liveness and readiness probes on *mailhog*, you have to use the following
+settings:
+
+.. code-block:: yaml
+		
+  mailhog:
+    livenessProbe:
+      tcpSocket:
+        port: 1025
+      initialDelaySeconds: 10
+      timeoutSeconds: 1
+
+    readinessProbe:
+      tcpSocket:
+        port: 1025   
+
+--------
+Removals
+--------
+
+The parameter *mailhog.probes.enabled* has lost its function and has to be removed from values files.
+
+=============
 Version 2.3.0
 =============
 

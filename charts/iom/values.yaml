@@ -365,8 +365,8 @@ postgres:
 
 mailhog:
   enabled: false
-  probes:
-    enabled: true
+  livenessProbe: []
+  readinessProbe: []
   ingress:
     enabled: true
     ingressClassName: nginx
