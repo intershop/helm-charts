@@ -27,7 +27,7 @@ spec:
   chart:
     repository: https://intershop.github.io/helm-charts
     name: pwa-main
-    version: 0.3.1
+    version: 0.4.0
   values:
 ```
 ## Upgrading an existing Release to a new Major Version
