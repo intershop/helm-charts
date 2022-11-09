@@ -66,19 +66,10 @@ jvm:
   debug:
     # enable/disable to java-vm-debugging
     enabled: false
-  heap:
-    # minimum heap (Xms, default see container)
-    min: 2048M
-    # maximum heap (Xmx, default see container)
-    max: 4608M
-    # make the jvm write a heap dump on OOM  (written to /intershop/logs, default false)
-    enableDump: false
-  # garbage collector settings
-  garbageCollector:
-    # define the garbage collector to be used (default see container)
-    type: ShenandoahGC
-    # make the jvm write a GC log (default false)
-    enableLog: false
+  # define options / parameters to be used to start the jvm
+  options: "-XX:MaxRAMPercentage=80 -XX:InitialRAMPercentage=80"
+  # define additional options / parameters to be used to start the jvm (will be appended to options)
+  additionalOptions:
 
 nameOverride: ""
 
@@ -116,12 +107,10 @@ testConnection:
 resources:
   limits:
     cpu: 1000m
-    # recommended: jvm.heap.max + 1.5G
-    memory: 6Gi
+    memory: 4Gi
   requests:
     cpu: 1000m
-    # recommended: jvm.heap.min + 1G
-    memory: 3Gi
+    memory: 4Gi
 
 environment:
   INTERSHOP_DATABASETYPE: "mssql"

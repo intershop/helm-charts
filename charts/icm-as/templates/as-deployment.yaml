@@ -65,25 +65,13 @@ spec:
           - name: DEBUG_ICM
             value: "true"
           {{- end }}
-          {{- if .Values.jvm.heap.min }}
-          - name: XMS
-            value: {{ printf "%s%s" "-Xms" .Values.jvm.heap.min | quote }}
+          {{- if .Values.jvm.options }}
+          - name: VM_PARAMETERS
+            value: {{ .Values.jvm.options | quote }}
           {{- end }}
-          {{- if .Values.jvm.heap.max }}
-          - name: XMX
-            value: {{ printf "%s%s" "-Xmx" .Values.jvm.heap.max | quote }}
-          {{- end }}
-          {{- if .Values.jvm.heap.enableDump }}
-          - name: ENABLE_HEAPDUMP
-            value: "true"
-          {{- end }}
-          {{- if .Values.jvm.garbageCollector.type }}
-          - name: GARBAGECOLLECTOR          
-            value: {{ printf "%s%s" "-XX:+Use" .Values.jvm.garbageCollector.type | quote }}
-          {{- end }}
-          {{- if .Values.jvm.garbageCollector.enableLog }}
-          - name: ENABLE_GCLOG
-            value: "true"
+          {{- if .Values.jvm.additionalOptions }}
+          - name: ADDITIONAL_VM_PARAMETERS
+            value: {{ .Values.jvm.additionalOptions | quote }}
           {{- end }}
           {{- range $key, $value := .Values.environment }}
           - name: {{ $key }}
