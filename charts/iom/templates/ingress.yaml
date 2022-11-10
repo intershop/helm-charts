@@ -22,8 +22,6 @@ metadata:
   {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- /* if integrated nginx ingress controller is enabled and working as a proy, this web-server will be responsible for session-affinity */ -}}
-  {{- if not ( and .Values.nginx.enabled .Values.nginx.proxy.enabled )}}
     #
     # provide session affinity
     #
@@ -33,7 +31,6 @@ metadata:
     nginx.ingress.kubernetes.io/session-cookie-path: "/omt"
     nginx.ingress.kubernetes.io/session-cookie-name: "route"
     nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
-  {{- end }}
 spec:
   {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
   ingressClassName: {{ .Values.ingress.className }}
@@ -49,35 +46,6 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-  {{- /* if internal nginx is enabled and acting as a proxy, the incoming requests have to be forwarded to this web-server, */ -}}
-  {{- /* instead of IOM application servers directly. */ -}}
-  {{- if and .Values.nginx.enabled .Values.nginx.proxy.enabled }}
-    {{- $release := .Release.Name -}}
-    {{- range .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
-      http:
-        paths:
-          {{- range .paths }}
-          - path: {{ .path }}
-            {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
-            pathType: {{ .pathType }}
-            {{- end }}
-            backend:
-              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
-              service:
-                name: "{{ $release }}-ingress-nginx-controller"
-                port:
-                  number: 80
-              {{- else }}
-              serviceName: "{{ $release }}-ingress-nginx-controller"
-              servicePort: 80
-              {{- end }}
-              {{- /* port cannot be accessed by variable name, since ingress-nginx contains a -, */ -}}
-              {{- /* which is not allowed in variable names. Otherwise it would be possible to   */ -}}
-              {{- /* use .Values.ingress-nginx.controller.service.ports.http                     */ -}}
-          {{- end }}
-    {{- end }}
-  {{- else }}
     {{- range .Values.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
@@ -99,6 +67,5 @@ spec:
               {{- end }}
           {{- end }}
     {{- end }}
-  {{- end }}
 {{- end }}
 
