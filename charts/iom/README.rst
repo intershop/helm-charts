@@ -68,6 +68,35 @@ information, please consult the reference documentation of `Helm parameters of I
    .. [3] Helm parameters *oms.sso.\** do not work in this combination.
    .. [4] Helm parameters *newRelic.\** do not work in this combination 
 
+
+=============
+Version 3.0.0
+=============
+
+---------------
+Migration Notes
+---------------
+
+Internal NGINX, which was an optional component of IOM Helm Charts, was removed. The internal NGINX could be used in
+following cases:
+
+1. Main goal of the internal NGINX was to act as a proxy between Ingress controller and IOM application servers in case,
+   the Ingress controller had no ability to provide session stickiness. In this case the internal NGINX was able to
+   handle session stickiness for IOM.
+2. In very simple demo and test installations the internal NGINX could also be used as Ingress controller. This made the
+   setup a little bit easier, since the installation of a cluster wide Ingress controller could be skipped.
+
+If an installation is currently using the internal NGINX (parameter *nginx.enabled* is set to *true*), then measures
+have to be taken before using IOM Helm Charts 3.0.0. Depending on the use-case, which lead to the usage of the internal
+NGINX, the measures are different.
+
+1. Session stickiness has to be provided by the Ingress controller, otherwise IOM can not be operated. If an NGINX Ingress
+   controller is used, the IOM Helm Charts are already provide the required configuration settings. If any other Ingress
+   controller is used, you have to determine how to configure it in order to provide session stickiness. The according
+   configuration has then to be applied in the Helm values.
+2. Simple demo and test installations have now to use a separately installed Ingress controller. Preferred is an NGINX
+   Ingress controller, since the required configuration for session stickiness is already provided by IOM Helm Charts.
+
 =============
 Version 3.0.0
 =============
