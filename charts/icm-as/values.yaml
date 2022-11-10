@@ -32,7 +32,8 @@ podLabels: {}
 image:
   pullPolicy: IfNotPresent
   # 'appServer' container provides the application / service endpoint
-  repository: intershophub/icm-as:11.0.5
+  #repository: intershophub/icm-as:11.0.5
+  repository: "icmbuild.azurecr.io/intershop/icm-as:79910.9943206319-pr2962-id44533-SNAPSHOT"
 
 ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
 ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
