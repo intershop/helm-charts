@@ -71,6 +71,8 @@ New Features
 Updated *mailhog* sub-chart to version 5.2.0
 ============================================
 
+The *mailhog* sub-chart was updated to version 5.2.0.
+
 ---------------
 Migration Notes
 ---------------
