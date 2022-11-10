@@ -7,18 +7,17 @@ Helm Charts for Intershop Order Management (IOM)
 
 The following documents provide an extensive documentation how to operate IOM with IOM Helm Charts:
 
-1.  `Tools & Concepts <docs/ToolsAndConcepts.rst>`_
-2.  `Example: local Demo running in Docker-Desktop <docs/ExampleDemo.rst>`_
-3.  `Example: Production System in AKS <docs/ExampleProd.rst>`_
-4.  `Helm parameters of IOM <docs/ParametersIOM.rst>`_
-5.  `Helm parameters of Integrated SMTP server <docs/ParametersMailhog.rst>`_
-6.  `Helm parameters of Integrated NGINX Ingress Controller <docs/ParametersNGINX.rst>`_
-7.  `Helm parameters of Integrated PostgreSQL Server <docs/ParametersPosgres.rst>`_
-8.  `Helm parameters of IOM-Tests <docs/ParametersTests.rst>`_
-9.  `References to Kubernetes Secrets <docs/SecretKeyRef.rst>`_
-10. `Prometheus Metrics <docs/Metrics.rst>`_
-11. `PostgreSQL Server Configuration <docs/Postgresql.rst>`_
-12. `Options and Requirements of IOM Database <docs/IOMDatabase.rst>`_
+1. `Tools & Concepts <docs/ToolsAndConcepts.rst>`_
+#. `Example: local Demo running in Docker-Desktop <docs/ExampleDemo.rst>`_
+#. `Example: Production System in AKS <docs/ExampleProd.rst>`_
+#. `Helm parameters of IOM <docs/ParametersIOM.rst>`_
+#. `Helm parameters of Integrated SMTP server <docs/ParametersMailhog.rst>`_
+#. `Helm parameters of Integrated PostgreSQL Server <docs/ParametersPosgres.rst>`_
+#. `Helm parameters of IOM-Tests <docs/ParametersTests.rst>`_
+#. `References to Kubernetes Secrets <docs/SecretKeyRef.rst>`_
+#. `Prometheus Metrics <docs/Metrics.rst>`_
+#. `PostgreSQL Server Configuration <docs/Postgresql.rst>`_
+#. `Options and Requirements of IOM Database <docs/IOMDatabase.rst>`_
 
 ======================
 Dependency Information
@@ -38,6 +37,9 @@ information, please consult the reference documentation of `Helm parameters of I
    |Helm / IOM   |3.5  |3.6  |3.7  |4.0  |4.1  |4.2  |4.3  |
    |             |     |     |     |     |     |     |     |
    +=============+=====+=====+=====+=====+=====+=====+=====+
+   |**3.0**      |[1]_ |[2]_ |[3]_ |[3]_ |[3]_ |[3]_ |     |
+   |             |[3]_ |[3]_ |     |     |     |     |     |
+   +-------------+-----+-----+-----+-----+-----+-----+-----+
    |**2.3**      |[1]_ |[2]_ |[3]_ |[3]_ |[3]_ |[3]_ |     |
    |             |[3]_ |[3]_ |     |     |     |     |     |
    +-------------+-----+-----+-----+-----+-----+-----+-----+
@@ -56,6 +58,35 @@ information, please consult the reference documentation of `Helm parameters of I
    .. [1] Helm parameters *log.rest*, *config.skip*, *oms.db.connectionMonitor.*, *oms.db.connectTimeout* do not work in this combination.
    .. [2] Helm parameter *jboss.activemqClientPoolSizeMax* does not work in this combination.
    .. [3] Helm parameters *oms.sso.\** do not work in this combination.
+
+
+=============
+Version 3.0.0
+=============
+
+---------------
+Migration Notes
+---------------
+
+Internal NGINX, which was an optional component of IOM Helm Charts, was removed. The internal NGINX could be used in
+following cases:
+
+1. Main goal of the internal NGINX was to act as a proxy between Ingress controller and IOM application servers in case,
+   the Ingress controller had no ability to provide session stickiness. In this case the internal NGINX was able to
+   handle session stickiness for IOM.
+2. In very simple demo and test installations the internal NGINX could also be used as Ingress controller. This made the
+   setup a little bit easier, since the installation of a cluster wide Ingress controller could be skipped.
+
+If an installation is currently using the internal NGINX (parameter *nginx.enabled* is set to *true*), then measures
+have to be taken before using IOM Helm Charts 3.0.0. Depending on the use-case, which lead to the usage of the internal
+NGINX, the measures are different.
+
+1. Session stickiness has to be provided by the Ingress controller, otherwise IOM can not be operated. If an NGINX Ingress
+   controller is used, the IOM Helm Charts are already provide the required configuration settings. If any other Ingress
+   controller is used, you have to determine how to configure it in order to provide session stickiness. The according
+   configuration has then to be applied in the Helm values.
+2. Simple demo and test installations have now to use a separately installed Ingress controller. Preferred is an NGINX
+   Ingress controller, since the required configuration for session stickiness is already provided by IOM Helm Charts.
 
 =============
 Version 2.3.0
