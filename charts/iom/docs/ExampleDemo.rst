@@ -34,16 +34,15 @@ Requirements and Characteristics of IOM Installation
 Requirements and characteristics are numbered. You will find these numbers also in the `values file`_ listed below in order to see the relation between requirement and current configuration.
 Usage of integrated PostgreSQL server.
 
-* *PostgreSQL* data stored persistently.
-* No reset of *PostgreSQL* data during the installation process.
-* Usage of the integrated SMTP server (*Mailhog*).
-* Web access to the GUI of *Mailhog*.
-* The shared file system of IOM has to be stored persistently.
-* Local access to the shared file system of IOM.
-* Due to limited resources, only one IOM application server should run.
-* Usage of the integrated NGINX controller for direct access to GUIs of IOM and Mailhog.
-* Due to limited resources, only one instance of the integrated NGINX controller should run.
-* No access from another computer required.
+1. Usage of integrated *PostgreSQL* database server.
+2. *PostgreSQL* data are stored persistently.
+3. No reset of *PostgreSQL* data during the installation process.
+4. Usage of the integrated SMTP server (*Mailhog*).
+5. Web access to the GUI of *Mailhog*.
+6. The shared file system of IOM has to be stored persistently.
+7. Local access to the shared file system of IOM.
+8. Due to limited resources, only one IOM application server should run.
+9. No access from another computer required.
 
 Values File
 ===========
@@ -62,7 +61,7 @@ The values file contains minimal settings only, except *dbaccount.resetData*, wh
 
   image:
     repository: "docker.tools.intershop.com/iom/intershophub/iom"
-    tag: "4.0.0"
+    tag: "4.3.0"
 
   # define a timeout for startupProbe, that is matching the requirements of the current
   # IOM installation. In combination with the default values, this configuration results
@@ -78,11 +77,9 @@ The values file contains minimal settings only, except *dbaccount.resetData*, wh
     requests:
       cpu:
   
-  # configure ingress to forward requests for host "localhost" to IOM (requirements #9, #11).
-  # since integrated NGINX controller should be used, its class has to be set explicitly.
+  # configure ingress to forward requests for host "localhost" to IOM (requirement #9).
   ingress:
     enabled: true
-    className: nginx-iom
     hosts:
       - host: localhost
         paths: 
@@ -104,7 +101,7 @@ The values file contains minimal settings only, except *dbaccount.resetData*, wh
     resetData: false # optional, since false is default
     image:
       repository: "docker.tools.intershop.com/iom/intershophub/iom-dbaccount"
-      tag: "1.4.0"
+      tag: "1.6.0"
 
   # use integrated PostgreSQL server (requirement #1).
   # store database data persistently into local directory (requirement #2).
@@ -114,31 +111,13 @@ The values file contains minimal settings only, except *dbaccount.resetData*, wh
       enabled: true
       hostPath: /Users/username/pgdata
 
-  # enable integrated NGINX ingress controller.
-  # this controller should not act proxy (requirement #9).
-  nginx:
-    enabled: true
-    proxy:
-      enabled: false
-
-  # configure integrated NGINX ingress controller.
-  # one instance of NGINX is sufficient for demo scenario (requirement #10).
-  # set type to LoadBalancer to be accessible from public network (requirement #9).
-  ingress-nginx:
-    controller:
-      replicaCount: 1
-      service:
-        type: LoadBalancer
-
   # enable integrated SMTP server (requirement #4).
-  # configure ingress to forward requests for any host to mailhog GUI (requirements #9).
+  # configure ingress to forward requests for any host to mailhog GUI (requirements #5).
   # since ingress for IOM defined a more specific rule, mailhog GUI can be reached using any hostname except localhost.
-  # since integrated NGINX controller should be used, its class has to be set explicitly.
   mailhog:
     enabled: true
     ingress:
       enabled: true
-      className: nginx-iom
       hosts:
         - host:
           paths:
@@ -173,13 +152,35 @@ The values file contains minimal settings only, except *dbaccount.resetData*, wh
   # to remove docker volume, execute the following command
   docker volume rm iom-pgdata
 
-Installation of IOM
-===================
+Installation of NGINX Ingress Controller
+========================================
 
-Create a file *values.yaml* and fill it with the content shown in section `values file`_. Adapt the settings of *persistence.hostPath* and *postgres.persistence.hostPath* to point to directories on your computer, which is shared with Docker Desktop. After that, the installation process of IOM can be started.
+The installation of an *Ingress Controller* is a precondition for the installation of IOM. The *Ingress Controller* has to have support session stickiness, which is required by IOM. If the *NGINX Ingress Controller* is used, this precondition is satisfied and additionally the IOM Helm Charts are configuring the *NGINX Ingress Controller* right oit of the box to enable session stickiness.
+
+The easiest way to install the *NGINX Ingress Controller* is by using the according Helm Charts. With the help of *Helm* the *NGINX Ingress Controller* will be installed within a separate Kubernetes namespace.
 
 .. code-block:: shell
 
+  # get ingress-nginx Helm Charts
+  helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+  helm repo update
+		
+  # create namespace "nginx"
+  kubectl create namespace nginx
+
+  # install NGINX Ingress controller into namespace "nginx"
+  helm install global ingress-nginx/ingress-nginx -n nginx --timeout 10m0s --wait
+  
+Installation of IOM
+===================
+
+Create a file *values.yaml* and fill it with the content shown in section `values file`_. Adapt the settings of *persistence.hostPath* and *postgres.persistence.hostPath* to point to directories on your computer, which are shared with Docker Desktop. After that, the installation process of IOM can be started.
+
+.. code-block:: shell
+
+  # create diretories for persistent storage
+  mkdir -p ~/iom-share ~/pgdata
+		
   # create namespace "iom"
   kubectl create namespace iom
 
@@ -198,16 +199,14 @@ Open a second terminal window and enter the following commands.
   NAME                                                  READY   STATUS              RESTARTS   AGE
   demo-iom-0                                            0/1     Pending             0          2s
   demo-mailhog-5dd4565b98-jphkm                         0/1     ContainerCreating   0          2s
-  demo-ingress-nginx-controller-f5bf56d64-cp9b5         0/1     ContainerCreating   0          2s
   demo-postgres-7b796887fb-j4hdr                        0/1     Init:0/1            0          2s
 
   # After some seconds all pods except IOM are "Running" and READY (integrated Postgresql server, integrated 
-  # SMTP server, intergrated NGINX). IOM is in Init-phase, which means the init-containers are currently executed.
+  # SMTP server). IOM is in Init-phase, which means the init-containers are currently executed.
   kubectl get pods -n iom
   NAME                                                  READY   STATUS     RESTARTS   AGE
   demo-iom-0                                            0/1     Init:1/2   0          38s
   demo-mailhog-5dd4565b98-jphkm                         1/1     Running    0          38s
-  demo-ingress-nginx-controller-f5bf56d64-cp9b5         1/1     Running    0          38s
   demo-postgres-7b796887fb-j4hdr                        1/1     Running    0          38s
 
   # The init-container executed in iom-pod is dbaccount. Log messages can be seen
@@ -215,7 +214,7 @@ Open a second terminal window and enter the following commands.
   # successful execution of create_dbaccount.sh script.
   kubectl logs demo-iom-0 -n iom -f -c dbaccount
   ...
-  {"tenant":"company-name","environment":"system-name","logHost":"demo-iom-0","logVersion":"1.0","appName":"iom-dbaccount","appVersion":"1.4.0","logType":"script","timestamp":"2021-01-06T11:33:17+00:00","level":"INFO","processName":"create_dbaccount.sh","message":"success","configName":null}
+  {"tenant":"company-name","environment":"system-name","logHost":"demo-iom-0","logVersion":"1.0","appName":"iom-dbaccount","appVersion":"1.6.0","logType":"script","timestamp":"2022-11-06T11:33:17+00:00","level":"INFO","processName":"create_dbaccount.sh","message":"success","configName":null}
 
   # When init-container is finished successfully, the iom-pod is now in "Running" state, too. But it is not "READY"
   # yet. Now the IOM database is set up, applications and project customizations are deployed into the Wildfly application server.
@@ -223,7 +222,6 @@ Open a second terminal window and enter the following commands.
   NAME                                                  READY   STATUS    RESTARTS   AGE
   demo-iom-0                                            0/1     Running   0          1m50s
   demo-mailhog-5dd4565b98-jphkm                         1/1     Running   0          1m50s
-  demo-ingress-nginx-controller-f5bf56d64-cp9b5         1/1     Running   0          1m50s
   demo-postgres-7b796887fb-j4hdr                        1/1     Running   0          1m50s
 
   # When all pods are "Running" and "READY" the installation process of IOM is finished.
@@ -231,7 +229,6 @@ Open a second terminal window and enter the following commands.
   NAME                                                  READY   STATUS    RESTARTS   AGE
   demo-iom-0                                            1/1     Running   0          3m20s
   demo-mailhog-5dd4565b98-jphkm                         1/1     Running   0          3m20s
-  demo-ingress-nginx-controller-f5bf56d64-cp9b5         1/1     Running   0          3m20s
   demo-postgres-7b796887fb-j4hdr                        1/1     Running   0          3m20s
 
 When all pods are *Running* and *Ready*, the installation process is finished. You should check the first terminal window, where the installation process was running.
@@ -270,14 +267,13 @@ Before the start, keep the `restrictions on upgrade <ToolsAndConcepts.rst#restri
 
    .. code-block::
 
-     # Only the Kubernetes object of IOM has changed. Therefore Helm only upgrades IOM, the integrated SMTP server,
-     # integrated postgresql server and integrated NGINX are running unchanged. A few seconds after starting the
+     # Only the Kubernetes object of IOM has changed. Therefore Helm only upgrades IOM, the integrated SMTP server
+     # and the integrated postgresql server are running unchanged. A few seconds after starting the
      # upgrade process, the only existing iom-pod is stopped.
      kubectl get pods -n iom
      NAME                                                  READY   STATUS        RESTARTS   AGE
      demo-iom-0                                            1/1     Terminating   0          40m
      demo-mailhog-5dd4565b98-jphkm                         1/1     Running       0          40m
-     demo-ingress-nginx-controller-f5bf56d64-cp9b5         1/1     Running       0          40m
      demo-postgres-7b796887fb-j4hdr                        1/1     Running       0          40m
 
      # After the iom-pod is terminated, a new iom-pod is started with new configuration.
@@ -285,7 +281,6 @@ Before the start, keep the `restrictions on upgrade <ToolsAndConcepts.rst#restri
      NAME                                                  READY   STATUS     RESTARTS   AGE
      demo-iom-0                                            0/1     Running    0          56s
      demo-mailhog-5dd4565b98-jphkm                         1/1     Running    0          41m
-     demo-ingress-nginx-controller-f5bf56d64-cp9b5         1/1     Running    0          41m
      demo-postgres-7b796887fb-j4hdr                        1/1     Running    0          41m
 
      # Finally the pod is "Running" and "READY" again, which means, IOM is up again.
@@ -293,13 +288,12 @@ Before the start, keep the `restrictions on upgrade <ToolsAndConcepts.rst#restri
      NAME                                                  READY   STATUS    RESTARTS   AGE
      demo-iom-0                                            1/1     Running   0          2m40s
      demo-mailhog-5dd4565b98-jphkm                         1/1     Running   0          46m
-     demo-ingress-nginx-controller-f5bf56d64-cp9b5         1/1     Running   0          46m
      demo-postgres-7b796887fb-j4hdr                        1/1     Running   0          46m
 
-Uninstall IOM
-=============
+Uninstall NGINX Ingress Controller and IOM
+==========================================
 
-The last process demonstrates how to uninstall IOM.
+The last process demonstrates how to uninstall IOM and NGINX Ingress controller:
 
 .. code-block::
 
@@ -308,6 +302,13 @@ The last process demonstrates how to uninstall IOM.
 
   kubectl delete namespace iom
   namespace "iom" deleted
+
+  helm uninstall global -n nginx
+  release "global" uninstalled
+
+  kubectl delete namespace nginx
+  namespace "nginx" deleted
+  
 
 Since database data and shared file system of IOM were stored in local directories of the current host, they still exist after uninstalling IOM. In fact, this data represents the complete state of IOM. If we would install IOM again, with the same directories for shared file system and database data, the old IOM installation would be reincarnated.
 
