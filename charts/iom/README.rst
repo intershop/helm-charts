@@ -64,9 +64,19 @@ information, please consult the reference documentation of `Helm parameters of I
 Version 3.0.0
 =============
 
+------------
+New Features
+------------
+
+Updated *mailhog* sub-chart to version 5.2.0
+============================================
+
 ---------------
 Migration Notes
 ---------------
+
+Internal NGINX was removed
+==========================
 
 Internal NGINX, which was an optional component of IOM Helm Charts, was removed. The internal NGINX could be used in
 following cases:
@@ -88,21 +98,6 @@ NGINX, the measures are different.
 2. Simple demo and test installations have now to use a separately installed Ingress controller. Preferred is an NGINX
    Ingress controller, since the required configuration for session stickiness is already provided by IOM Helm Charts.
 
-=============
-Version 3.0.0
-=============
-
-------------
-New Features
-------------
-
-Updated *mailhog* sub-chart to version 5.2.0
-============================================
-
-
----------------
-Migration Notes
----------------
 
 Changed configuration of mailhog probes
 =======================================
@@ -140,7 +135,16 @@ settings:
 Removals
 --------
 
-The parameter *mailhog.probes.enabled* has lost its function and has to be removed from values files.
+Internal NGINX was removed
+==========================
+
+Internal NGINX was removed from IOM Helm Charts. Please see *Migration Notes* above for actions to be taken.
+
+
+Parameter *mailhog.probes.enabled* was removed
+==============================================
+
+The parameter *mailhog.probes.enabled* has lost its function and has to be removed from values files. Please see *Migration Notes* above for actions to be taken.
 
 =============
 Version 2.3.0

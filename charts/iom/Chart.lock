@@ -8,5 +8,5 @@ dependencies:
 - name: postgres
   repository: ""
   version: 1.0.0
-digest: sha256:5f38b61305c1a7d62154592a1ca984a8376cef6d702b1ad8d900f0e1d511d5fc
-generated: "2022-11-01T12:56:52.495918+01:00"
+digest: sha256:e0d592d6fb755b3dfce3da0027e24d7dca559e4a8e0efea3ca714ed6b19d2eb0
+generated: "2022-11-10T08:31:49.896517+01:00"
