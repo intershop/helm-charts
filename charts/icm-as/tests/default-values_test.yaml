@@ -32,7 +32,7 @@ tests:
       - equal:
           path: spec.selector.matchLabels.release
           value: icm-as
-      #spec.template.metadata    
+      #spec.template.metadata
       - equal:
           path: spec.template.metadata.labels.app
           value: icm-as
@@ -45,7 +45,7 @@ tests:
           value: icm-as-server
       - equal:
           path: spec.template.spec.containers[0].image
-          value: intershophub/icm-as:11.0.5
+          value: intershophub/icm-as:11.0.8
       - equal:
           path: spec.template.spec.containers[0].imagePullPolicy
           value: IfNotPresent
