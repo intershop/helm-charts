@@ -148,8 +148,6 @@ persistence:
     # type cluster | nfs | azurefiles | existingClaim | local
     type: local
     existingClaim: <claim name>
-    cluster:
-      storageClass: azurefile-intershop
     azurefiles:
       shareName: icm-as-share
       secretName: icm-as-share-secret
