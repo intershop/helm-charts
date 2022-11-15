@@ -1,5 +1,4 @@
 {{- if eq .Values.persistence.sites.type "cluster" -}}
-{{- if .Values.persistence.sites.cluster.storageClass -}}
 # defines a storage class used for 'cluster-storage' - on demand use-once-volumes inside the cluster
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
@@ -17,5 +16,4 @@ mountOptions:
   - actimeo=30
 parameters:
   skuName: Standard_LRS
-{{- end -}}
 {{- end -}}
