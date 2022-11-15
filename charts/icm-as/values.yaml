@@ -107,10 +107,10 @@ testConnection:
 resources:
   limits:
     cpu: 1000m
-    memory: 4Gi
+    memory: 3Gi
   requests:
     cpu: 1000m
-    memory: 4Gi
+    memory: 3Gi
 
 environment:
   INTERSHOP_DATABASETYPE: "mssql"
