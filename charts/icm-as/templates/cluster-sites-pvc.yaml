@@ -6,7 +6,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  # use specified storage class
+  # use the storage class defined by cluster-sc.yaml
   storageClassName: {{ .Values.persistence.sites.cluster.storageClass | quote }}
   resources:
     requests:
