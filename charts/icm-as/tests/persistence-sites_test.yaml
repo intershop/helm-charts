@@ -3,7 +3,6 @@ templates:
   - templates/as-deployment.yaml
   - templates/local-sites-pv.yaml
   - templates/local-sites-pvc.yaml
-  - templates/cluster-sc.yaml
   - templates/nfs-sites-pv.yaml
   - templates/nfs-sites-pvc.yaml
 tests:
@@ -112,54 +111,6 @@ tests:
             name: sites-volume
             persistentVolumeClaim:
               claimName: "icm-as-cluster-sites-pvc"
-
-  - it: type=cluster in cluster-sc
-    release:
-      name: icm-as
-    chart:
-      version: 0.8.15
-    values:
-      - ../values.yaml
-    set:
-      persistence.sites.type: cluster
-      persistence.sites.cluster.storageClass: "custom-storage-class-name"
-    template: templates/cluster-sc.yaml
-    asserts:
-      - isKind:
-          of: StorageClass
-      - equal:
-          path: metadata.name
-          value: "custom-storage-class-name"
-      - equal:
-          path: provisioner
-          value: kubernetes.io/azure-file
-      - equal:
-          path: allowVolumeExpansion
-          value: true
-      - equal:
-          path: mountOptions[0]
-          value: dir_mode=0777
-      - equal:
-          path: mountOptions[1]
-          value: file_mode=0777
-      - equal:
-          path: mountOptions[2]
-          value: uid=150
-      - equal:
-          path: mountOptions[3]
-          value: gid=150
-      - equal:
-          path: mountOptions[4]
-          value: mfsymlinks
-      - equal:
-          path: mountOptions[5]
-          value: cache=strict
-      - equal:
-          path: mountOptions[6]
-          value: actimeo=30
-      - equal:
-          path: parameters.skuName
-          value: Standard_LRS
 
   - it: type=azurefiles in as-deployment
     release:
