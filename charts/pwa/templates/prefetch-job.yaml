@@ -1,0 +1,32 @@
+{{ range .Values.cache.prefetch }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "pwa-prefetch.jobname" (dict "host" .host "context" $) }}
+  labels:
+    app.kubernetes.io/name: {{ include "pwa-main.name" $ }}
+    helm.sh/chart: {{ include "pwa-main.chart" $ }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/managed-by: {{ $.Release.Service }}
+spec:
+  schedule: {{ default "0 0 * * *" .cron | quote}}
+  jobTemplate:
+    spec:
+      parallelism: 1
+      completions: 1
+      backoffLimit: 5
+      template:
+        spec:
+          containers:
+          - name: prefetch
+            image: 31099/wget:alpine-3.16
+            imagePullPolicy: Always
+            args: [ "-T",
+              "15",
+              "--spider",
+              "--no-check-certificate",
+              "--recursive",
+              "--level",
+              "0",
+              {{ include "pwa-prefetch.url" . | quote }} ]
+{{- end }}

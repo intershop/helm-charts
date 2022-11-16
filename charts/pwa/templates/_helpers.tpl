@@ -78,3 +78,15 @@ pwa channels configuration
 {{- define "pwa-channels.name" -}}
 {{- printf "%s-%s" (include  "pwa-main.name" . ) "channels" -}}
 {{- end -}}
+
+{{/*
+*/}}
+{{- define "pwa-prefetch.jobname" -}}
+{{- printf "%s-%s-%s" (include  "pwa-main.fullname" .context ) "prefect" (sha1sum .host) -}}
+{{- end -}}
+
+{{/*
+*/}}
+{{- define "pwa-prefetch.url" -}}
+{{- printf "%s://%s%s" (default "https" .proto) .host (default "/" .path) -}}
+{{- end -}}
