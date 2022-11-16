@@ -61,9 +61,17 @@ spec:
             value: "false"
           - name: SERVER_NAME
             value: "appserver"
-          {{- if .Values.debug.enabled }}
+          {{- if .Values.jvm.debug.enabled }}
           - name: DEBUG_ICM
             value: "true"
+          {{- end }}
+          {{- if .Values.jvm.options }}
+          - name: VM_PARAMETERS
+            value: {{ .Values.jvm.options | quote }}
+          {{- end }}
+          {{- if .Values.jvm.additionalOptions }}
+          - name: ADDITIONAL_VM_PARAMETERS
+            value: {{ .Values.jvm.additionalOptions | quote }}
           {{- end }}
           {{- range $key, $value := .Values.environment }}
           - name: {{ $key }}
@@ -74,7 +82,7 @@ spec:
             - name: http
               containerPort: 7743
               protocol: TCP
-          {{- if .Values.debug.enabled }}
+          {{- if .Values.jvm.debug.enabled }}
             # Java Debug port
             - name: debug
               containerPort: 7746

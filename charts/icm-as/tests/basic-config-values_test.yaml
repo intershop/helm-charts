@@ -112,22 +112,5 @@ tests:
           path: spec.template.metadata.labels.label1
           value: one
 
-  - it: debug is enabled
-    release:
-      name: icm-as
-    chart:
-      version: 0.8.15
-    values:
-      - ../values.yaml
-    set:
-      debug.enabled: true
-    template: templates/as-deployment.yaml
-    asserts:
-      - contains:
-          path: spec.template.spec.containers[0].env
-          content:
-            name: DEBUG_ICM
-            value: "true"
-
 # TODO tolerations
 # TODO affinity

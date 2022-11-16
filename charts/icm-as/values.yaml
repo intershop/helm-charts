@@ -32,7 +32,7 @@ podLabels: {}
 image:
   pullPolicy: IfNotPresent
   # 'appServer' container provides the application / service endpoint
-  repository: intershophub/icm-as:11.0.5
+  repository: "intershophub/icm-as:11.0.8"
 
 ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
 ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -61,8 +61,15 @@ customizations: {}
 ## (see Deployment/spec.template.spec.container.command)
 # customCommand: ["/bin/sh", "-c", "/custom-dir/custom-script.sh"]
 
-debug:
-  enabled: false
+## Control options regarding the java-vm running the ICM-AS
+jvm:
+  debug:
+    # enable/disable to java-vm-debugging
+    enabled: false
+  # define options / parameters to be used to start the jvm
+  options: "-XX:MaxRAMPercentage=80 -XX:InitialRAMPercentage=80"
+  # define additional options / parameters to be used to start the jvm (will be appended to options)
+  additionalOptions:
 
 nameOverride: ""
 
