@@ -61,9 +61,17 @@ spec:
             value: "false"
           - name: SERVER_NAME
             value: "appserver"
-          {{- if .Values.debug.enabled }}
+          {{- if .Values.jvm.debug.enabled }}
           - name: DEBUG_ICM
             value: "true"
+          {{- end }}
+          {{- if .Values.jvm.options }}
+          - name: VM_PARAMETERS
+            value: {{ .Values.jvm.options | quote }}
+          {{- end }}
+          {{- if .Values.jvm.additionalOptions }}
+          - name: ADDITIONAL_VM_PARAMETERS
+            value: {{ .Values.jvm.additionalOptions | quote }}
           {{- end }}
           {{- range $key, $value := .Values.environment }}
           - name: {{ $key }}
@@ -74,7 +82,7 @@ spec:
             - name: http
               containerPort: 7743
               protocol: TCP
-          {{- if .Values.debug.enabled }}
+          {{- if .Values.jvm.debug.enabled }}
             # Java Debug port
             - name: debug
               containerPort: 7746
@@ -200,7 +208,10 @@ spec:
 {{ toYaml .Values.license.csi | indent 10 }}
         {{- end }}
       - name: jgroups-volume
-        {{- if eq .Values.persistence.jgroups.type "emptyDir" }}
+        {{- if eq .Values.persistence.jgroups.type "local" }}
+        persistentVolumeClaim:
+          claimName: "{{ template "icm-as.fullname" . }}-local-jgroups-pvc"
+        {{- else if eq .Values.persistence.jgroups.type "emptyDir" }}
         emptyDir: {}
         {{- else if eq .Values.persistence.jgroups.type "cluster" }}
         persistentVolumeClaim:

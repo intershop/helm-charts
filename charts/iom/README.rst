@@ -20,31 +20,72 @@ The following documents provide an extensive documentation how to operate IOM wi
 11. `PostgreSQL Server Configuration <docs/Postgresql.rst>`_
 12. `Options and Requirements of IOM Database <docs/IOMDatabase.rst>`_
 
-======================    
+======================
 Dependency Information
 ======================
 
-For the best compatibility between IOM Helm charts and IOM, please always use the newest version of IOM Helm charts,
-regardless of the IOM version you are currently using. To do so, please update IOM Helm charts as often as possible.
+For the best compatibility between IOM Helm Charts and IOM, please always use the newest version of IOM Helm Charts,
+regardless of the IOM version you are currently using. Therefore, update IOM Helm Charts as often as possible.
 
-+-------------+-----+-----+-----+-----+-----+-----+
-|Helm / IOM   |3.5  |3.6  |3.7  |4.0  |4.1  |4.2  |
-|             |     |     |     |     |     |     |
-+=============+=====+=====+=====+=====+=====+=====+
-|**2.2**      |[1]_ |[2]_ |     |     |     |     |
-|             |     |     |     |     |     |     |
-+-------------+-----+-----+-----+-----+-----+-----+
-|**2.1**      |[1]_ |[2]_ |     |     |     |     |
-|             |     |     |     |     |     |     |
-+-------------+-----+-----+-----+-----+-----+-----+
-|**2.0**      |[1]_ |[2]_ |     |     |x    |x    |
-|             |     |     |     |     |     |     |
-+-------------+-----+-----+-----+-----+-----+-----+
+The current version of Helm Charts is backward compatible with all versions of IOM since 3.5. But only the newest
+IOM version, which is 4.3.0 at the time of writing, supports all features that the Helm Charts are offering. For more
+information, please consult the reference documentation of `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
-x: not supported
+..
+   Table is commented out, it's used as an internal reference only.
 
-.. [1] Helm parameters *log.rest*, *config.skip*, *oms.db.connectionMonitor.*, *oms.db.connectTimeout* do not work in this combination.
-.. [2] Helm parameter *jboss.activemqClientPoolSizeMax* does not work in this combination
+   +-------------+-----+-----+-----+-----+-----+-----+-----+
+   |Helm / IOM   |3.5  |3.6  |3.7  |4.0  |4.1  |4.2  |4.3  |
+   |             |     |     |     |     |     |     |     |
+   +=============+=====+=====+=====+=====+=====+=====+=====+
+   |**2.3**      |[1]_ |[2]_ |[3]_ |[3]_ |[3]_ |[3]_ |     |
+   |             |[3]_ |[3]_ |     |     |     |     |     |
+   +-------------+-----+-----+-----+-----+-----+-----+-----+
+   |**2.2**      |[1]_ |[2]_ |     |     |     |     |     |
+   |             |     |     |     |     |     |     |     |
+   +-------------+-----+-----+-----+-----+-----+-----+-----+
+   |**2.1**      |[1]_ |[2]_ |     |     |     |     |     |
+   |             |     |     |     |     |     |     |     |
+   +-------------+-----+-----+-----+-----+-----+-----+-----+
+   |**2.0**      |[1]_ |[2]_ |     |     |x    |x    |x    |
+   |             |     |     |     |     |     |     |     |
+   +-------------+-----+-----+-----+-----+-----+-----+-----+
+
+   x: not supported
+
+   .. [1] Helm parameters *log.rest*, *config.skip*, *oms.db.connectionMonitor.*, *oms.db.connectTimeout* do not work in this combination.
+   .. [2] Helm parameter *jboss.activemqClientPoolSizeMax* does not work in this combination.
+   .. [3] Helm parameters *oms.sso.\** do not work in this combination.
+
+=============
+Version 2.3.0
+=============
+
+------------
+New Features
+------------
+
+Added Support for *Single Sign-On* (SSO)
+=================================================
+
+You can now configure *single sign-on* (SSO) via the new parameter group *oms.sso*.
+There are four new parameters that control the configuration of IOM in combination with an Identity and
+Access Management System: *oms.sso.enabled*, *oms.sso.type*, *oms.sso.oidcConfig*, and
+*oms.sso.oidcConfigSecretKeyRef*.
+
+Using *SSO*-parameters requires IOM 4.3.0 or newer.
+
+For a detailed description of these parameters, see `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
+
+---------------
+Migration Notes
+---------------
+
+Changed default values of *image.tag* and *dbaccount.image.tag*
+===============================================================
+
+Default value of IOM version (parameter *image.tag*) was changed to 4.3.0 and default value of dbaccount version
+(parameter *dbaccount.image.tag*) was updated to 1.6.0.
 
 =============
 Version 2.2.0
@@ -54,31 +95,31 @@ Version 2.2.0
 New Features
 ------------
 
-New Parameter *podDisruptionBudget.maxUnavailable* has been added
+Added New Parameter *podDisruptionBudget.maxUnavailable*
 =================================================================
 
-*PodDisruptionBudget* has been added to IOM Helm Charts. *PodDisruptionBudgets* define the behavior of pods during a
-voluntary disruption of the Kubernetes Cluster. The default value of parameter *podDisruptionBudget.maxUnavailable*
+*PodDisruptionBudget* has been added to IOM Helm Charts. *PodDisruptionBudgets* defines the behavior of pods during a
+voluntary disruption of the Kubernetes Cluster. The default value of the parameter *podDisruptionBudget.maxUnavailable*
 is 1, which guarantees that only one IOM pod will be unavailable during a voluntary disruption of the Kubernetes cluster.
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
-New Parameter-Group *podAntiAffinity* has been added
+Added New Parameter-Group *podAntiAffinity*
 ====================================================
 
-Parameter-group *podAntiAffinity* along with the according default values, prevents scheduling of more than one IOM
-pod of current helm release onto one node. This way the IOM deployment becomes robuts againts failures of a single node.
+Parameter-group *podAntiAffinity*, along with the according default values, prevents scheduling of more than one IOM
+pod of current helm release onto one node. In this way, the IOM deployment is secured against failures of a single node.
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
-New Parameter-Group *spreadPods* has been added
+Added New Parameter-Group *spreadPods*
 ===============================================
 
-*spreadPods* provides an alternative or additional method to spread IOM pods over nodes. In difference to *podAntiAffinity*
-it is possible to run more than one pod per node. E.g. if there are 2 nodes and 4 pods the pods are evenly spread over the
-nodes. Each node is then running 2 pods. Additionally it is very easy to combine different topologies.
+*spreadPods* provides an alternative or additional method to spread IOM pods over nodes. Contrary to *podAntiAffinity*
+it is possible to run more than one pod per node. For example, if there are two nodes and four pods, the pods are evenly spread across the
+nodes. Each node is running two pods. Additionally, it is very easy to combine different topologies.
 
-In difference to *podAntiAffinity*, *spreadPods* is disabled on default.
+Unlike *podAntiAffinity*, *spreadPods* is disabled by default.
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
@@ -86,30 +127,30 @@ See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 Migration Notes
 ---------------
 
-*podAntiAffinity* is enabled and uses *mode: required* on default
+*podAntiAffinity* is Enabled and Uses *mode: required* by Default
 =================================================================
 
-*podAntiAffinity* is enabled and uses *mode: required* on default, which makes the IOM deployment instantly more robust against
-failures of a single node. Each IOM pod requires it's own node in this case. But, if the according Kubernetes cluster does not provide
+*podAntiAffinity* is enabled and uses *mode: required* by default, which makes the IOM deployment instantly more robust against
+failures of a single node. Each IOM pod requires its own node in this case. However, if the corresponding Kubernetes cluster does not provide
 the required number of nodes, the deployment of IOM will fail.
 
 Please check your cluster in advance. If the capacity is not sufficient, please use *podAntiAffinity.mode: preferred* instead.
 
-Default value of *startupProbe.failureTreshold* was changed
+Changed Default Value of *startupProbe.failureThreshold*
 ===========================================================
 
-The default value of *startupProbe.failureTreshold* was increased from 60 to 354, which increases the default timeout for database
-initialization and migration from 11 minutes to one hour. If the new default value is not matching the requirements, you have to set
+The default value of *startupProbe.failureThreshold* has been increased from 60 to 354, which increases the default timeout for database
+initialization and migration from 11 minutes to one hour. If the new default value does not meet the requirements, you must set
 the right value within the values file.
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
-Default values of *image.repository* and *dbaccount.image.repository* have changed
+Changed Default Values of *image.repository* and *dbaccount.image.repository*
 ==================================================================================
 
-The default values of *image.repository* and *dbaccount.image.repository* are now both referencing the new Intershop Docker
-repository at *docker.tools.intershop.com*. If you are using the default values of these parameters, you need to create a
-pull-secret, which has to set at *imagePullSecrets*.
+The default values of *image.repository* and *dbaccount.image.repository* now both point to the new Intershop Docker
+repository at *docker.tools.intershop.com*. If you use the default values of these parameters, you need to create a
+pull-secret, which has to be set at *imagePullSecrets*.
 
 -------------
 Fixed Defects
@@ -128,7 +169,7 @@ Removal Notes
 -------------
 
 Helm parameter *oms.mailResourcesBaseUrl* has been removed.
-       
+
 =============
 Known Defects
 =============
@@ -145,4 +186,3 @@ Known Defects
 |        |nginx instead)                                                                                  |
 |        |                                                                                                |
 +--------+------------------------------------------------------------------------------------------------+
-
