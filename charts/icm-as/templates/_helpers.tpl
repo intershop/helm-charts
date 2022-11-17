@@ -61,3 +61,17 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the values for the environment variable ADDITIONAL_VM_PARAMETERS
+*/}}
+{{- define "icm-as.additionalVMParameters" -}}
+    {{- $addVmOptions := list -}}
+    {{- $addVmOptions = append $addVmOptions .Values.jvm.additionalOptions -}}    
+    {{- if .Values.datadog.enabled -}}
+        {{- $addVmOptions = append $addVmOptions .Values.datadog.options -}}
+    {{- end -}}
+- name: ADDITIONAL_VM_PARAMETERS
+  value: {{ join " " $addVmOptions | quote }}
+{{- end -}}
+

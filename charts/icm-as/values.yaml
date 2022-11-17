@@ -71,6 +71,13 @@ jvm:
   # define additional options / parameters to be used to start the jvm (will be appended to options)
   additionalOptions:
 
+# configuration related to Datadog
+datadog:
+  # enable or disable the Datadog Java agent to monitor the icm-as JVM
+  enabled: false
+  # define (additional) datadog options
+  options:
+
 nameOverride: ""
 
 fullnameOverride: ""

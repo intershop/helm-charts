@@ -1,8 +1,8 @@
-suite: tests correctness of jvm section
+suite: tests correctness of datadog section
 templates:
   - templates/as-deployment.yaml
 tests:
-  - it: debug is enabled
+  - it: datadog is enabled
     release:
       name: icm-as
     chart:
@@ -10,31 +10,16 @@ tests:
     values:
       - ../values.yaml
     set:
-      jvm.debug.enabled: true
+      datadog.enabled: true
     template: templates/as-deployment.yaml
     asserts:
       - contains:
           path: spec.template.spec.containers[0].env
           content:
-            name: DEBUG_ICM
+            name: ENABLE_DATADOG
             value: "true"
 
-  - it: default options
-    release:
-      name: icm-as
-    chart:
-      version: 0.8.15
-    values:
-      - ../values.yaml
-    template: templates/as-deployment.yaml
-    asserts:
-      - contains:
-          path: spec.template.spec.containers[0].env
-          content:
-            name: VM_PARAMETERS
-            value: "-XX:MaxRAMPercentage=80 -XX:InitialRAMPercentage=80"
-
-  - it: custom options
+  - it: datadog.options set
     release:
       name: icm-as
     chart:
@@ -42,33 +27,22 @@ tests:
     values:
       - ../values.yaml
     set:
-      jvm.options: "-XX:MaxRAMPercentage=80 -XX:InitialRAMPercentage=50"
+      datadog.enabled: true
+      datadog.options: "-Ddd.profiling.enabled=true"
     template: templates/as-deployment.yaml
     asserts:
       - contains:
           path: spec.template.spec.containers[0].env
           content:
-            name: VM_PARAMETERS
-            value: "-XX:MaxRAMPercentage=80 -XX:InitialRAMPercentage=50"
-
-  - it: additionalOptions set
-    release:
-      name: icm-as
-    chart:
-      version: 0.8.15
-    values:
-      - ../values.yaml
-    set:
-      jvm.additionalOptions: "-XX:InitialRAMPercentage=50"
-    template: templates/as-deployment.yaml
-    asserts:
+            name: ENABLE_DATADOG
+            value: "true"
       - contains:
           path: spec.template.spec.containers[0].env
           content:
             name: ADDITIONAL_VM_PARAMETERS
-            value: "-XX:InitialRAMPercentage=50"
+            value: "-Ddd.profiling.enabled=true"
 
-  - it: additionalOptions set together with datadog.options
+  - it: datadog.options set together with jvm.additionalOptions
     release:
       name: icm-as
     chart:
@@ -84,5 +58,33 @@ tests:
       - contains:
           path: spec.template.spec.containers[0].env
           content:
+            name: ENABLE_DATADOG
+            value: "true"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
             name: ADDITIONAL_VM_PARAMETERS
             value: "-XX:InitialRAMPercentage=50 -Ddd.profiling.enabled=true"
+
+  - it: datadog.options set but not enabled
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      datadog.enabled: false
+      datadog.options: "-Ddd.profiling.enabled=true"
+    template: templates/as-deployment.yaml
+    asserts:
+       - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ENABLE_DATADOG
+            value: true
+       - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ADDITIONAL_VM_PARAMETERS
+            value: ""

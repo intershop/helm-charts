@@ -69,9 +69,10 @@ spec:
           - name: VM_PARAMETERS
             value: {{ .Values.jvm.options | quote }}
           {{- end }}
-          {{- if .Values.jvm.additionalOptions }}
-          - name: ADDITIONAL_VM_PARAMETERS
-            value: {{ .Values.jvm.additionalOptions | quote }}
+          {{- include "icm-as.additionalVMParameters" . | nindent 10 }}
+          {{- if .Values.datadog.enabled }}
+          - name: ENABLE_DATADOG
+            value: "true"
           {{- end }}
           {{- range $key, $value := .Values.environment }}
           - name: {{ $key }}
