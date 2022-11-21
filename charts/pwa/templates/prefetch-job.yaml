@@ -1,8 +1,9 @@
 {{ range .Values.cache.prefetch }}
+---
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ include "pwa-prefetch.jobname" (dict "host" .host "context" $) }}
+  name: {{ include "pwa-prefetch.jobname" (dict "host" .host "path" .path "context" $) }}
   labels:
     app.kubernetes.io/name: {{ include "pwa-main.name" $ }}
     helm.sh/chart: {{ include "pwa-main.chart" $ }}
@@ -17,6 +18,7 @@ spec:
       backoffLimit: 5
       template:
         spec:
+          restartPolicy: Never
           containers:
           - name: prefetch
             image: 31099/wget:alpine-3.16

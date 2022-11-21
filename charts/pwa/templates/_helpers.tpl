@@ -80,13 +80,18 @@ pwa channels configuration
 {{- end -}}
 
 {{/*
+Print jobname of pwa prefetch cron job. Jobname is only allowed to contain 51 chars.
+Usage:
+{{ include "pwa-prefetch.jobname" (dict "host" .host "path" .path "context" $) }}
 */}}
 {{- define "pwa-prefetch.jobname" -}}
-{{- printf "%s-%s-%s" (include  "pwa-main.fullname" .context ) "prefect" (sha1sum .host) -}}
+{{- printf "prefetch-%.43s" (sha1sum (cat .host (default "/" .path))) -}}
 {{- end -}}
 
 {{/*
-*/}}
+Print url of initial page to start crawling
+Usage:
+{{ include "pwa-prefetch.url" (dict "proto" .proto "host" .host "path" .path) }}*/}}
 {{- define "pwa-prefetch.url" -}}
 {{- printf "%s://%s%s" (default "https" .proto) .host (default "/" .path) -}}
 {{- end -}}
