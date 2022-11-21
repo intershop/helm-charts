@@ -186,12 +186,11 @@ ingress:
     # kubernetes.io/tls-acme: "true"
     # kubernetes.io/ingress.class: nginx
   hosts:
-    - host: pwa.localdev.intershop.de
+    - host: pwa.example.local
       paths:
         - path: /
           pathType: ImplementationSpecific
-  tls:
-    - secretName: localdev.intershop.de
-      hosts:
-        - pwa.localdev.intershop.de
-
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
