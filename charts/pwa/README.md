@@ -111,5 +111,8 @@ The only mandatory property is `host` to denote the full qualified name for your
 | path     | `/`         |
 | proto    | `https`     |
 | cron     | `0 0 * * *` |
+| stop     | `3600`      |
 
-The value for cron determines the schedule of the prefetch job. You can search the internet for "cron tab syntax" or use [tooling](https://crontab.guru) to come up with a correct value.
+The value for `cron` determines the schedule of the prefetch job. You can search the internet for "cron tab syntax" or use [tooling](https://crontab.guru) to come up with a correct value.
+
+The value for `stop` determines the duration in seconds after the job is forcefully stopped. Forcefully stopping is still considered to be a successful run for container/job.
