@@ -148,9 +148,10 @@ cache:
   ## E.g:
   ##  prefetch:
   ##  - host: customer-int.pwa.intershop.de
-  ##    path: /b2c/home
+  ##    path: /
   ##    proto: https
-  ##    cron: "0 23 * * *"
+  ##    stop: 3600
+  ##    cron: "0 0 * * *"
   prefetch: []
 
   replicaCount: 1
