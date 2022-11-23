@@ -63,15 +63,36 @@ Create the name of the service account to use
 {{- end -}}
 
 {{/*
-Create the values for the environment variable ADDITIONAL_VM_PARAMETERS
+Create the values for the environment variable JVM_PARAMETERS.
+These are predefined parameter from serveral features.
 */}}
-{{- define "icm-as.additionalVMParameters" -}}
+{{- define "icm-as.jvmParameters" -}}
+    {{- $addVmOptions := list -}}
+    {{- $addVmOptions = append $addVmOptions .Values.jvm.memoryOptions -}}
+    {{- if and .Values.datadog.enabled .Values.datadog.profilingEnabled -}}
+        {{- $addVmOptions = append $addVmOptions "-Ddd.profiling.enabled=true" -}}
+    {{- end -}}
+    {{- if and .Values.datadog.enabled .Values.datadog.traceAnalyticsEnabled -}}
+        {{- $addVmOptions = append $addVmOptions "-Ddd.trace.analytics.enabled=true" -}}
+    {{- end -}}
+    {{- if and .Values.datadog.enabled .Values.datadog.jdbcTracingEnabled -}}
+        {{- $addVmOptions = append $addVmOptions "-Ddd.jdbc.analytics.enabled=true" -}}
+    {{- end -}}
+- name: FEATURED_JVM_ARGUMENTS
+  value: {{ join " " $addVmOptions | quote }}
+{{- end -}}
+
+{{/*
+Create the values for the environment variable ADDITIONAL_VM_PARAMETERS.
+These are additional parameters defined by deployment, which are not indented to override feature specific parameter.
+*/}}
+{{- define "icm-as.additionalJVMParameters" -}}
     {{- $addVmOptions := list -}}
     {{- $addVmOptions = append $addVmOptions .Values.jvm.additionalOptions -}}    
     {{- if .Values.datadog.enabled -}}
-        {{- $addVmOptions = append $addVmOptions .Values.datadog.options -}}
+        {{- $addVmOptions = append $addVmOptions .Values.datadog.additionalOptions -}}
     {{- end -}}
-- name: ADDITIONAL_VM_PARAMETERS
+- name: ADDITIONAL_JVM_ARGUMENTS
   value: {{ join " " $addVmOptions | quote }}
 {{- end -}}
 

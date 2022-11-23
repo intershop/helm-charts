@@ -21,18 +21,13 @@ podBinding:
 
 # define custom labels for deployment and pods:
 deploymentLabels: {}
-#  tags.datadoghq.com/env: hell
-#  tags.datadoghq.com/service: icm-as
-#  tags.datadoghq.com/version: 11.0.0
 podLabels: {}
-#  tags.datadoghq.com/env: hell
-#  tags.datadoghq.com/service: icm-as
-#  tags.datadoghq.com/version: 11.0.0
 
 image:
   pullPolicy: IfNotPresent
   # 'appServer' container provides the application / service endpoint
-  repository: "intershophub/icm-as:11.0.8"
+  repository: "intershophub/icm-as"
+  # tag: "11.0.9"
 
 ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
 ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -67,7 +62,7 @@ jvm:
     # enable/disable to java-vm-debugging
     enabled: false
   # define options / parameters to be used to start the jvm
-  options: "-XX:MaxRAMPercentage=80 -XX:InitialRAMPercentage=80"
+  memoryOptions: "-XX:NewRatio=8 -XX:MaxRAMPercentage=80 -XX:InitialRAMPercentage=80"
   # define additional options / parameters to be used to start the jvm (will be appended to options)
   additionalOptions:
 
@@ -75,8 +70,20 @@ jvm:
 datadog:
   # enable or disable the Datadog Java agent to monitor the icm-as JVM
   enabled: false
+  # define the environment (dd.env)
+  env: "tenant-develop"
+  # override service name (dd.service) (default: icm-as)
+  # service: "icm-as"
+  # override version (dd.version) (default: container version of icm-as)
+  # version: "2022.12.24"
+  # enable profiling  (dd.profiling.enabled)
+  profilingEnabled: false
+  # enable tracing (dd.trace.analytics.enabled)
+  traceAnalyticsEnabled: true
+  # jdbc tracing (dd.jdbc.analytics.enabled)
+  jdbcTracingEnabled: true
   # define (additional) datadog options
-  options:
+  additionalOptions:
 
 nameOverride: ""
 

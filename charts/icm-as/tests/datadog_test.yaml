@@ -28,7 +28,7 @@ tests:
       - ../values.yaml
     set:
       datadog.enabled: true
-      datadog.options: "-Ddd.profiling.enabled=true"
+      datadog.additionalOptions: "-Ddd.whatever.enabled=true"
     template: templates/as-deployment.yaml
     asserts:
       - contains:
@@ -39,8 +39,8 @@ tests:
       - contains:
           path: spec.template.spec.containers[0].env
           content:
-            name: ADDITIONAL_VM_PARAMETERS
-            value: "-Ddd.profiling.enabled=true"
+            name: ADDITIONAL_JVM_ARGUMENTS
+            value: "-Ddd.whatever.enabled=true"
 
   - it: datadog.options set together with jvm.additionalOptions
     release:
@@ -50,9 +50,9 @@ tests:
     values:
       - ../values.yaml
     set:
-      jvm.additionalOptions: "-XX:InitialRAMPercentage=50"
+      jvm.additionalOptions: "-XX:+UseShenandoahGC"
       datadog.enabled: true
-      datadog.options: "-Ddd.profiling.enabled=true"
+      datadog.additionalOptions: "-Ddd.whatever.enabled=true"
     template: templates/as-deployment.yaml
     asserts:
       - contains:
@@ -63,8 +63,8 @@ tests:
       - contains:
           path: spec.template.spec.containers[0].env
           content:
-            name: ADDITIONAL_VM_PARAMETERS
-            value: "-XX:InitialRAMPercentage=50 -Ddd.profiling.enabled=true"
+            name: ADDITIONAL_JVM_ARGUMENTS
+            value: "-XX:+UseShenandoahGC -Ddd.whatever.enabled=true"
 
   - it: datadog.options set but not enabled
     release:
@@ -75,7 +75,8 @@ tests:
       - ../values.yaml
     set:
       datadog.enabled: false
-      datadog.options: "-Ddd.profiling.enabled=true"
+      datadog.profilingEnabled: true
+
     template: templates/as-deployment.yaml
     asserts:
        - notContains:
@@ -86,5 +87,31 @@ tests:
        - contains:
           path: spec.template.spec.containers[0].env
           content:
-            name: ADDITIONAL_VM_PARAMETERS
+            name: FEATURED_JVM_ARGUMENTS
+            value: "-XX:NewRatio=8 -XX:MaxRAMPercentage=80 -XX:InitialRAMPercentage=80"
+       - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ADDITIONAL_JVM_ARGUMENTS
             value: ""
+
+# - it: datadog.pod annotations are set
+#   release:
+#      name: icm-as
+#   chart:
+#      version: 0.8.15
+#   values:
+#      - ../values.yaml
+#   set:
+#      datadog.enabled: true
+#      datadog.env: "helm-test"
+#
+#   template: templates/as-deployment.yaml
+#   asserts:
+#      - contains:
+#         path: metadata.labels
+#         content:
+#           chart: icm-as-0.8.15
+#           tags.datadoghq.com/env: helm-test
+#           tags.datadoghq.com/service: icm-as
+#           tags.datadoghq.com/version: 11.0.8
