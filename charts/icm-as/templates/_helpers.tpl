@@ -61,3 +61,31 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the values for the environment variable FEATURED_JVM_ARGUMENTS.
+These are predefined parameter from serveral features.
+*/}}
+{{- define "icm-as.featuredJVMArguments" -}}
+    {{- $addVmOptions := list -}}
+    {{- $addVmOptions = append $addVmOptions .Values.jvm.options -}}
+    {{- if .Values.datadog.enabled -}}
+        {{- $addVmOptions = append $addVmOptions .Values.datadog.options -}}
+    {{- end -}}
+- name: FEATURED_JVM_ARGUMENTS
+  value: {{ join " " $addVmOptions | quote }}
+{{- end -}}
+
+{{/*
+Create the values for the environment variable ADDITIONAL_JVM_ARGUMENTS.
+These are additional parameters defined by deployment, which are not indented to override feature specific parameter.
+*/}}
+{{- define "icm-as.additionalJVMArguments" -}}
+    {{- $addVmOptions := list -}}
+    {{- $addVmOptions = append $addVmOptions .Values.jvm.additionalOptions -}}
+    {{- if .Values.datadog.enabled -}}
+        {{- $addVmOptions = append $addVmOptions .Values.datadog.additionalOptions -}}
+    {{- end -}}
+- name: ADDITIONAL_JVM_ARGUMENTS
+  value: {{ join " " $addVmOptions | quote }}
+{{- end -}}
