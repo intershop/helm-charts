@@ -3,7 +3,8 @@ templates:
   - templates/as-deployment.yaml
   - templates/local-sites-pv.yaml
   - templates/local-sites-pvc.yaml
-  - templates/cluster-sc.yaml
+  - templates/cluster-sites-pvc.yaml
+  - templates/cluster-sites-sc.yaml
   - templates/nfs-sites-pv.yaml
   - templates/nfs-sites-pvc.yaml
 tests:
@@ -113,7 +114,7 @@ tests:
             persistentVolumeClaim:
               claimName: "icm-as-cluster-sites-pvc"
 
-  - it: type=cluster in cluster-sc
+  - it: type=use existing sc in cluster-sites-pvc
     release:
       name: icm-as
     chart:
@@ -122,14 +123,44 @@ tests:
       - ../values.yaml
     set:
       persistence.sites.type: cluster
-      persistence.sites.cluster.storageClass: "custom-storage-class-name"
-    template: templates/cluster-sc.yaml
+      persistence.sites.cluster.storageClass.create: false
+      persistence.sites.cluster.storageClass.existingClass: "custom-storage-class-name"
+    template: templates/cluster-sites-pvc.yaml
+    asserts:
+      - isKind:
+          of: PersistentVolumeClaim
+      - equal:
+          path: metadata.name
+          value: "icm-as-cluster-sites-pvc"
+      - equal:
+          path: spec.storageClassName
+          value: "custom-storage-class-name"
+
+  - it: type=create cluster-sites-sc
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.sites.type: cluster
+      persistence.sites.cluster.storageClass.create: true
+      persistence.sites.cluster.storageClass.existingClass: ""
+      persistence.sites.cluster.storageClass.skuName: Standard_LRS
+      persistence.sites.cluster.storageClass.additionalMountOptions:
+      - dir_mode=0777
+      - file_mode=0777
+      - mfsymlinks
+      - cache=strict
+      - actimeo=30
+    template: templates/cluster-sites-sc.yaml
     asserts:
       - isKind:
           of: StorageClass
       - equal:
           path: metadata.name
-          value: "custom-storage-class-name"
+          value: "icm-as-cluster-sites-sc"
       - equal:
           path: provisioner
           value: kubernetes.io/azure-file
@@ -138,16 +169,16 @@ tests:
           value: true
       - equal:
           path: mountOptions[0]
-          value: dir_mode=0777
-      - equal:
-          path: mountOptions[1]
-          value: file_mode=0777
-      - equal:
-          path: mountOptions[2]
           value: uid=150
       - equal:
-          path: mountOptions[3]
+          path: mountOptions[1]
           value: gid=150
+      - equal:
+          path: mountOptions[2]
+          value: dir_mode=0777
+      - equal:
+          path: mountOptions[3]
+          value: file_mode=0777
       - equal:
           path: mountOptions[4]
           value: mfsymlinks

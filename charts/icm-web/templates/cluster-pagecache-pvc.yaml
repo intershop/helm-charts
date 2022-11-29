@@ -6,7 +6,11 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: {{ .Values.persistence.pagecache.cluster.storageClass | quote }}
+  {{- if .Values.persistence.pagecache.cluster.storageClass.create }}
+  storageClassName: "{{ template "icm-web.fullname" . }}-cluster-pagecache-sc"
+  {{- else }}
+  storageClassName: {{ .Values.persistence.pagecache.cluster.storageClass.existingClass | quote }}
+  {{- end }}
   resources:
     requests:
       storage: {{ .Values.persistence.pagecache.size }}
