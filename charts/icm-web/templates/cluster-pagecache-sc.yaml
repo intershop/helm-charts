@@ -9,10 +9,10 @@ allowVolumeExpansion: true
 mountOptions:
 - uid={{ .Values.podSecurityContext.runAsUser }}
 - gid={{ .Values.podSecurityContext.runAsGroup }}
-{{- range .Values.persistence.sites.cluster.storageClass.additionalMountOptions }}
+{{- range .Values.persistence.pagecache.cluster.storageClass.additionalMountOptions }}
 - {{ . }}
 {{- end }}
 parameters:
-  skuName: {{ .Values.persistence.sites.cluster.storageClass.skuName }}
+  skuName: {{ .Values.persistence.pagecache.cluster.storageClass.skuName }}
 {{- end -}}
 {{- end -}}
