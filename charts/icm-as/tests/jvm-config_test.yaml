@@ -31,8 +31,8 @@ tests:
       - contains:
           path: spec.template.spec.containers[0].env
           content:
-            name: VM_PARAMETERS
-            value: "-XX:MaxRAMPercentage=80 -XX:InitialRAMPercentage=80"
+            name: FEATURED_JVM_ARGUMENTS
+            value: "-XX:NewRatio=8 -XX:MaxRAMPercentage=80 -XX:InitialRAMPercentage=80"
 
   - it: custom options
     release:
@@ -48,7 +48,7 @@ tests:
       - contains:
           path: spec.template.spec.containers[0].env
           content:
-            name: VM_PARAMETERS
+            name: FEATURED_JVM_ARGUMENTS
             value: "-XX:MaxRAMPercentage=80 -XX:InitialRAMPercentage=50"
 
   - it: additionalOptions set
@@ -59,11 +59,16 @@ tests:
     values:
       - ../values.yaml
     set:
-      jvm.additionalOptions: "-XX:InitialRAMPercentage=50"
+      jvm.additionalOptions: "-XX:+UseShenandoahGC"
     template: templates/as-deployment.yaml
     asserts:
       - contains:
           path: spec.template.spec.containers[0].env
           content:
-            name: ADDITIONAL_VM_PARAMETERS
-            value: "-XX:InitialRAMPercentage=50"
+            name: FEATURED_JVM_ARGUMENTS
+            value: "-XX:NewRatio=8 -XX:MaxRAMPercentage=80 -XX:InitialRAMPercentage=80"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ADDITIONAL_JVM_ARGUMENTS
+            value: "-XX:+UseShenandoahGC"

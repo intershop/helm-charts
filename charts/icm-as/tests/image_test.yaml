@@ -2,6 +2,21 @@ suite: tests custom-image-related values
 templates:
   - templates/as-deployment.yaml
 tests:
+  - it: standard image
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+      appVersion: 11.0.1
+    values:
+      - ../values.yaml
+    set:
+    template: templates/as-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: "intershophub/icm-as:11.0.1"
+
   - it: custom image
     release:
       name: icm-as
@@ -10,7 +25,8 @@ tests:
     values:
       - ../values.yaml
     set:
-      image.repository: "registry/repo:0.8.15"
+      image.repository: "registry/repo"
+      image.tag: "0.8.15"
     template: templates/as-deployment.yaml
     asserts:
       - equal:
