@@ -72,10 +72,6 @@ datadog:
   enabled: false
   # define the environment (dd.env)
   env: "tenant-develop"
-  # override service name (dd.service) (default: icm-as)
-  # service: "icm-as"
-  # override version (dd.version) (default: container version of icm-as)
-  # version: "2022.12.24"
   # enable profiling  (dd.profiling.enabled, dd.trace.analytics.enabled, dd.jdbc.analytics.enabled
   options: "-Ddd.profiling.enabled=true -Ddd.trace.analytics.enabled=true -Ddd.jdbc.analytics.enabled=true"
   # define (additional) datadog options
