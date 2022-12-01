@@ -41,8 +41,8 @@ spec:
         release: {{ .Release.Name }}
         {{- if .Values.datadog.enabled }}
         tags.datadoghq.com/env: {{ .Values.datadog.env }}
-        tags.datadoghq.com/service: {{ .Values.datadog.service | default "icm-as" }}
-        tags.datadoghq.com/version: {{ .Values.datadog.version | default .Values.image.tag | default .Chart.AppVersion }}
+        tags.datadoghq.com/service: {{ include "icm-as.fullname" . }}
+        tags.datadoghq.com/version: {{ .Values.image.tag | default .Chart.AppVersion }}
         {{- end }}
         {{- if .Values.podLabels }}
           {{- toYaml .Values.podLabels | trim | nindent 8 }}
@@ -60,7 +60,7 @@ spec:
       {{- end }}
       containers:
         - name: icm-as-server
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}{{ if not (contains ":" .Values.image.repository) }}:{{ .Values.image.tag | default .Chart.AppVersion }}{{ end }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           {{- if .Values.customCommand }}
           command:
