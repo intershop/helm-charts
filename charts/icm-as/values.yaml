@@ -73,7 +73,7 @@ datadog:
   # define the environment (dd.env)
   env: "tenant-develop"
   # enable profiling  (dd.profiling.enabled, dd.trace.analytics.enabled, dd.jdbc.analytics.enabled
-  options: "-Ddd.profiling.enabled=true -Ddd.trace.analytics.enabled=true -Ddd.jdbc.analytics.enabled=true"
+  options: "-Ddd.profiling.enabled=false -Ddd.trace.analytics.enabled=false -Ddd.jdbc.analytics.enabled=false"
   # define (additional) datadog options
   additionalOptions:
 
