@@ -157,8 +157,8 @@
                       "type": "string",
                       "title": "The fully qualified hostname of the site"
                     },
-                    "proto": {
-                      "$id": "#/properties/cache/properties/prefetch/properties/proto",
+                    "protocol": {
+                      "$id": "#/properties/cache/properties/prefetch/properties/protocol",
                       "type": "string",
                       "title": "The protocol under which to access the site",
                       "default": "https"

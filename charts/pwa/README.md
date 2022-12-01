@@ -98,18 +98,18 @@ Example:
 prefetch:
   - host: customer-int.pwa.intershop.de
     path: /b2c/home
-    proto: https
+    protocol: https
     cron: "0 23 * * *"
 ```
 
-Above example configures the prefetch to happen everyday at 11:00 pm. It will request the initial page at https://customer-int.pwa.intershop.de/b2c/home
+The above example configures the prefetch to happen everyday at 11:00 pm. It will request the initial page at https://customer-int.pwa.intershop.de/b2c/home
 
 The only mandatory property is `host` to denote the full qualified name for your site. That host has to be contained in your ingress configuration. All other properties have reasonable defaults.
 
 | Property | Default     |
 | -------- | ----------- |
 | path     | `/`         |
-| proto    | `https`     |
+| protocol | `https`     |
 | cron     | `0 0 * * *` |
 | stop     | `3600`      |
 

@@ -26,12 +26,14 @@ spec:
             env:
             - name: SECS
               value: {{ default 3600 .stop | quote}}
-            args: [ "-T",
-              "15",
+            args: [
+              "--timeout=15",
               "--spider",
               "--no-check-certificate",
+              "--retry-connrefused",
+              "--tries=5",
+              "--execute=robots=off",
               "--recursive",
-              "--level",
-              "0",
+              "--level=0",
               {{ include "pwa-prefetch.url" . | quote }} ]
 {{- end }}

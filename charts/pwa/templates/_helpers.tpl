@@ -91,7 +91,7 @@ Usage:
 {{/*
 Print url of initial page to start crawling
 Usage:
-{{ include "pwa-prefetch.url" (dict "proto" .proto "host" .host "path" .path) }}*/}}
+{{ include "pwa-prefetch.url" (dict "protocol" .protocol "host" .host "path" .path) }}*/}}
 {{- define "pwa-prefetch.url" -}}
-{{- printf "%s://%s%s" (default "https" .proto) .host (default "/" .path) -}}
+{{- printf "%s://%s%s" (default "https" .protocol) .host (default "/" .path) -}}
 {{- end -}}
