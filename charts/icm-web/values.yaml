@@ -104,6 +104,8 @@ persistence:
         additionalMountOptions:
         - dir_mode=0777
         - file_mode=0777
+        - uid=150
+        - gid=150
         - mfsymlinks
         - cache=strict
         - actimeo=30
