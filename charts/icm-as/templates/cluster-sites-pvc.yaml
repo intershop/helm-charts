@@ -9,7 +9,7 @@ spec:
   # use the storage class defined by cluster-sc.yaml
   {{- if .Values.persistence.sites.cluster.storageClass.create }}
   storageClassName: "{{ template "icm-as.fullname" . }}-cluster-sites-sc"
-  {{- else }}
+  {{- else if gt (len .Values.persistence.sites.cluster.storageClass.existingClass) 0 }}
   storageClassName: {{ .Values.persistence.sites.cluster.storageClass.existingClass | quote }}
   {{- end }}
   resources:
