@@ -7,9 +7,7 @@ metadata:
 provisioner: kubernetes.io/azure-file
 allowVolumeExpansion: true
 mountOptions:
-- uid={{ .Values.podSecurityContext.runAsUser }}
-- gid={{ .Values.podSecurityContext.runAsGroup }}
-{{- range .Values.persistence.pagecache.cluster.storageClass.additionalMountOptions }}
+{{- range .Values.persistence.pagecache.cluster.storageClass.mountOptions }}
 - {{ . }}
 {{- end }}
 parameters:
