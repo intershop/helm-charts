@@ -160,7 +160,7 @@ persistence:
         # if empty value is set the default storage class is used
         existingClass: ""
         # skuName: Standard_LRS
-        # additionalMountOptions:
+        # mountOptions:
         # - uid=150
         # - gid=150
         # - dir_mode=0777
