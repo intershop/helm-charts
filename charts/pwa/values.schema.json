@@ -140,8 +140,51 @@
                     "title": "Extra environment variables to be set on NGINX containers",
                     "description": "Extra environment variables to be set on NGINX containers",
                     "additionalProperties": true
+                },
+                "prefetch": {
+                  "$id": "#/properties/cache/properties/prefetch",
+                  "type": "array",
+                  "title": "Prefetch job settings",
+                  "description": "Specify settings for the prefetch job that heats up caches",
+                  "additionalProperties": true,
+                  "default": [],
+                  "items": {
+                    "type": "object",
+                    "required": ["host"],
+                    "properties": {
+                    "host": {
+                      "$id": "#/properties/cache/properties/prefetch/properties/host",
+                      "type": "string",
+                      "title": "The fully qualified hostname of the site"
+                    },
+                    "protocol": {
+                      "$id": "#/properties/cache/properties/prefetch/properties/protocol",
+                      "type": "string",
+                      "title": "The protocol under which to access the site",
+                      "default": "https"
+                    },
+                    "path": {
+                      "$id": "#/properties/cache/properties/prefetch/properties/path",
+                      "type": "string",
+                      "title": "The path to the first page that is going to be crawled",
+                      "default": "/"
+                    },
+                    "cron": {
+                      "$id": "#/properties/cache/properties/prefetch/properties/cron",
+                      "type": "string",
+                      "title": "The cron job schedule",
+                      "default": "0 0 * * *"
+                    },
+                    "stop": {
+                      "$id": "#/properties/cache/properties/prefetch/properties/stop",
+                      "type": "integer",
+                      "title": "The maximum duration (in seconds) of a running prefetch job",
+                      "default": "3600"
+                    }
+                  }
                 }
-            }
+              }
+          }
         }
     }
 }
