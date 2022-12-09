@@ -143,6 +143,17 @@ cache:
   ##      value: "BAR"
   extraEnvVars: []
 
+  ####
+  ## @param prefetch Specify settings for the prefetch job that heats up caches.
+  ## E.g:
+  ##  prefetch:
+  ##  - host: customer-int.pwa.intershop.de
+  ##    path: /
+  ##    protocol: https
+  ##    stop: 3600
+  ##    cron: "0 0 * * *"
+  prefetch: []
+
   replicaCount: 1
 
   image:
