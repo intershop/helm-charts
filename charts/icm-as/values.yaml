@@ -121,8 +121,10 @@ resources:
 # configure an external database for ICM
 # in case value "mssql.enabled" is true - this section will be ignored
 database:
-  type: "mssql" # "oracle"
-  jdbcURL: "jdbc:sqlserver://<ipaddress or hostname>:1433;databaseName=intershop" # or for oracle "jdbc:oracle:thin:@<ipaddress or hostname>:1521:intershop"
+  # type: "mssql" or "oracle"
+  type: "mssql"
+  # or for oracle "jdbc:oracle:thin:@<ipaddress or hostname>:1521:intershop"
+  jdbcURL: "jdbc:sqlserver://<ipaddress or hostname>:1433;databaseName=intershop"
   jdbcUser: "intershop"
   jdbcPassword: "intershop"
 
@@ -212,11 +214,12 @@ mssql:
   enabled: false
   image:
     repository: "intershophub/mssql-intershop:2019-latest"
-  acceptEula:   "N" # needs to be explicitally switched at deployment to "Y"
-  saPassword:   "1nstershop5A"
+  # needs to be explicitally switched at deployment to "Y"
+  acceptEula: "N"
+  saPassword: "1nstershop5A"
   databaseName: "icmdb"
-  user:         "icmdbuser"
-  password:     "icmdbpassword"
+  user: "icmdbuser"
+  password: "icmdbpassword"
   persistence:
     data:
       size: 5Gi
