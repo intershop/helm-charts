@@ -125,17 +125,17 @@ persistence:
 resources:
   webadapter:
     limits:
-      #cpu: 100m
-      memory: 100Mi
-    requests:
-      #cpu: 100m
-      memory: 100Mi
-  agent:
-    limits:
-      #cpu: 100m
+      cpu: 100m
       memory: 200Mi
     requests:
-      #cpu: 100m
+      cpu: 100m
+      memory: 200Mi
+  agent:
+    limits:
+      cpu: 100m
+      memory: 200Mi
+    requests:
+      cpu: 100m
       memory: 200Mi
 
 ingress:
