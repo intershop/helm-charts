@@ -148,7 +148,9 @@ tests:
       persistence.sites.cluster.storageClass.create: true
       persistence.sites.cluster.storageClass.existingClass: ""
       persistence.sites.cluster.storageClass.skuName: Standard_LRS
-      persistence.sites.cluster.storageClass.additionalMountOptions:
+      persistence.sites.cluster.storageClass.mountOptions:
+      - uid=150
+      - gid=150
       - dir_mode=0777
       - file_mode=0777
       - mfsymlinks
