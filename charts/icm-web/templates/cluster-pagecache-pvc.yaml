@@ -8,7 +8,7 @@ spec:
     - ReadWriteMany
   {{- if .Values.persistence.pagecache.cluster.storageClass.create }}
   storageClassName: "{{ template "icm-web.fullname" . }}-cluster-pagecache-sc"
-  {{- else }}
+  {{- else if gt (len .Values.persistence.pagecache.cluster.storageClass.existingClass) 0 }}
   storageClassName: {{ .Values.persistence.pagecache.cluster.storageClass.existingClass | quote }}
   {{- end }}
   resources:

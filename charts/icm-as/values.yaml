@@ -72,12 +72,8 @@ datadog:
   enabled: false
   # define the environment (dd.env)
   env: "tenant-develop"
-  # override service name (dd.service) (default: icm-as)
-  # service: "icm-as"
-  # override version (dd.version) (default: container version of icm-as)
-  # version: "2022.12.24"
   # enable profiling  (dd.profiling.enabled, dd.trace.analytics.enabled, dd.jdbc.analytics.enabled
-  options: "-Ddd.profiling.enabled=true -Ddd.trace.analytics.enabled=true -Ddd.jdbc.analytics.enabled=true"
+  options: "-Ddd.profiling.enabled=false -Ddd.trace.analytics.enabled=false -Ddd.jdbc.analytics.enabled=false"
   # define (additional) datadog options
   additionalOptions:
 
@@ -164,7 +160,9 @@ persistence:
         # if empty value is set the default storage class is used
         existingClass: ""
         # skuName: Standard_LRS
-        # additionalMountOptions:
+        # mountOptions:
+        # - uid=150
+        # - gid=150
         # - dir_mode=0777
         # - file_mode=0777
         # - mfsymlinks
