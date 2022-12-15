@@ -95,7 +95,20 @@ persistence:
     type: local
     existingClaim: claimName
     cluster:
-      storageClass: azurefile-intershop
+      storageClass:
+        create: true
+        # if create == false an exiting class could be set
+        # if empty value is set the default storage class is used
+        # existingClass: ""
+        skuName: Standard_LRS
+        mountOptions:
+        - uid=150
+        - gid=150
+        - dir_mode=0777
+        - file_mode=0777
+        - mfsymlinks
+        - cache=strict
+        - actimeo=30
     azurefiles:
       shareName: icm-as-share
       secretName: icm-as-share-secret
@@ -112,17 +125,17 @@ persistence:
 resources:
   webadapter:
     limits:
-      #cpu: 100m
-      memory: 100Mi
-    requests:
-      #cpu: 100m
-      memory: 100Mi
-  agent:
-    limits:
-      #cpu: 100m
+      cpu: 100m
       memory: 200Mi
     requests:
-      #cpu: 100m
+      cpu: 100m
+      memory: 200Mi
+  agent:
+    limits:
+      cpu: 100m
+      memory: 200Mi
+    requests:
+      cpu: 100m
       memory: 200Mi
 
 ingress:

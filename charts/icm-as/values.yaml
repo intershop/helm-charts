@@ -21,18 +21,13 @@ podBinding:
 
 # define custom labels for deployment and pods:
 deploymentLabels: {}
-#  tags.datadoghq.com/env: hell
-#  tags.datadoghq.com/service: icm-as
-#  tags.datadoghq.com/version: 11.0.0
 podLabels: {}
-#  tags.datadoghq.com/env: hell
-#  tags.datadoghq.com/service: icm-as
-#  tags.datadoghq.com/version: 11.0.0
 
 image:
   pullPolicy: IfNotPresent
   # 'appServer' container provides the application / service endpoint
-  repository: intershophub/icm-as:11.0.5
+  repository: "intershophub/icm-as"
+  # tag: "11.0.9"
 
 ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
 ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -61,8 +56,26 @@ customizations: {}
 ## (see Deployment/spec.template.spec.container.command)
 # customCommand: ["/bin/sh", "-c", "/custom-dir/custom-script.sh"]
 
-debug:
+## Control options regarding the java-vm running the ICM-AS
+jvm:
+  debug:
+    # enable/disable to java-vm-debugging
+    enabled: false
+  # define options / parameters to be used to start the jvm
+  options: "-XX:NewRatio=8 -XX:MaxRAMPercentage=80 -XX:InitialRAMPercentage=80"
+  # define additional options / parameters to be used to start the jvm (will be appended to options)
+  additionalOptions:
+
+# configuration related to Datadog
+datadog:
+  # enable or disable the Datadog Java agent to monitor the icm-as JVM
   enabled: false
+  # define the environment (dd.env)
+  env: "tenant-develop"
+  # enable profiling  (dd.profiling.enabled, dd.trace.analytics.enabled, dd.jdbc.analytics.enabled
+  options: "-Ddd.profiling.enabled=false -Ddd.trace.analytics.enabled=false -Ddd.jdbc.analytics.enabled=false"
+  # define (additional) datadog options
+  additionalOptions:
 
 nameOverride: ""
 
@@ -141,7 +154,20 @@ persistence:
     type: local
     existingClaim: <claim name>
     cluster:
-      storageClass: azurefile-intershop
+      storageClass:
+        create: false
+        # if create == false an exiting class could be set
+        # if empty value is set the default storage class is used
+        existingClass: ""
+        # skuName: Standard_LRS
+        # mountOptions:
+        # - uid=150
+        # - gid=150
+        # - dir_mode=0777
+        # - file_mode=0777
+        # - mfsymlinks
+        # - cache=strict
+        # - actimeo=30
     azurefiles:
       shareName: icm-as-share
       secretName: icm-as-share-secret
@@ -152,7 +178,7 @@ persistence:
       path: <local folder>
   jgroups:
     size: 1Gi
-    # type emptyDir | existingClaim | cluster
+    # type emptyDir | existingClaim | cluster | local
     type: emptyDir
     existingClaim: <claim name>
     cluster:

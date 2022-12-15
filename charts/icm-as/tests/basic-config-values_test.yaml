@@ -120,7 +120,7 @@ tests:
     values:
       - ../values.yaml
     set:
-      debug.enabled: true
+      jvm.debug.enabled: true
     template: templates/as-deployment.yaml
     asserts:
       - contains:

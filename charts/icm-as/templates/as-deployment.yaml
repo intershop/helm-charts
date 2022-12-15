@@ -9,6 +9,11 @@ metadata:
   labels:
     app: {{ include "icm-as.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- if .Values.datadog.enabled }}
+    tags.datadoghq.com/env: {{ .Values.datadog.env }}
+    tags.datadoghq.com/service: {{ include "icm-as.fullname" . }}
+    tags.datadoghq.com/version: {{ .Values.image.tag | default .Chart.AppVersion }}
+    {{- end }}
     {{- if .Values.deploymentLabels }}
       {{- toYaml .Values.deploymentLabels | trim | nindent 4 }}
     {{- end }}
@@ -34,6 +39,11 @@ spec:
       labels:
         app: {{ include "icm-as.fullname" . }}
         release: {{ .Release.Name }}
+        {{- if .Values.datadog.enabled }}
+        tags.datadoghq.com/env: {{ .Values.datadog.env }}
+        tags.datadoghq.com/service: {{ include "icm-as.fullname" . }}
+        tags.datadoghq.com/version: {{ .Values.image.tag | default .Chart.AppVersion }}
+        {{- end }}
         {{- if .Values.podLabels }}
           {{- toYaml .Values.podLabels | trim | nindent 8 }}
         {{- end }}
@@ -50,7 +60,7 @@ spec:
       {{- end }}
       containers:
         - name: icm-as-server
-          image: "{{ .Values.image.repository }}"
+          image: "{{ .Values.image.repository }}{{ if not (contains ":" .Values.image.repository) }}:{{ .Values.image.tag | default .Chart.AppVersion }}{{ end }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           {{- if .Values.customCommand }}
           command:
@@ -61,10 +71,34 @@ spec:
             value: "false"
           - name: SERVER_NAME
             value: "appserver"
-          {{- if .Values.debug.enabled }}
+          {{- if .Values.jvm.debug.enabled }}
           - name: DEBUG_ICM
             value: "true"
           {{- end }}
+          {{- if .Values.datadog.enabled }}
+          - name: ENABLE_DATADOG
+            value: "true"
+          - name: DD_ENV
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['tags.datadoghq.com/env']
+          - name: DD_SERVICE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['tags.datadoghq.com/service']
+          - name: DD_VERSION
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['tags.datadoghq.com/version']
+          - name: DD_LOGS_INJECTION
+            value: "true"
+          - name: DD_AGENT_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          {{- end }}
+          {{- include "icm-as.featuredJVMArguments" . | nindent 10 }}
+          {{- include "icm-as.additionalJVMArguments" . | nindent 10 }}
           {{- range $key, $value := .Values.environment }}
           - name: {{ $key }}
             value: {{ $value | quote }}
@@ -74,7 +108,7 @@ spec:
             - name: http
               containerPort: 7743
               protocol: TCP
-          {{- if .Values.debug.enabled }}
+          {{- if .Values.jvm.debug.enabled }}
             # Java Debug port
             - name: debug
               containerPort: 7746
@@ -200,7 +234,10 @@ spec:
 {{ toYaml .Values.license.csi | indent 10 }}
         {{- end }}
       - name: jgroups-volume
-        {{- if eq .Values.persistence.jgroups.type "emptyDir" }}
+        {{- if eq .Values.persistence.jgroups.type "local" }}
+        persistentVolumeClaim:
+          claimName: "{{ template "icm-as.fullname" . }}-local-jgroups-pvc"
+        {{- else if eq .Values.persistence.jgroups.type "emptyDir" }}
         emptyDir: {}
         {{- else if eq .Values.persistence.jgroups.type "cluster" }}
         persistentVolumeClaim:

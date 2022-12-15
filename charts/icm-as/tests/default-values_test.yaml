@@ -9,6 +9,7 @@ tests:
       name: icm-as
     chart:
       version: 0.8.15
+      appVersion: 11.0.1
     values:
       - ../values.yaml
     template: templates/as-deployment.yaml
@@ -32,7 +33,7 @@ tests:
       - equal:
           path: spec.selector.matchLabels.release
           value: icm-as
-      #spec.template.metadata    
+      #spec.template.metadata
       - equal:
           path: spec.template.metadata.labels.app
           value: icm-as
@@ -43,9 +44,6 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].name
           value: icm-as-server
-      - equal:
-          path: spec.template.spec.containers[0].image
-          value: intershophub/icm-as:11.0.5
       - equal:
           path: spec.template.spec.containers[0].imagePullPolicy
           value: IfNotPresent
