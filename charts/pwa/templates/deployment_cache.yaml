@@ -19,6 +19,10 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "pwa-cache.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- if .Values.cache.podAnnotations }}
+      annotations:
+      {{- toYaml .Values.cache.podAnnotations | nindent 8 }}
+      {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -43,6 +47,10 @@ spec:
             value: "/config/multi-channel.yaml"
           - name: CACHING_IGNORE_PARAMS_SOURCE
             value: "/config/caching-ignore-params.yaml"
+        {{- if .Values.cache.metrics.enabled }}
+          - name: PROMETHEUS
+            value: "true"
+        {{- end }}
         {{- range $key, $obj := .Values.cache.extraEnvVars }}
           - name: {{ $obj.name }}
             value: {{ $obj.value | quote }}
@@ -56,6 +64,11 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
+          {{- if .Values.cache.metrics.enabled }}
+            - name: metrics
+              containerPort: 9113
+              protocol: TCP
+          {{- end }}
           livenessProbe:
             {{- if empty .Values.cache.livenessProbe }}
             {{- else }}

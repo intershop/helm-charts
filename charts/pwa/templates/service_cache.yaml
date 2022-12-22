@@ -11,10 +11,16 @@ metadata:
 spec:
   type: {{ .Values.cache.service.type }}
   ports:
-    - port: {{ .Values.cache.service.port }}
-      targetPort: 80
+    - name: http
       protocol: TCP
-      name: http
+      port: {{ .Values.cache.service.port }}
+      targetPort: 80
+  {{- if .Values.cache.metrics.enabled }}
+    - name: metrics
+      protocol: TCP
+      port: 9113
+      targetPort: 9114
+  {{- end }}
   selector:
     app.kubernetes.io/name: {{ include "pwa-cache.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}

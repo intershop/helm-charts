@@ -40,6 +40,10 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+## @param podAnnotations Annotations for SSR pods
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+##
+podAnnotations: {}
 ## @param environment Extra environment variables to be set on SSR containers
 ## E.g:
 ## environment:
@@ -47,6 +51,12 @@ affinity: {}
 ##     value: BAR
 ##
 environment: []
+## Prometheus Exporter / Metrics
+##
+metrics:
+  ## @param metrics.enabled Expose Prometheus metrics of SSR container
+  ##
+  enabled: false
 
 livenessProbe:
   {}
@@ -153,6 +163,12 @@ cache:
   ##    stop: 3600
   ##    cron: "0 0 * * *"
   prefetch: []
+  ## Prometheus Exporter / Metrics
+  ##
+  metrics:
+    ## @param metrics.enabled Expose Prometheus metrics of NGINX container
+    ##
+    enabled: false
 
   replicaCount: 1
 
@@ -175,6 +191,10 @@ cache:
   tolerations: []
 
   affinity: {}
+  ## @param podAnnotations Annotations for NGINX pods
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  ##
+  podAnnotations: {}
 
   livenessProbe: {}
 
