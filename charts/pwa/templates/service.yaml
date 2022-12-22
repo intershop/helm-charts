@@ -10,10 +10,16 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: 4200
+    - name: http
       protocol: TCP
-      name: http
+      port: {{ .Values.service.port }}
+      targetPort: 4200
+  {{- if .Values.metrics.enabled }}
+    - name: metrics
+      protocol: TCP
+      port: 9113
+      targetPort: 9113
+  {{- end }}
   selector:
     app.kubernetes.io/name: {{ include "pwa-main.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}

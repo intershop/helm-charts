@@ -116,3 +116,14 @@ The only mandatory property is `host` to denote the full qualified name for your
 The value for `cron` determines the schedule of the prefetch job. You can search the internet for "cron tab syntax" or use [tooling](https://crontab.guru) to come up with a correct value.
 
 The value for `stop` determines the duration in seconds after the job is forcefully stopped. Forcefully stopping is still considered to be a successful run for container/job.
+
+## Prometheus Metrics
+
+To expose metrics of the SSR and the nginx containers both support the `metrics` configuration via helm chart.
+
+```yaml
+metrics:
+  enabled: true
+```
+
+When enabled the SSR will expose the metrics in the deployment cluster on port 9113 while the nginx exposes its metrics on port 9114 each at the `/metrics` endpoint.

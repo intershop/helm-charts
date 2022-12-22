@@ -18,6 +18,10 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "pwa-main.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+      {{- toYaml .Values.podAnnotations | nindent 8 }}
+      {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -40,6 +44,10 @@ spec:
           - name: SSR_HYBRID
             value: "true"
         {{- end }}
+        {{- if .Values.metrics.enabled }}
+          - name: PROMETHEUS
+            value: "true"
+        {{- end }}
         {{- with .Values.environment }}
             {{- toYaml . | nindent 10 }}
         {{- end }}
@@ -47,6 +55,11 @@ spec:
             - name: http
               containerPort: 4200
               protocol: TCP
+          {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: 9113
+              protocol: TCP
+          {{- end }}
           livenessProbe:
             {{- if empty .Values.livenessProbe }}
             exec:
