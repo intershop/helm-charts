@@ -98,6 +98,19 @@
                 "$id": "#/properties/environment/items"
             }
         },
+        "metrics": {
+          "type": "object",
+          "form": true,
+          "title": "Prometheus metrics details",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Create Prometheus metrics exporter",
+              "description": "Create Prometheus metrics exporter",
+              "form": true
+            }
+          }
+        },
         "cache": {
             "$id": "#/properties/cache",
             "type": "object",
@@ -180,6 +193,19 @@
                       "type": "integer",
                       "title": "The maximum duration (in seconds) of a running prefetch job",
                       "default": "3600"
+                    }
+                  }
+                },
+                "metrics": {
+                  "type": "object",
+                  "form": true,
+                  "title": "Prometheus metrics details",
+                  "properties": {
+                    "enabled": {
+                      "type": "boolean",
+                      "title": "Create Prometheus metrics exporter",
+                      "description": "Create Prometheus metrics exporter",
+                      "form": true
                     }
                   }
                 }
