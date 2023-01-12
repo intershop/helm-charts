@@ -178,11 +178,14 @@ persistence:
       path: <local folder>
   jgroups:
     size: 1Gi
-    # type emptyDir | existingClaim | cluster | local
+    # type emptyDir | existingClaim | cluster | local | azurefiles
     type: emptyDir
     existingClaim: <claim name>
     cluster:
       storageClass: azurefile
+    azurefiles:
+      shareName: icm-as-jgroups
+      secretName: icm-as-jgroups-secret
   customdata:
     enabled: false
     existingClaim: icm-as-cluster-customData-pvc
