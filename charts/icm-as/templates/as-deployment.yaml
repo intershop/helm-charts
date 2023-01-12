@@ -78,6 +78,22 @@ spec:
             value: "false"
           - name: SERVER_NAME
             value: "appserver"
+          - name: INTERSHOP_SERVER_NODE
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: INTERSHOP_SERVER_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: INTERSHOP_SERVER_PODNAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: INTERSHOP_SERVER_PODIP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
           {{- if .Values.jvm.debug.enabled }}
           - name: DEBUG_ICM
             value: "true"
