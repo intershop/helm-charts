@@ -118,13 +118,17 @@ resources:
     cpu: 1000m
     memory: 3Gi
 
+# configure an external database for ICM
+# in case value "mssql.enabled" is true - this section will be ignored
+database:
+  # type: "mssql" or "oracle"
+  type: "mssql"
+  # or for oracle "jdbc:oracle:thin:@<ipaddress or hostname>:1521:intershop"
+  jdbcURL: "jdbc:sqlserver://<ipaddress or hostname>:1433;databaseName=intershop"
+  jdbcUser: "intershop"
+  jdbcPassword: "intershop"
+
 environment:
-  INTERSHOP_DATABASETYPE: "mssql"
-  INTERSHOP_JDBC_URL: "jdbc:sqlserver://<ipaddress or hostname>:1433;databaseName=intershop"
-  # INTERSHOP_DATABASETYPE: "oracle"
-  # INTERSHOP_JDBC_URL: "jdbc:oracle:thin:@<ipaddress or hostname>:1521:intershop"
-  INTERSHOP_JDBC_USER: "intershop"
-  INTERSHOP_JDBC_PASSWORD: "intershop"
   CARTRIDGE_LIST: "ft_icm_as"
 
   # Staging
@@ -202,3 +206,64 @@ probes:
 #    failureThreshold: 3
 #    initialDelaySeconds: 0
 #    periodSeconds: 5
+
+# Enable Microsoft SQL Server for development and testing purposes.
+# ICM will use jdbc:sqlserver://<release>-mssql:1433;database=<msslq.name>;
+# see values of persistence.mssql-data and persistence.mssql-backup
+mssql:
+  enabled: false
+  image:
+    repository: "intershophub/mssql-intershop:2019-latest"
+  # needs to be explicitally switched at deployment to "Y"
+  acceptEula: "N"
+  saPassword: "1nstershop5A"
+  databaseName: "icmdb"
+  user: "icmdbuser"
+  password: "icmdbpassword"
+  persistence:
+    data:
+      size: 5Gi
+      # type cluster | nfs | azurefiles | existingClaim | local
+      type: local
+      existingClaim: <claim name>
+      cluster:
+        storageClass:
+          create: false
+          # if create == false an exiting class could be set
+          # if empty value is set the default storage class is used
+          existingClass: ""
+          # skuName: Standard_LRS
+          # additionalMountOptions:
+          # - uid=150
+          # - gid=150
+          # - dir_mode=0777
+          # - file_mode=0777
+          # - mfsymlinks
+          # - cache=strict
+          # - actimeo=30
+      azurefiles:
+        shareName: <icm-as-mssql-data-share>
+        secretName: <icm-as-mssql-secret>
+    backup:
+      size: 5Gi
+      # type cluster | nfs | azurefiles | existingClaim | local
+      type: local
+      existingClaim: <claim name>
+      cluster:
+        storageClass:
+          create: false
+          # if create == false an exiting class could be set
+          # if empty value is set the default storage class is used
+          existingClass: ""
+          # skuName: Standard_LRS
+          # additionalMountOptions:
+          # - uid=150
+          # - gid=150
+          # - dir_mode=0777
+          # - file_mode=0777
+          # - mfsymlinks
+          # - cache=strict
+          # - actimeo=30
+      azurefiles:
+        shareName: <icm-as-mssql-backup-share>
+        secretName: <icm-as-mssql-secret>
