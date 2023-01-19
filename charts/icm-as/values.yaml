@@ -140,7 +140,7 @@ environment:
 
 # ICM license Configuration
 license:
-# type: configMap | csi
+# type: configMap | csi | secret
   type: configMap
   configMap:
     content: |-
@@ -150,6 +150,8 @@ license:
       secretProviderClass: "azure-license"
     nodePublishSecretRef:
       name: secrets-store-creds
+  secret:
+    name: <secret name>
 
 persistence:
   sites:
