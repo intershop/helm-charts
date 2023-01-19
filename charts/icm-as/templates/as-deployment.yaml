@@ -153,7 +153,7 @@ spec:
             - mountPath: /intershop/license/license.xml
               name: license-volume
               readOnly: true
-              {{- if eq .Values.license.type "configMap" }}
+              {{- if or (eq .Values.license.type "configMap") (eq .Values.license.type "secret") }}
               subPath: license.xml
               {{- else if eq .Values.license.type "csi" }}
               subPath: license
@@ -252,6 +252,9 @@ spec:
           driver: secrets-store.csi.k8s.io
           readOnly: true
 {{ toYaml .Values.license.csi | indent 10 }}
+        {{- else if eq .Values.license.type "secret" }}
+        secret:
+          secretName: {{ .Values.license.secret.name }}
         {{- end }}
       - name: jgroups-volume
         {{- if eq .Values.persistence.jgroups.type "local" }}

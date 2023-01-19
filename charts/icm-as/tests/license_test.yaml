@@ -86,3 +86,31 @@ tests:
                 name: secrets-store-creds
               volumeAttributes:
                 secretProviderClass: azure-license
+
+  - it: default values (type=secret) in as-deployment
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      license.type: secret
+      license.secret.name: icm-as-license
+    template: templates/as-deployment.yaml
+    asserts:
+      #spec.template.spec.containers[0].volumeMounts
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            mountPath: /intershop/license/license.xml
+            name: license-volume
+            readOnly: true
+            subPath: license.xml
+      #spec.template.spec.volumes
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: license-volume
+            secret:
+              secretName: icm-as-license
