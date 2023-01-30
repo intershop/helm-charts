@@ -260,6 +260,11 @@ spec:
         {{- if eq .Values.persistence.jgroups.type "local" }}
         persistentVolumeClaim:
           claimName: "{{ template "icm-as.fullname" . }}-local-jgroups-pvc"
+        {{- else if eq .Values.persistence.jgroups.type "azurefiles" }}
+        azureFile:
+          secretName: {{ .Values.persistence.jgroups.azurefiles.secretName }}
+          shareName: {{ .Values.persistence.jgroups.azurefiles.shareName }}
+          readOnly: false
         {{- else if eq .Values.persistence.jgroups.type "emptyDir" }}
         emptyDir: {}
         {{- else if eq .Values.persistence.jgroups.type "cluster" }}
