@@ -152,3 +152,41 @@ tests:
           content:
             name: PROPERTY1
             value: "one"
+
+  - it: k8s environment
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_SERVER_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_SERVER_NODE
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_SERVER_PODNAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_SERVER_PODIP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
