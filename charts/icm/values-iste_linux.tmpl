@@ -1,0 +1,124 @@
+test:
+  enabled: true
+
+icm-as:
+  image:
+    repository: "${ICM_TEST_IMAGE}"
+  environment:
+    CARTRIDGE_LIST: "ft_e2e_test"
+  environment:
+    INTERSHOP_DATABASETYPE: "${DATABASE_TYPE}"
+    INTERSHOP_JDBC_URL: "${DATABASE_CONNECTION_STRING}"
+    INTERSHOP_JDBC_USER: "${DATABASE_USER}"
+    INTERSHOP_JDBC_PASSWORD: "${DATABASE_USER}"
+
+    SERVER_DIRECTORY: "${SERVER_DIRECTORY}"
+    HELM_DIRECTORY: "${HELM_DIRECTORY}"
+    CONFIG_DIRECTORY: "${CONFIG_DIRECTORY}"
+    RESULT_DIRECTORY: "${RESULT_DIRECTORY}"
+    WORKSPACE_DIRECTORY: "${WORKSPACE_DIRECTORY}"
+    SERVER_DIRECTORY_GROUP: "${SERVER_DIRECTORY_GROUP}"
+    SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
+
+    INTERSHOP_SMTPSERVER: "${HELM_JOB_NAME}-mail" # adapt when service for mail is created
+    INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}-icm-web-wa:8080"
+    INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}-icm-web-wa:8443"
+
+  persistence:
+    sites:
+      size: 1Gi
+      type: cluster
+      cluster:
+        storageClass:
+          existingClass: azurefile
+    customdata:
+      enabled: true
+      existingClaim: icm-nfs
+  datadog:
+    enabled: true
+    env: eng-iste-testrun
+    options: "-Ddd.profiling.enabled=false -Ddd.trace.analytics.enabled=true -Ddd.jdbc.analytics.enabled=true"
+
+icm-web:
+  webadapter:
+    image:
+      repository: "${ICM_WEBSERVER_IMAGE}"
+  agent:
+    image:
+      repository: "${ICM_WEBADAPTER_AGENT_IMAGE}"
+  environment:
+    HELM_DIRECTORY: "${HELM_DIRECTORY}"
+
+  persistence:
+    pagecache:
+      size: 1Gi
+      type: cluster
+    customdata:
+      enabled: true
+      existingClaim: icm-nfs
+
+testrunner:
+  image:
+    repository: "${ICM_TEST_IMAGE}"
+  environment:
+    CARTRIDGE_LIST: "app_bo_test"
+
+    SERVER_DIRECTORY: "${SERVER_DIRECTORY}"
+    HELM_DIRECTORY: "${HELM_DIRECTORY}"
+    CONFIG_DIRECTORY: "${CONFIG_DIRECTORY}"
+    RESULT_DIRECTORY: "${RESULT_DIRECTORY}"
+    WORKSPACE_DIRECTORY: "${WORKSPACE_DIRECTORY}"
+    SERVER_DIRECTORY_GROUP: "${SERVER_DIRECTORY_GROUP}"
+    SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
+
+    MAIL_SERVER: "${HELM_JOB_NAME}-mail"
+
+    TESTSUITE: "${TESTSUITE}"
+    HOST: "${HELM_JOB_NAME}-icm-web-wa"
+
+    APPSERVERNAME: "${HELM_JOB_NAME}-icm-as"
+    MAIL_SHARE: "${HELM_DIRECTORY}/test-mails"
+
+    PORT_HTTP: 8080
+    PORT_HTTPS: 8443
+    SERVLETENGINE_PORT: 7743
+
+    #DEFAULT_PAGEDUMP_DIRECTORY: ${STACK_DIRECTORY}/pagedumps
+    REMOVE_SUCCESSFUL_PAGEDUMPS: 'true'
+
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 2Gi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+  initContainer:
+    resources:
+      requests:
+        cpu: 1000m
+        memory: 2Gi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+  replicaCount: 1
+  podSecurityContext:
+    runAsUser: 0
+  persistence:
+    testdata:
+      size: 1Gi
+      type: existingClaim
+      existingClaim: icm-nfs
+  datadog:
+    enabled: true
+    env: eng-iste-testrun
+    options: "-Ddd.profiling.enabled=false -Ddd.trace.analytics.enabled=true -Ddd.jdbc.analytics.enabled=true"
+  ## Control options regarding the java-vm running the ICM-AS
+  jvm:
+    # define options / parameters to be used to start the jvm
+    options:
+    # define additional options / parameters to be used to start the jvm (will be appended to options)
+    additionalOptions:
+
+hostAliases:
+- "${DATABASE_HOST}"

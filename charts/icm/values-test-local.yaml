@@ -1,0 +1,103 @@
+test:
+  enabled: true
+
+icm-as:
+  nodeSelector: []
+  persistence:
+    sites:
+      size: 1Gi
+      type: local
+      local:
+        path: /run/desktop/mnt/host/d/tmp/pv/sites
+    customdata:
+      enabled: false
+  environment:
+    CARTRIDGE_LIST: "ft_e2e_test"
+  datadog:
+    enabled: true
+    env: eng-iste-testrun
+    options: "-Ddd.profiling.enabled=false -Ddd.trace.analytics.enabled=true -Ddd.jdbc.analytics.enabled=true"
+
+icm-web:
+  nodeSelector: []
+  persistence:
+    pagecache:
+      size: 1Gi
+      type: local
+      local:
+        path: /run/desktop/mnt/host/d/tmp/pv/pagecache
+    customdata:
+      enabled: false
+  environment:
+    REQUESTLOG_ENABLED: false
+    HELM_DIRECTORY: "${HELM_DIRECTORY}"
+
+testrunner:
+  image:
+    pullPolicy: Always
+    command: |
+      mkdir -p ${RESULT_DIRECTORY}
+
+      # startup
+      sh /intershop/bin/testrunner.sh -s=${TESTSUITE} -o=${RESULT_DIRECTORY} 2>&1 | tee -a ${RESULT_DIRECTORY}/istestrunner_log.txt
+      PROCESS_ERROR_LEVEL=$?
+      TEST_EXECUTION_RESULT_STATUS="failed"
+      [ ${PROCESS_ERROR_LEVEL} = 0 ] && TEST_EXECUTION_RESULT_STATUS="success"
+      [ ${PROCESS_ERROR_LEVEL} = 1 ] && top -b -n 1 > ${RESULT_DIRECTORY}/top.txt
+      echo "result: ${TEST_EXECUTION_RESULT_STATUS}" > ${RESULT_DIRECTORY}/finished.yml
+      echo "result-datetime: $(date)" >> ${RESULT_DIRECTORY}/finished.yml
+
+      exit $PROCESS_ERROR_LEVEL
+  imagePullSecrets:
+  - "icmbuildsnapshot"
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 2Gi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+  replicaCount: 1
+  podSecurityContext:
+    runAsUser: 0
+  environment:
+    CARTRIDGE_LIST: "app_bo_test"
+
+    PORT_HTTP: 8080
+    PORT_HTTPS: 8443
+    SERVLETENGINE_PORT: 7743
+
+    #DEFAULT_PAGEDUMP_DIRECTORY: ${STACK_DIRECTORY}/pagedumps
+    REMOVE_SUCCESSFUL_PAGEDUMPS: 'true'
+
+  initContainer:
+    resources:
+      requests:
+        cpu: 1000m
+        memory: 2Gi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+  nodeSelector: []
+  persistence:
+    testdata:
+      size: 1Gi
+      type: local
+      local:
+        dir: /run/desktop/mnt/host/d/tmp/pv/testdata
+
+  ## Control options regarding the java-vm running the ICM-AS
+  jvm:
+    # define options / parameters to be used to start the jvm
+    options:
+    # define additional options / parameters to be used to start the jvm (will be appended to options)
+    additionalOptions:
+
+  datadog:
+    enabled: true
+    env: eng-iste-testrun
+    options: "-Ddd.profiling.enabled=false -Ddd.trace.analytics.enabled=true -Ddd.jdbc.analytics.enabled=true"
+
+mail:
+  image:
+    repository: ishisteacr.azurecr.io/iste/iste-mail:1.0.0-SNAPSHOT
