@@ -1,0 +1,18 @@
+{{- if .Values.test.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "icm-chart.fullname" . }}-mail
+  labels:
+    app: {{ include "icm-chart.fullname" . }}-mail
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  ports:
+  - name: "25"
+    port: 25
+    targetPort: 2525
+  selector:
+    app: {{ include "icm-chart.fullname" . }}-mail
+status:
+  loadBalancer: {}
+{{ end }}

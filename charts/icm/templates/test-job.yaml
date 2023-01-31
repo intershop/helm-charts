@@ -1,0 +1,120 @@
+{{- if .Values.test.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "icm-chart.fullname" . }}-testrunner
+  labels:
+    app: {{ template "icm-chart.fullname" . }}-testrunner
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- if .Values.testrunner.datadog.enabled }}
+    tags.datadoghq.com/env: {{ .Values.testrunner.datadog.env }}
+    tags.datadoghq.com/service: {{ include "icm-chart.fullname" . }}-testrunner
+    {{- if .Values.testrunner.image.tag }}
+    tags.datadoghq.com/version: {{ .Values.testrunner.image.tag }}
+    {{- else }}
+    tags.datadoghq.com/version: {{ (split ":" .Values.testrunner.image.repository)._1 }}
+    {{- end }}
+    {{- end }}
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ template "icm-chart.fullname" . }}-testrunner
+        release: {{ .Release.Name }}
+        {{- if .Values.testrunner.datadog.enabled }}
+        tags.datadoghq.com/env: {{ .Values.testrunner.datadog.env }}
+        tags.datadoghq.com/service: {{ include "icm-chart.fullname" . }}-testrunner
+        {{- if .Values.testrunner.image.tag }}
+        tags.datadoghq.com/version: {{ .Values.testrunner.image.tag }}
+        {{- else }}
+        tags.datadoghq.com/version: {{ (split ":" .Values.testrunner.image.repository)._1 }}
+        {{- end }}
+        {{- end }}
+    spec:
+      {{- if .Values.testrunner.nodeSelector}}
+      nodeSelector:
+        {{- toYaml .Values.testrunner.nodeSelector | trim | nindent 8 }}
+      {{- end }}
+      restartPolicy: Never
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        {{- range $i, $val := .Values.hostAliases }}
+        - {{ . | quote }}
+        {{- end }}
+      {{- if .Values.testrunner.imagePullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.testrunner.imagePullSecrets }}
+        - name: {{ . | quote }}
+        {{- end }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.testrunner.podSecurityContext | nindent 8 }}
+      containers:
+      {{- if .Values.testrunner.image.tag }}
+      - image: "{{ .Values.testrunner.image.repository }}:{{ .Values.testrunner.image.tag }}"
+      {{- else }}
+      - image: "{{ .Values.testrunner.image.repository }}"
+      {{- end }}
+        name: testrunner
+        imagePullPolicy: IfNotPresent
+        command:
+          - "/bin/sh"
+          - "-c"
+          - {{- toYaml .Values.testrunner.image.command | nindent 12 }}
+        env:
+        {{- if .Values.testrunner.datadog.enabled }}
+        - name: ENABLE_DATADOG
+          value: "true"
+        - name: DD_ENV
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['tags.datadoghq.com/env']
+        - name: DD_SERVICE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['tags.datadoghq.com/service']
+        - name: DD_VERSION
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['tags.datadoghq.com/version']
+        - name: DD_LOGS_INJECTION
+          value: "true"
+        - name: DD_AGENT_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        {{- end }}
+        {{- range $key, $value := .Values.testrunner.environment }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- include "icm-chart.testrunner.featuredJVMArguments" . | nindent 8 }}
+        {{- include "icm-chart.testrunner.additionalJVMArguments" . | nindent 8 }}
+        resources:
+{{ toYaml .Values.testrunner.resources | indent 12 }}
+        volumeMounts:
+        - name: testdata-volume
+          mountPath: /data
+      initContainers:
+      - name: init-wait-for-webserver
+        image: busybox:1.31
+        resources:
+{{ toYaml .Values.testrunner.initContainer.resources | indent 12 }}
+        command: ['sh', '-c', "until wget http://{{ .Release.Name }}-icm-web-wa:8080/INTERSHOP/wastatistics; do echo waiting for webadapter ; sleep 2; done"]
+      volumes:
+      - name: testdata-volume
+        {{- if eq .Values.testrunner.persistence.testdata.type "local" }}
+        persistentVolumeClaim:
+          claimName: "{{ template "icm-chart.fullname" . }}-local-testdata-pvc"
+        {{- else if eq .Values.testrunner.persistence.testdata.type "existingClaim" }}
+        persistentVolumeClaim:
+          claimName: "{{ .Values.testrunner.persistence.testdata.existingClaim }}"
+        {{- else if eq .Values.testrunner.persistence.testdata.type "azurefiles" }}
+        azureFile:
+          secretName: {{ .Values.testrunner.persistence.testdata.azurefiles.secretName }}
+          shareName: {{ .Values.testrunner.persistence.testdata.azurefiles.shareName }}
+          readOnly: false
+        {{- end }}
+{{ end }}
