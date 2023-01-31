@@ -24,6 +24,9 @@ icm-as:
     INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}-icm-web-wa:8080"
     INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}-icm-web-wa:8443"
 
+    # Disable Mailhog for now (#82978)
+    MAIL_SMTP_MAILHOG_ENABLED: "false"
+
   persistence:
     sites:
       size: 1Gi
