@@ -57,3 +57,6 @@ icm-web:
       type: local
       local:
         path: <local pagecache folder>
+
+test:
+  enabled: false
