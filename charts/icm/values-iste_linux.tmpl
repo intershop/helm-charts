@@ -60,6 +60,10 @@ icm-web:
       enabled: true
       existingClaim: icm-nfs
 
+mail:
+  image:
+    repository: ishisteacr.azurecr.io/iste/iste-mail:1.0.0-SNAPSHOT
+
 testrunner:
   image:
     repository: "${ICM_TEST_IMAGE}"
