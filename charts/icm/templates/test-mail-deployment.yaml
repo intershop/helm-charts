@@ -20,8 +20,6 @@ spec:
       nodeSelector:
         {{- toYaml .Values.nodeSelector | trim | nindent 8 }}
       {{- end }}
-      imagePullSecrets:
-      - name: "{{ .Values.mail.image.secret }}"
       containers:
       - image: "{{ .Values.mail.image.repository }}"
         name: "mail"
