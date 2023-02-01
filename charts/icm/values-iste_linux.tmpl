@@ -71,8 +71,6 @@ testrunner:
       mkdir -p $HELM_DIRECTORY/result
       ls -la $HELM_DIRECTORY
       $HELM_DIRECTORY/stack-entrypoint-test.sh 2>&1 | tee outfile $HELM_DIRECTORY/result/istestrunner_log.txt
-  imagePullSecrets:
-  - "icmbuildsnapshot"
   environment:
     CARTRIDGE_LIST: "app_bo_test"
 
