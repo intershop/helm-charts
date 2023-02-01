@@ -4,6 +4,10 @@ test:
 icm-as:
   image:
     repository: "${ICM_TEST_IMAGE}"
+  license:
+    type: secret
+    secret:
+      name: intershop-license
   environment:
     CARTRIDGE_LIST: "ft_e2e_test"
   environment:
