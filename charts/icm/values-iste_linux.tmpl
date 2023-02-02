@@ -8,14 +8,14 @@ icm-as:
     type: secret
     secret:
       name: intershop-license
+  database:
+    type: "${DATABASE_TYPE}"
+    jdbcURL: "${DATABASE_CONNECTION_STRING}"
+    jdbcUser: "${DATABASE_USER}"
+    jdbcPassword: "${DATABASE_USER}"
   environment:
     CARTRIDGE_LIST: "ft_e2e_test"
   environment:
-    INTERSHOP_DATABASETYPE: "${DATABASE_TYPE}"
-    INTERSHOP_JDBC_URL: "${DATABASE_CONNECTION_STRING}"
-    INTERSHOP_JDBC_USER: "${DATABASE_USER}"
-    INTERSHOP_JDBC_PASSWORD: "${DATABASE_USER}"
-
     SERVER_DIRECTORY: "${SERVER_DIRECTORY}"
     HELM_DIRECTORY: "${HELM_DIRECTORY}"
     CONFIG_DIRECTORY: "${CONFIG_DIRECTORY}"
