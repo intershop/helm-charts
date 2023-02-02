@@ -55,7 +55,9 @@ icm-web:
       repository: "${ICM_WEBADAPTER_AGENT_IMAGE}"
   environment:
     HELM_DIRECTORY: "${HELM_DIRECTORY}"
-
+  service:
+    httpPort: 8080
+    httpsPort: 8443
   persistence:
     pagecache:
       size: 1Gi
