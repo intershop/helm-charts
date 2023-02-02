@@ -76,17 +76,11 @@ testrunner:
     command: |
       mkdir -p $HELM_DIRECTORY/result
       ls -la $HELM_DIRECTORY
-      $HELM_DIRECTORY/stack-entrypoint-test.sh 2>&1 | tee outfile $HELM_DIRECTORY/result/istestrunner_log.txt
+      sh /intershop/bin/testrunner.sh -s=${TESTSUITE} -o=${RESULT_DIRECTORY} 2>&1 | tee -a ${RESULT_DIRECTORY}/istestrunner_log.txt
   environment:
     CARTRIDGE_LIST: "app_bo_test"
 
-    SERVER_DIRECTORY: "${SERVER_DIRECTORY}"
-    HELM_DIRECTORY: "${HELM_DIRECTORY}"
-    CONFIG_DIRECTORY: "${CONFIG_DIRECTORY}"
     RESULT_DIRECTORY: "${RESULT_DIRECTORY}"
-    WORKSPACE_DIRECTORY: "${WORKSPACE_DIRECTORY}"
-    SERVER_DIRECTORY_GROUP: "${SERVER_DIRECTORY_GROUP}"
-    SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
 
     MAIL_SERVER: "${HELM_JOB_NAME}-mail"
 
