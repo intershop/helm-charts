@@ -122,8 +122,7 @@ spec:
             value: "{{ .Values.mssql.user }}"
           - name: INTERSHOP_JDBC_PASSWORD
             value: "{{ .Values.mssql.password }}"
-          {{- end }}
-          {{- if eq .Values.mssql.enabled false }}
+          {{- else }}
           - name: INTERSHOP_DATABASETYPE
             value: "{{ .Values.database.type }}"
           - name: INTERSHOP_JDBC_URL
