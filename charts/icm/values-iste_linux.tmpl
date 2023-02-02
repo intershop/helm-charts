@@ -77,12 +77,12 @@ testrunner:
       mkdir -p $HELM_DIRECTORY/result
       ls -la $HELM_DIRECTORY
       sh /intershop/bin/testrunner.sh -s=${TESTSUITE} -o=${RESULT_DIRECTORY} 2>&1 | tee -a ${RESULT_DIRECTORY}/istestrunner_log.txt
-    PROCESS_ERROR_LEVEL=$?
-    TEST_EXECUTION_RESULT_STATUS="failed"
-    [ ${PROCESS_ERROR_LEVEL} = 0 ] && TEST_EXECUTION_RESULT_STATUS="success"
-    [ ${PROCESS_ERROR_LEVEL} = 1 ] && top -b -n 1 > ${RESULT_DIRECTORY}/top.txt
-    echo "result: ${TEST_EXECUTION_RESULT_STATUS}" > ${RESULT_DIRECTORY}/finished.yml
-    echo "result-datetime: $(date)" >> ${RESULT_DIRECTORY}/finished.yml
+      PROCESS_ERROR_LEVEL=$?
+      TEST_EXECUTION_RESULT_STATUS="failed"
+      [ ${PROCESS_ERROR_LEVEL} = 0 ] && TEST_EXECUTION_RESULT_STATUS="success"
+      [ ${PROCESS_ERROR_LEVEL} = 1 ] && top -b -n 1 > ${RESULT_DIRECTORY}/top.txt
+      echo "result: ${TEST_EXECUTION_RESULT_STATUS}" > ${RESULT_DIRECTORY}/finished.yml
+      echo "result-datetime: $(date)" >> ${RESULT_DIRECTORY}/finished.yml
   environment:
     CARTRIDGE_LIST: "app_bo_test"
 
