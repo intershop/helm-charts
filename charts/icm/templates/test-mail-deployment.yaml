@@ -35,8 +35,8 @@ spec:
         args:
         - |-
           set -eo pipefail
-          mkdir -p {{ .Values.testrunner.environment.HELM_DIRECTORY }}/test-mails
-          ln -sf {{ .Values.testrunner.environment.HELM_DIRECTORY }}/test-mails /var/tmp
+          mkdir -p {{ .Values.mail.environment.HELM_DIRECTORY }}/test-mails
+          ln -sf {{ .Values.mail.environment.HELM_DIRECTORY }}/test-mails /var/tmp
           java -jar -Xms64M -Xmx128M -Djava.security.egd=file:/dev/./urandom /app.jar --spring.output.ansi.enabled=NEVER
         env:
         {{- range $key, $value := .Values.mail.environment }}
