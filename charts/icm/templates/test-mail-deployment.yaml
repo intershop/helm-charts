@@ -38,6 +38,11 @@ spec:
           mkdir -p {{ .Values.testrunner.environment.HELM_DIRECTORY }}/test-mails
           ln -sf {{ .Values.testrunner.environment.HELM_DIRECTORY }}/test-mails /var/tmp
           java -jar -Xms64M -Xmx128M -Djava.security.egd=file:/dev/./urandom /app.jar --spring.output.ansi.enabled=NEVER
+        env:
+        {{- range $key, $value := .Values.mail.environment }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
         volumeMounts:
         - name: testdata-volume
           mountPath: /data

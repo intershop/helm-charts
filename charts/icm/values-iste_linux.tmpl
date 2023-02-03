@@ -69,6 +69,8 @@ icm-web:
 mail:
   image:
     repository: ishisteacr.azurecr.io/iste/iste-mail:1.0.0-SNAPSHOT
+  environment:
+    HELM_DIRECTORY: "${HELM_DIRECTORY}"
 
 testrunner:
   image:
