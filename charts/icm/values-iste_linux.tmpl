@@ -30,7 +30,6 @@ icm-as:
 
     # Disable Mailhog for now (#82978)
     MAIL_SMTP_MAILHOG_ENABLED: "false"
-
   persistence:
     sites:
       size: 1Gi
@@ -77,7 +76,8 @@ testrunner:
     repository: "${ICM_TEST_IMAGE}"
     command: |
       mkdir -p $HELM_DIRECTORY/result
-      ls -la $HELM_DIRECTORY
+
+      # startup
       sh /intershop/bin/testrunner.sh -s=${TESTSUITE} -o=${RESULT_DIRECTORY} 2>&1 | tee -a ${RESULT_DIRECTORY}/istestrunner_log.txt
       PROCESS_ERROR_LEVEL=$?
       TEST_EXECUTION_RESULT_STATUS="failed"
@@ -85,6 +85,8 @@ testrunner:
       [ ${PROCESS_ERROR_LEVEL} = 1 ] && top -b -n 1 > ${RESULT_DIRECTORY}/top.txt
       echo "result: ${TEST_EXECUTION_RESULT_STATUS}" > ${RESULT_DIRECTORY}/finished.yml
       echo "result-datetime: $(date)" >> ${RESULT_DIRECTORY}/finished.yml
+
+      exit $PROCESS_ERROR_LEVEL
   environment:
     CARTRIDGE_LIST: "app_bo_test"
 
