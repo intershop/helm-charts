@@ -1,0 +1,16 @@
+{{- if .Values.mssql.enabled }}
+{{- if eq .Values.mssql.persistence.backup.type "local" }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "icm-chart.fullname" . }}-local-mssql-db-backup-pvc
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.mssql.persistence.backup.size }}
+  volumeName: {{ template "icm-chart.fullname" . }}-local-mssql-db-backup-pv
+{{ end }}
+{{ end }}
