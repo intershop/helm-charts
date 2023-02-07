@@ -10,5 +10,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.pagecache.size }}
-  volumeName: {{ template "icm-chart.fullname" . }}-local-pagecache-pv
+  volumeName: {{ template "icm-web.fullname" . }}-local-pagecache-pv
 {{- end -}}
