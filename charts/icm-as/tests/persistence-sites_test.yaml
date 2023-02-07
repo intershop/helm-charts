@@ -89,6 +89,9 @@ tests:
           path: spec.storageClassName
           value: standard
       - equal:
+          path: spec.volumeName
+          value: icm-as-local-sites-pv
+      - equal:
           path: spec.accessModes[0]
           value: ReadWriteMany
       - equal:

@@ -249,6 +249,8 @@ mssql:
       azurefiles:
         shareName: <icm-as-mssql-data-share>
         secretName: <icm-as-mssql-secret>
+      local:
+        path: <local mssql data folder>
     backup:
       size: 5Gi
       # type cluster | nfs | azurefiles | existingClaim | local
@@ -272,3 +274,5 @@ mssql:
       azurefiles:
         shareName: <icm-as-mssql-backup-share>
         secretName: <icm-as-mssql-secret>
+      local:
+        path: <local mssql backup folder>
