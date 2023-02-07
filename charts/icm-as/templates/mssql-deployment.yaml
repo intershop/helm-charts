@@ -33,6 +33,8 @@ spec:
             value: "{{ .Values.mssql.acceptEula }}"
           - name: SA_PASSWORD
             value: "{{ .Values.mssql.saPassword }}"
+          - name: MSSQL_AGENT_ENABLED
+            value: "true"
           - name: MSSQL_PID
             value: "Developer"
           - name: RECREATEDB
@@ -63,7 +65,7 @@ spec:
               memory: 2Gi
             requests:
               cpu: 1000m
-              memory: 2Gi              
+              memory: 2Gi
       volumes:
       - name: data-volume
         {{- if eq .Values.mssql.persistence.data.type "local" }}
