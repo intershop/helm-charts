@@ -1,0 +1,19 @@
+{{- if .Values.mssql.enabled }}
+{{- if eq .Values.mssql.persistence.backup.type "local" }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ template "icm-chart.fullname" . }}-local-mssql-db-backup-pv
+  labels:
+    type: local
+spec:
+  storageClassName: standard
+  capacity:
+    storage: {{ .Values.mssql.persistence.backup.size }}
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Delete
+  hostPath:
+    path: "{{ .Values.mssql.persistence.backup.local.path }}"
+{{ end }}
+{{ end }}

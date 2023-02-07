@@ -10,4 +10,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.jgroups.size }}
+  volumeName: {{ template "icm-chart.fullname" . }}-local-jgroups-pv
 {{- end -}}

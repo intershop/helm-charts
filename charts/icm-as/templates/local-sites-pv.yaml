@@ -12,6 +12,7 @@ spec:
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Delete
+  persistentVolumeReclaimPolicy: Delete
   hostPath:
     path: "{{ .Values.persistence.sites.local.path }}"
 {{- end -}}
