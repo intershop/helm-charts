@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "icm-chart.fullname" . }}-local-mssql-db-backup-pvc
+  name: {{ template "icm-as.fullname" . }}-local-mssql-db-backup-pvc
 spec:
   storageClassName: standard
   accessModes:
@@ -11,6 +11,6 @@ spec:
   resources:
     requests:
       storage: {{ .Values.mssql.persistence.backup.size }}
-  volumeName: {{ template "icm-chart.fullname" . }}-local-mssql-db-backup-pv
+  volumeName: {{ template "icm-as.fullname" . }}-local-mssql-db-backup-pv
 {{ end }}
 {{ end }}
