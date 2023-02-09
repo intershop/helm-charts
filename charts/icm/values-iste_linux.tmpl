@@ -16,17 +16,21 @@ icm-as:
     ls -la $HELM_DIRECTORY
     SITES_DIR=${WORKSPACE_DIRECTORY}/../../../sites
     SITES_VOL=/intershop
-    cp -r \$SITES_DIR \$SITES_VOL
-    chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_USER} \$SITES_VOL/sites
-    find \$SITES_VOL -type f \> \"${RESULT_DIRECTORY}/sites.txt\"
+    cp -r $SITES_DIR $SITES_VOL
+    chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_USER} $SITES_VOL/sites
+    find $SITES_VOL -type f > "${RESULT_DIRECTORY}/sites.txt"
 
     cat << 'EOF' > ./start_appserver.sh
       #!/bin/bash
-      sh /intershop/bin/intershop.sh appserver
+
+      su ${SERVER_DIRECTORY_USER} <<EOF2
+        PATH=$PATH:$JAVA_HOME/bin
+        sh /intershop/bin/intershop.sh appserver
+      EOF2
     EOF
     chmod +x ./start_appserver.sh
-    timestamp=\$(date '+%Y-%m-%d_%H_%M_%S')
-    sh ./start_appserver.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs/as\${timestamp}.log
+    timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
+    sh ./start_appserver.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs/as${timestamp}.log
   license:
     type: secret
     secret:
@@ -110,6 +114,8 @@ testrunner:
       echo "result-datetime: $(date)" >> ${RESULT_DIRECTORY}/finished.yml
 
       exit $PROCESS_ERROR_LEVEL
+  podSecurityContext:
+    runAsUser: 0
   environment:
     CARTRIDGE_LIST: "app_bo_test"
 
@@ -146,8 +152,6 @@ testrunner:
         cpu: 1000m
         memory: 2Gi
   replicaCount: 1
-  podSecurityContext:
-    runAsUser: 0
   persistence:
     testdata:
       size: 1Gi
