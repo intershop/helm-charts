@@ -4,6 +4,29 @@ test:
 icm-as:
   image:
     repository: "${ICM_TEST_IMAGE}"
+  podSecurityContext:
+    runAsUser: 0
+  customCommand:
+  - "/bin/sh"
+  - "-c"
+  - |
+    set -x
+    mkdir -p $HELM_DIRECTORY/server-logs
+    chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs
+    ls -la $HELM_DIRECTORY
+    SITES_DIR=${WORKSPACE_DIRECTORY}/../../../sites
+    SITES_VOL=/intershop
+    cp -r \$SITES_DIR \$SITES_VOL
+    chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_USER} \$SITES_VOL/sites
+    find \$SITES_VOL -type f \> \"${RESULT_DIRECTORY}/sites.txt\"
+
+    cat << 'EOF' > ./start_appserver.sh
+      #!/bin/bash
+      sh /intershop/bin/intershop.sh appserver
+    EOF
+    chmod +x ./start_appserver.sh
+    timestamp=\$(date '+%Y-%m-%d_%H_%M_%S')
+    sh ./start_appserver.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs/as\${timestamp}.log
   license:
     type: secret
     secret:
