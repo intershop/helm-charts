@@ -31,7 +31,7 @@ spec:
   chart:
     repository: https://intershop.github.io/helm-charts
     name: pwa-main
-    version: 0.5.0
+    version: 0.6.0
   values:
 ```
 
