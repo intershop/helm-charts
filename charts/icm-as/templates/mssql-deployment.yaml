@@ -38,9 +38,9 @@ spec:
           - name: MSSQL_PID
             value: "Developer"
           - name: RECREATEDB
-            value: "true"
+            value: "{{ .Values.mssql.recreation }}"
           - name: RECREATEUSER
-            value: "true"
+            value: "{{ .Values.mssql.recreation }}"
           - name: ICM_DB_NAME
             value: "{{ .Values.mssql.databaseName }}"
           - name: ICM_DB_USER
