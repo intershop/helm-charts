@@ -253,7 +253,7 @@ spec:
       schedulerName: default-scheduler
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      terminationGracePeriodSeconds: 30
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds | default 30 }}
       volumes:
       {{- if .Values.provideCustomConfig }}
       {{- range $k, $v := .Values.provideCustomConfig }}
