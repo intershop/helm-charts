@@ -163,6 +163,11 @@ spec:
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | trim | nindent 12 }}
+          lifecycle:
+            preStop:
+              httpGet:
+                port: 7743
+                path: /servlet/Hook/Shutdown
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           volumeMounts:
