@@ -144,6 +144,10 @@ tests:
       - equal:
           path: spec.template.spec.securityContext.runAsUser
           value: 150
+      #spec.template.spec.terminationGracePeriodSeconds
+      - equal:
+          path: spec.template.spec.terminationGracePeriodSeconds
+          value: 30
       #spec.template.spec.volumes
       - contains:
           path: spec.template.spec.volumes
