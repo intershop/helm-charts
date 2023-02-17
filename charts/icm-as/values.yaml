@@ -212,6 +212,9 @@ probes:
 #    initialDelaySeconds: 0
 #    periodSeconds: 5
 
+# Duration in seconds pod needs to terminate gracefully, value is optional, below is the default
+# terminationGracePeriodSeconds: 30
+
 # Enable Microsoft SQL Server for development and testing purposes.
 # ICM will use jdbc:sqlserver://<release>-mssql:1433;database=<msslq.name>;
 # see values of persistence.mssql-data and persistence.mssql-backup
