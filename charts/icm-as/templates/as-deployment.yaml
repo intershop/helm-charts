@@ -156,13 +156,6 @@ spec:
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | trim | nindent 12 }}
-          lifecycle:
-            preStop:
-              httpGet:
-                port: 7743
-                path: /servlet/Hook/Shutdown
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
           volumeMounts:
           {{- if .Values.provideCustomConfig }}
           {{- range $k, $v := .Values.provideCustomConfig }}
@@ -221,6 +214,13 @@ spec:
             failureThreshold: {{ .Values.probes.readiness.failureThreshold | default 3 }}
             initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds | default 60 }}
             periodSeconds: {{ .Values.probes.readiness.periodSeconds | default 5 }}
+          lifecycle:
+            preStop:
+              httpGet:
+                port: http
+                path: /status/action/shutdown
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
       initContainers:
       {{- if eq .Values.persistence.sites.type "local" }}
         # the following container

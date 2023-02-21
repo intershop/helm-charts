@@ -94,13 +94,6 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].resources.requests.memory
           value: 3Gi
-      #spec.template.spec.containers[0].lifecycle
-      - equal:
-          path: spec.template.spec.containers[0].lifecycle.preStop.httpGet.port
-          value: 7743
-      - equal:
-          path: spec.template.spec.containers[0].lifecycle.preStop.httpGet.path
-          value: /servlet/Hook/Shutdown
       #spec.template.spec.containers[0].volumeMounts
       - contains:
           path: spec.template.spec.containers[0].volumeMounts
@@ -124,6 +117,13 @@ tests:
           content:
             mountPath: /intershop/jgroups-share
             name: jgroups-volume
+      #spec.template.spec.containers[0].lifecycle
+      - equal:
+          path: spec.template.spec.containers[0].lifecycle.preStop.httpGet.port
+          value: http
+      - equal:
+          path: spec.template.spec.containers[0].lifecycle.preStop.httpGet.path
+          value: /status/action/shutdown
       #spec.template.spec.<misc>
       - equal:
           path: spec.template.spec.dnsPolicy
