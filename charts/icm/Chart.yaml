@@ -6,4 +6,4 @@ version: 0.8.0-alpha
 # test related annotations
 annotations:
   requestedMemoryQuota: 5300Mi
-  requestedCpuQuotaInMinutes: 3000
+  requestedCpuQuotaInMinutes: "3000"
