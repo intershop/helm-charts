@@ -1,5 +1,8 @@
 icm-as:
   nodeSelector: []
+  license:
+    secret:
+      name: intershop-license
   persistence:
     sites:
       size: 1Gi
@@ -8,7 +11,7 @@ icm-as:
         path: /run/desktop/mnt/host/d/tmp/pv/sites
     customdata:
       enabled: true
-      existingClaim: ${HELM_JOB_NAME}-local-testdata-pvc
+      existingClaim: icm-11-test-local-testdata-pvc
       mountPoint: /data
   datadog:
     enabled: false
@@ -37,9 +40,6 @@ icm-web:
         path: /run/desktop/mnt/host/d/tmp/pv/pagecache
     customdata:
       enabled: false
-  environment:
-    REQUESTLOG_ENABLED: false
-    HELM_DIRECTORY: "${HELM_DIRECTORY}"
 
 testrunner:
   nodeSelector: []

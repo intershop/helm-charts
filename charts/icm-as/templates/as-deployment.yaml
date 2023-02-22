@@ -12,7 +12,11 @@ metadata:
     {{- if .Values.datadog.enabled }}
     tags.datadoghq.com/env: {{ .Values.datadog.env }}
     tags.datadoghq.com/service: {{ include "icm-as.fullname" . }}
-    tags.datadoghq.com/version: {{ .Values.image.tag | default .Chart.AppVersion }}
+    {{- if .Values.testrunner.image.tag }}
+    tags.datadoghq.com/version: {{ .Values.image.tag }}
+    {{- else }}
+    tags.datadoghq.com/version: {{ (split ":" .Values.image.repository)._1 }}
+    {{- end }}
     {{- end }}
     {{- if .Values.deploymentLabels }}
       {{- toYaml .Values.deploymentLabels | trim | nindent 4 }}
@@ -42,7 +46,11 @@ spec:
         {{- if .Values.datadog.enabled }}
         tags.datadoghq.com/env: {{ .Values.datadog.env }}
         tags.datadoghq.com/service: {{ include "icm-as.fullname" . }}
-        tags.datadoghq.com/version: {{ .Values.image.tag | default .Chart.AppVersion }}
+        {{- if .Values.testrunner.image.tag }}
+        tags.datadoghq.com/version: {{ .Values.image.tag }}
+        {{- else }}
+        tags.datadoghq.com/version: {{ (split ":" .Values.image.repository)._1 }}
+        {{- end }}
         {{- end }}
         {{- if .Values.podLabels }}
           {{- toYaml .Values.podLabels | trim | nindent 8 }}
