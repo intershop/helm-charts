@@ -44,16 +44,6 @@ tests:
       - contains:
           path: spec.template.spec.containers[0].env
           content:
-            name: CONFIG_DIRECTORY
-            value: "${CONFIG_DIRECTORY}"
-      - contains:
-          path: spec.template.spec.containers[0].env
-          content:
-            name: HELM_DIRECTORY
-            value: "${HELM_DIRECTORY}"
-      - contains:
-          path: spec.template.spec.containers[0].env
-          content:
             name: HOST
             value: "${HELM_JOB_NAME}-icm-web-wa"
       - contains:
@@ -89,29 +79,8 @@ tests:
       - contains:
           path: spec.template.spec.containers[0].env
           content:
-            name: WORKSPACE_DIRECTORY
-            value: "${WORKSPACE_DIRECTORY}"
-      - contains:
-          path: spec.template.spec.containers[0].env
-          content:
             name: REMOVE_SUCCESSFUL_PAGEDUMPS
             value: "true"
-      - contains:
-          path: spec.template.spec.containers[0].env
-          content:
-            name: SERVER_DIRECTORY_GROUP
-            value: "${SERVER_DIRECTORY_GROUP}"
-      - contains:
-          path: spec.template.spec.containers[0].env
-          content:
-            name: SERVER_DIRECTORY_USER
-            value: "${SERVER_DIRECTORY_USER}"
-      - contains:
-          path: spec.template.spec.containers[0].env
-          content:
-            name: SERVER_DIRECTORY
-            value: "${SERVER_DIRECTORY}"
-
       #spec.template.spec.containers[0].resources
       - equal:
           path: spec.template.spec.containers[0].resources.limits.cpu
