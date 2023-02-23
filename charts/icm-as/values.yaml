@@ -51,11 +51,6 @@ customizations: {}
 #    repository: custom-adapter-repo:47.11.0
 #    pullPolicy: IfNotPresent
 
-
-## Optionally specify a custom command that controls which entrypoint is called inside the container during startup
-## (see Deployment/spec.template.spec.container.command)
-# customCommand: ["/bin/sh", "-c", "/custom-dir/custom-script.sh"]
-
 ## Control options regarding the java-vm running the ICM-AS
 jvm:
   debug:

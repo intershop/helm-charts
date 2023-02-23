@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 HELM_DRY_RUN=""
 HELM_JOB_NAME="icm-11-test"
-KUBECONFIG=<your kube config>
 
 SERVER_DIRECTORY="not_used"
 CONFIG_DIRECTORY="/data/testplans/1/testsuites/1/workspace/helm/iste-icm-11/config"

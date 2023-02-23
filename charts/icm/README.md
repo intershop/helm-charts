@@ -41,3 +41,15 @@ cd charts
 helm dependency update icm
 helm install my-release ./icm --values=values.yaml --namespace icm
 ```
+
+## Test execution
+
+This helm chart also allows you to execute intershop htmlunit tests via a testrunner.
+
+### Execute locally
+To execute a test follow these steps:
+
+1. add a "intershop-license" k8s secret with a valid intershop license
+2. adjust the `start-test-local_vars.sh` to your needs (which docker image to test, which testsuite)
+3. in `values-test-local.yaml` set sites-, pagecache-, testdata-dir to the ones from your system, same for mssql-data and -backup
+4. Run: `./start-test-local.sh`

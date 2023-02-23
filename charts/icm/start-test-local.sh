@@ -12,4 +12,5 @@ env_list=$(env | cut -d '=' -f 1 | sed 's/^/\$/;s/$/,/' | tr -d '\n' | sed 's/,$
 # now only env variables are replaced in values template
 envsubst "${env_list}" < ./values-iste_linux.tmpl | tee values-iste_linux.yaml
 
-helm --kubeconfig ${KUBECONFIG} upgrade --install ${HELM_DRY_RUN}${HELM_JOB_NAME} . -f ./values-iste_linux.yaml -f ./values-test-local.yaml
+helm dependency update .
+helm upgrade --install ${HELM_DRY_RUN}${HELM_JOB_NAME} . -f ./values-iste_linux.yaml -f ./values-test-local.yaml

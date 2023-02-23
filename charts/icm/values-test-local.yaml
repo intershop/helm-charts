@@ -1,5 +1,7 @@
 icm-as:
   nodeSelector: []
+  imagePullSecrets:
+  - "icmbuildsnapshot"
   license:
     secret:
       name: intershop-license
@@ -43,6 +45,8 @@ icm-web:
 
 testrunner:
   nodeSelector: []
+  imagePullSecrets:
+  - "icmbuildsnapshot"
   persistence:
     testdata:
       size: 1Gi
