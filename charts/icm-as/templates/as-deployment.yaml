@@ -220,20 +220,37 @@ spec:
             initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds | default 60 }}
             periodSeconds: {{ .Values.probes.readiness.periodSeconds | default 5 }}
       initContainers:
-      {{- if .Values.customizations }}
-      {{- range $k, $v := .Values.customizations }}
-        - name: {{ $k }}
-          image: {{ $v.repository }}
-          {{- if $v.command }}
+      {{- if .Values.cpSitesDir.enabled }}
+        - name: cp-sites-dir
+          image: "{{ .Values.image.repository }}{{ if not (contains ":" .Values.image.repository) }}:{{ .Values.image.tag | default .Chart.AppVersion }}{{ end }}"
           command:
-            {{- toYaml $v.command | trim | nindent 10 }}
-          {{- end }}
-          imagePullPolicy: {{ $v.pullPolicy | default "IfNotPresent" }}
+            - "/bin/sh"
+            - "-c"
+            - |
+              set -x
+              SITES_DIR={{ .Values.cpSitesDir.fromDir }}
+              if [ -d "$SITES_DIR" ]; then
+                SITES_VOL=/intershop
+                cp -r $SITES_DIR $SITES_VOL
+                chmod 777 $SITES_VOL/sites && chown -R {{ .Values.cpSitesDir.chmodUser }}:{{ .Values.cpSitesDir.chmodGroup }} $SITES_VOL/sites
+                find $SITES_VOL -type f > "{{ .Values.cpSitesDir.resultDir }}/sites.txt"
+              fi
+          imagePullPolicy: "IfNotPresent"
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
           volumeMounts:
           {{- if $.Values.persistence.customdata.enabled }}
             - mountPath: {{ $.Values.persistence.customdata.mountPoint }}
               name: custom-data-volume
           {{- end }}
+      {{- end }}
+      {{- if .Values.customizations }}
+      {{- range $k, $v := .Values.customizations }}
+        - name: {{ $k }}
+          image: {{ $v.repository }}
+          imagePullPolicy: {{ $v.pullPolicy | default "IfNotPresent" }}
+          volumeMounts:
             - mountPath: /customizations
               name: customizations-volume
       {{- end }}

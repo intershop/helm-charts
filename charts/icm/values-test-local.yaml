@@ -1,5 +1,5 @@
 icm-as:
-  nodeSelector: []
+  nodeSelector: null
   imagePullSecrets:
   - "icmbuildsnapshot"
   license:
@@ -33,7 +33,7 @@ icm-as:
           path: /run/desktop/mnt/host/d/tmp/pv/mssql/backup
 
 icm-web:
-  nodeSelector: []
+  nodeSelector: null
   persistence:
     pagecache:
       size: 1Gi
@@ -43,8 +43,11 @@ icm-web:
     customdata:
       enabled: false
 
+mail:
+  nodeSelector: null
+
 testrunner:
-  nodeSelector: []
+  nodeSelector: null
   imagePullSecrets:
   - "icmbuildsnapshot"
   persistence:

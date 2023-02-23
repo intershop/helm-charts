@@ -2,26 +2,16 @@ test:
   enabled: true
 
 icm-as:
+  nodeSelector:
+    agentpool: agentpool2
   image:
     repository: "${ICM_TEST_IMAGE}"
-  podSecurityContext:
-    runAsUser: 0
-  customizations:
-    cpsitesdir:
-      repository: busybox:1
-      pullPolicy: IfNotPresent
-      command:
-      - "/bin/sh"
-      - "-c"
-      - |
-        set -x
-        SITES_DIR=${WORKSPACE_DIRECTORY}/../../../sites
-        if [ -d "$SITES_DIR" ]; then
-          SITES_VOL=/intershop
-          cp -r $SITES_DIR $SITES_VOL
-          chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_USER} $SITES_VOL/sites
-          find $SITES_VOL -type f > "${RESULT_DIRECTORY}/sites.txt"
-        fi
+  cpSitesDir:
+   enabled: true
+   fromDir: ${WORKSPACE_DIRECTORY}/../../../sites
+   resultDir: ${RESULT_DIRECTORY}
+   chmodUser: ${SERVER_DIRECTORY_USER}
+   chmodGroup: ${SERVER_DIRECTORY_GROUP}
   license:
     type: secret
     secret:
@@ -64,6 +54,8 @@ icm-as:
     options: "-Ddd.profiling.enabled=false -Ddd.trace.analytics.enabled=true -Ddd.jdbc.analytics.enabled=true"
 
 icm-web:
+  nodeSelector:
+    agentpool: agentpool2
   webadapter:
     image:
       repository: "${ICM_WEBSERVER_IMAGE}"
@@ -84,12 +76,16 @@ icm-web:
       existingClaim: icm-nfs
 
 mail:
+  nodeSelector:
+    agentpool: agentpool2
   image:
     repository: ishisteacr.azurecr.io/iste/iste-mail:1.0.0-SNAPSHOT
   environment:
     HELM_DIRECTORY: "${HELM_DIRECTORY}"
 
 testrunner:
+  nodeSelector:
+    agentpool: agentpool2
   image:
     repository: "${ICM_TEST_IMAGE}"
     command: |

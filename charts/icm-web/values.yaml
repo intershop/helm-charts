@@ -162,4 +162,4 @@ appServerConnection:
   serviceName: icm-as
   port: 7743
 
-environment: []
+environment: {}

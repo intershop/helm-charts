@@ -271,3 +271,11 @@ mssql:
         secretName: <icm-as-mssql-secret>
       local:
         path: <local mssql backup folder>
+
+# allows it to copy the sites dir which is needed for our test execution
+cpSitesDir:
+  enabled: false
+  # fromDir: sites folder
+  # resultDir: result folder where a sites.txt is generated to
+  # chmodUser: user
+  # chmodGroup: group
