@@ -89,7 +89,8 @@ testrunner:
   image:
     repository: "${ICM_TEST_IMAGE}"
     command: |
-      mkdir -p $HELM_DIRECTORY/result
+      mkdir -p ${HELM_DIRECTORY}/result
+      mkdir ${HELM_DIRECTORY}/pagedumps
 
       # startup
       sh /intershop/bin/testrunner.sh -s=${TESTSUITE} -o=${RESULT_DIRECTORY} 2>&1 | tee -a ${RESULT_DIRECTORY}/istestrunner_log.txt
@@ -120,7 +121,7 @@ testrunner:
     PORT_HTTPS: 8443
     SERVLETENGINE_PORT: 7743
 
-    #DEFAULT_PAGEDUMP_DIRECTORY: ${STACK_DIRECTORY}/pagedumps
+    DEFAULT_PAGEDUMP_DIRECTORY: ${HELM_DIRECTORY}/pagedumps
     REMOVE_SUCCESSFUL_PAGEDUMPS: 'true'
 
   resources:
