@@ -49,11 +49,7 @@ Create chart name and version as used by the chart label.
     ingress configuration
 */}}
 {{- define "pwa-ingress.service" -}}
-{{- if .Values.cache.enabled -}}
 {{- printf "%s" (include  "pwa-cache.fullname" . ) -}}
-{{- else -}}
-{{- printf "%s" (include  "pwa-main.fullname" . ) -}}
-{{- end -}}
 {{- end -}}
 
 {{/*
