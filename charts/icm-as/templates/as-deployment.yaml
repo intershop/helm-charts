@@ -236,7 +236,7 @@ spec:
           securityContext:
             runAsUser: 0
       {{- end }}
-      {{- if .Values.cpSitesDir.enabled }}
+      {{- if .Values.copySitesDir.enabled }}
         - name: cp-sites-dir
           image: "{{ .Values.image.repository }}{{ if not (contains ":" .Values.image.repository) }}:{{ .Values.image.tag | default .Chart.AppVersion }}{{ end }}"
           command:
@@ -244,12 +244,12 @@ spec:
             - "-c"
             - |
               set -x
-              SITES_DIR={{ .Values.cpSitesDir.fromDir }}
+              SITES_DIR={{ .Values.copySitesDir.fromDir }}
               if [ -d "$SITES_DIR" ]; then
                 SITES_VOL=/intershop
                 cp -r $SITES_DIR $SITES_VOL
-                chmod 777 $SITES_VOL/sites && chown -R {{ .Values.cpSitesDir.chmodUser }}:{{ .Values.cpSitesDir.chmodGroup }} $SITES_VOL/sites
-                find $SITES_VOL -type f > "{{ .Values.cpSitesDir.resultDir }}/sites.txt"
+                chmod 777 $SITES_VOL/sites && chown -R {{ .Values.copySitesDir.chmodUser }}:{{ .Values.copySitesDir.chmodGroup }} $SITES_VOL/sites
+                find $SITES_VOL -type f > "{{ .Values.copySitesDir.resultDir }}/sites.txt"
               fi
           imagePullPolicy: "IfNotPresent"
           securityContext:

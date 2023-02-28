@@ -273,7 +273,7 @@ mssql:
         path: <local mssql backup folder>
 
 # allows it to copy the sites dir which is needed for our test execution
-cpSitesDir:
+copySitesDir:
   enabled: false
   # fromDir: sites folder
   # resultDir: result folder where a sites.txt is generated to
