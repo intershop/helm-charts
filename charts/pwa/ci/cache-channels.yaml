@@ -21,8 +21,6 @@ readinessProbe:
   timeoutSeconds: 10
 
 cache:
-  enabled: true
-
   replicaCount: 1
   multiChannel: |-
     .+:
@@ -54,4 +52,3 @@ ingress:
       deny all;
   hosts:
   - pwa.dev.local
-

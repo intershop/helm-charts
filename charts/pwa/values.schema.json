@@ -119,13 +119,6 @@
             "default": {},
             "required": [ ],
             "properties": {
-                "enabled": {
-                    "$id": "#/properties/cache/properties/enabled",
-                    "type": "boolean",
-                    "title": "Enable or disable NGinx deployment",
-                    "description": "Enable or disable NGinx deployment",
-                    "default": true
-                },
                 "cacheIgnoreParams": {
                     "$id": "#/properties/cache/properties/cacheIgnoreParams",
                     "type": "string",
