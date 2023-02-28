@@ -140,13 +140,6 @@
                     "description": "Multi channel/site configuration object",
                     "additionalProperties": true
                 },
-                "channels": {
-                    "$id": "#/properties/cache/properties/channels",
-                    "type": "object",
-                    "title": "Deprecated: Configure top-level URL to appserver URL mapping (Pre PWA 0.25 way)",
-                    "description": "Deprecated use property \"multiChannel\" or \"extraEnvVars\" instead.",
-                    "additionalProperties": true
-                },
                 "extraEnvVars": {
                     "$id": "#/properties/cache/properties/extraEnvVars",
                     "type": "array",

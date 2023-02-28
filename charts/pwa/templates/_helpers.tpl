@@ -68,18 +68,6 @@ pwa cache variables
 {{- end -}}
 
 {{/*
-pwa channels configuration
-- required for the pwa cache
-*/}}
-{{- define "pwa-channels.fullname" -}}
-{{- printf "%s-%s" (include  "pwa-main.fullname" . ) "channels" -}}
-{{- end -}}
-
-{{- define "pwa-channels.name" -}}
-{{- printf "%s-%s" (include  "pwa-main.name" . ) "channels" -}}
-{{- end -}}
-
-{{/*
 Print jobname of pwa prefetch cron job. Jobname is only allowed to contain 51 chars.
 Usage:
 {{ include "pwa-prefetch.jobname" (dict "host" .host "path" .path "context" $) }}

@@ -55,11 +55,6 @@ spec:
           - name: {{ $obj.name }}
             value: {{ $obj.value | quote }}
         {{- end }}
-        {{- if .Values.cache.channels }}
-          envFrom:
-          - configMapRef:
-              name: {{ include "pwa-channels.fullname" . }}
-        {{- end }}
           ports:
             - name: http
               containerPort: 80
