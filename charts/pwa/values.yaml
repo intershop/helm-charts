@@ -79,8 +79,6 @@ readinessProbe:
   # periodSeconds: 30
 
 cache:
-  enabled: true
-
   ####
   ## @param NGinx ignore query parameters during caching
   ##   cacheIgnoreParams: |-
