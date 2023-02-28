@@ -125,18 +125,6 @@ cache:
   multiChannel: ""
 
   ####
-  ## @param DEPRECATED Use 'multiChannel' object when using PWA appVersion > 0.25
-  ##
-  ## mandantory
-  ## PWA_1_SUBDOMAIN: b2b
-  ## PWA_1_CHANNEL: inSPIRED-inTRONICS-Site
-  ## optional
-  ## PWA_1_LANG: de_DE
-  ## PWA_1_FEATURES: none
-  ## PWA_1_APPLICATION: smb-responsive
-  channels: {}
-
-  ####
   ## @param extraEnvVars Extra environment variables to be set on NGINX containers
   ## E.g:
   ##  extraEnvVars:

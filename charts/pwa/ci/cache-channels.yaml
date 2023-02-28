@@ -22,10 +22,6 @@ readinessProbe:
 
 cache:
   enabled: true
-  channels:
-    CACHE: "0"
-    PWA_1_SUBDOMAIN: b2b
-    PWA_1_CHANNEL: inSPIRED-inTRONICS-Site
 
   replicaCount: 1
   multiChannel: |-
