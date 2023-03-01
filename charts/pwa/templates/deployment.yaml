@@ -33,7 +33,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
           - name: ICM_BASE_URL
-            value: "{{ coalesce .Values.upstream.icm .Values.upstream.icmBaseURL }}"
+            value: "{{ .Values.upstream.icmBaseURL }}"
         {{- if .Values.upstream.cdnPrefixURL }}
           - name: CDN_PREFIX_URL
             value: "{{ .Values.upstream.cdnPrefixURL }}"
