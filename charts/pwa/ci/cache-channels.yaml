@@ -3,8 +3,7 @@ image:
   repository: intershophub/intershop-pwa-ssr
   tag: latest
 upstream:
-  # icm: https://pwa-ish-demo.test.intershop.com
-  icm: https://intershop-n-ga.test.intershop.com
+  icmBaseURL: https://pwa-ish-demo.test.intershop.com
 environment:
 - name: 'SSR_MAX_MEM'
   value: '800M'
