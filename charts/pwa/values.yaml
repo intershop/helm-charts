@@ -44,6 +44,9 @@ affinity: {}
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 ##
 podAnnotations: {}
+### @param podLabels Labels for SSR pods and deployment
+### ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+podLabels: {}
 ## @param environment Extra environment variables to be set on SSR containers
 ## E.g:
 ## environment:
@@ -160,6 +163,9 @@ cache:
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   ##
   podAnnotations: {}
+  ### @param podLabels Labels for NGINX/Cache pods and deployment
+  ### ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
 
   livenessProbe: {}
 
@@ -196,4 +202,3 @@ ingresssplit:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
-
