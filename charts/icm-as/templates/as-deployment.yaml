@@ -51,7 +51,8 @@ spec:
         {{- else }}
         tags.datadoghq.com/version: {{ (split ":" .Values.image.repository)._1 }}
         {{- end }}
-        {{- end }}        {{- if .Values.podLabels }}
+        {{- end }}
+        {{- if .Values.podLabels }}
           {{- toYaml .Values.podLabels | trim | nindent 8 }}
         {{- end }}
     spec:
@@ -69,10 +70,6 @@ spec:
         - name: icm-as-server
           image: "{{ .Values.image.repository }}{{ if not (contains ":" .Values.image.repository) }}:{{ .Values.image.tag | default .Chart.AppVersion }}{{ end }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
-          {{- if .Values.customCommand }}
-          command:
-            {{- toYaml .Values.customCommand | trim | nindent 10 }}
-          {{- end }}
           env:
           - name: IS_DBPREPARE
             value: "false"
@@ -129,8 +126,7 @@ spec:
             value: "{{ .Values.mssql.user }}"
           - name: INTERSHOP_JDBC_PASSWORD
             value: "{{ .Values.mssql.password }}"
-          {{- end }}
-          {{- if eq .Values.mssql.enabled false }}
+          {{- else }}
           - name: INTERSHOP_DATABASETYPE
             value: "{{ .Values.database.type }}"
           - name: INTERSHOP_JDBC_URL
@@ -244,6 +240,33 @@ spec:
             mountPath: /intershop/sites
           securityContext:
             runAsUser: 0
+      {{- end }}
+      {{- if .Values.copySitesDir.enabled }}
+        - name: cp-sites-dir
+          image: "{{ .Values.image.repository }}{{ if not (contains ":" .Values.image.repository) }}:{{ .Values.image.tag | default .Chart.AppVersion }}{{ end }}"
+          command:
+            - "/bin/sh"
+            - "-c"
+            - |
+              set -x
+              SITES_DIR={{ .Values.copySitesDir.fromDir }}
+              if [ -d "$SITES_DIR" ]; then
+                SITES_VOL=/intershop
+                cp -r $SITES_DIR $SITES_VOL
+                chmod 777 $SITES_VOL/sites && chown -R {{ .Values.copySitesDir.chmodUser }}:{{ .Values.copySitesDir.chmodGroup }} $SITES_VOL/sites
+                find $SITES_VOL -type f > "{{ .Values.copySitesDir.resultDir }}/sites.txt"
+              fi
+          imagePullPolicy: "IfNotPresent"
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+          volumeMounts:
+            - name: sites-volume
+              mountPath: /intershop/sites
+          {{- if $.Values.persistence.customdata.enabled }}
+            - mountPath: {{ $.Values.persistence.customdata.mountPoint }}
+              name: custom-data-volume
+          {{- end }}
       {{- end }}
       {{- if .Values.customizations }}
       {{- range $k, $v := .Values.customizations }}

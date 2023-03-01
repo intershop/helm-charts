@@ -149,8 +149,9 @@ fullnameOverride: ""
 
 service:
   type: ClusterIP
-  httpPort: 80
-  httpsPort: 443
+  # these ports shall be equal to the pods ports because of forwarding/redirect issues
+  httpPort: 8080
+  httpsPort: 8443
 
 podSecurityContext:
   # intershop user - defined by icm-base-docker image
@@ -161,4 +162,4 @@ appServerConnection:
   serviceName: icm-as
   port: 7743
 
-environment: []
+environment: {}

@@ -1,0 +1,60 @@
+icm-as:
+  nodeSelector: null
+  imagePullSecrets:
+  - "icmbuildsnapshot"
+  license:
+    secret:
+      name: intershop-license
+  persistence:
+    sites:
+      size: 1Gi
+      type: local
+      local:
+        path: /run/desktop/mnt/host/d/tmp/pv/sites
+    customdata:
+      enabled: true
+      existingClaim: icm-11-test-local-testdata-pvc
+      mountPoint: /data
+  datadog:
+    enabled: false
+  mssql:
+    enabled: true
+    acceptEula: "Y"
+    persistence:
+      data:
+        size: 1Gi
+        type: local
+        local:
+          path: /run/desktop/mnt/host/d/tmp/pv/mssql/data
+      backup:
+        size: 1Gi
+        type: local
+        local:
+          path: /run/desktop/mnt/host/d/tmp/pv/mssql/backup
+
+icm-web:
+  nodeSelector: null
+  persistence:
+    pagecache:
+      size: 1Gi
+      type: local
+      local:
+        path: /run/desktop/mnt/host/d/tmp/pv/pagecache
+    customdata:
+      enabled: false
+
+mail:
+  nodeSelector: null
+
+testrunner:
+  nodeSelector: null
+  imagePullSecrets:
+  - "icmbuildsnapshot"
+  persistence:
+    testdata:
+      size: 1Gi
+      type: local
+      local:
+        dir: /run/desktop/mnt/host/d/tmp/pv/testdata
+  datadog:
+    enabled: false

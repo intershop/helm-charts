@@ -51,11 +51,6 @@ customizations: {}
 #    repository: custom-adapter-repo:47.11.0
 #    pullPolicy: IfNotPresent
 
-
-## Optionally specify a custom command that controls which entrypoint is called inside the container during startup
-## (see Deployment/spec.template.spec.container.command)
-# customCommand: ["/bin/sh", "-c", "/custom-dir/custom-script.sh"]
-
 ## Control options regarding the java-vm running the ICM-AS
 jvm:
   debug:
@@ -279,3 +274,11 @@ mssql:
         secretName: <icm-as-mssql-secret>
       local:
         path: <local mssql backup folder>
+
+# allows it to copy the sites dir which is needed for our test execution
+copySitesDir:
+  enabled: false
+  # fromDir: sites folder
+  # resultDir: result folder where a sites.txt is generated to
+  # chmodUser: user
+  # chmodGroup: group

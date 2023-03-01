@@ -6,3 +6,4 @@ build/**
 .project
 **/tests/__snapshot__
 **/tests/__results__
+values-iste_linux.yaml

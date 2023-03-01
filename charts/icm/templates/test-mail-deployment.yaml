@@ -1,0 +1,77 @@
+{{- if .Values.test.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "icm-chart.fullname" . }}-mail
+  labels:
+    app: {{ include "icm-chart.fullname" . }}-mail
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "icm-chart.fullname" . }}-mail
+  template:
+    metadata:
+      labels:
+        app: {{ include "icm-chart.fullname" . }}-mail
+    spec:
+      {{- if .Values.nodeSelector}}
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | trim | nindent 8 }}
+      {{- end }}
+      containers:
+      - image: "{{ .Values.mail.image.repository }}"
+        name: "mail"
+        resources:
+          requests:
+            memory: 300Mi
+            cpu: 200m
+          limits:
+            memory: 300Mi
+            cpu: 200m
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/bash", "-c"]
+        args:
+        - |-
+          set -eo pipefail
+          mkdir -p {{ .Values.mail.environment.HELM_DIRECTORY }}/test-mails
+          ln -sf {{ .Values.mail.environment.HELM_DIRECTORY }}/test-mails /var/tmp
+          java -jar -Xms64M -Xmx128M -Djava.security.egd=file:/dev/./urandom /app.jar --spring.output.ansi.enabled=NEVER
+        env:
+        {{- range $key, $value := .Values.mail.environment }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        volumeMounts:
+        - name: testdata-volume
+          mountPath: /data
+        ports:
+        - containerPort: 2525
+        livenessProbe:
+          failureThreshold: 2
+          tcpSocket:
+            port: 2525
+          initialDelaySeconds: 60
+          periodSeconds: 60
+        readinessProbe:
+          failureThreshold: 2
+          tcpSocket:
+            port: 2525
+          initialDelaySeconds: 60
+          periodSeconds: 60
+      volumes:
+      - name: testdata-volume
+        {{- if eq .Values.testrunner.persistence.testdata.type "local" }}
+        persistentVolumeClaim:
+          claimName: "{{ .Release.Name }}-local-testdata-pvc"
+        {{- else if eq .Values.testrunner.persistence.testdata.type "existingClaim" }}
+        persistentVolumeClaim:
+          claimName: "{{ .Values.testrunner.persistence.testdata.existingClaim }}"
+        {{- else if eq .Values.testrunner.persistence.testdata.type "azurefiles" }}
+        azureFile:
+          secretName: {{ .Values.testrunner.persistence.testdata.azurefiles.secretName }}
+          shareName: {{ .Values.testrunner.persistence.testdata.azurefiles.shareName }}
+          readOnly: false
+        {{- end }}
+{{ end }}
