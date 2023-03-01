@@ -1,0 +1,90 @@
+suite: tests correctness of datadog section
+templates:
+  - templates/test-job.yaml
+tests:
+  - it: datadog is enabled by default
+    release:
+      name: icm
+    chart:
+      version: 0.8.15
+    values:
+      - ../values-iste_linux.tmpl
+    template: templates/test-job.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ENABLE_DATADOG
+            value: "true"
+
+  - it: datadog.options set
+    release:
+      name: icm
+    chart:
+      version: 0.8.15
+    values:
+      - ../values-iste_linux.tmpl
+    set:
+      testrunner.datadog.additionalOptions: "-Ddd.whatever.enabled=true"
+    template: templates/test-job.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ENABLE_DATADOG
+            value: "true"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ADDITIONAL_JVM_ARGUMENTS
+            value: "-Ddd.whatever.enabled=true"
+
+  - it: datadog.options set together with jvm.additionalOptions
+    release:
+      name: icm
+    chart:
+      version: 0.8.15
+    values:
+      - ../values-iste_linux.tmpl
+    set:
+      testrunner.jvm.additionalOptions: "-XX:+UseShenandoahGC"
+      testrunner.datadog.additionalOptions: "-Ddd.whatever.enabled=true"
+    template: templates/test-job.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ENABLE_DATADOG
+            value: "true"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ADDITIONAL_JVM_ARGUMENTS
+            value: "-XX:+UseShenandoahGC -Ddd.whatever.enabled=true"
+
+  - it: datadog.options set but not enabled
+    release:
+      name: icm
+    chart:
+      version: 0.8.15
+    values:
+      - ../values-iste_linux.tmpl
+    set:
+      testrunner.datadog.profilingEnabled: true
+    template: templates/test-job.yaml
+    asserts:
+       - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ENABLE_DATADOG
+            value: true
+       - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: FEATURED_JVM_ARGUMENTS
+            value: "-Ddd.profiling.enabled=false -Ddd.trace.analytics.enabled=true -Ddd.jdbc.analytics.enabled=true"
+       - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ADDITIONAL_JVM_ARGUMENTS
+            value: ""

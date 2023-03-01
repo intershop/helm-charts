@@ -112,6 +112,21 @@ tests:
           path: spec.template.metadata.labels.label1
           value: one
 
+  - it: terminationGracePeriodSeconds is changed
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      terminationGracePeriodSeconds: 5
+    template: templates/as-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.terminationGracePeriodSeconds
+          value: 5
+
   - it: debug is enabled
     release:
       name: icm-as

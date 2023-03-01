@@ -117,6 +117,13 @@ tests:
           content:
             mountPath: /intershop/jgroups-share
             name: jgroups-volume
+      #spec.template.spec.containers[0].lifecycle
+      - equal:
+          path: spec.template.spec.containers[0].lifecycle.preStop.httpGet.port
+          value: http
+      - equal:
+          path: spec.template.spec.containers[0].lifecycle.preStop.httpGet.path
+          value: /status/action/shutdown
       #spec.template.spec.<misc>
       - equal:
           path: spec.template.spec.dnsPolicy
@@ -137,6 +144,10 @@ tests:
       - equal:
           path: spec.template.spec.securityContext.runAsUser
           value: 150
+      #spec.template.spec.terminationGracePeriodSeconds
+      - equal:
+          path: spec.template.spec.terminationGracePeriodSeconds
+          value: 30
       #spec.template.spec.volumes
       - contains:
           path: spec.template.spec.volumes

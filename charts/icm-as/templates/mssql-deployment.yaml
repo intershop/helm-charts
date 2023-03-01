@@ -1,0 +1,108 @@
+{{- if .Values.mssql.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "icm-as.fullname" . }}-mssql
+  labels:
+    app: {{ include "icm-as.fullname" . }}-mssql
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "icm-as.fullname" . }}-mssql
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "icm-as.fullname" . }}-mssql
+        release: {{ .Release.Name }}
+    spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.imagePullSecrets }}
+        - name: {{ . | quote }}
+        {{- end }}
+      {{- end }}
+      containers:
+        - name: "{{ include "icm-as.fullname" . }}-mssql"
+          image: "{{ .Values.mssql.image.repository }}"
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: ACCEPT_EULA
+            value: "{{ .Values.mssql.acceptEula }}"
+          - name: SA_PASSWORD
+            value: "{{ .Values.mssql.saPassword }}"
+          - name: MSSQL_AGENT_ENABLED
+            value: "true"
+          - name: MSSQL_PID
+            value: "Developer"
+          - name: RECREATEDB
+            value: "true"
+          - name: RECREATEUSER
+            value: "true"
+          - name: ICM_DB_NAME
+            value: "{{ .Values.mssql.databaseName }}"
+          - name: ICM_DB_USER
+            value: "{{ .Values.mssql.user }}"
+          - name: ICM_DB_PASSWORD
+            value: "{{ .Values.mssql.password }}"
+          volumeMounts:
+          - name: data-volume
+            mountPath: /var/opt/mssql/data
+          - name: backup-volume
+            mountPath: /var/opt/mssql/backup
+          ports:
+            - name: mssql
+              containerPort: 1433
+              protocol: TCP
+            - name: admin
+              containerPort: 1434
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 2Gi
+            requests:
+              cpu: 1000m
+              memory: 2Gi
+      volumes:
+      - name: data-volume
+        {{- if eq .Values.mssql.persistence.data.type "local" }}
+        persistentVolumeClaim:
+          claimName: "{{ template "icm-as.fullname" . }}-local-mssql-db-data-pvc"
+        {{- else if eq .Values.mssql.persistence.data.type "existingClaim" }}
+        persistentVolumeClaim:
+          claimName: "{{ .Values.mssql.persistence.data.existingClaim }}"
+        {{- else if eq .Values.mssql.persistence.data.type "azurefiles" }}
+        azureFile:
+          secretName: {{ .Values.mssql.persistence.data.azurefiles.secretName }}
+          shareName: {{ .Values.mssql.persistence.data.azurefiles.shareName }}
+          readOnly: false
+        {{- else if eq .Values.mssql.persistence.data.type "nfs" }}
+        persistentVolumeClaim:
+          claimName: "{{ template "icm-as.fullname" . }}-nfs-mssql-db-data-pvc"
+        {{- else if eq .Values.mssql.persistence.data.type "cluster" }}
+        persistentVolumeClaim:
+          claimName: "{{ template "icm-as.fullname" . }}-cluster-mssql-db-data-pvc"
+        {{- end }}
+      - name: backup-volume
+        {{- if eq .Values.mssql.persistence.backup.type "local" }}
+        persistentVolumeClaim:
+          claimName: "{{ template "icm-as.fullname" . }}-local-mssql-db-backup-pvc"
+        {{- else if eq .Values.mssql.persistence.backup.type "existingClaim" }}
+        persistentVolumeClaim:
+          claimName: "{{ .Values.mssql.persistence.backup.existingClaim }}"
+        {{- else if eq .Values.mssql.persistence.backup.type "azurefiles" }}
+        azureFile:
+          secretName: {{ .Values.mssql.persistence.backup.azurefiles.secretName }}
+          shareName: {{ .Values.mssql.persistence.backup.azurefiles.shareName }}
+          readOnly: false
+        {{- else if eq .Values.mssql.persistence.backup.type "nfs" }}
+        persistentVolumeClaim:
+          claimName: "{{ template "icm-as.fullname" . }}-nfs-mssql-db-backup-pvc"
+        {{- else if eq .Values.mssql.persistence.backup.type "cluster" }}
+        persistentVolumeClaim:
+          claimName: "{{ template "icm-as.fullname" . }}-cluster-mssql-db-backup-pvc"
+        {{- end }}
+{{- end }}

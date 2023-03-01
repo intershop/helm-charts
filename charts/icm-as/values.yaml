@@ -51,11 +51,6 @@ customizations: {}
 #    repository: custom-adapter-repo:47.11.0
 #    pullPolicy: IfNotPresent
 
-
-## Optionally specify a custom command that controls which entrypoint is called inside the container during startup
-## (see Deployment/spec.template.spec.container.command)
-# customCommand: ["/bin/sh", "-c", "/custom-dir/custom-script.sh"]
-
 ## Control options regarding the java-vm running the ICM-AS
 jvm:
   debug:
@@ -118,13 +113,17 @@ resources:
     cpu: 1000m
     memory: 3Gi
 
+# configure an external database for ICM
+# in case value "mssql.enabled" is true - this section will be ignored
+database:
+  # type: "mssql" or "oracle"
+  type: "mssql"
+  # or for oracle "jdbc:oracle:thin:@<ipaddress or hostname>:1521:intershop"
+  jdbcURL: "jdbc:sqlserver://<ipaddress or hostname>:1433;databaseName=intershop"
+  jdbcUser: "intershop"
+  jdbcPassword: "intershop"
+
 environment:
-  INTERSHOP_DATABASETYPE: "mssql"
-  INTERSHOP_JDBC_URL: "jdbc:sqlserver://<ipaddress or hostname>:1433;databaseName=intershop"
-  # INTERSHOP_DATABASETYPE: "oracle"
-  # INTERSHOP_JDBC_URL: "jdbc:oracle:thin:@<ipaddress or hostname>:1521:intershop"
-  INTERSHOP_JDBC_USER: "intershop"
-  INTERSHOP_JDBC_PASSWORD: "intershop"
   CARTRIDGE_LIST: "ft_icm_as"
 
   # Staging
@@ -136,7 +135,7 @@ environment:
 
 # ICM license Configuration
 license:
-# type: configMap | csi
+# type: configMap | csi | secret
   type: configMap
   configMap:
     content: |-
@@ -146,6 +145,8 @@ license:
       secretProviderClass: "azure-license"
     nodePublishSecretRef:
       name: secrets-store-creds
+  secret:
+    name: <secret name>
 
 persistence:
   sites:
@@ -178,11 +179,14 @@ persistence:
       path: <local folder>
   jgroups:
     size: 1Gi
-    # type emptyDir | existingClaim | cluster | local
+    # type emptyDir | existingClaim | cluster | local | azurefiles
     type: emptyDir
     existingClaim: <claim name>
     cluster:
       storageClass: azurefile
+    azurefiles:
+      shareName: icm-as-jgroups
+      secretName: icm-as-jgroups-secret
   customdata:
     enabled: false
     existingClaim: icm-as-cluster-customData-pvc
@@ -202,3 +206,79 @@ probes:
 #    failureThreshold: 3
 #    initialDelaySeconds: 0
 #    periodSeconds: 5
+
+# Duration in seconds pod needs to terminate gracefully, value is optional, below is the default
+# terminationGracePeriodSeconds: 30
+
+# Enable Microsoft SQL Server for development and testing purposes.
+# ICM will use jdbc:sqlserver://<release>-mssql:1433;database=<msslq.name>;
+# see values of persistence.mssql-data and persistence.mssql-backup
+mssql:
+  enabled: false
+  image:
+    repository: "intershophub/mssql-intershop:2019-latest"
+  # needs to be explicitally switched at deployment to "Y"
+  acceptEula: "N"
+  saPassword: "1nstershop5A"
+  databaseName: "icmdb"
+  user: "icmdbuser"
+  password: "icmdbpassword"
+  persistence:
+    data:
+      size: 5Gi
+      # type cluster | nfs | azurefiles | existingClaim | local
+      type: local
+      existingClaim: <claim name>
+      cluster:
+        storageClass:
+          create: false
+          # if create == false an exiting class could be set
+          # if empty value is set the default storage class is used
+          existingClass: ""
+          # skuName: Standard_LRS
+          # additionalMountOptions:
+          # - uid=150
+          # - gid=150
+          # - dir_mode=0777
+          # - file_mode=0777
+          # - mfsymlinks
+          # - cache=strict
+          # - actimeo=30
+      azurefiles:
+        shareName: <icm-as-mssql-data-share>
+        secretName: <icm-as-mssql-secret>
+      local:
+        path: <local mssql data folder>
+    backup:
+      size: 5Gi
+      # type cluster | nfs | azurefiles | existingClaim | local
+      type: local
+      existingClaim: <claim name>
+      cluster:
+        storageClass:
+          create: false
+          # if create == false an exiting class could be set
+          # if empty value is set the default storage class is used
+          existingClass: ""
+          # skuName: Standard_LRS
+          # additionalMountOptions:
+          # - uid=150
+          # - gid=150
+          # - dir_mode=0777
+          # - file_mode=0777
+          # - mfsymlinks
+          # - cache=strict
+          # - actimeo=30
+      azurefiles:
+        shareName: <icm-as-mssql-backup-share>
+        secretName: <icm-as-mssql-secret>
+      local:
+        path: <local mssql backup folder>
+
+# allows it to copy the sites dir which is needed for our test execution
+copySitesDir:
+  enabled: false
+  # fromDir: sites folder
+  # resultDir: result folder where a sites.txt is generated to
+  # chmodUser: user
+  # chmodGroup: group
