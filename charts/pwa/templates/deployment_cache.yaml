@@ -42,10 +42,14 @@ spec:
             value: "http://{{ include "pwa-main.fullname" . }}:{{ .Values.service.port }}"
           - name: ICM_BASE_URL
             value: "{{ .Values.upstream.icmBaseURL }}"
+        {{- if .Values.cache.multiChannel }}
           - name: MULTI_CHANNEL_SOURCE
             value: "/config/multi-channel.yaml"
+        {{- end }}
+        {{- if .Values.cache.cacheIgnoreParams }}
           - name: CACHING_IGNORE_PARAMS_SOURCE
             value: "/config/caching-ignore-params.yaml"
+        {{- end }}
         {{- if .Values.cache.metrics.enabled }}
           - name: PROMETHEUS
             value: "true"

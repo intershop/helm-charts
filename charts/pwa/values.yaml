@@ -85,41 +85,20 @@ cache:
   ##     params:
   ##     - utm_source
   ##     - utm_campaign
-  ##     - utm_medium
-  ##     - utm_content
-  ##     - utm_term
-  ##     - utm_adgroup
-  ##     - utm_id
-  ##     - gclid
-  ##     - gclsrc
-  ##     - dclid
-  ##     - fbclid
-  ##     - gbraid
-  ##     - wbraid
-  ##     - _gac
-  ##     - _gcl
-  ##     - epik
-  ##     - code
-  ##     - state
-  ##     - session_state
+  #### empty cacheIgnoreParams example
+  ##   cacheIgnoreParams: |-
+  ##     params: []
   cacheIgnoreParams: ""
 
   ####
   ## @param Multi channel/site configuration object
   ##  multiChannel: |-
   ##    .+:
-  ##      - baseHref: /en
-  ##        channel: default
-  ##        lang: en_US
-  ##      - baseHref: /de
-  ##        channel: default
-  ##        lang: de_DE
-  ##      - baseHref: /fr
-  ##        channel: default
-  ##        lang: fr_FR
   ##      - baseHref: /b2b
   ##        channel: default
-  ##        theme: blue
+  ##      - baseHref: /b2c
+  ##        channel: default
+  ##        theme: b2c
   multiChannel: ""
 
   ####

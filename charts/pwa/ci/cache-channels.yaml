@@ -32,9 +32,9 @@ cache:
       - baseHref: /fr
         channel: default
         lang: fr_FR
-      - baseHref: /b2b
+      - baseHref: /b2c
         channel: default
-        theme: blue
+        theme: b2c
 
   image:
     repository: intershophub/intershop-pwa-nginx
