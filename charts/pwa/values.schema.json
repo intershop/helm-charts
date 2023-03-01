@@ -21,22 +21,13 @@
                 "icmBaseURL"
             ],
             "properties": {
-                "icm": {
-                    "$id": "#/properties/upstream/properties/icmBaseURL",
-                    "type": "string",
-                    "title": "The base URL of ICM",
-                    "description": "Deprecated use property icmBaseURL instead",
-                    "examples": [
-                        "https://system.cloud.intershop.com:9443/INTERSHOP/web/WFS/SLDSystem"
-                    ]
-                },
                 "icmBaseURL": {
                     "$id": "#/properties/upstream/properties/icmBaseURL",
                     "type": "string",
                     "title": "The base URL of ICM",
                     "description": "The base URL of your Intershop Commerce Management installation",
                     "examples": [
-                        "https://system.cloud.intershop.com:9443/INTERSHOP/web/WFS/SLDSystem"
+                        "https://pwa-ish-demo.test.intershop.com"
                     ]
                 },
                 "cdnPrefixURL": {

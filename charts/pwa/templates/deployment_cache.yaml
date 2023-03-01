@@ -41,7 +41,7 @@ spec:
           - name: UPSTREAM_PWA
             value: "http://{{ include "pwa-main.fullname" . }}:{{ .Values.service.port }}"
           - name: ICM_BASE_URL
-            value: "{{ coalesce .Values.upstream.icm .Values.upstream.icmBaseURL }}"
+            value: "{{ .Values.upstream.icmBaseURL }}"
           - name: MULTI_CHANNEL_SOURCE
             value: "/config/multi-channel.yaml"
           - name: CACHING_IGNORE_PARAMS_SOURCE
