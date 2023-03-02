@@ -14,6 +14,8 @@ $ helm install my-release intershop/pwa-main
 
 or via [Flux](https://fluxcd.io) configuration:
 
+### Using Flux v1:
+
 ```yaml
 apiVersion: helm.fluxcd.io/v1
 kind: HelmRelease
@@ -35,6 +37,48 @@ spec:
   values:
 ```
 
+### Using Flux v2: 
+
+Here you create a HelmRepository resource in addition to the HelmRelease [(helm-operator-migration Guide from Flux v1 to Flux v2)](https://fluxcd.io/flux/migration/helm-operator-migration/)
+
+```yaml
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: ish-helm-charts
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: https://intershop.github.io/helm-charts
+
+---  
+# PWA HelmRelease
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: ${namespace}
+  namespace: ${namespace}
+spec:
+  chart:
+    spec:
+      # pwa helm chart, version from https://github.com/intershop/helm-charts
+      chart: pwa-main
+      version: 0.6.0
+      # Source reference to the HelmChart Repo
+      sourceRef:
+        kind: HelmRepository
+        name: ish-helm-charts
+        namespace: flux-system
+  # in case of multiple pwa instances will be deployed into the given environment namespace, a postfix need to be added the
+  # release name (i.e. pwa-$ENVIRONMENT-01 or pwa-$ENVIRONMENT-edit)
+  releaseName: ${namespace}
+  targetNamespace: ${namespace}
+  interval: 1m0s
+  timeout: 5m0s
+   # Helm Values - to be adapted by the dev team
+  values:
+```
 ## Upgrading an existing Release to a new Major Version
 
 A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
