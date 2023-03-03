@@ -2,14 +2,15 @@
 
 Ready to launch e.g Intershop PWA on a Kubernetes cluster using Helm.
 
-## TL;DR
-Via command line:
+### Via command line
+
 ```bash
 $ helm repo add intershop https://intershop.github.io/helm-charts
 $ helm repo update
 $ helm install my-release intershop/<chart>
 ```
-or via [Flux](https://fluxcd.io) configuration:
+### Via [Flux](https://fluxcd.io) configuration
+
 ```yaml
 apiVersion: helm.fluxcd.io/v1
 kind: HelmRelease
