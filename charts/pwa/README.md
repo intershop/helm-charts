@@ -1,10 +1,10 @@
 # Intershop PWA Helm Chart
 
-Installs the [Intershop PWA system](https://github.com/intershop/intershop-pwa) in a kubernetes cluster environment.
+Installs the [Intershop PWA](https://github.com/intershop/intershop-pwa) in a Kubernetes cluster environment.
 
-## TL;DR
+## Installation
 
-Via command line:
+### Via Command Line
 
 ```bash
 $ helm repo add intershop https://intershop.github.io/helm-charts
@@ -12,9 +12,7 @@ $ helm repo update
 $ helm install my-release intershop/pwa-main
 ```
 
-or via [Flux](https://fluxcd.io) configuration:
-
-### Using Flux v1:
+### Using [Flux](https://fluxcd.io) v1
 
 ```yaml
 apiVersion: helm.fluxcd.io/v1
@@ -37,7 +35,7 @@ spec:
   values:
 ```
 
-### Using Flux v2: 
+### Using [Flux](https://fluxcd.io) v2
 
 Here you create a HelmRepository resource in addition to the HelmRelease [(helm-operator-migration Guide from Flux v1 to Flux v2)](https://fluxcd.io/flux/migration/helm-operator-migration/)
 
@@ -52,7 +50,7 @@ spec:
   interval: 1m0s
   url: https://intershop.github.io/helm-charts
 
----  
+---
 # PWA HelmRelease
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
@@ -70,7 +68,7 @@ spec:
         kind: HelmRepository
         name: ish-helm-charts
         namespace: flux-system
-  # in case of multiple pwa instances will be deployed into the given environment namespace, a postfix need to be added the
+  # in case multiple pwa instances will be deployed into the given environment namespace, a postfix has to be added to the
   # release name (i.e. pwa-$ENVIRONMENT-01 or pwa-$ENVIRONMENT-edit)
   releaseName: ${namespace}
   targetNamespace: ${namespace}
@@ -79,25 +77,41 @@ spec:
    # Helm Values - to be adapted by the dev team
   values:
 ```
-## Upgrading an existing Release to a new Major Version
 
-A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an
-incompatible breaking change needing manual actions. These actions will be descibed as part of the release documentation available on GitHub.
+## Release Versions
+
+The following table provides an overview of the different PWA Helm Chart versions and the minimum required PWA version to use it with.
+In addition, the version changes and necessary migration information is provided.
+
+| Chart | PWA    | Changes                                                                                                                                                                                           | Migration Information                                                                                                                                                                                                                        |
+| ----- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0.7.0 | 1.0.0  | <ul><li>Re-enabled support for `multi-channel.yaml` and `caching-ignore-params.yaml` source code fallbacks</li><li>Added additional Ingress for domain whitelisting</li><li>Added labels on deployment and pod levels</li> | Removed deprecated configuration options:<ul><li>`upstream.icm`</li><li>`cache.enabled` - was not optional</li><li>`cache.channels`</li></ul>See [Migration to 0.7.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.7.0.md) |
+| 0.6.0 | 1.0.0  | Support for Prometheus metrics                                                                                                                                                                        |                                                                                                                                                                                                                                              |
+| 0.5.0 | 1.0.0  | Added prefetch job that can heat up caches                                                                                                                                                          |                                                                                                                                                                                                                                              |
+| 0.4.0 | 1.0.0  | Support for PWA Hybrid Mode deployment (with ICM 11)                                                                                                                                                  | Requires PWA 3.2.0 for Hybrid Mode support                                                                                                                                                                                                   |
+| 0.3.0 | 1.0.0  | Use new Ingress controller definition                                                                                                                                                             | [Migration to 0.3.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.3.0.md)                                                                                                                                 |
+| 0.2.4 | 0.25.0 | Support for `multiChannel`, `cacheIgnoreParams` and `extraEnvVars` for nginx/cache deployment                                                                                                     | Missing support for `multi-channel.yaml` and `caching-ignore-params.yaml` source code fallbacks                                                                                                                                              |
+| 0.2.3 | 0.25.0 | Legacy Helm Chart 0.2.3 as initial version                                                                                                                                                        |                                                                                                                                                                                                                                              |
+
+### Upgrading an Existing Release to a New Major Version
+
+A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an incompatible breaking change that requires manual actions.
+These actions will be described as part of the release documentation available on GitHub.
 
 ## Parameters
 
-### NGinx
+### NGINX
 
 | Name                      | Description                                                | Example Value                                           |
 | ------------------------- | ---------------------------------------------------------- | ------------------------------------------------------- |
-| `cache.multiChannel`      | Multi channel/site configuration object                    | `.+:`<br>`channel: default`                             |
-| `cache.cacheIgnoreParams` | NGinx ignore query parameters during caching               | `params:`<br>`- utm_source`<br>`- utm_campaign`         |
+| `cache.multiChannel`      | Multi-channel/site configuration object                    | `.+:`<br>`channel: default`                             |
+| `cache.cacheIgnoreParams` | NGINX ignore query parameters during caching               | `params:`<br>`- utm_source`<br>`- utm_campaign`         |
 | `cache.extraEnvVars`      | Extra environment variables to be set                      | `extraEnvVars:`<br>`- name: FOO`<br> ` value: BAR`      |
 | `cache.prefetch`          | Specify settings for the prefetch job that heats up caches | `prefetch:`<br>`- host: example.com`<br> ` path: /home` |
 
-Both `cacheIgnoreParams` and `multiChannel` parameters take precedence over any `extraEnvVars` value containing `MULTI_CHANNEL` or `CACHING_IGNORE_PARAMS` variables
+Both `cacheIgnoreParams` and `multiChannel` parameters take precedence over any `extraEnvVars` value containing `MULTI_CHANNEL` or `CACHING_IGNORE_PARAMS` variables.
 
-### SSR
+### SSR (Server-Side Rendering)
 
 | Name                     | Description                              | Example Value |
 | ------------------------ | ---------------------------------------- | ------------- |
@@ -105,11 +119,11 @@ Both `cacheIgnoreParams` and `multiChannel` parameters take precedence over any 
 | `hybrid.backend.service` | ICM Web Adapter service name             | `icm-web`     |
 | `hybrid.backend.port`    | ICM Web Adapter service port             | `443`         |
 
-## Hybrid mode
+## Hybrid Mode
 
-Installs the [Intershop PWA and ICM system](https://github.com/intershop/intershop-pwa) all together in a kubernetes cluster environment (same namespace). For more information about the hybrid mode refer to the offical [hybrid approach concept](https://github.com/intershop/intershop-pwa/blob/develop/docs/concepts/hybrid-approach.md).
+Installs the [Intershop PWA and ICM system](https://github.com/intershop/intershop-pwa) all together in a Kubernetes cluster environment (same namespace). For more information about the hybrid mode, refer to the official [hybrid approach concept](https://github.com/intershop/intershop-pwa/blob/develop/docs/concepts/hybrid-approach.md).
 
-To configure the PWA Helm chart for that mode you must first set `hybrid.enabled` to `true`. This will activate conditional dependencies to one umbrella chart `icm` that itself depends on `icm-as` and `icm-web`. Both of which require individual configuration. Please refer to their documentation for details on that. In the end you must add each configuration values object to the `values.yaml` file that reflects your deployment.
+To configure the PWA Helm chart for this mode, you must first set `hybrid.enabled` to `true`. This will activate conditional dependencies to an umbrella chart `icm`, which depends on `icm-as` and `icm-web`. Both require individual configuration. Please refer to their documentation for details. Finally, you must add each configuration values object to the `values.yaml` file that reflects your deployment.
 
 Example:
 
@@ -132,9 +146,9 @@ icm-web:
       repository: intershophub/icm-webadapter
 ```
 
-## NGinx cache prefetch
+## NGINX Cache Prefetch
 
-The prefetch job is implemented as `wget` in recursive spider mode with level limit 0. This means it is following all links it found in the initial requested page. The link to that first page will be created by the given helm chart values. Since one PWA deployment can host several sites you can provide prefetch config values as array items.
+The prefetch job is implemented as `wget` in recursive spider mode with level limit `0`. This means that it follows all the links it finds in the first requested page. The link to the first page is created by the given Helm chart values. Since one PWA deployment can host multiple sites, you can provide prefetch config values as array items.
 
 Example:
 
@@ -146,9 +160,9 @@ prefetch:
     cron: "0 23 * * *"
 ```
 
-The above example configures the prefetch to happen everyday at 11:00 pm. It will request the initial page at https://customer-int.pwa.intershop.de/b2c/home
+The example above configures the prefetch to happen every day at 11:00 pm. It will request the initial page at https://customer-int.pwa.intershop.de/b2c/home.
 
-The only mandatory property is `host` to denote the full qualified name for your site. That host has to be contained in your ingress configuration. All other properties have reasonable defaults.
+The only mandatory property is `host` – used to specify the fully qualified name for your site. This host must be contained in your Ingress configuration. All other properties have reasonable defaults.
 
 | Property | Default     |
 | -------- | ----------- |
@@ -163,11 +177,40 @@ The value for `stop` determines the duration in seconds after the job is forcefu
 
 ## Prometheus Metrics
 
-To expose metrics of the SSR and the nginx containers both support the `metrics` configuration via helm chart.
+To expose the metrics of the SSR and the nginx containers, both support the `metrics` configuration via Helm chart.
 
 ```yaml
 metrics:
   enabled: true
 ```
 
-When enabled the SSR will expose the metrics in the deployment cluster on port 9113 while the nginx exposes its metrics on port 9114 each at the `/metrics` endpoint.
+When enabled, the SSR container will expose the metrics in the deployment cluster on port 9113, while the nginx container exposes its metrics on port 9114 at the `/metrics` endpoint.
+
+---
+
+## Development
+
+Build and install the current source code version of the Helm chart from the local development folder `helm-charts/charts/pwa` with the given values file `deployment.values.yaml`:
+
+```bash
+$ helm dependency build helm-charts/charts/pwa
+$ helm install dev-release -f development.values.yaml helm-charts/charts/pwa
+```
+
+To simply render the result of using the current Helm chart, run:
+
+```bash
+$ helm template helm-charts/charts/pwa
+```
+
+To see the result for a specific given values file, run:
+
+```bash
+$ helm template -f development.values.yaml helm-charts/charts/pwa
+```
+
+To see the result for a given values file, but only for one specific template (e.g. `deployment.yaml`), run:
+
+```bash
+$ helm template -f development.values.yaml -s templates/deployment.yaml helm-charts/charts/pwa
+```
