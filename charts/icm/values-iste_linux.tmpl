@@ -32,7 +32,7 @@ icm-as:
     SERVER_DIRECTORY_GROUP: "${SERVER_DIRECTORY_GROUP}"
     SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
 
-    INTERSHOP_SMTPSERVER: "${HELM_JOB_NAME}-mail" # adapt when service for mail is created
+    INTERSHOP_SMTPSERVER: "${HELM_JOB_NAME}-icm-mail" # adapt when service for mail is created
     INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}-icm-web-wa:8080"
     INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}-icm-web-wa:8443"
 
@@ -109,7 +109,7 @@ testrunner:
 
     RESULT_DIRECTORY: "${RESULT_DIRECTORY}"
 
-    MAIL_SERVER: "${HELM_JOB_NAME}-mail"
+    MAIL_SERVER: "${HELM_JOB_NAME}-icm-mail"
 
     TESTSUITE: "${TESTSUITE}"
     HOST: "${HELM_JOB_NAME}-icm-web-wa"
