@@ -24,6 +24,25 @@ entries:
       requestedCpuQuotaInMinutes: "3000"
       requestedMemoryQuota: 5700Mi
     apiVersion: v1
+    appVersion: 11.0.9
+    created: "2023-03-09T14:30:41.807670646Z"
+    dependencies:
+    - name: icm-as
+      repository: file://../icm-as
+      version: 0.7.0
+    - name: icm-web
+      repository: file://../icm-web
+      version: 1.0.0-alpha
+    description: Intershop Commerce Management - ICM
+    digest: cb05c478e14ecbedcab498f5b4d8ed17198e7ab542ed090b9efe77adb7794e9f
+    name: icm
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-1.0.0-alpha/icm-1.0.0-alpha.tgz
+    version: 1.0.0-alpha
+  - annotations:
+      requestedCpuQuotaInMinutes: "3000"
+      requestedMemoryQuota: 5700Mi
+    apiVersion: v1
     appVersion: 11.0.12-dev1
     created: "2023-03-09T08:16:17.413475345Z"
     dependencies:
@@ -1962,6 +1981,15 @@ entries:
     - https://github.com/intershop/helm-charts/releases/download/icm-web-1.0.0-alpha/icm-web-1.0.0-alpha.tgz
     version: 1.0.0-alpha
   - apiVersion: v1
+    appVersion: 11.0.0
+    created: "2023-03-09T14:30:42.326174204Z"
+    description: Intershop Commerce Management - Web Adapter and Web Adapter Agent
+    digest: 82938e92c020d80ceeb24cb9f7c492703b9f5132417f726129b8ede684162da6
+    name: icm-web
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-web-1.0.0-alpha/icm-web-1.0.0-alpha.tgz
+    version: 1.0.0-alpha
+  - apiVersion: v1
     appVersion: 11.0.12-dev1
     created: "2023-03-09T08:16:17.838883036Z"
     description: Intershop Commerce Management - Web Adapter and Web Adapter Agent
@@ -2572,4 +2600,4 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.2.3/pwa-main-0.2.3.tgz
     version: 0.2.3
-generated: "2023-03-09T14:14:44.863123383Z"
+generated: "2023-03-09T14:30:42.327295107Z"
