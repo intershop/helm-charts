@@ -1,6 +1,6 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "icm-web.fullname" . -}}
-{{- $ingressPath := .Values.ingress.path -}}
+{{- $svcPort := .Values.service.httpPort -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -15,22 +15,32 @@ metadata:
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
-  {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  {{- if .Values.ingress.className }}
   ingressClassName: {{ .Values.ingress.className }}
   {{- end }}
+  {{- if .Values.ingress.tls }}
   tls:
+    {{- range .Values.ingress.tls }}
     - hosts:
-        - {{ .Values.ingress.hostName }}
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
       secretName: {{ .Values.ingress.secretName | default (printf "%s-wa-cert" (include "icm-web.fullname" .)) }}
+    {{- end }}
+  {{- end }}
   rules:
-    - host: {{ .Values.ingress.hostName }}
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
       http:
         paths:
-          - path: /
-            pathType: Prefix
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
             backend:
               service:
                 name: {{ include "icm-web.fullname" . }}-wa
                 port:
-                  name: http
+                  number: {{ $svcPort }}
+          {{- end }}
+    {{- end }}
 {{- end }}
