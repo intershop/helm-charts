@@ -175,6 +175,69 @@ The value for `cron` determines the schedule of the prefetch job. You can search
 
 The value for `stop` determines the duration in seconds after the job is forcefully stopped. Forcefully stopping is still considered to be a successful run for container/job.
 
+## Split Ingress
+
+Sometimes customers only want to go live with a subset of their domains, but want to keep the rest hidden behind IP whitelisting. Therefore, a second Ingress object was implemented to address this use case.
+`ingresssplit` is disabled by default. To implement it in your project, follow the example below:
+
+```yaml
+# This Ingress has IP whitelisting, so it is hidden from the world, except for IPs xxx.xxx.xxx.xxx and yyy.yyy.yyy.yyy
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    kubernetes.io/tls-acme: "false"
+    # xxx.xxx.xxx.xxx and yyy.yyy.yyy.yyy are valid IP-Addresses to be whitelisted
+    configuration-snippet: |-
+      satisfy any;
+      allow xxx.xxx.xxx.xxx;
+      allow yyy.yyy.yyy.yyy;
+      deny all;
+  hosts:
+  # in case multiple PWA instances will be deployed into the given environment namespace, a postfix
+  # has to be added to the hostname: i.e. ${pwa-hostname}-edit
+  - host: ${pwa_hostname}.pwa.intershop.de
+    paths:
+    - path: /
+      pathType: ImplementationSpecific
+  tls:
+  - secretName: tls-star-pwa-intershop-de
+# This is the 2nd ingress that is "live" and visible from everywhere
+ingresssplit:
+  enabled: true
+  className: nginx
+  annotations:
+    kubernetes.io/tls-acme: "false"
+    nginx.ingress.kubernetes.io/
+  hosts:
+  # in case multiple PWA instances will be deployed into the given environment namespace, a postfix
+  # has to be added to the hostname: i.e. ${pwa-hostname}-split-edit
+  - host: ${pwa_hostname}-split.pwa.intershop.de
+    paths:
+    - path: /
+      pathType: ImplementationSpecific
+  tls:
+  - secretName: tls-star-pwa-intershop-de
+```
+Please pay attention to which API version of networking.k8s.io you are using. Check [this document](/charts/pwa/docs/migrate-to-0.3.0.md) for differences between the implementations.
+
+## Pod Labels
+
+To introduce specific labels for the Pods needed for monitoring, change your values file or HelmRelease to the following:
+```yaml
+### @param podLabels labels for SSR pods and deployment
+### ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+podLabels:
+  application-type: pwa
+  customer-id: cstmr #Customer Initials
+### @param podLabels labels for NGINX/Cache pods and deployment
+### ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+cache:
+  podLabels:
+    application-type: pwa
+    customer-id: cstmr #Customer Initials
+```
+
 ## Prometheus Metrics
 
 To expose the metrics of the SSR and the nginx containers, both support the `metrics` configuration via Helm chart.
