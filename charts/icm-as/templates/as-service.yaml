@@ -7,9 +7,12 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 spec:
   ports:
-  - name: "7743"
+  - name: svc
     port: 7743
-    targetPort: 7743
+    targetPort: svc
+  - name: mgnt
+    port: 7744
+    targetPort: mgnt
   selector:
     app: {{ include "icm-as.fullname" . }}
 status:
