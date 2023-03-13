@@ -23,7 +23,7 @@ service:
   port: 4200
 
 ##
-## @param hybrid Set to enabled PWA hybrid mode. This means pages are produced by PWA or ICM.
+## @param hybrid Set to enabled PWA Hybrid Approach. This means pages are produced by PWA or ICM.
 ## You must specify the icm-web chart's wa-service reference. Communication cannot be routed through
 ## ICM ingress controller.
 ##
