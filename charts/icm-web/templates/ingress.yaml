@@ -37,7 +37,7 @@ spec:
             pathType: {{ .pathType }}
             backend:
               service:
-                name: {{ include "$.icm-web.fullname" . }}-wa
+                name: {{ $fullName }}-wa
                 port:
                   name: http
           {{- end }}
