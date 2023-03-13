@@ -2,7 +2,7 @@ icm-as:
 
   image:
   #  repository: intershophub/icm-as
-  #  tag: :11.0.9
+  #  tag: :11.0.12-dev1
   imagePullSecrets:
   - "dockerhub"
   replicaCount: 1
@@ -43,7 +43,7 @@ icm-web:
   webadapter:
     replicaCount: 1
     image:
-      repository: intershophub/icm-webadapter:2.4.1
+      repository: intershophub/icm-webadapter:2.4.5
       secret: dockerhub
   agent:
     # in some REST-based environment the webadapteragent isn't mandatory
