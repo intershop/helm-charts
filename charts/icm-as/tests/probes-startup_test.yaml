@@ -17,7 +17,7 @@ tests:
           value: /status/LivenessProbe
       - equal:
           path: spec.template.spec.containers[0].startupProbe.httpGet.port
-          value: svc
+          value: mgnt
       - equal:
           path: spec.template.spec.containers[0].startupProbe.failureThreshold
           value: 6
@@ -47,7 +47,7 @@ tests:
           value: /status/LivenessProbe
       - equal:
           path: spec.template.spec.containers[0].startupProbe.httpGet.port
-          value: svc
+          value: mgnt
       - equal:
           path: spec.template.spec.containers[0].startupProbe.failureThreshold
           value: 12
