@@ -200,7 +200,7 @@ spec:
           startupProbe:
             httpGet:
               path: /status/LivenessProbe
-              port: svc
+              port: mgnt
             # wait 60s then poll every 10s up to a total timeout of 120s
             failureThreshold: {{ .Values.probes.startup.failureThreshold | default 6 }}
             initialDelaySeconds: {{ .Values.probes.startup.initialDelaySeconds | default 60 }}
@@ -208,7 +208,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /status/LivenessProbe
-              port: svc
+              port: mgnt
             #after startup: poll every 10s up to a total timeout of 30s
             failureThreshold: {{ .Values.probes.liveness.failureThreshold | default 3 }}
             initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds | default 0 }}
@@ -216,7 +216,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /status/ReadinessProbe
-              port: svc
+              port: mgnt
             #wait 60s (startup min) then poll every 5s up to a total timeout of 15s
             failureThreshold: {{ .Values.probes.readiness.failureThreshold | default 3 }}
             initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds | default 60 }}
@@ -224,7 +224,7 @@ spec:
           lifecycle:
             preStop:
               httpGet:
-                port: svc
+                port: mgnt
                 path: /status/action/shutdown
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
