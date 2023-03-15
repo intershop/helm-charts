@@ -17,7 +17,7 @@ tests:
           value: /status/ReadinessProbe
       - equal:
           path: spec.template.spec.containers[0].readinessProbe.httpGet.port
-          value: svc
+          value: mgnt
       - equal:
           path: spec.template.spec.containers[0].readinessProbe.failureThreshold
           value: 3
@@ -47,7 +47,7 @@ tests:
           value: /status/ReadinessProbe
       - equal:
           path: spec.template.spec.containers[0].readinessProbe.httpGet.port
-          value: svc
+          value: mgnt
       - equal:
           path: spec.template.spec.containers[0].readinessProbe.failureThreshold
           value: 6
