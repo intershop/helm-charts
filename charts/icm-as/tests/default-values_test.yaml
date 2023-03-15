@@ -72,8 +72,14 @@ tests:
       - contains:
           path: spec.template.spec.containers[0].ports
           content:
-            name: http
+            name: svc
             containerPort: 7743
+            protocol: TCP
+      - contains:
+          path: spec.template.spec.containers[0].ports
+          content:
+            name: mgnt
+            containerPort: 7744
             protocol: TCP
       - contains:
           path: spec.template.spec.containers[0].ports
@@ -120,7 +126,7 @@ tests:
       #spec.template.spec.containers[0].lifecycle
       - equal:
           path: spec.template.spec.containers[0].lifecycle.preStop.httpGet.port
-          value: http
+          value: mgnt
       - equal:
           path: spec.template.spec.containers[0].lifecycle.preStop.httpGet.path
           value: /status/action/shutdown
@@ -226,9 +232,15 @@ tests:
       - contains:
           path: spec.ports
           content:
-            name: "7743"
+            name: svc
             port: 7743
-            targetPort: 7743
+            targetPort: svc
+      - contains:
+          path: spec.ports
+          content:
+            name: mgnt
+            port: 7744
+            targetPort: mgnt
       #spec.selector
       - equal:
           path: spec.selector.app

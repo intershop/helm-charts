@@ -10,7 +10,7 @@ nodeSelector: {}
 
 webadapter:
   image:
-    repository: intershophub/icm-webadapter:2.4.1
+    repository: intershophub/icm-webadapter:2.4.5
     pullPolicy: IfNotPresent
     command: |
       /intershop/bin/intershop.sh
@@ -172,6 +172,6 @@ podSecurityContext:
 
 appServerConnection:
   serviceName: icm-as
-  port: 7743
+  port: 7744
 
 environment: {}
