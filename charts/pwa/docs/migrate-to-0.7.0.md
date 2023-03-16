@@ -33,9 +33,50 @@ If actual features of the `cache` container should be disabled, there are severa
 
 Since the functionality to configure multiple channels for the use with one PWA deployment has been reworked in PWA version 0.25.0, the previous way to configure it via `channels:{}` configuration was no longer working and is now removed completely.
 
+Old multi channels configuration:
+
+```yaml
+cache:
+  channels:
+    PWA_1_SUBDOMAIN: b2b
+    PWA_1_CHANNEL: inSPIRED-inTRONICS_Business-Site
+    PWA_2_SUBDOMAIN: b2c
+    PWA_2_CHANNEL: inSPIRED-inTRONICS-Site
+```
+
 Therefore, for deployments that require multi-channel handling with an Intershop PWA version prior to 0.25.0 the Helm Chart version 0.7.0 cannot be used.
 
 Current Helm chart configurations should use the `multiChannel` object to configure multi-channel/multi-site deployments.
+
+> :warning: **NOTE:** Besides the multiple channel configuration for PWA versions prior to 0.25.0 the `cache.channels` configuration was miss used with more current PWA versions to set environment variables for the NGINX container.
+> To set the environment variables the PWA Helm Chart version 0.2.4 introduced the `cache.extraEnvVars` configuration.
+> This configuration is now with the PWA Helm Chart 0.7.0 the only option to set environment variables for the NGINX/cache container.
+
+Old:
+
+```yaml
+cache:
+  channels:
+    CACHE: "off"
+    DEBUG: "off"
+    OVERRIDE_IDENTITY_PROVIDERS: ...
+    MULTI_CHANNEL: ...
+```
+
+New:
+
+```yaml
+cache:
+  extraEnvVars:
+    - name: CACHE
+      value: "off"
+    - name: DEBUG
+      value: "off"
+    - name: OVERRIDE_IDENTITY_PROVIDERS
+      value: ...
+    - name: MULTI_CHANNEL
+      value: ...
+```
 
 ## Support for `multi-channel.yaml` and `caching-ignore-params.yaml` Source Code Fallbacks
 

@@ -23,7 +23,7 @@ service:
   port: 4200
 
 ##
-## @param hybrid Set to enabled PWA Hybrid Approach. This means pages are produced by PWA or ICM.
+## @param hybrid Set to enable PWA Hybrid Approach. This means pages are produced by PWA or ICM.
 ## You must specify the icm-web chart's wa-service reference. Communication cannot be routed through
 ## ICM ingress controller.
 ##
@@ -51,8 +51,17 @@ podLabels: {}
 ## E.g:
 ## environment:
 ##   - name: FOO
-##     value: BAR
-##
+##     value: "BAR"
+##   - name: FEATURES
+##     value: |
+##       - punchout
+##       - quickorder
+##   - name: IDENTITY_PROVIDERS
+##     value: |
+##       {
+##         "Punchout": {"type": "PUNCHOUT"}
+##       }
+
 environment: []
 ## Prometheus Exporter / Metrics
 ##
@@ -84,18 +93,18 @@ readinessProbe:
 cache:
   ####
   ## @param NGinx ignore query parameters during caching
-  ##   cacheIgnoreParams: |-
+  ##   cacheIgnoreParams: |
   ##     params:
   ##     - utm_source
   ##     - utm_campaign
   #### empty cacheIgnoreParams example
-  ##   cacheIgnoreParams: |-
+  ##   cacheIgnoreParams: |
   ##     params: []
   cacheIgnoreParams: ""
 
   ####
   ## @param Multi channel/site configuration object
-  ##  multiChannel: |-
+  ##  multiChannel: |
   ##    .+:
   ##      - baseHref: /b2b
   ##        channel: default
@@ -108,8 +117,8 @@ cache:
   ## @param extraEnvVars Extra environment variables to be set on NGINX containers
   ## E.g:
   ##  extraEnvVars:
-  ##    - name: "MULTI_CHANNEL"
-  ##      value: |-
+  ##    - name: MULTI_CHANNEL
+  ##      value: |
   ##        .+:
   ##          - baseHref: /en
   ##            channel: default
@@ -117,7 +126,7 @@ cache:
   ##          - baseHref: /de
   ##            channel: default
   ##            lang: de_DE
-  ##    - name: "FOO"
+  ##    - name: FOO
   ##      value: "BAR"
   extraEnvVars: []
 
@@ -175,8 +184,6 @@ ingress:
   enabled: true
   className: nginx
   annotations: {}
-    # kubernetes.io/tls-acme: "true"
-    # kubernetes.io/ingress.class: nginx
   hosts:
     - host: pwa.example.local
       paths:
@@ -191,8 +198,6 @@ ingresssplit:
   enabled: false
   className: nginx
   annotations: {}
-    # kubernetes.io/tls-acme: "true"
-    # kubernetes.io/ingress.class: nginx
   hosts:
     - host: pwa1.example.local
       paths:

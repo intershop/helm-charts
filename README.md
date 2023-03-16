@@ -9,6 +9,7 @@ $ helm repo add intershop https://intershop.github.io/helm-charts
 $ helm repo update
 $ helm install my-release intershop/<chart>
 ```
+
 ### Via [Flux](https://fluxcd.io) configuration
 
 ```yaml
@@ -36,6 +37,6 @@ In order to contribute, please have a look at our [Contribution Guidelines](./CO
 
 ## License
 
-Copyright &copy; 2022 Intershop Communications AG
+Copyright &copy; 2023 Intershop Communications AG
 
 [MIT license](./LICENSE).
