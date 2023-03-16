@@ -126,10 +126,10 @@ resources:
   webadapter:
     limits:
       cpu: 100m
-      memory: 200Mi
+      memory: 300Mi
     requests:
       cpu: 100m
-      memory: 200Mi
+      memory: 300Mi
   agent:
     limits:
       cpu: 100m

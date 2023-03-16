@@ -22,6 +22,8 @@ icm-as:
     jdbcUser: "${DATABASE_USER}"
     jdbcPassword: "${DATABASE_USER}"
   environment:
+    TZ: Europe/Berlin
+
     CARTRIDGE_LIST: "ft_e2e_test"
 
     SERVER_DIRECTORY: "${SERVER_DIRECTORY}"
@@ -92,16 +94,21 @@ testrunner:
       mkdir -p ${HELM_DIRECTORY}/result
       mkdir ${HELM_DIRECTORY}/pagedumps
 
-      # startup
-      sh /intershop/bin/testrunner.sh -s=${TESTSUITE} -o=${RESULT_DIRECTORY} 2>&1 | tee -a ${RESULT_DIRECTORY}/istestrunner_log.txt
-      PROCESS_ERROR_LEVEL=$?
-      TEST_EXECUTION_RESULT_STATUS="failed"
-      [ ${PROCESS_ERROR_LEVEL} = 0 ] && TEST_EXECUTION_RESULT_STATUS="success"
-      [ ${PROCESS_ERROR_LEVEL} = 1 ] && top -b -n 1 > ${RESULT_DIRECTORY}/top.txt
-      echo "result: ${TEST_EXECUTION_RESULT_STATUS}" > ${RESULT_DIRECTORY}/finished.yml
-      echo "result-datetime: $(date)" >> ${RESULT_DIRECTORY}/finished.yml
+      # workaround to keep java in the path
+      export ROOTPATH=$PATH
 
-      exit $PROCESS_ERROR_LEVEL
+      # startup
+      su ${SERVER_DIRECTORY_USER} <<EOF
+        export PATH=$ROOTPATH
+        sh /intershop/bin/testrunner.sh -s=${TESTSUITE} -o=${RESULT_DIRECTORY} 2>&1 | tee -a ${RESULT_DIRECTORY}/istestrunner_log.txt
+        PROCESS_ERROR_LEVEL=$?
+        TEST_EXECUTION_RESULT_STATUS="failed"
+        [ ${PROCESS_ERROR_LEVEL} = 0 ] && TEST_EXECUTION_RESULT_STATUS="success"
+        [ ${PROCESS_ERROR_LEVEL} = 1 ] && top -b -n 1 > ${RESULT_DIRECTORY}/top.txt
+        echo "result: ${TEST_EXECUTION_RESULT_STATUS}" > ${RESULT_DIRECTORY}/finished.yml
+        echo "result-datetime: $(date)" >> ${RESULT_DIRECTORY}/finished.yml
+        exit $PROCESS_ERROR_LEVEL
+      EOF
   podSecurityContext:
     runAsUser: 0
   environment:
@@ -120,6 +127,8 @@ testrunner:
     PORT_HTTP: 8080
     PORT_HTTPS: 8443
     SERVLETENGINE_PORT: 7743
+
+    SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
 
     DEFAULT_PAGEDUMP_DIRECTORY: ${HELM_DIRECTORY}/pagedumps
     REMOVE_SUCCESSFUL_PAGEDUMPS: 'true'
