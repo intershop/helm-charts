@@ -50,7 +50,7 @@ tests:
           path: spec.template.spec.containers[0].env
           content:
             name: MAIL_SERVER
-            value: "${HELM_JOB_NAME}-mail"
+            value: "${HELM_JOB_NAME}-icm-mail"
       - contains:
           path: spec.template.spec.containers[0].env
           content:
