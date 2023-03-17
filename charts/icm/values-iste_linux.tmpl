@@ -91,26 +91,18 @@ testrunner:
   image:
     repository: "${ICM_TEST_IMAGE}"
     command: |
-      mkdir -p ${HELM_DIRECTORY}/result
-      mkdir ${HELM_DIRECTORY}/pagedumps
-
-      # workaround to keep java in the path
-      export ROOTPATH=$PATH
-
-      # startup
-      su ${SERVER_DIRECTORY_USER} <<EOF
-        export PATH=$ROOTPATH
-        sh /intershop/bin/testrunner.sh -s=${TESTSUITE} -o=${RESULT_DIRECTORY} 2>&1 | tee -a ${RESULT_DIRECTORY}/istestrunner_log.txt
-        PROCESS_ERROR_LEVEL=$?
-        TEST_EXECUTION_RESULT_STATUS="failed"
-        [ ${PROCESS_ERROR_LEVEL} = 0 ] && TEST_EXECUTION_RESULT_STATUS="success"
-        [ ${PROCESS_ERROR_LEVEL} = 1 ] && top -b -n 1 > ${RESULT_DIRECTORY}/top.txt
-        echo "result: ${TEST_EXECUTION_RESULT_STATUS}" > ${RESULT_DIRECTORY}/finished.yml
-        echo "result-datetime: $(date)" >> ${RESULT_DIRECTORY}/finished.yml
-        exit $PROCESS_ERROR_LEVEL
-      EOF
-  podSecurityContext:
-    runAsUser: 0
+      sh /intershop/bin/testrunner.sh -s=${TESTSUITE} -o=${RESULT_DIRECTORY} 2>&1 | tee -a ${RESULT_DIRECTORY}/istestrunner_log.txt
+      PROCESS_ERROR_LEVEL=$?
+      TEST_EXECUTION_RESULT_STATUS="failed"
+      if [ "${PROCESS_ERROR_LEVEL}" -eq 0 ];
+      then
+        TEST_EXECUTION_RESULT_STATUS="success"
+      else
+        top -b -n 1 > ${RESULT_DIRECTORY}/top.txt
+      fi
+      echo "result: ${TEST_EXECUTION_RESULT_STATUS}" > ${RESULT_DIRECTORY}/finished.yml
+      echo "result-datetime: $(date)" >> ${RESULT_DIRECTORY}/finished.yml
+      exit $PROCESS_ERROR_LEVEL
   environment:
     CARTRIDGE_LIST: "app_bo_test"
 
