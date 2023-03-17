@@ -114,6 +114,14 @@ spec:
         securityContext:
           runAsUser: 0
       {{- end }}
+      - name: create-relevant-folders
+        image: busybox:1.31
+        command: ["sh", "-c", "mkdir -p ${HELM_DIRECTORY}/result && mkdir ${HELM_DIRECTORY}/pagedumps"]
+        volumeMounts:
+        - name: testdata-volume
+          mountPath: /data
+        securityContext:
+          runAsUser: 0
       - name: init-wait-for-webserver
         image: busybox:1.31
         resources:
