@@ -5,5 +5,5 @@ name: icm
 version: 0.9.0
 # test related annotations
 annotations:
-  requestedMemoryQuota: 5700Mi
+  requestedMemoryQuota: 5900Mi
   requestedCpuQuotaInMinutes: "3000"
