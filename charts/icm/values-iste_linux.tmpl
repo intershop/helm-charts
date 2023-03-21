@@ -61,6 +61,9 @@ icm-as:
 icm-web:
   nodeSelector:
     agentpool: agentpool2
+  podAnnotations:
+    # as long as there is no new cache system we need this annotation for icm-web
+    "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
   webadapter:
     image:
       repository: "${ICM_WEBSERVER_IMAGE}"
