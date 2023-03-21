@@ -43,13 +43,13 @@ icm-as:
     serviceSuffix: -icm-web-wa
 
 icm-web:
-  podAnnotations:
-    # as long as there is no new cache system we need this annotation for icm-web
-    "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
   imagePullSecrets:
   - "dockerhub"
   webadapter:
     replicaCount: 1
+    podAnnotations:
+      # as long as there is no new cache system we need this annotation for icm-web
+      "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
     image:
       repository: intershophub/icm-webadapter:2.4.5
       secret: dockerhub
