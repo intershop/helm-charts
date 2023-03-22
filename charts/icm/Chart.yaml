@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: "11.0.13"
 description: Intershop Commerce Management - ICM
 name: icm
-version: 0.9.2
+version: 0.10.0-alpha
 # test related annotations
 annotations:
   requestedMemoryQuota: 5900Mi
