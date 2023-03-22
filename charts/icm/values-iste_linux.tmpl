@@ -102,6 +102,8 @@ testrunner:
       TEST_EXECUTION_RESULT_STATUS="failed"
       if [ "${PROCESS_ERROR_LEVEL}" -eq 0 ];
       then
+        zip -r ${RESULT_DIRECTORY}/pagedumps.zip ${HELM_DIRECTORY}/pagedumps
+        rm -Rf ${HELM_DIRECTORY}/pagedumps
         TEST_EXECUTION_RESULT_STATUS="success"
       else
         top -b -n 1 > ${RESULT_DIRECTORY}/top.txt
