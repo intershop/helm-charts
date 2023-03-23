@@ -121,6 +121,9 @@ spec:
           - "-c"
           - |
             set -x
+            apt-get update
+            apt-get install -y zip
+
             mkdir -p ${HELM_DIRECTORY}/result
             chown -R 150:150 ${HELM_DIRECTORY}/result
             chmod 777 ${HELM_DIRECTORY}/result
