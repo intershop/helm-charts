@@ -114,33 +114,6 @@ spec:
         securityContext:
           runAsUser: 0
       {{- end }}
-      - name: create-relevant-folders
-        image: busybox:1.31
-        command:
-          - "/bin/sh"
-          - "-c"
-          - |
-            set -x
-            apt-get update
-            apt-get install -y zip
-
-            mkdir -p ${HELM_DIRECTORY}/result
-            chown -R 150:150 ${HELM_DIRECTORY}/result
-            chmod 777 ${HELM_DIRECTORY}/result
-
-            mkdir ${HELM_DIRECTORY}/pagedumps
-            chown -R 150:150 ${HELM_DIRECTORY}/pagedumps
-            chmod 777 ${HELM_DIRECTORY}/pagedumps
-        env:
-        {{- range $key, $value := .Values.testrunner.environment }}
-        - name: {{ $key }}
-          value: {{ $value | quote }}
-        {{- end }}
-        volumeMounts:
-        - name: testdata-volume
-          mountPath: /data
-        securityContext:
-          runAsUser: 0
       - name: init-wait-for-webserver
         image: busybox:1.31
         resources:
