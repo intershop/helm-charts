@@ -87,6 +87,29 @@ entries:
     version: 0.10.0-alpha
   - annotations:
       requestedCpuQuotaInMinutes: "3000"
+      requestedMemoryQuota: 5900Mi
+    apiVersion: v1
+    appVersion: 11.0.12
+    created: "2023-03-24T08:31:57.020493669Z"
+    dependencies:
+    - name: icm-as
+      repository: file://../icm-as
+      version: 0.8.0
+    - name: icm-web
+      repository: file://../icm-web
+      version: 0.7.0
+    - condition: test.enabled
+      name: mailhog
+      repository: https://codecentric.github.io/helm-charts
+      version: 5.2.0
+    description: Intershop Commerce Management - ICM
+    digest: 764da0784431433c8d52010a7dd699e702154fa6beffaea27fa32682d777f87f
+    name: icm
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-0.10.0-alpha/icm-0.10.0-alpha.tgz
+    version: 0.10.0-alpha
+  - annotations:
+      requestedCpuQuotaInMinutes: "3000"
       requestedMemoryQuota: 5700Mi
     apiVersion: v1
     appVersion: 11.0.12-dev1
@@ -2793,4 +2816,4 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.2.3/pwa-main-0.2.3.tgz
     version: 0.2.3
-generated: "2023-03-23T09:47:45.888235999Z"
+generated: "2023-03-24T08:31:57.021380469Z"
