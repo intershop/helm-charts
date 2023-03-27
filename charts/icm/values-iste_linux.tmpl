@@ -77,8 +77,7 @@ icm-web:
     httpsPort: 8443
   persistence:
     pagecache:
-      size: 1Gi
-      type: cluster
+      type: emptyDir
     customdata:
       enabled: true
       existingClaim: icm-nfs

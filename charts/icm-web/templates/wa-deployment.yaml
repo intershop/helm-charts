@@ -72,6 +72,8 @@ spec:
         {{- else if eq .Values.persistence.pagecache.type "nfs" }}
         persistentVolumeClaim:
           claimName: "{{ template "icm-web.fullname" . }}-nfs-pagecache-pvc"
+        {{- else if eq .Values.persistence.pagecache.type "emptyDir" }}
+        emptyDir: {}
         {{- else if eq .Values.persistence.pagecache.type "cluster" }}
         persistentVolumeClaim:
           claimName: "{{ template "icm-web.fullname" . }}-cluster-pagecache-pvc"
