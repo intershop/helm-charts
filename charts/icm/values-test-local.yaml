@@ -36,10 +36,7 @@ icm-web:
   nodeSelector: null
   persistence:
     pagecache:
-      size: 1Gi
-      type: local
-      local:
-        path: /run/desktop/mnt/host/d/tmp/pv/pagecache
+      type: emptyDir
     customdata:
       enabled: false
 
