@@ -159,19 +159,19 @@ testrunner:
 
   resources:
     requests:
-      cpu: 1000m
+      cpu: 700m
       memory: 2Gi
     limits:
-      cpu: 1000m
+      cpu: 700m
       memory: 2Gi
   initContainer:
     resources:
       requests:
-        cpu: 1000m
-        memory: 2Gi
+        cpu: 100m
+        memory: 250Mi
       limits:
-        cpu: 1000m
-        memory: 2Gi
+        cpu: 100m
+        memory: 250Mi
   replicaCount: 1
   persistence:
     testdata:
