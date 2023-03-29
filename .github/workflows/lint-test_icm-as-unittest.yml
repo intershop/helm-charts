@@ -9,9 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Base
-      uses: ".github/template/base"
+      uses: "../template/base"
     - name: Unit test
-      uses: ".github/template/unittest"
+      uses: "../template/unittest"
       with:
         chartTestingFile: ct_icm-as.yaml
         chartName: icm-as
