@@ -10,13 +10,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-  - name: Run chart-testing (list-changed)
-    id: list-changed
-    run: |
-      changed=$(ct list-changed --config ${{ inputs.chartTestingFile }})
-      if [[ -n "$changed" ]]; then
-        echo "::set-output name=changed::true"
-      fi
   - name: Run chart-testing (lint)
     run: ct lint --config ${{ inputs.chartTestingFile }}
     
