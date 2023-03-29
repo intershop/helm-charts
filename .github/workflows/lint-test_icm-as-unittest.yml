@@ -1,4 +1,4 @@
-name: "Unit test icm chart"
+name: "Unit test icm-as chart"
 on:
   pull_request:
     paths:
