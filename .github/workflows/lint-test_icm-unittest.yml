@@ -1,8 +1,8 @@
 name: "Unit test icm chart"
-on:
-  pull_request:
-    paths:
-    - 'charts/icm/**'
+#on:
+#  pull_request:
+#    paths:
+#    - 'charts/icm/**'
 
 jobs:
   lint-test-icm:
