@@ -1,0 +1,31 @@
+name: unittest
+
+# Were we can define the inputs that our action will accept
+inputs:
+  chartTestingFile: 
+    required: true
+  chartName:
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+  - name: Run chart-testing (list-changed)
+    id: list-changed
+    run: |
+      changed=$(ct list-changed --config ${{ inputs.chartTestingFile }})
+      if [[ -n "$changed" ]]; then
+        echo "::set-output name=changed::true"
+      fi
+  - name: Run chart-testing (lint)
+    run: ct lint --config ${{ inputs.chartTestingFile }}
+    
+  - name: Run Helm Unittest
+    run: |
+      helm unittest --helm3  --output-file charts/${{ inputs.chartName }}/tests/__results__/junit.xml --output-type JUnit charts/${{ inputs.chartName }}
+
+  - name: Publish Helm Unittest Results
+    uses: EnricoMi/publish-unit-test-result-action/composite@v1
+    if: always()
+    with:
+      files: charts/${{ inputs.chartName }}/tests/__results__/*.xml
