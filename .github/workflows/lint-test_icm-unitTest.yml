@@ -5,7 +5,7 @@ name: "Unit test icm chart"
 #    - 'charts/icm/**'
 
 jobs:
-  lint-test-icm:
+  lint-test-icm-unitTest:
     runs-on: ubuntu-latest
     steps:
     - name: Base
