@@ -2,10 +2,10 @@ name: "Unit test icm chart"
 #on:
 #  pull_request:
 #    paths:
-#    - 'charts/icm/**'
+#    - 'charts/icm-as/**'
 
 jobs:
-  lint-test-icm-unitTest:
+  lint-test-icm-as-unittest:
     runs-on: ubuntu-latest
     steps:
     - name: Base
@@ -13,5 +13,5 @@ jobs:
     - name: Unit test
       uses: "./github/template/unittest"
       with:
-        chartTestingFile: ct_icm.yaml
-        chartName: icm
+        chartTestingFile: ct_icm-as.yaml
+        chartName: icm-as
