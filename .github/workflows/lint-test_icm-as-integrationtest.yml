@@ -1,11 +1,11 @@
 name: "Integration test icm-as chart"
-#on:
-#  pull_request:
-#    paths:
-#    - 'charts/icm-as/**'
-#  push: 
-#    branches: 
-#      - main
+on:
+  pull_request:
+    paths:
+    - 'charts/icm-as/**'
+  push: 
+    branches: 
+      - main
 
 jobs:
   lint-test-icm-as-integrationtest:
