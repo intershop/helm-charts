@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Base
-      uses: "./.github/template/base"
+      uses: ".github/template/base"
 
     - name: Run chart-testing (list-changed)
       id: list-changed
