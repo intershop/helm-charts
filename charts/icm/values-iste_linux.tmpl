@@ -57,6 +57,9 @@ icm-as:
 
     # Disable Mailhog for now (#82978)
     MAIL_SMTP_MAILHOG_ENABLED: "false"
+
+    # so http acceses are still allowed (necessary to make test and environment not to complicated)
+    SECUREACCESSONLY: "false"
   persistence:
     sites:
       size: 1Gi
