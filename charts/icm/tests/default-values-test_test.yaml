@@ -84,13 +84,13 @@ tests:
       #spec.template.spec.containers[0].resources
       - equal:
           path: spec.template.spec.containers[0].resources.limits.cpu
-          value: 1000m
+          value: 800m
       - equal:
           path: spec.template.spec.containers[0].resources.limits.memory
           value: 2Gi
       - equal:
           path: spec.template.spec.containers[0].resources.requests.cpu
-          value: 1000m
+          value: 800m
       - equal:
           path: spec.template.spec.containers[0].resources.requests.memory
           value: 2Gi

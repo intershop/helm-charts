@@ -50,8 +50,6 @@ This helm chart also allows you to execute intershop htmlunit tests via a testru
 For the local test execution there are already preconfigured values-files orchestrated by a bash script.
 Follow these steps to execute a test:
 
-1. add a "intershop-license" k8s secret with a valid intershop license
-2. adjust the `start-test-local_vars.sh` to your needs (which docker image to test, which testsuite)
-3. in `values-test-local.yaml` set sites-, pagecache-, testdata-dir to the ones from your system, same lasts for mssql-data and -backup
-4. also adjust the imagePullSecrets for icm-as and the testrunner here `values-test-local.yaml` to be able/authorized to download the docker image
-4. Run: `./start-test-local.sh`
+1. add a "intershop-license" k8s secret with a valid intershop license (e.g. `kubectl create secret generic intershop-license --from-file=license.xml`)
+2. add k8s secrets for icm-web and icm-as (e.g. `kubectl create secret docker-registry dockerhub --docker-username=<your username> --docker-password=<your password> --docker-email=<your email>`)
+3. run: `./start-test-local.sh` and follow the instructions
