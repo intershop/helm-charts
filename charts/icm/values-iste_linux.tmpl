@@ -13,6 +13,13 @@ icm-as:
     - "/bin/sh"
     - "-c"
     - |
+      echo '127.0.0.1       mail' >> /etc/hosts
+
+      apt-get update
+      apt-get install -y socat
+
+      socat TCP-LISTEN:1025,fork TCP:icm-11-test-mailhog:1025 &
+
       # workaround to keep java in the path
       export ROOTPATH=$PATH
 
