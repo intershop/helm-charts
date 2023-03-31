@@ -13,7 +13,7 @@ icm-as:
         path: ${LOCAL_MOUNT_BASE}/sites
     customdata:
       enabled: true
-      existingClaim: ${HELM_CHART_NAME}-local-testdata-pvc
+      existingClaim: ${HELM_JOB_NAME}-local-testdata-pvc
       mountPoint: /data
   datadog:
     enabled: false
@@ -41,7 +41,7 @@ icm-web:
       type: emptyDir
     customdata:
       enabled: true
-      existingClaim: ${HELM_CHART_NAME}-local-testdata-pvc
+      existingClaim: ${HELM_JOB_NAME}-local-testdata-pvc
       mountPoint: /data
 
 mail:
