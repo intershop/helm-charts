@@ -10,7 +10,7 @@ nodeSelector: {}
 
 webadapter:
   image:
-    repository: intershophub/icm-webadapter:2.4.5
+    repository: intershophub/icm-webadapter:2.4.6
     pullPolicy: IfNotPresent
     command: |
       /intershop/bin/intershop.sh
