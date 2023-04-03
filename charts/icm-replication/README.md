@@ -1,3 +1,5 @@
+# This chart is just a development try, don't us it.
+
 # Helm Chart Intershop Commerce Management - ICM Replication
 
 This is the ICM Replication helm chart
