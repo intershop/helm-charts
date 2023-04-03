@@ -12,7 +12,7 @@ SERVER_DOCKER_IMAGE="unknown"
 TESTRUNNER_DIRECTORY="/intershop/testrunner"
 NODENAME="true"
 
-ICM_WEBSERVER_IMAGE="intershophub/icm-webadapter:2.4.4"
+ICM_WEBSERVER_IMAGE="intershophub/icm-webadapter:2.4.6"
 ICM_WEBADAPTER_AGENT_IMAGE="intershophub/icm-webadapteragent:4.0.0"
 SERVER_DIRECTORY_GROUP="intershop"
 SERVER_DIRECTORY_USER="intershop"
