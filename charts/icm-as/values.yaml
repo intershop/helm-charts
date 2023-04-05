@@ -282,3 +282,6 @@ copySitesDir:
   # resultDir: result folder where a sites.txt is generated to
   # chmodUser: user
   # chmodGroup: group
+
+job:
+  enabled: true

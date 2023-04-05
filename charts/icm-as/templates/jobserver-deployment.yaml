@@ -1,0 +1,54 @@
+{{- if .Values.job.enabled -}}
+{{/* Build values based on main values merged with job specific ones */}}
+{{- $jobValues:= deepCopy . -}}
+{{- $jobValues := set $jobValues "Values" (merge .Values.job $jobValues.Values) -}}
+
+apiVersion: batch.core.intershop.de/v1
+kind: ICMJob
+metadata:
+spec:
+  concurrencyPolicy: Allow
+  scheduleTimeComputer: http://10.0.206.171:7743/jobserver/nextScheduleDate?serverName=JobServer  
+  jobTemplate:
+    spec:
+      selector:
+        matchLabels:
+          app: {{ include "icm-as.fullname" $jobValues }}
+          release: {{ .Release.Name }}
+      strategy:
+        type: Recreate
+      template:
+        metadata:
+          {{- include "icm-as.podData" $jobValues  | indent 8 }}
+          labels:
+            app: {{ include "icm-as.fullname" $jobValues }}
+            release: {{ .Release.Name }}
+            {{- include "icm-as.datadogLabels" $jobValues | indent 8 }}
+            {{- include "icm-as.podLabels" $jobValues | indent 8 }}
+        spec:
+          {{- include "icm-as.nodeSelector" $jobValues  | indent 10 }}
+          {{- include "icm-as.imagePullSecrets" .  | indent 10 }}
+          containers:
+            - name: icm-as-server
+              {{- include "icm-as.image" .  | indent 14 }}
+              {{- include "icm-as.envJob" $jobValues  | indent 14 }}
+              {{- include "icm-as.ports" $jobValues  | indent 14 }}
+              {{- include "icm-as.resources" . | indent 14 }}
+              {{- include "icm-as.volumeMounts" .  | indent 14 }}
+              {{- include "icm-as.lifecycle" .  | indent 14 }}
+          {{- include "icm-as.initContainers" .  | indent 10 }}
+          restartPolicy: OnFailure
+{{- end -}}
+
+{{/*
+Job-specific-environment
+*/}}
+{{- define "icm-as.envJob" }}
+{{- include "icm-as.env" . }}
+- name: MAIN_CLASS
+  value: "com.intershop.beehive.core.capi.job.JobServer"
+- name: INTERSHOP_JOB_SERVER_EXCLUSIVE
+  value: "true"
+- name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
+  value: "JOB"
+{{- end -}}
