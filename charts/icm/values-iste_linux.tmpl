@@ -13,10 +13,11 @@ icm-as:
     - "/bin/sh"
     - "-c"
     - |
-      # email needs to be overwritten
+      # email hostname is set to "mail" in DB
+      echo '127.0.0.1       mail' >> /etc/hosts
       apt-get update
       apt-get install -y socat
-      socat TCP-LISTEN:25,fork TCP:${HELM_JOB_NAME}-mailhog:1025 &
+      socat TCP-LISTEN:1025,fork TCP:${HELM_JOB_NAME}-mailhog:1025 &
 
       # workaround to keep java in the path
       export ROOTPATH=$PATH
