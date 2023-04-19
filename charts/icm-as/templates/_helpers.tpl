@@ -169,8 +169,8 @@ nodeSelector:
 Image spec
 */}}
 {{- define "icm-as.image" }}
-#image: "{{ .Values.image.repository }}{{ if not (contains ":" .Values.image.repository) }}:{{ .Values.image.tag | default .Chart.AppVersion }}{{ end }}"
-#imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+image: "{{ .Values.image.repository }}{{ if not (contains ":" .Values.image.repository) }}:{{ .Values.image.tag | default .Chart.AppVersion }}{{ end }}"
+imagePullPolicy: "{{ .Values.image.pullPolicy }}"
 {{- end -}}
 
 {{/*
@@ -285,10 +285,12 @@ Creates the environment section
 */}}
 {{- define "icm-as.env" }}
 env:
-- name: IS_DBPREPARE
-  value: "false"
+{{- if not (hasKey .Values.environment "SERVER_NAME") }} 
 - name: SERVER_NAME
   value: "appserver"
+{{- end }}
+- name: IS_DBPREPARE
+  value: "false"
 - name: INTERSHOP_SERVER_NODE
   valueFrom:
     fieldRef:
@@ -440,7 +442,7 @@ volumes:
   csi:
     driver: secrets-store.csi.k8s.io
     readOnly: true
-{{ toYaml .Values.license.csi | indent 10 }}
+  {{ toYaml .Values.license.csi | nindent 4 }}
   {{- else if eq .Values.license.type "secret" }}
   secret:
     secretName: {{ .Values.license.secret.name }}
@@ -471,21 +473,18 @@ Creates a volume named {$name}-volume
 {{- $volumeName := index . 1 }}
 {{- $volumeValues := index . 2 }}
 - name: {{ $volumeName }}-volume
-{{- if eq $volumeValues.type "local" }}
-  persistentVolumeClaim:
-    claimName: "{{ template "icm-as.fullname" $values }}-local-{{$volumeName}}-pvc"
-{{- else if eq $volumeValues.type "azurefiles" }}
+{{- if eq $volumeValues.type "azurefiles" }}
   azureFile:
-  secretName: {{ $volumeValues.azurefiles.secretName }}
-  shareName: {{ $volumeValues.azurefiles.shareName }}
-  readOnly: false
+    secretName: {{ $volumeValues.azurefiles.secretName }}
+    shareName: {{ $volumeValues.azurefiles.shareName }}
+    readOnly: false
 {{- else if eq $volumeValues.type "emptyDir" }}
   emptyDir: {}
-{{- else if eq $volumeValues.type "cluster" }}
-  persistentVolumeClaim:
-    claimName: "{{ template "icm-as.fullname" $values }}-cluster-{{$volumeName}}-pvc"
-  {{- else if eq $volumeValues.type "existingClaim" }}
+{{- else if eq $volumeValues.type "existingClaim" }}
   persistentVolumeClaim:
     claimName: "{{ $volumeValues.existingClaim }}"
+{{- else }}
+  persistentVolumeClaim:
+    claimName: "{{ template "icm-as.fullname" $values }}-{{$volumeValues.type}}-{{$volumeName}}-pvc"
 {{- end }}
 {{- end -}}

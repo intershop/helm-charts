@@ -234,12 +234,12 @@ tests:
     template: templates/as-deployment.yaml
     asserts:
       #spec.template.spec.volumes
-      - contains:
-          path: spec.template.spec.volumes
-          content:
-            name: sites-volume
-            persistentVolumeClaim:
-              claimName: icm-as-nfs-sites-pvc
+        - contains:
+            path: spec.template.spec.volumes
+            content:
+              name: sites-volume
+              persistentVolumeClaim:
+                claimName: icm-as-nfs-sites-pvc
 
   - it: type=nfs in nfs-sites-pv
     release:
