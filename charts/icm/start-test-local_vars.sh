@@ -7,12 +7,9 @@ RESULT_DIRECTORY="/data/testplans/1/testsuites/1/workspace/helm/iste-icm-11/resu
 HELM_DIRECTORY="/data/testplans/1/testsuites/1/workspace/helm/iste-icm-11"
 WORKSPACE_DIRECTORY="/data/testplans/1/testsuites/1/workspace"
 
-SERVER_DOCKER_IMAGE="unknown"
-
-TESTRUNNER_DIRECTORY="/intershop/testrunner"
 NODENAME="true"
 
-ICM_WEBSERVER_IMAGE="intershophub/icm-webadapter:2.4.6"
+ICM_WEBSERVER_IMAGE="intershophub/icm-webadapter:2.4.5"
 ICM_WEBADAPTER_AGENT_IMAGE="intershophub/icm-webadapteragent:4.0.0"
 SERVER_DIRECTORY_GROUP="intershop"
 SERVER_DIRECTORY_USER="intershop"
