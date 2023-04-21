@@ -13,12 +13,6 @@ icm-as:
     - "/bin/sh"
     - "-c"
     - |
-      # email hostname is set to "mail" in DB
-      echo '127.0.0.1       mail' >> /etc/hosts
-      apt-get update
-      apt-get install -y socat
-      socat TCP-LISTEN:1025,fork TCP:${HELM_JOB_NAME}-mailhog:1025 &
-
       # workaround to keep java in the path
       export ROOTPATH=$PATH
 
@@ -60,6 +54,8 @@ icm-as:
     INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}-icm-web-wa:8080"
     INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}-icm-web-wa:8443"
 
+    SMTPMAILSERVICE_DEFAULTSMTPMAILSERVICE_MAIL_SMTP_HOSTNAMES: "${HELM_JOB_NAME}-mailhog"
+    SMTPMAILSERVICE_DEFAULTSMTPMAILSERVICE_MAIL_SMTP_PORT: "1025"
     MAIL_SMTP_HOST: "${HELM_JOB_NAME}-mailhog"
     MAIL_SMTP_PORT: "1025"
     MAIL_CLIENT_API_PORT: "8025"
