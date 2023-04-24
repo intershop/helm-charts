@@ -1,0 +1,26 @@
+name: unittest
+
+# Were we can define the inputs that our action will accept
+inputs:
+  chartTestingFile: 
+    required: true
+  chartName:
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+  - name: Run chart-testing (lint)
+    shell: bash
+    run: ct lint --config ${{ inputs.chartTestingFile }}
+    
+  - name: Run Helm Unittest
+    shell: bash
+    run: |
+      helm unittest --helm3  --output-file charts/${{ inputs.chartName }}/tests/__results__/junit.xml --output-type JUnit charts/${{ inputs.chartName }}
+
+  - name: Publish Helm Unittest Results
+    uses: EnricoMi/publish-unit-test-result-action/composite@v1
+    if: always()
+    with:
+      files: charts/${{ inputs.chartName }}/tests/__results__/*.xml
