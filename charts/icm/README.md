@@ -42,7 +42,24 @@ helm dependency update icm
 helm install my-release ./icm --values=values.yaml --namespace icm
 ```
 
-## Test execution
+## Testing the Chart
+
+### helm-unit
+
+There are helm-unit tests to support development and secure several functionality
+
+```bash
+helm unittest --helm3  --output-file unit.xml --output-type JUnit charts/icm
+```
+
+### ct lint & install
+
+```bash
+docker run -it --network host --workdir=/data --volume <my kube config>:/root/.kube/config:ro --volume
+$(pwd):/data quay.io/helmpack/chart-testing:v3.5.0 ct lint --config ct_icm.yaml
+```
+
+## Testing ICM
 
 This helm chart also allows you to execute intershop htmlunit tests via a testrunner.
 

@@ -70,3 +70,10 @@ There are helm-unit tests to support development and secure several functionalit
 ```bash
 helm unittest --helm3  --output-file unit.xml --output-type JUnit charts/icm-as
 ```
+
+#### ct lint & install
+
+```bash
+docker run -it --network host --workdir=/data --volume <my kube config>:/root/.kube/config:ro --volume
+$(pwd):/data quay.io/helmpack/chart-testing:v3.5.0 ct lint --config ct_icm-as.yaml
+```

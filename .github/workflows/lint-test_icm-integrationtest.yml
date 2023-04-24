@@ -3,8 +3,8 @@ on:
   pull_request:
     paths:
     - 'charts/icm/**'
-    branches: 
-      - main
+#    branches: 
+#      - main
 
 jobs:
   lint-test-icm-integrationtest:
