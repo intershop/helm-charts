@@ -215,6 +215,8 @@ probes:
 # see values of persistence.mssql-data and persistence.mssql-backup
 mssql:
   enabled: false
+  # recreate database on restart
+  recreation: false
   image:
     repository: "intershophub/mssql-intershop:2019-latest"
   # needs to be explicitally switched at deployment to "Y"

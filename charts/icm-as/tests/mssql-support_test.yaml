@@ -1,0 +1,98 @@
+suite: tests correctness of mssql configuration
+templates:
+  - templates/mssql-deployment.yaml
+  - templates/as-deployment.yaml
+tests:
+  - it: type=azureFiles in for ms sql
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      mssql.enabled: true
+      mssql.persistence.data.type: azurefiles
+      mssql.persistence.data.azurefiles.shareName: custom-share
+      mssql.persistence.data.azurefiles.secretName: custom-secret
+    template: templates/mssql-deployment.yaml
+    asserts:
+      #spec.template.spec.volumes
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            azureFile:
+              readOnly: false
+              secretName: custom-secret
+              shareName: custom-share
+            name: data-volume
+  - it: environment for SQL server default config
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      mssql.enabled: true
+    template: templates/mssql-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ACCEPT_EULA
+            value: "N"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: RECREATEDB
+            value: "false"
+  - it: environment for SQL server override eula and recreation
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      mssql.enabled: true
+      mssql.recreation: true
+      mssql.acceptEula: "Y"
+    template: templates/mssql-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ACCEPT_EULA
+            value: "Y"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: RECREATEDB
+            value: "true"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: RECREATEUSER
+            value: "true"
+  - it: check that deployed mssql service is used
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      mssql.enabled: true
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_DATABASETYPE
+            value: mssql
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_JDBC_URL
+            value: jdbc:sqlserver://icm-as-mssql-service:1433;database=icmdb
