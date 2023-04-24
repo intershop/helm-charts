@@ -3,7 +3,6 @@ on:
   pull_request:
     paths:
     - 'charts/icm-as/**'
-  push: 
     branches: 
       - main
 
