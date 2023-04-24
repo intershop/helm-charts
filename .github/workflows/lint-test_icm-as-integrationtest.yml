@@ -59,11 +59,9 @@ jobs:
         EOF
         )
         sed -i "s[<your license>[${license//$'\n'/}[" charts/icm-as/values.yaml
-
-        docker run -d -p 1433:1433 --name mssql-intershop --env ACCEPT_EULA=Y --env SA_PASSWORD=1nstershop5A --env ICM_DB_NAME=intershop --env ICM_DB_USER=intershop --env ICM_DB_PASSWORD=intershop intershophub/mssql-intershop:2019-1.0
-        ipaddress=`ip route | grep -Po '(?<=src )[^ ]+' | head -n 1`
-        sed -i "s/<ipaddress or hostname>/$ipaddress/" charts/icm-as/values.yaml
-
+        
+        sed -i '/icm-as:/{n;s/.*/  mssql:\n    enabled: true/}' charts/icm/values.yaml
+        
         ct install --namespace=$NAMESPACE --config ct_icm-as.yaml
       
     - name: Debug failure
