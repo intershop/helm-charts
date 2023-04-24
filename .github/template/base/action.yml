@@ -19,5 +19,6 @@ runs:
     uses: helm/chart-testing-action@v2.3.1
 
   - name: Install Helm Unittest
+    shell: bash
     run: |
       helm plugin install https://github.com/quintush/helm-unittest --version=v0.2.8
