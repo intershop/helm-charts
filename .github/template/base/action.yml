@@ -21,4 +21,6 @@ runs:
   - name: Install Helm Unittest
     shell: bash
     run: |
-      helm plugin install https://github.com/quintush/helm-unittest --version=v0.2.8
+      if [[ -n $(helm plugin list | grep unittest) ]]; then
+        helm plugin install https://github.com/quintush/helm-unittest --version=v0.2.8
+      fi
