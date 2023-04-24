@@ -60,3 +60,13 @@ To install the chart with the release name `icm-as`
 ```bash
 helm install my-release intershop/icm-as --values=values.yaml --namespace icm-as
 ```
+
+### Testing
+
+#### helm-unit
+
+There are helm-unit tests to support development and secure several functionality
+
+```bash
+helm unittest --helm3  --output-file unit.xml --output-type JUnit charts/icm-as
+```
