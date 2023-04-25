@@ -74,5 +74,5 @@ jobs:
         kubectl describe node -A
         kubectl describe pod -A
         kubectl describe service -A
-        kubectl describe daemonset -A
-        kubectl logs $(kubectl get pods -n $NAMESPACE -o jsonpath="{.items[0].metadata.name}")
+        #kubectl describe daemonset -A
+        kubectl logs $(kubectl get pods -l app=icm-as -n $NAMESPACE -o jsonpath="{.items[0].metadata.name}")

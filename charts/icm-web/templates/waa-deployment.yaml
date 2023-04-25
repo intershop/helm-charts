@@ -17,7 +17,7 @@ spec:
   replicas: {{ .Values.agent.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "icm-web.fullname" . }}-waa
+      app: icm-waa
       release: {{ .Release.Name }}
   template:
     metadata:
@@ -26,7 +26,7 @@ spec:
       {{- toYaml .Values.agent.podAnnotations | trim | nindent 8 }}
     {{- end }}
       labels:
-        app: {{ include "icm-web.fullname" . }}-waa
+        app: icm-waa
         release: {{ .Release.Name }}
         {{- if .Values.agent.podLabels }}
           {{- toYaml .Values.agent.podLabels | trim | nindent 8 }}

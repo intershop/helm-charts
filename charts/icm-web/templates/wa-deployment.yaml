@@ -7,7 +7,7 @@ metadata:
     {{- toYaml .Values.webadapter.deploymentAnnotations | trim | nindent 4 }}
   {{- end }}
   labels:
-    app: {{ include "icm-web.fullname" . }}-wa
+    app: icm-wa
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     {{- if .Values.webadapter.deploymentLabels }}
       {{- toYaml .Values.webadapter.deploymentLabels | trim | nindent 4 }}
@@ -25,7 +25,7 @@ spec:
       {{- toYaml .Values.webadapter.podAnnotations | trim | nindent 8 }}
     {{- end }}
       labels:
-        app: {{ include "icm-web.fullname" . }}-wa
+        app: icm-wa
         release: {{ .Release.Name }}
         {{- if .Values.webadapter.podLabels }}
           {{- toYaml .Values.webadapter.podLabels | trim | nindent 8 }}

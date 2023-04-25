@@ -27,7 +27,7 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: {{ include "icm-as.fullname" . }}
+      app: icm-as
       release: {{ .Release.Name }}
   strategy:
     type: Recreate
@@ -41,7 +41,7 @@ spec:
       aadpodidbinding: {{ .Values.podBinding.binding }}
       {{- end }}
       labels:
-        app: {{ include "icm-as.fullname" . }}
+        app: icm-as
         release: {{ .Release.Name }}
         {{- if .Values.datadog.enabled }}
         tags.datadoghq.com/env: {{ .Values.datadog.env }}
