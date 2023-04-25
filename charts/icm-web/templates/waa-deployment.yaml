@@ -18,7 +18,7 @@ spec:
   selector:
     matchLabels:
       app: icm-waa
-      release: {{ .Release.Name }}
+      release: {{ include "icm-web.fullname" . }}
   template:
     metadata:
     {{- if .Values.agent.podAnnotations }}
@@ -27,7 +27,7 @@ spec:
     {{- end }}
       labels:
         app: icm-waa
-        release: {{ .Release.Name }}
+        release: {{ include "icm-web.fullname" . }}
         {{- if .Values.agent.podLabels }}
           {{- toYaml .Values.agent.podLabels | trim | nindent 8 }}
         {{- end }}

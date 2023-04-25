@@ -4,7 +4,7 @@ metadata:
   name: {{ include "icm-web.fullname" . }}-wa
   labels:
     app: {{ include "icm-web.fullname" . }}-wa
-    release: {{ .Release.Name }}
+    release: {{ include "icm-web.fullname" . }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -17,5 +17,5 @@ spec:
       protocol: TCP
       name: https
   selector:
-    app: {{ include "icm-web.fullname" . }}-wa
+    app: icm-wa
     release: {{ .Release.Name }}

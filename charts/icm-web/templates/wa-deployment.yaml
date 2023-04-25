@@ -7,7 +7,7 @@ metadata:
     {{- toYaml .Values.webadapter.deploymentAnnotations | trim | nindent 4 }}
   {{- end }}
   labels:
-    app: icm-wa
+    app: {{ include "icm-web.fullname" . }}-wa
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     {{- if .Values.webadapter.deploymentLabels }}
       {{- toYaml .Values.webadapter.deploymentLabels | trim | nindent 4 }}
@@ -17,7 +17,7 @@ spec:
   selector:
     matchLabels:
       app: {{ include "icm-web.fullname" . }}-wa
-      release: {{ .Release.Name }}
+      release: {{ include "icm-web.fullname" . }}
   template:
     metadata:
     {{- if .Values.webadapter.podAnnotations }}
@@ -26,7 +26,7 @@ spec:
     {{- end }}
       labels:
         app: icm-wa
-        release: {{ .Release.Name }}
+        release: {{ include "icm-web.fullname" . }}
         {{- if .Values.webadapter.podLabels }}
           {{- toYaml .Values.webadapter.podLabels | trim | nindent 8 }}
         {{- end }}
