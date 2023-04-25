@@ -28,7 +28,7 @@ spec:
   selector:
     matchLabels:
       app: icm-as
-      release: {{ .Release.Name }}
+      release: {{ include "icm-as.fullname" . }}
   strategy:
     type: Recreate
   template:
@@ -42,7 +42,7 @@ spec:
       {{- end }}
       labels:
         app: icm-as
-        release: {{ .Release.Name }}
+        release: {{ include "icm-as.fullname" . }}
         {{- if .Values.datadog.enabled }}
         tags.datadoghq.com/env: {{ .Values.datadog.env }}
         tags.datadoghq.com/service: {{ include "icm-as.fullname" . }}
