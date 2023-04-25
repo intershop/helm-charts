@@ -61,8 +61,8 @@ jobs:
         )
         sed -i "s[<your license>[${license//$'\n'/}[" charts/icm/values.yaml
 
-        sed -i '/mssql:/{n;s/.*/  enabled: true/}' charts/icm/values.yaml
-
+        sed -i '/icm-as:/{n;s/.*/  mssql:\n    enabled: true/}' charts/icm/values.yaml
+        
         ct install --namespace=$NAMESPACE --config ct_icm.yaml
     
     - name: Debug failure
