@@ -41,6 +41,16 @@ icm-as:
     url: /INTERSHOP/web/WFS/SMC
     serviceSuffix: -icm-web-wa
 
+  mssql:
+    enabled: false
+    persistence:
+      data:
+        local:
+          path: <local mssql data folder>
+      backup:
+        local:
+          path: <local mssql backup folder>
+
 icm-web:
   imagePullSecrets:
   - "dockerhub"

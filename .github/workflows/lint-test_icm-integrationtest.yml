@@ -57,8 +57,8 @@ jobs:
 
         mkdir -p /tmp/icm/mssql/data
         mkdir -p /tmp/icm/mssql/backup
-        sed -i 's/<local mssql data folder>/\/tmp\/icm\/mssql\/data' charts/icm-as/values.yaml
-        sed -i 's/<local mssql backup folder>/\/tmp\/icm\/mssql\/backup' charts/icm-as/values.yaml
+        sed -i 's/<local mssql data folder>/\/tmp\/icm\/mssql\/data' charts/icm/values.yaml
+        sed -i 's/<local mssql backup folder>/\/tmp\/icm\/mssql\/backup' charts/icm/values.yaml
 
         license=$(cat <<'EOF'
           ${{ secrets.ICM_LICENSE }}
