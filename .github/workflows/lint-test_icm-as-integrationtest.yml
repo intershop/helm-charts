@@ -72,7 +72,6 @@ jobs:
       if: failure() && steps.list-changed.outputs.changed == 'true'
       run: |
         kubectl describe node -A
-        kubectl describe pod -A
-        kubectl describe service -A
-        #kubectl describe daemonset -A
+        kubectl describe pod -n $NAMESPACE
+        kubectl describe service -n $NAMESPACE
         kubectl logs $(kubectl get pods -l app=icm-as -n $NAMESPACE -o jsonpath="{.items[0].metadata.name}")
