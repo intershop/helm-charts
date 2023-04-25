@@ -16,7 +16,7 @@ spec:
   replicas: {{ .Values.webadapter.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "icm-web.fullname" . }}-wa
+      app: icm-wa
       release: {{ include "icm-web.fullname" . }}
   template:
     metadata:
