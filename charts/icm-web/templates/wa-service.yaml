@@ -18,4 +18,4 @@ spec:
       name: https
   selector:
     app: icm-wa
-    release: {{ .Release.Name }}
+    release: {{ include "icm-web.fullname" . }}
