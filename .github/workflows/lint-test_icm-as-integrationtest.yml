@@ -64,7 +64,7 @@ jobs:
         )
         sed -i "s[<your license>[${license//$'\n'/}[" charts/icm-as/values.yaml
         
-        sed -i '/mssql:/{n;s/.*/  enabled: true/}' charts/icm-as/values.yaml
+        sed -i '/^mssql:/{n;s/.*/  enabled: true/}' charts/icm-as/values.yaml
         
         ct install --namespace=$NAMESPACE --config ct_icm-as.yaml
         
@@ -72,6 +72,6 @@ jobs:
       if: failure() && steps.list-changed.outputs.changed == 'true'
       run: |
         kubectl describe node -A
-        kubectl describe pod -A
-        kubectl describe service -A
+        kubectl describe pod -n $NAMESPACE
+        kubectl describe service -n $NAMESPACE
         kubectl logs -n $NAMESPACE $(kubectl get pods -l app=icm-as -n $NAMESPACE -o jsonpath="{.items[0].metadata.name}")
