@@ -13,7 +13,6 @@ icm-as:
 
   ## @param environment - extra environment variables to be set on containers
   environment:
-    TZ: Europe/Berlin
 
   # ICM license Configuration
   license:
