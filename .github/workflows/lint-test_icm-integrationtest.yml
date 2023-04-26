@@ -56,9 +56,7 @@ jobs:
         sed -i 's/<local pagecache folder>/\/tmp\/icm\/pagecache/' charts/icm/values.yaml
 
         mkdir -p /tmp/icm/mssql/data
-        sudo chmod 777 -R /tmp/icm/mssql/data
         mkdir -p /tmp/icm/mssql/backup
-        sudo chmod 777 -R /tmp/icm/mssql/backup
         sed -i 's/<local mssql data folder>/\/tmp\/icm\/mssql\/data/' charts/icm/values.yaml
         sed -i 's/<local mssql backup folder>/\/tmp\/icm\/mssql\/backup/' charts/icm/values.yaml
 
