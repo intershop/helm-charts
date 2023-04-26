@@ -6,5 +6,5 @@ charts:
   - charts/icm
 check-version-increment: false
 validate-maintainers: false
-helm-extra-args: --timeout 6000s
+helm-extra-args: --timeout 5000s
 skip-clean-up: true

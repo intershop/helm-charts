@@ -73,7 +73,13 @@ jobs:
     - name: Debug failure
       if: failure() && steps.list-changed.outputs.changed == 'true'
       run: |
+        echo "=Describe nodes================================\n"
         kubectl describe node -A
+        echo "=Describe pods================================\n"
         kubectl describe pod -n $NAMESPACE
+        echo "=Describe services================================\n"
         kubectl describe service -n $NAMESPACE
+        echo "=Logs icm-as-msql================================\n"
+        kubectl logs -n $NAMESPACE $(kubectl get pods -l app=icm-as-mssql -n $NAMESPACE -o jsonpath="{.items[0].metadata.name}")
+        echo "=Logs icm-as================================\n"
         kubectl logs $(kubectl get pods -l app=icm-as -n $NAMESPACE -o jsonpath="{.items[0].metadata.name}")

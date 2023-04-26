@@ -10,13 +10,13 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ include "icm-as.fullname" . }}-mssql
-      release: {{ .Release.Name }}
+      app: icm-as-mssql
+      release: {{ include "icm-as.fullname" . }}
   template:
     metadata:
       labels:
-        app: {{ include "icm-as.fullname" . }}-mssql
-        release: {{ .Release.Name }}
+        app: icm-as-mssql
+        release: {{ include "icm-as.fullname" . }}
     spec:
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
