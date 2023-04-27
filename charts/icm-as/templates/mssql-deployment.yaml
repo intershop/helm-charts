@@ -28,9 +28,6 @@ spec:
       - name: "{{ include "icm-as.fullname" . }}-mssql"
         image: "{{ .Values.mssql.image.repository }}"
         imagePullPolicy: IfNotPresent
-        securityContext:
-          runAsUser: 0
-          runAsGroup: 0
         env:
         - name: ACCEPT_EULA
           value: "{{ .Values.mssql.acceptEula }}"
