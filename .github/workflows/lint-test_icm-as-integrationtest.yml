@@ -40,8 +40,6 @@ jobs:
 
     - name: Run chart-testing (install)
       if: steps.list-changed.outputs.changed == 'true'
-      env:
-        NODE_OPTIONS: "--max-old-space-size=8192"
       run: |
         set -x
         random_value=`tr -dc 'a-z0-9' < /dev/urandom | head -c10`
