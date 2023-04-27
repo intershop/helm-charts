@@ -1,7 +1,7 @@
 icm-as:
   nodeSelector: null
   imagePullSecrets:
-  - "icmbuildsnapshot"
+  - "${ICM_AS_PULL_SECRET}"
   license:
     secret:
       name: intershop-license
@@ -10,10 +10,10 @@ icm-as:
       size: 1Gi
       type: local
       local:
-        path: /run/desktop/mnt/host/d/tmp/pv/sites
+        path: ${LOCAL_MOUNT_BASE}/sites
     customdata:
       enabled: true
-      existingClaim: icm-11-test-local-testdata-pvc
+      existingClaim: ${HELM_JOB_NAME}-local-testdata-pvc
       mountPoint: /data
   datadog:
     enabled: false
@@ -25,20 +25,24 @@ icm-as:
         size: 1Gi
         type: local
         local:
-          path: /run/desktop/mnt/host/d/tmp/pv/mssql/data
+          path: ${LOCAL_MOUNT_BASE}/mssql/data
       backup:
         size: 1Gi
         type: local
         local:
-          path: /run/desktop/mnt/host/d/tmp/pv/mssql/backup
+          path: ${LOCAL_MOUNT_BASE}/mssql/backup
 
 icm-web:
   nodeSelector: null
+  imagePullSecrets:
+  - "${ICM_WEB_PULL_SECRET}"
   persistence:
     pagecache:
       type: emptyDir
     customdata:
-      enabled: false
+      enabled: true
+      existingClaim: ${HELM_JOB_NAME}-local-testdata-pvc
+      mountPoint: /data
 
 mail:
   nodeSelector: null
@@ -46,12 +50,12 @@ mail:
 testrunner:
   nodeSelector: null
   imagePullSecrets:
-  - "icmbuildsnapshot"
+  - "${ICM_AS_PULL_SECRET}"
   persistence:
     testdata:
       size: 1Gi
       type: local
       local:
-        dir: /run/desktop/mnt/host/d/tmp/pv/testdata
+        dir: ${LOCAL_MOUNT_BASE}/testdata
   datadog:
     enabled: false

@@ -88,7 +88,7 @@ In addition, the version changes and necessary migration information is provided
 | 0.7.0 | 1.0.0  | <ul><li>Re-enabled support for `multi-channel.yaml` and `caching-ignore-params.yaml` source code fallbacks</li><li>Added additional Ingress for domain whitelisting</li><li>Added labels on deployment and pod levels</li> | Removed deprecated configuration options:<ul><li>`upstream.icm`</li><li>`cache.enabled` - was not optional</li><li>`cache.channels`</li></ul>See [Migration to 0.7.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.7.0.md) |
 | 0.6.0 | 1.0.0  | Support for Prometheus metrics                                                                                                                                                                        |                                                                                                                                                                                                                                              |
 | 0.5.0 | 1.0.0  | Added prefetch job that can heat up caches                                                                                                                                                          |                                                                                                                                                                                                                                              |
-| 0.4.0 | 1.0.0  | Support for PWA Hybrid Mode deployment (with ICM 11)                                                                                                                                                  | Requires PWA 3.2.0 for Hybrid Mode support                                                                                                                                                                                                   |
+| 0.4.0 | 1.0.0  | Support for PWA Hybrid Approach deployment (with ICM 11)                                                                                                                                                  | Requires PWA 3.2.0 for Hybrid Approach support                                                                                                                                                                                                   |
 | 0.3.0 | 1.0.0  | Use new Ingress controller definition                                                                                                                                                             | [Migration to 0.3.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.3.0.md)                                                                                                                                 |
 | 0.2.4 | 0.25.0 | Support for `multiChannel`, `cacheIgnoreParams` and `extraEnvVars` for nginx/cache deployment                                                                                                     | Missing support for `multi-channel.yaml` and `caching-ignore-params.yaml` source code fallbacks                                                                                                                                              |
 | 0.2.3 | 0.25.0 | Legacy Helm Chart 0.2.3 as initial version                                                                                                                                                        |                                                                                                                                                                                                                                              |
@@ -113,15 +113,15 @@ Both `cacheIgnoreParams` and `multiChannel` parameters take precedence over any 
 
 ### SSR (Server-Side Rendering)
 
-| Name                     | Description                              | Example Value |
-| ------------------------ | ---------------------------------------- | ------------- |
-| `hybrid.enabled`         | Enable or disable hybrid mode deployment | `true`        |
-| `hybrid.backend.service` | ICM Web Adapter service name             | `icm-web`     |
-| `hybrid.backend.port`    | ICM Web Adapter service port             | `443`         |
+| Name                     | Description                                  | Example Value |
+| ------------------------ | -------------------------------------------- | ------------- |
+| `hybrid.enabled`         | Enable or disable Hybrid Approach deployment | `true`        |
+| `hybrid.backend.service` | ICM Web Adapter service name                 | `icm-web`     |
+| `hybrid.backend.port`    | ICM Web Adapter service port                 | `443`         |
 
-## Hybrid Mode
+## Hybrid Approach
 
-Installs the [Intershop PWA and ICM system](https://github.com/intershop/intershop-pwa) all together in a Kubernetes cluster environment (same namespace). For more information about the hybrid mode, refer to the official [hybrid approach concept](https://github.com/intershop/intershop-pwa/blob/develop/docs/concepts/hybrid-approach.md).
+Installs the [Intershop PWA and ICM system](https://github.com/intershop/intershop-pwa) all together in a Kubernetes cluster environment (same namespace). For more information about the Hybrid Approach, refer to the official [hybrid Approach concept](https://github.com/intershop/intershop-pwa/blob/develop/docs/concepts/hybrid-approach.md).
 
 To configure the PWA Helm chart for this mode, you must first set `hybrid.enabled` to `true`. This will activate conditional dependencies to an umbrella chart `icm`, which depends on `icm-as` and `icm-web`. Both require individual configuration. Please refer to their documentation for details. Finally, you must add each configuration values object to the `values.yaml` file that reflects your deployment.
 

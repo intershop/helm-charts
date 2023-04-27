@@ -13,7 +13,6 @@ icm-as:
 
   ## @param environment - extra environment variables to be set on containers
   environment:
-    TZ: Europe/Berlin
 
   # ICM license Configuration
   license:
@@ -51,7 +50,7 @@ icm-web:
       # as long as there is no new cache system we need this annotation for icm-web
       "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
     image:
-      repository: intershophub/icm-webadapter:2.4.5
+      repository: intershophub/icm-webadapter:2.4.6
       secret: dockerhub
   agent:
     # in some REST-based environment the webadapteragent isn't mandatory

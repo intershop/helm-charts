@@ -46,14 +46,14 @@
           "$id": "#/properties/hybrid",
           "type": "object",
           "title": "The hybrid schema",
-          "description": "Activate the so called hybrid mode of PWA (needs ICM deployed in the same namespace)",
+          "description": "Activate the so called Hybrid Approach of PWA (needs ICM deployed in the same namespace)",
           "required": [ "enabled", "backend" ],
           "properties": {
               "enabled": {
                   "$id": "#/properties/hybrid/properties/enabled",
                   "type": "boolean",
-                  "title": "Enable or disable hybrid mode deployment",
-                  "description": "Enable or disable hybrid mode deployment",
+                  "title": "Enable or disable Hybrid Approach deployment",
+                  "description": "Enable or disable Hybrid Approach deployment",
                   "default": false
               },
               "backend": {

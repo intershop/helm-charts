@@ -25,7 +25,7 @@ spec:
     type: Recreate
   template:
     metadata:
-      {{- include "icm-as.podData" .  | indent 6 }} 
+      {{- include "icm-as.podData" .  | indent 6 }}
       labels:
         app: {{ include "icm-as.fullname" . }}
         release: {{ .Release.Name }}
@@ -44,7 +44,6 @@ spec:
           {{- include "icm-as.probes" .  | indent 10 }}
           {{- include "icm-as.lifecycle" .  | indent 10 }}
       {{- include "icm-as.initContainers" .  | indent 6 }}
-
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

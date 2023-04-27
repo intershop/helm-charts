@@ -5,15 +5,15 @@ image:
 upstream:
   icmBaseURL: https://pwa-ish-demo.test.intershop.com
 environment:
-- name: 'SSR_MAX_MEM'
-  value: '800M'
-- name: 'MAX_MEMORY_READY'
-  value: '400M'
+  - name: SSR_MAX_MEM
+    value: "800M"
+  - name: MAX_MEMORY_READY
+    value: "400M"
 readinessProbe:
   exec:
     command:
-    - node
-    - /dist/readinessprobe.js
+      - node
+      - /dist/readinessprobe.js
   initialDelaySeconds: 10
   periodSeconds: 60
   failureThreshold: 1
@@ -21,7 +21,10 @@ readinessProbe:
 
 cache:
   replicaCount: 1
-  multiChannel: |-
+  image:
+    repository: intershophub/intershop-pwa-nginx
+    tag: latest
+  multiChannel: |
     .+:
       - baseHref: /en
         channel: default
@@ -36,18 +39,11 @@ cache:
         channel: default
         theme: b2c
 
-  image:
-    repository: intershophub/intershop-pwa-nginx
-    tag: latest
-
 ingress:
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    kubernetes.io/tls-acme: "true"
-    nginx.ingress.kubernetes.io/configuration-snippet: |-
-      satisfy any;
-      allow 195.110.61.246;
-      allow 195.110.61.200;
-      deny all;
+  enabled: true
+  className: nginx
   hosts:
-  - pwa.dev.local
+    - host: pwa.example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific

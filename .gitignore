@@ -7,3 +7,4 @@ build/**
 **/tests/__snapshot__
 **/tests/__results__
 values-iste_linux.yaml
+values-test-local.yaml
