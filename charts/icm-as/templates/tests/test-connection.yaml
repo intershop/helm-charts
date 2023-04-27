@@ -12,5 +12,5 @@ spec:
     - name: wget
       image: inutano/wget
       command: ['wget', '--no-check-certificate']
-      args: ['{{ .Values.testConnection.protocol }}://{{ include "icm-as.fullname" . }}{{ .Values.testConnection.serviceSuffix }}:{{ .Values.testConnection.port }}{{ .Values.testConnection.url }}']
+      args: ['{{ .Values.testConnection.protocol }}://{{ .Release.Name }}{{ .Values.testConnection.serviceSuffix }}:{{ .Values.testConnection.port }}{{ .Values.testConnection.url }}']
   restartPolicy: OnFailure
