@@ -82,4 +82,4 @@ jobs:
         echo "=Logs icm-as-msql================================\n"
         kubectl logs -n $NAMESPACE $(kubectl get pods -l app=icm-as-mssql -n $NAMESPACE -o jsonpath="{.items[0].metadata.name}")
         echo "=Logs icm-as================================\n"
-        kubectl logs $(kubectl get pods -l app=icm-as -n $NAMESPACE -o jsonpath="{.items[0].metadata.name}")
+        kubectl logs -n $NAMESPACE $(kubectl get pods -l app=icm-as -n $NAMESPACE -o jsonpath="{.items[0].metadata.name}")
