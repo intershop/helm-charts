@@ -76,8 +76,6 @@ nameOverride: ""
 
 fullnameOverride: ""
 
-# serverName: "AppServer"
-
 # provide custom cluster config from "icm-as.fullname"-system-conf-cluster configmap
 provideCustomConfig: {}
   # logback-main:
@@ -288,19 +286,19 @@ copySitesDir:
   # chmodGroup: group
 
 job:
-  enabled: true  
-  
+  enabled: false
+
   # If true, job-server-support will be available but no jobs will be created
   suspend: false
 
   # Sets the polling interval of the job-scheduler in seconds, defaults to 30s
   # pollInterval: value_in_seconds
-  
-  # Sets the limit of failed jobs in the history. If the limit gets reached 
+
+  # Sets the limit of failed jobs in the history. If the limit gets reached
   # eldest jobs will be deleted. Defaults to unlimited
   # failedJobsHistoryLimit: limit_count
 
-  # Sets the limit of successful jobs in the history. If the limit gets reached 
+  # Sets the limit of successful jobs in the history. If the limit gets reached
   # eldest jobs will be deleted. Defaults to unlimited
   # successfulJobsHistoryLimit: limit_count
 

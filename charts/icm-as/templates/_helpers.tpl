@@ -35,7 +35,7 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "icm-as.labels" -}}
-helm-sh/chart: {{ include "icm-as.chart" . }}
+helm.sh/chart: {{ include "icm-as.chart" . }}
 {{ include "icm-as.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
@@ -71,7 +71,7 @@ These are predefined parameter from serveral features.
     {{- $addVmOptions = append $addVmOptions .Values.jvm.options -}}
     {{- if .Values.datadog.enabled -}}
         {{- $addVmOptions = append $addVmOptions .Values.datadog.options -}}
-    {{- end -}}   
+    {{- end -}}
 - name: FEATURED_JVM_ARGUMENTS
   value: {{ join " " $addVmOptions | quote }}
 {{- end -}}
@@ -85,7 +85,7 @@ These are additional parameters defined by deployment, which are not indented to
     {{- $addVmOptions = append $addVmOptions .Values.jvm.additionalOptions -}}
     {{- if .Values.datadog.enabled -}}
         {{- $addVmOptions = append $addVmOptions .Values.datadog.additionalOptions -}}
-    {{- end -}}   
+    {{- end -}}
 - name: ADDITIONAL_JVM_ARGUMENTS
   value: {{ join " " $addVmOptions | quote }}
 {{- end -}}
@@ -285,7 +285,7 @@ Creates the environment section
 */}}
 {{- define "icm-as.env" }}
 env:
-{{- if not (hasKey .Values.environment "SERVER_NAME") }} 
+{{- if not (hasKey .Values.environment "SERVER_NAME") }}
 - name: SERVER_NAME
   value: "appserver"
 {{- end }}
