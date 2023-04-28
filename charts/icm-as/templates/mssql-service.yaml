@@ -12,7 +12,8 @@ spec:
     port: 1434
     targetPort: 1434
   selector:
-    app: {{ include "icm-as.fullname" . }}-mssql
+    app: icm-as-mssql
+    release: {{ include "icm-as.fullname" . }}
 status:
   loadBalancer: {}
 {{- end }}
