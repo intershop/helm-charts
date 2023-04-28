@@ -42,6 +42,21 @@ helm dependency update icm
 helm install my-release ./icm --values=values.yaml --namespace icm
 ```
 
+## Development
+
+The base development branch for this chart is `develop/icm`. Before creating a feature/bugfix branch and pull request an issue is need (name shall start with "ICM: <your description>". If the feature/bugfix branch was taken it might be possible that `develop/icm` may change after some time. Then the changes need to be merged into the feature/bugfix branch.
+There is a naming convention for feature and bugfix branches like `feature/icm/<issue number>-<descriptive name>` or `bugfix/icm/<issue number>-<descriptive name>`.
+
+### Circular dependency
+
+There is a circular dependency to the underlying intershop project of this helm chart which manifests itself in having changes, which require also changes in the helm chart. To secure the version compatibility integration tests are done on pull requests before merging into the `main` branch.
+Some notes on this:
+* the `appVersion` in the `Chart.yaml` determines the compatible version to the current chart
+* the integration tests need published images on [intershophub](https://hub.docker.com/orgs/intershophub/repositories)
+* there might be changes in the underlying project which aren't published via image but chart changes are also required
+    * then either pubished dev-releases are needed or the feature branch couldn't be merged till an existing publish release
+    * it's possible to do alpha/beta releases of helm charts, which could be used to test the base changes before publishing any image
+
 ## Testing the Chart
 
 ### helm-unit
