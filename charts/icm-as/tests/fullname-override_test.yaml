@@ -25,10 +25,16 @@ tests:
       #spec.selector
       - equal:
           path: spec.selector.matchLabels.app
+          value: icm-as
+      - equal:
+          path: spec.selector.matchLabels.release
           value: custom-fullname
-      #spec.template.metadata    
+      #spec.template.metadata
       - equal:
           path: spec.template.metadata.labels.app
+          value: icm-as
+      - equal:
+          path: spec.template.metadata.labels.release
           value: custom-fullname
       #spec.template.spec.volumes
       - contains:
@@ -85,4 +91,4 @@ tests:
       #spec.selector
       - equal:
           path: spec.selector.app
-          value: custom-fullname
+          value: icm-as
