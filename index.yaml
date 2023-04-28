@@ -247,6 +247,25 @@ entries:
       requestedMemoryQuota: 5900Mi
     apiVersion: v1
     appVersion: 11.0.13
+    created: "2023-04-28T12:48:29.61485918Z"
+    dependencies:
+    - name: icm-as
+      repository: file://../icm-as
+      version: 0.8.3
+    - name: icm-web
+      repository: file://../icm-web
+      version: 0.7.4
+    description: Intershop Commerce Management - ICM
+    digest: 20de1f624f58236d1a1db3c74ddb638f10e562fe600d692c2ddc338effd81987
+    name: icm
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-0.9.5/icm-0.9.5.tgz
+    version: 0.9.5
+  - annotations:
+      requestedCpuQuotaInMinutes: "2500"
+      requestedMemoryQuota: 5900Mi
+    apiVersion: v1
+    appVersion: 11.0.13
     created: "2023-04-26T13:19:31.20803199Z"
     dependencies:
     - name: icm-as
@@ -1556,6 +1575,16 @@ entries:
     version: 0.9.0-alpha
   - apiVersion: v2
     appVersion: 11.0.13
+    created: "2023-04-28T12:48:29.774793784Z"
+    description: Intershop Commerce Management - AppServer
+    digest: 72985bd2b86b8ff5b9b7b3fbde5bc1538efe1f35d474e48a89e064ae89f555b2
+    name: icm-as
+    type: application
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-as-0.8.3/icm-as-0.8.3.tgz
+    version: 0.8.3
+  - apiVersion: v2
+    appVersion: 11.0.13
     created: "2023-04-26T13:19:31.45717729Z"
     description: Intershop Commerce Management - AppServer
     digest: 99f112b16dcabb73a976d05fe8414bcc7792322de83c4a85633240e544177f8a
@@ -2442,6 +2471,15 @@ entries:
     version: 0.9.0-alpha
   - apiVersion: v1
     appVersion: 11.0.13
+    created: "2023-04-28T12:48:29.932988079Z"
+    description: Intershop Commerce Management - Web Adapter and Web Adapter Agent
+    digest: 41d4a261382952aef80d9e227cdf8389002062bf4e8878b078756c6beb9ed30e
+    name: icm-web
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-web-0.7.4/icm-web-0.7.4.tgz
+    version: 0.7.4
+  - apiVersion: v1
+    appVersion: 11.0.13
     created: "2023-04-03T09:17:51.994451249Z"
     description: Intershop Commerce Management - Web Adapter and Web Adapter Agent
     digest: ac18364b75c279a433c16f23352216247b07d50df20061d9806f11d87cc8f602
@@ -3101,4 +3139,4 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.2.3/pwa-main-0.2.3.tgz
     version: 0.2.3
-generated: "2023-04-27T15:12:42.902105549Z"
+generated: "2023-04-28T12:48:29.934249186Z"
