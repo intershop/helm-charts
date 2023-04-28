@@ -27,8 +27,8 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: {{ include "icm-as.fullname" . }}
-      release: {{ .Release.Name }}
+      app: icm-as
+      release: {{ include "icm-as.fullname" . }}
   strategy:
     type: Recreate
   template:
@@ -41,8 +41,8 @@ spec:
       aadpodidbinding: {{ .Values.podBinding.binding }}
       {{- end }}
       labels:
-        app: {{ include "icm-as.fullname" . }}
-        release: {{ .Release.Name }}
+        app: icm-as
+        release: {{ include "icm-as.fullname" . }}
         {{- if .Values.datadog.enabled }}
         tags.datadoghq.com/env: {{ .Values.datadog.env }}
         tags.datadoghq.com/service: {{ include "icm-as.fullname" . }}
