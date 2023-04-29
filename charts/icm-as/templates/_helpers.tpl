@@ -139,7 +139,7 @@ Pod-annotations and bindings
 {{- define "icm-as.podData" }}
 {{- if .Values.podAnnotations }}
 annotations:
-{{- toYaml .Values.podAnnotations | trim | nindent 8 }}
+{{- toYaml .Values.podAnnotations | trim | nindent 2 }}
 {{- end }}
 {{- if .Values.podBinding.enabled }}
 aadpodidbinding: {{ .Values.podBinding.binding }}
@@ -173,7 +173,7 @@ image: "{{ .Values.image.repository }}{{ if not (contains ":" .Values.image.repo
 imagePullPolicy: "{{ .Values.image.pullPolicy }}"
 {{- if .Values.customCommand }}
 command:
-  {{- toYaml .Values.customCommand | trim | nindent 10 }}
+  {{- toYaml .Values.customCommand | trim | nindent 2 }}
 {{- end }}
 {{- end -}}
 

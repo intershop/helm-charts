@@ -29,7 +29,7 @@ spec:
       labels:
         app: icm-as
         release: {{ include "icm-as.fullname" . }}
-        {{- include "icm-as.datadogLabels" . | indent 6 }}
+        {{- include "icm-as.datadogLabels" . | indent 8 }}
         {{- include "icm-as.podLabels" . | indent 6 }}
     spec:
       {{- include "icm-as.nodeSelector" .  | indent 6 }}

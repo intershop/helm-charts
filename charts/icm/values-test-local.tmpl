@@ -16,7 +16,9 @@ icm-as:
       existingClaim: ${HELM_JOB_NAME}-local-testdata-pvc
       mountPoint: /data
   datadog:
-    enabled: false
+    enabled: true
+    env: eng-iste-testrun
+    options: "-Ddd.profiling.enabled=false -Ddd.trace.analytics.enabled=true -Ddd.jdbc.analytics.enabled=true"
   mssql:
     enabled: true
     acceptEula: "Y"
