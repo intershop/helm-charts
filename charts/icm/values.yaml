@@ -13,11 +13,10 @@ icm-as:
 
   ## @param environment - extra environment variables to be set on containers
   environment:
-    TZ: Europe/Berlin
 
   # ICM license Configuration
   license:
-  # type: configMap | csi
+  # type: configMap | csi | secret
     type: configMap
     configMap:
       content: |-
@@ -27,6 +26,8 @@ icm-as:
         secretProviderClass: "azure-license"
       nodePublishSecretRef:
         name: secrets-store-creds
+    secret:
+      name: <secret name>
 
   ## @param persistence - Either choose local (default), cluster, azurefiles or nfs persitence layer
   persistence:
@@ -38,9 +39,19 @@ icm-as:
 
   testConnection:
     protocol: https
-    port: 443
+    port: 8443
     url: /INTERSHOP/web/WFS/SMC
     serviceSuffix: -icm-web-wa
+
+  mssql:
+    enabled: false
+    persistence:
+      data:
+        local:
+          path: <local mssql data folder>
+      backup:
+        local:
+          path: <local mssql backup folder>
 
 icm-web:
   imagePullSecrets:

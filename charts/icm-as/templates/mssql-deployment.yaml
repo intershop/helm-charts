@@ -10,13 +10,13 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ include "icm-as.fullname" . }}-mssql
-      release: {{ .Release.Name }}
+      app: icm-as-mssql
+      release: {{ include "icm-as.fullname" . }}
   template:
     metadata:
       labels:
-        app: {{ include "icm-as.fullname" . }}-mssql
-        release: {{ .Release.Name }}
+        app: icm-as-mssql
+        release: {{ include "icm-as.fullname" . }}
     spec:
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -25,47 +25,47 @@ spec:
         {{- end }}
       {{- end }}
       containers:
-        - name: "{{ include "icm-as.fullname" . }}-mssql"
-          image: "{{ .Values.mssql.image.repository }}"
-          imagePullPolicy: IfNotPresent
-          env:
-          - name: ACCEPT_EULA
-            value: "{{ .Values.mssql.acceptEula }}"
-          - name: SA_PASSWORD
-            value: "{{ .Values.mssql.saPassword }}"
-          - name: MSSQL_AGENT_ENABLED
-            value: "true"
-          - name: MSSQL_PID
-            value: "Developer"
-          - name: RECREATEDB
-            value: "true"
-          - name: RECREATEUSER
-            value: "true"
-          - name: ICM_DB_NAME
-            value: "{{ .Values.mssql.databaseName }}"
-          - name: ICM_DB_USER
-            value: "{{ .Values.mssql.user }}"
-          - name: ICM_DB_PASSWORD
-            value: "{{ .Values.mssql.password }}"
-          volumeMounts:
-          - name: data-volume
-            mountPath: /var/opt/mssql/data
-          - name: backup-volume
-            mountPath: /var/opt/mssql/backup
-          ports:
-            - name: mssql
-              containerPort: 1433
-              protocol: TCP
-            - name: admin
-              containerPort: 1434
-              protocol: TCP
-          resources:
-            limits:
-              cpu: 1000m
-              memory: 2Gi
-            requests:
-              cpu: 1000m
-              memory: 2Gi
+      - name: "{{ include "icm-as.fullname" . }}-mssql"
+        image: "{{ .Values.mssql.image.repository }}"
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: ACCEPT_EULA
+          value: "{{ .Values.mssql.acceptEula }}"
+        - name: SA_PASSWORD
+          value: "{{ .Values.mssql.saPassword }}"
+        - name: MSSQL_AGENT_ENABLED
+          value: "true"
+        - name: MSSQL_PID
+          value: "Developer"
+        - name: RECREATEDB
+          value: "{{ .Values.mssql.recreation }}"
+        - name: RECREATEUSER
+          value: "{{ .Values.mssql.recreation }}"
+        - name: ICM_DB_NAME
+          value: "{{ .Values.mssql.databaseName }}"
+        - name: ICM_DB_USER
+          value: "{{ .Values.mssql.user }}"
+        - name: ICM_DB_PASSWORD
+          value: "{{ .Values.mssql.password }}"
+        volumeMounts:
+        - name: data-volume
+          mountPath: /var/opt/mssql/data
+        - name: backup-volume
+          mountPath: /var/opt/mssql/backup
+        ports:
+        - name: mssql
+          containerPort: 1433
+          protocol: TCP
+        - name: admin
+          containerPort: 1434
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 2Gi
+          requests:
+            cpu: 1000m
+            memory: 2Gi
       volumes:
       - name: data-volume
         {{- if eq .Values.mssql.persistence.data.type "local" }}

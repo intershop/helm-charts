@@ -1,9 +1,9 @@
 dependencies:
   - name: icm-as
-    version: 0.8.1
+    version: 0.8.3
     repository: file://../icm-as
   - name: icm-web
-    version: 0.7.3
+    version: 0.7.4
     repository: file://../icm-web
   - name: mailhog
     version: 5.2.0
