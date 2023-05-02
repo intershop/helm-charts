@@ -308,6 +308,25 @@ entries:
       requestedMemoryQuota: 5900Mi
     apiVersion: v1
     appVersion: 11.0.13
+    created: "2023-05-02T11:56:55.884709827Z"
+    dependencies:
+    - name: icm-as
+      repository: file://../icm-as
+      version: 0.8.3
+    - name: icm-web
+      repository: file://../icm-web
+      version: 0.7.4
+    description: Intershop Commerce Management - ICM
+    digest: d666380d179e9b0b0ddea5b3ef5bb8663fc3f26e30344c87b87212c4b68d06ae
+    name: icm
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-0.9.6/icm-0.9.6.tgz
+    version: 0.9.6
+  - annotations:
+      requestedCpuQuotaInMinutes: "2500"
+      requestedMemoryQuota: 5900Mi
+    apiVersion: v1
+    appVersion: 11.0.13
     created: "2023-04-28T12:48:29.61485918Z"
     dependencies:
     - name: icm-as
@@ -3220,4 +3239,4 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.2.3/pwa-main-0.2.3.tgz
     version: 0.2.3
-generated: "2023-05-02T07:15:40.078143817Z"
+generated: "2023-05-02T11:56:55.885637733Z"
