@@ -49,13 +49,23 @@ tests:
       - contains:
           path: spec.template.spec.containers[0].env
           content:
-            name: MAIL_SERVER
-            value: "${HELM_JOB_NAME}-icm-mail"
+            name: MAIL_SMTP_HOST
+            value: "${HELM_JOB_NAME}-mailhog"
       - contains:
           path: spec.template.spec.containers[0].env
           content:
-            name: MAIL_SHARE
-            value: "${HELM_DIRECTORY}/test-mails"
+            name: MAIL_SMTP_PORT
+            value: "1025"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: MAIL_CLIENT_API_PORT
+            value: "8025"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: MAIL_SMTP_MAILHOG_ENABLED
+            value: "true"
       - contains:
           path: spec.template.spec.containers[0].env
           content:
