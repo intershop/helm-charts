@@ -295,10 +295,10 @@ ingress:
   # Paths are treated as list of prefixes. Any URL matching one of the prefixes will
   # be forwared to ICM.
   hosts:
-    - host: <dns-name-of-service>
-      paths:
-        - path: /
-          pathType: Prefix
+  - host: <dns-name-of-service>
+    paths:
+    - path: /
+      pathType: Prefix
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -307,11 +307,11 @@ ingress:
 webLayer:
   enabled: false
 sslCertificateRetrieval:
-    enabled: false
-    # secretName: <explicit-ssl-secret-name>
-    keyvault:
-      tenantId: <tenant-ID-of-the-KeyVault>
-      subscriptionId: <subscription-ID-of-the-KeyVault>
-      resourceGroup: <resource-group-of-the-KeyVault>
-      keyvaultName: <name-of-the-KeyVault>
-      certificateName: <name-of-the-certificate>
+  enabled: false
+  # secretName: <explicit-ssl-secret-name>
+  keyvault:
+    tenantId: <tenant-ID-of-the-KeyVault>
+    subscriptionId: <subscription-ID-of-the-KeyVault>
+    resourceGroup: <resource-group-of-the-KeyVault>
+    keyvaultName: <name-of-the-KeyVault>
+    certificateName: <name-of-the-certificate>
