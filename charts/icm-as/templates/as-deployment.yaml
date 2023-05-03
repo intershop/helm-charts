@@ -140,6 +140,10 @@ spec:
           - name: INTERSHOP_JDBC_PASSWORD
             value: "{{ .Values.database.jdbcPassword }}"
           {{- end }}
+          {{- if .Values.webLayer.enabled }}
+          - name: INTERSHOP_WEBADAPTER_ENABLED
+            value: "false"
+          {{- end }}
           {{- include "icm-as.featuredJVMArguments" . | nindent 10 }}
           {{- include "icm-as.additionalJVMArguments" . | nindent 10 }}
           {{- range $key, $value := .Values.environment }}
@@ -200,6 +204,10 @@ spec:
               readOnly: true
               subPath: replication-clusters.xml
           {{- end }}
+          {{- end }}
+          {{- if .Values.sslCertificateRetrieval.enabled }}
+            - mountPath: /mnt/secrets
+              name: secrets-store-inline
           {{- end }}
           startupProbe:
             httpGet:
@@ -366,3 +374,11 @@ spec:
         {{- end }}
       - name: customizations-volume
         emptyDir: {}
+        {{- if .Values.sslCertificateRetrieval.enabled }}
+      - name: secrets-store-inline
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: {{ include "icm-as.fullname" . }}-cert
+        {{- end }}
