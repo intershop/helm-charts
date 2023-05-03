@@ -9,7 +9,7 @@ WORKSPACE_DIRECTORY="/data/testplans/1/testsuites/1/workspace"
 
 NODENAME="true"
 
-ICM_WEBSERVER_IMAGE="intershophub/icm-webadapter:2.4.5"
+ICM_WEBSERVER_IMAGE="intershophub/icm-webadapter:2.4.6"
 ICM_WEBADAPTER_AGENT_IMAGE="intershophub/icm-webadapteragent:4.0.0"
 SERVER_DIRECTORY_GROUP="intershop"
 SERVER_DIRECTORY_USER="intershop"
