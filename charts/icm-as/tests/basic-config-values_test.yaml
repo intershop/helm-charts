@@ -144,5 +144,24 @@ tests:
             name: DEBUG_ICM
             value: "true"
 
+  - it: nodeSelector not empty
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      nodeSelector.agentpool1: zero
+      nodeSelector.agentpool2: one
+    template: templates/as-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.nodeSelector.agentpool1
+          value: zero
+      - equal:
+          path: spec.template.spec.nodeSelector.agentpool2
+          value: one
+
 # TODO tolerations
 # TODO affinity
