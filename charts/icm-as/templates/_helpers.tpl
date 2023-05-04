@@ -291,7 +291,7 @@ Creates the environment section
 env:
 {{- if not (hasKey .Values.environment "SERVER_NAME") }}
 - name: SERVER_NAME
-  value: "appserver"
+  value: "{{ .Values.serverName}}"
 {{- end }}
 - name: IS_DBPREPARE
   value: "false"
@@ -362,6 +362,14 @@ env:
 - name: {{ $key }}
   value: {{ $value | quote }}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Applies security context information
+*/}}
+{{- define "icm-as.podSecurityContext" }}
+securityContext:
+  {{- toYaml .Values.podSecurityContext | nindent 2 }}
 {{- end -}}
 
 {{/*
