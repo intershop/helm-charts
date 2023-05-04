@@ -76,8 +76,12 @@ nameOverride: ""
 
 fullnameOverride: ""
 
+# Set a custom server name. Defaults to 'appserver'
+# serverName: <customServerName>
+
 # provide custom cluster config from "icm-as.fullname"-system-conf-cluster configmap
-provideCustomConfig: {}
+provideCustomConfig:
+  {}
   # logback-main:
   #   mountPath: /intershop/system-conf/cluster/
   #   fileName: logback-main.xml
@@ -135,7 +139,7 @@ environment:
 
 # ICM license Configuration
 license:
-# type: configMap | csi | secret
+  # type: configMap | csi | secret
   type: configMap
   configMap:
     content: |-
@@ -195,13 +199,13 @@ persistence:
 # Probes, all values are optional, below are the defaults
 probes:
   startup: {}
-#    failureThreshold: 6
-#    initialDelaySeconds: 60
-#    periodSeconds: 10
+  #    failureThreshold: 6
+  #    initialDelaySeconds: 60
+  #    periodSeconds: 10
   liveness: {}
-#    failureThreshold: 3
-#    initialDelaySeconds: 0
-#    periodSeconds: 10
+  #    failureThreshold: 3
+  #    initialDelaySeconds: 0
+  #    periodSeconds: 10
   readiness: {}
 #    failureThreshold: 3
 #    initialDelaySeconds: 0
@@ -285,22 +289,29 @@ copySitesDir:
   # chmodUser: user
   # chmodGroup: group
 
+# Configure configuration of the job-server.
+# The job-server template inherits most properties from the configuration of the application-server.
+# In order to override these properties add them in the job section, e.g. add a 'resources' section to
+# configure different cpu or memory limits.
 job:
   enabled: false
 
   # If true, job-server-support will be available but no jobs will be created
-  suspend: false
+  # suspend: false
 
   # Sets the polling interval of the job-scheduler in seconds, defaults to 30s
   # pollInterval: value_in_seconds
 
   # Sets the limit of failed jobs in the history. If the limit gets reached
   # eldest jobs will be deleted. Defaults to unlimited
-  # failedJobsHistoryLimit: limit_count
+  failedJobsHistoryLimit: 1
 
   # Sets the limit of successful jobs in the history. If the limit gets reached
   # eldest jobs will be deleted. Defaults to unlimited
-  # successfulJobsHistoryLimit: limit_count
+  successfulJobsHistoryLimit: 3
 
   # If true the schedule-time-computer will be called with server name 'jobserver' and group == 'JOB'
   nameSpecific: false
+
+  # Custom job-server name. Defaults to 'jobserver'
+  # serverName: <CustomJobServerName>

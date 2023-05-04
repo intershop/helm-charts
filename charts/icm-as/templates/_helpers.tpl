@@ -171,3 +171,10 @@ imagePullSecrets:
 {{- end }}
 {{- end }}
 {{- end -}}
+
+{{/*
+Applies security context information
+*/}}
+{{- define "icm-as.podSecurityContext" }}
+securityContext: {{- toYaml .Values.podSecurityContext | nindent 2 }}
+{{- end -}}

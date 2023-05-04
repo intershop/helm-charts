@@ -7,10 +7,11 @@
 {{- else -}}
 {{- $jobValues := set $jobValues "jobServerGroup" "JOB" -}}
 {{- end -}}
-{{- if $jobValues.Values.serverGroup -}}
+{{- if $jobValues.Values.serverName -}}
 {{- $jobValues := set $jobValues "jobServerName" $jobValues.Values.serverName -}}
 {{- else -}}
 {{- $jobValues := set $jobValues "jobServerName" "jobserver" -}}
+{{- $values_ := set $jobValues.Values "serverName" "jobserver" -}}
 {{- end -}}
 
 apiVersion: batch.core.intershop.de/v1
@@ -56,7 +57,8 @@ spec:
             {{- include "icm-as.lifecycle" $jobValues | indent 12 }}
           {{- include "icm-as.initContainers" . | indent 10 }}
           restartPolicy: OnFailure
-        {{- include "icm-as.volumes" . | indent 8 }}
+          {{- include "icm-as.podSecurityContext" $jobValues  | indent 10 }}
+          {{- include "icm-as.volumes" .  | indent 10 }}
 {{- end -}}
 
 {{/*
