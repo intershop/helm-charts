@@ -56,7 +56,7 @@ spec:
               {{- include "icm-as.lifecycle" $jobValues  | indent 14 }}
           {{- include "icm-as.initContainers" .  | indent 10 }}
           restartPolicy: OnFailure
-          {{- include "icm-as.podSecurityContext" .  | indent 10 }}
+          {{- include "icm-as.podSecurityContext" $jobValues  | indent 10 }}
         {{- include "icm-as.volumes" .  | indent 10 }}
 {{- end -}}
 
