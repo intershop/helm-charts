@@ -203,8 +203,9 @@ tests:
           value: icm-as-0.8.15
       #data
       - equal:
-          path: data.license\.xml
-          value: "<your license>"
+          path: data
+          value:
+            license.xml: "<your license>"
 
 
   - it: as-service is correct
