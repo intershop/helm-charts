@@ -11,7 +11,7 @@ tests:
       version: 0.8.15
     values:
       - ../values-iste_linux.tmpl
-      - ../values-test-local.yaml
+      - ../values-test-local.tmpl
     set:
       testdata.persistence.type: local
     template: templates/test-job.yaml

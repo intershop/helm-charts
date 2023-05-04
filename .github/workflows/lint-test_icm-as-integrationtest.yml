@@ -1,0 +1,83 @@
+name: "Integration test icm-as chart"
+on:
+  pull_request:
+    paths:
+    - 'charts/icm-as/**'
+    branches: 
+      - main
+
+jobs:
+  lint-test-icm-as-integrationtest:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Base
+      uses: ./.github/template/base
+
+    - name: Run chart-testing (list-changed)
+      id: list-changed
+      run: |
+        changed=$(ct list-changed --config ct_icm-as.yaml)
+        if [[ -n "$changed" ]]; then
+          echo "::set-output name=changed::true"
+        fi
+
+    - name: Create kind cluster
+      if: steps.list-changed.outputs.changed == 'true'
+      uses: helm/kind-action@v1.3.0
+      with:
+        config: kind.yaml
+
+    - name: Log into registry docker.io
+      if: steps.list-changed.outputs.changed == 'true'
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Run chart-testing (install)
+      if: steps.list-changed.outputs.changed == 'true'
+      run: |
+        set -x
+        random_value=`tr -dc 'a-z0-9' < /dev/urandom | head -c10`
+        export NAMESPACE=ct-icm-as-$random_value
+        echo "NAMESPACE=$NAMESPACE" >> $GITHUB_ENV
+
+        kubectl create namespace $NAMESPACE
+
+        kubectl create secret docker-registry dockerhub --namespace=$NAMESPACE --docker-username=${{ secrets.DOCKER_USERNAME }} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=eng-ateam@intershop.com
+
+        sudo mkdir -p /data/icm/sites
+        sed -i 's/<local folder>/\/data\/icm\/sites/' charts/icm-as/values.yaml
+        
+        sudo mkdir -p /data/icm/mssql/data
+        sudo mkdir -p /data/icm/mssql/backup
+        sed -i 's/<local mssql data folder>/\/data\/icm\/mssql\/data/' charts/icm-as/values.yaml
+        sed -i 's/<local mssql backup folder>/\/data\/icm\/mssql\/backup/' charts/icm-as/values.yaml
+
+        license=$(cat <<'EOF'
+          ${{ secrets.ICM_LICENSE }}
+        EOF
+        )
+        sed -i "s[<your license>[${license//$'\n'/}[" charts/icm-as/values.yaml
+        
+        sed -i '/^mssql:/{n;s/.*/  enabled: true/}' charts/icm-as/values.yaml
+        
+        ct install --namespace=$NAMESPACE --config ct_icm-as.yaml
+        
+    - name: Debug failure
+      if: failure() && steps.list-changed.outputs.changed == 'true'
+      run: |
+        echo "=Describe nodes================================\n"
+        kubectl describe node -A
+        echo "=Describe pods================================\n"
+        kubectl describe pod -n $NAMESPACE
+        echo "=Describe services================================\n"
+        kubectl describe service -n $NAMESPACE
+        echo "=Logs icm-as-msql================================\n"
+        kubectl logs -n $NAMESPACE $(kubectl get pods -l app=icm-as-mssql -n $NAMESPACE -o jsonpath="{.items[0].metadata.name}")
+        echo "=Logs icm-as================================\n"
+        kubectl logs -n $NAMESPACE $(kubectl get pods -l app=icm-as -n $NAMESPACE -o jsonpath="{.items[0].metadata.name}")

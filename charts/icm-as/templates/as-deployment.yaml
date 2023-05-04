@@ -22,17 +22,17 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: {{ include "icm-as.fullname" . }}
-      release: {{ .Release.Name }}
+      app: icm-as
+      release: {{ include "icm-as.fullname" . }}
   strategy:
     type: Recreate
   template:
     metadata:
       {{- include "icm-as.podData" .  | indent 6 }}
       labels:
-        app: {{ include "icm-as.fullname" . }}
-        release: {{ .Release.Name }}
-        {{- include "icm-as.datadogLabels" . | indent 6 }}
+        app: icm-as
+        release: {{ include "icm-as.fullname" . }}
+        {{- include "icm-as.datadogLabels" . | indent 8 }}
         {{- include "icm-as.podLabels" . | indent 6 }}
     spec:
       {{- include "icm-as.nodeSelector" .  | indent 6 }}
@@ -53,4 +53,3 @@ spec:
       {{- include "icm-as.podSecurityContext" .  | indent 6 }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds | default 30 }}
       {{- include "icm-as.volumes" .  | indent 6 }}
-
