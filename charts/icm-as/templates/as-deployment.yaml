@@ -3,8 +3,7 @@ kind: Deployment
 metadata:
   name: {{ include "icm-as.fullname" . }}
   {{- if .Values.deploymentAnnotations }}
-  annotations:
-    {{- toYaml .Values.deploymentAnnotations | trim | nindent 4 }}
+  annotations: {{- toYaml .Values.deploymentAnnotations | trim | nindent 4 }}
   {{- end }}
   labels:
     app: {{ include "icm-as.fullname" . }}
@@ -25,29 +24,28 @@ spec:
     type: Recreate
   template:
     metadata:
-      {{- include "icm-as.podData" .  | indent 6 }}
+      {{- include "icm-as.podData" . | indent 6 }}
       labels:
         app: icm-as
         release: {{ include "icm-as.fullname" . }}
         {{- include "icm-as.datadogLabels" . | indent 8 }}
-        {{- include "icm-as.podLabels" . | indent 6 }}
+        {{- include "icm-as.podLabels" . | indent 8 }}
     spec:
-      {{- include "icm-as.nodeSelector" .  | indent 6 }}
-      {{- include "icm-as.imagePullSecrets" .  | indent 6 }}
+      {{- include "icm-as.nodeSelector" . | indent 6 }}
+      {{- include "icm-as.imagePullSecrets" . | indent 6 }}
       containers:
-        - name: icm-as-server
-          {{- include "icm-as.image" .  | indent 10 }}
-          {{- include "icm-as.env" .  | indent 10 }}
-          {{- include "icm-as.ports" .  | indent 10 }}
-          {{- include "icm-as.resources" .  | indent 10 }}
-          {{- include "icm-as.volumeMounts" .  | indent 10 }}
-          {{- include "icm-as.probes" .  | indent 10 }}
-          {{- include "icm-as.lifecycle" .  | indent 10 }}
-      {{- include "icm-as.initContainers" .  | indent 6 }}
+      - name: icm-as-server
+        {{- include "icm-as.image" . | indent 8 }}
+        {{- include "icm-as.env" . | indent 8 }}
+        {{- include "icm-as.ports" . | indent 8 }}
+        {{- include "icm-as.resources" . | indent 8 }}
+        {{- include "icm-as.volumeMounts" . | indent 8 }}
+        {{- include "icm-as.probes" . | indent 8 }}
+        {{- include "icm-as.lifecycle" . | indent 8 }}
+      {{- include "icm-as.initContainers" . | indent 6 }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      securityContext: {{- toYaml .Values.podSecurityContext | nindent 8 }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds | default 30 }}
-      {{- include "icm-as.volumes" .  | indent 6 }}
+      {{- include "icm-as.volumes" . | indent 6 }}

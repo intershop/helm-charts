@@ -11,7 +11,7 @@ spec:
   capacity:
     storage: {{ .Values.mssql.persistence.data.size }}
   accessModes:
-    - ReadWriteMany
+  - ReadWriteMany
   persistentVolumeReclaimPolicy: Delete
   hostPath:
     path: "{{ .Values.mssql.persistence.data.local.path }}"

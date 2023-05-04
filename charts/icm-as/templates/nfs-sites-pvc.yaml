@@ -10,7 +10,7 @@ metadata:
 {{ include "icm-as.labels" . | indent 4 }}
 spec:
   accessModes:
-    - ReadWriteMany
+  - ReadWriteMany
   storageClassName: ""
   volumeName: {{ template "icm-as.fullname" . }}-nfs-sites-pv
   resources:

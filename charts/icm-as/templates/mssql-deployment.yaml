@@ -20,9 +20,9 @@ spec:
     spec:
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- range .Values.imagePullSecrets }}
-        - name: {{ . | quote }}
-        {{- end }}
+      {{- range .Values.imagePullSecrets }}
+      - name: {{ . | quote }}
+      {{- end }}
       {{- end }}
       containers:
       - name: "{{ include "icm-as.fullname" . }}-mssql"

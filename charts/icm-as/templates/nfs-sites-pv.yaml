@@ -10,7 +10,7 @@ spec:
   capacity:
     storage: {{ .Values.persistence.sites.size }}
   accessModes:
-    - ReadWriteMany
+  - ReadWriteMany
   nfs:
     server: {{ .Values.persistence.sites.nfs.server | quote }}
     path: {{ .Values.persistence.sites.nfs.path | quote }}

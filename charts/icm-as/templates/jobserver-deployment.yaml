@@ -13,7 +13,6 @@
 {{- $jobValues := set $jobValues "jobServerName" "jobserver" -}}
 {{- end -}}
 
-
 apiVersion: batch.core.intershop.de/v1
 kind: ICMJob
 metadata:
@@ -41,23 +40,23 @@ spec:
             {{- include "icm-as.chartLabel" . | indent 12 }}
             {{- include "icm-as.datadogLabels" . | indent 12 }}
             {{- if $jobValues.Values.deploymentLabels }}
-              {{- toYaml $jobValues.Values.deploymentLabels | trim | nindent 12 }}
-            {{- end }}            
+              {{- toYaml $jobValues.Values.deploymentLabels | indent 12 }}
+            {{- end }}
         spec:
-          {{- include "icm-as.nodeSelector" $jobValues  | indent 10 }}
-          {{- include "icm-as.imagePullSecrets" .  | indent 10 }}
+          {{- include "icm-as.nodeSelector" $jobValues | indent 10 }}
+          {{- include "icm-as.imagePullSecrets" . | indent 10 }}
           containers:
-            - name: icm-as-server
-              {{- include "icm-as.image" .  | indent 14 }}
-              {{- include "icm-as.envJob" $jobValues  | indent 14 }}
-              {{- include "icm-as.ports" $jobValues  | indent 14 }}
-              {{- include "icm-as.resources" $jobValues | indent 14 }}
-              {{- include "icm-as.volumeMounts" .  | indent 14 }}
-              {{- include "icm-as.probes" .  | indent 14 }}
-              {{- include "icm-as.lifecycle" $jobValues  | indent 14 }}
-          {{- include "icm-as.initContainers" .  | indent 10 }}
+          - name: icm-as-server
+            {{- include "icm-as.image" . | indent 12 }}
+            {{- include "icm-as.envJob" $jobValues | indent 12 }}
+            {{- include "icm-as.ports" $jobValues | indent 12 }}
+            {{- include "icm-as.resources" $jobValues | indent 12 }}
+            {{- include "icm-as.volumeMounts" . | indent 12 }}
+            {{- include "icm-as.probes" . | indent 12 }}
+            {{- include "icm-as.lifecycle" $jobValues | indent 12 }}
+          {{- include "icm-as.initContainers" . | indent 10 }}
           restartPolicy: OnFailure
-        {{- include "icm-as.volumes" .  | indent 10 }}
+        {{- include "icm-as.volumes" . | indent 8 }}
 {{- end -}}
 
 {{/*
