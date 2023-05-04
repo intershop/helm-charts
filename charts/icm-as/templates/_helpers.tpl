@@ -135,8 +135,8 @@ aadpodidbinding: {{ .Values.podBinding.binding }}
 Pod-label
 */}}
 {{- define "icm-as.podLabels" }}
-{{- if .Values.podLabels | indent 0}}
-{{- toYaml .Values.podLabels }}
+{{- if .Values.podLabels}}
+{{- toYaml .Values.podLabels | indent 0 }}
 {{- end }}
 {{- end -}}
 
