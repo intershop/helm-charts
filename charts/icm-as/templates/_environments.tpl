@@ -6,7 +6,7 @@ Creates the environment section
 env:
 {{- if not (hasKey .Values.environment "SERVER_NAME") }}
 - name: SERVER_NAME
-  value: "appserver"
+  value: "{{ .Values.serverName }}"
 {{- end }}
 - name: IS_DBPREPARE
   value: "false"
