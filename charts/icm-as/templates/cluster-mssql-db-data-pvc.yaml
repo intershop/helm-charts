@@ -1,0 +1,18 @@
+{{- if eq .Values.mssql.persistence.data.type "cluster"  -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "icm-as.fullname" . }}-cluster-mssql-db-data-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  # use the storage class defined by cluster-sc.yaml
+  {{- if .Values.mssql.persistence.data.cluster.storageClass.create }}
+  storageClassName: "{{ template "icm-as.fullname" . }}-cluster-mssql-db-data-sc"
+  {{- else if gt (len .Values.mssql.persistence.data.cluster.storageClass.existingClass) 0 }}
+  storageClassName: {{ .Values.mssql.persistence.data.cluster.storageClass.existingClass | quote }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.mssql.persistence.data.size }}
+{{- end -}}
