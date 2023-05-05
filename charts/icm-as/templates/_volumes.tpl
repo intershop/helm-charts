@@ -2,7 +2,7 @@
 {{/*
 Creates the volumes used by an ICM
 */}}
-{{- define "icm-as.volumes" }}
+{{- define "icm-as.volumes" -}}
 volumes:
 {{- if .Values.provideCustomConfig }}
 {{- range $k, $v := .Values.provideCustomConfig }}

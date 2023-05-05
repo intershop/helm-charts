@@ -2,7 +2,7 @@
 {{/*
 Creates the volume mounts
 */}}
-{{- define "icm-as.volumeMounts" }}
+{{- define "icm-as.volumeMounts" -}}
 volumeMounts:
 {{- if .Values.provideCustomConfig }}
 {{- range $k, $v := .Values.provideCustomConfig }}

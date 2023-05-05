@@ -2,7 +2,7 @@
 {{/*
 Creates the ports
 */}}
-{{- define "icm-as.ports" }}
+{{- define "icm-as.ports" -}}
 ports:
 # Servlet engine service connector port
 - name: svc

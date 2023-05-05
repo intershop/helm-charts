@@ -2,7 +2,7 @@
 {{/*
 Creates init-containers
 */}}
-{{- define "icm-as.initContainers" }}
+{{- define "icm-as.initContainers" -}}
 initContainers:
 {{- if eq .Values.persistence.sites.type "local" }}
 # the following container

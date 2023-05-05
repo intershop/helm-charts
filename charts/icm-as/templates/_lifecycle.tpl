@@ -2,7 +2,7 @@
 {{/*
 Creates the lifecycle
 */}}
-{{- define "icm-as.lifecycle" }}
+{{- define "icm-as.lifecycle" -}}
 lifecycle:
   preStop:
     httpGet:

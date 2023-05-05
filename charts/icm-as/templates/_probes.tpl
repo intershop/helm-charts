@@ -2,7 +2,7 @@
 {{/*
 Creates the probes
 */}}
-{{- define "icm-as.probes" }}
+{{- define "icm-as.probes" -}}
 startupProbe:
   httpGet:
     path: /status/LivenessProbe

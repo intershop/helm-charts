@@ -67,11 +67,11 @@ Create the values for the environment variable FEATURED_JVM_ARGUMENTS.
 These are predefined parameter from serveral features.
 */}}
 {{- define "icm-as.featuredJVMArguments" -}}
-    {{- $addVmOptions := list -}}
-    {{- $addVmOptions = append $addVmOptions .Values.jvm.options -}}
-    {{- if .Values.datadog.enabled -}}
-        {{- $addVmOptions = append $addVmOptions .Values.datadog.options -}}
-    {{- end -}}
+{{- $addVmOptions := list -}}
+{{- $addVmOptions = append $addVmOptions .Values.jvm.options -}}
+{{- if .Values.datadog.enabled -}}
+    {{- $addVmOptions = append $addVmOptions .Values.datadog.options -}}
+{{- end -}}
 - name: FEATURED_JVM_ARGUMENTS
   value: {{ join " " $addVmOptions | quote }}
 {{- end -}}
@@ -81,11 +81,11 @@ Create the values for the environment variable ADDITIONAL_JVM_ARGUMENTS.
 These are additional parameters defined by deployment, which are not indented to override feature specific parameter.
 */}}
 {{- define "icm-as.additionalJVMArguments" -}}
-    {{- $addVmOptions := list -}}
-    {{- $addVmOptions = append $addVmOptions .Values.jvm.additionalOptions -}}
-    {{- if .Values.datadog.enabled -}}
-        {{- $addVmOptions = append $addVmOptions .Values.datadog.additionalOptions -}}
-    {{- end -}}
+{{- $addVmOptions := list -}}
+{{- $addVmOptions = append $addVmOptions .Values.jvm.additionalOptions -}}
+{{- if .Values.datadog.enabled -}}
+    {{- $addVmOptions = append $addVmOptions .Values.datadog.additionalOptions -}}
+{{- end -}}
 - name: ADDITIONAL_JVM_ARGUMENTS
   value: {{ join " " $addVmOptions | quote }}
 {{- end -}}
@@ -100,11 +100,11 @@ chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 {{/*
 Applies datadog labels
 */}}
-{{- define "icm-as.datadogLabels" }}
-{{- if .Values.datadog.enabled }}
+{{- define "icm-as.datadogLabels" -}}
+{{- if .Values.datadog.enabled -}}
 tags.datadoghq.com/env: {{ .Values.datadog.env }}
 tags.datadoghq.com/service: {{ include "icm-as.fullname" . }}
-{{- if .Values.image.tag }}
+{{- if .Values.image.tag -}}
 tags.datadoghq.com/version: {{ .Values.image.tag }}
 {{- else }}
 tags.datadoghq.com/version: {{ (split ":" .Values.image.repository)._1 }}
@@ -115,18 +115,18 @@ tags.datadoghq.com/version: {{ (split ":" .Values.image.repository)._1 }}
 {{/*
 Creates resources
 */}}
-{{- define "icm-as.resources" }}
+{{- define "icm-as.resources" -}}
 resources: {{- toYaml .Values.resources | nindent 2 }}
 {{- end -}}
 
 {{/*
 Pod-annotations and bindings
 */}}
-{{- define "icm-as.podData" }}
-{{- if .Values.podAnnotations }}
+{{- define "icm-as.podData" -}}
+{{- if .Values.podAnnotations -}}
 annotations: {{- toYaml .Values.podAnnotations | nindent 2 }}
 {{- end }}
-{{- if .Values.podBinding.enabled }}
+{{- if .Values.podBinding.enabled -}}
 aadpodidbinding: {{ .Values.podBinding.binding }}
 {{- end }}
 {{- end -}}
@@ -134,7 +134,7 @@ aadpodidbinding: {{ .Values.podBinding.binding }}
 {{/*
 Pod-label
 */}}
-{{- define "icm-as.podLabels" }}
+{{- define "icm-as.podLabels" -}}
 {{- with .Values.podLabels }}
 {{- . | toYaml | nindent 0 }}
 {{- end }}
@@ -143,16 +143,17 @@ Pod-label
 {{/*
 Node-selector
 */}}
-{{- define "icm-as.nodeSelector" }}
-{{- if .Values.nodeSelector}}
-nodeSelector: {{- toYaml .Values.nodeSelector | nindent 2 }}
+{{- define "icm-as.nodeSelector" -}}
+{{- if .Values.nodeSelector -}}
+nodeSelector:
+  {{- toYaml .Values.nodeSelector | nindent 2 }}
 {{- end }}
 {{- end -}}
 
 {{/*
 Image spec
 */}}
-{{- define "icm-as.image" }}
+{{- define "icm-as.image" -}}
 image: "{{ .Values.image.repository }}{{ if not (contains ":" .Values.image.repository) }}:{{ .Values.image.tag | default .Chart.AppVersion }}{{ end }}"
 imagePullPolicy: "{{ .Values.image.pullPolicy }}"
 {{- if .Values.customCommand }}
@@ -163,18 +164,21 @@ command: {{- toYaml .Values.customCommand | nindent 2 }}
 {{/*
 imagePullSecrets spec
 */}}
-{{- define "icm-as.imagePullSecrets" }}
-{{- if .Values.imagePullSecrets }}
+{{- define "icm-as.imagePullSecrets" -}}
+{{- if .Values.imagePullSecrets -}}
 imagePullSecrets:
 {{- range .Values.imagePullSecrets }}
 - name: {{ . | quote }}
-{{- end }}
-{{- end }}
+{{- end -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
 Applies security context information
 */}}
-{{- define "icm-as.podSecurityContext" }}
-securityContext: {{- toYaml .Values.podSecurityContext | nindent 2 }}
+{{- define "icm-as.podSecurityContext" -}}
+{{- if .Values.podSecurityContext -}}
+securityContext:
+  {{- toYaml .Values.podSecurityContext | nindent 2 }}
+{{- end }}
 {{- end -}}

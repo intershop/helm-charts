@@ -2,7 +2,7 @@
 {{/*
 Creates the environment section
 */}}
-{{- define "icm-as.env" }}
+{{- define "icm-as.env" -}}
 env:
 {{- if not (hasKey .Values.environment "SERVER_NAME") }}
 - name: SERVER_NAME
