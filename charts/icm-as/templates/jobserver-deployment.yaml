@@ -41,7 +41,7 @@ spec:
             {{- include "icm-as.chartLabel" . | indent 12 }}
             {{- include "icm-as.datadogLabels" . | indent 12 }}
             {{- if $jobValues.Values.deploymentLabels }}
-              {{- toYaml $jobValues.Values.deploymentLabels | indent 12 }}
+              {{- toYaml $jobValues.Values.deploymentLabels | nindent 12 }}
             {{- end }}
         spec:
           {{- include "icm-as.nodeSelector" $jobValues | indent 10 }}
