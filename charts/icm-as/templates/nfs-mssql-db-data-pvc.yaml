@@ -1,0 +1,22 @@
+{{- if eq .Values.mssql.persistence.data.type "nfs" -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "icm-as.fullname" . }}-nfs-mssql-db-data-pvc
+  annotations:
+    # avoid deleting with helm update
+    "helm.sh/resource-policy": keep
+  labels:
+{{ include "icm-as.labels" . | indent 4 }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  volumeName: {{ template "icm-as.fullname" . }}-nfs-mssql-db-data-pv
+  resources:
+    requests:
+      storage: {{ .Values.mssql.persistence.data.size }}
+  selector:
+    matchLabels:
+      type: nfs
+{{- end -}}
