@@ -220,10 +220,10 @@ mssql:
   resources:
     limits:
       cpu: 1000m
-      memory: 1Gi
+      memory: 2Gi
     requests:
       cpu: 1000m
-      memory: 1Gi
+      memory: 2Gi
   image:
     repository: "intershophub/mssql-intershop:2019-latest"
   # needs to be explicitally switched at deployment to "Y"
