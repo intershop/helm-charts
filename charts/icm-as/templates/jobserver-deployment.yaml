@@ -38,27 +38,27 @@ spec:
         metadata:
           labels:
             app: {{ include "icm-as.fullname" . }}
-            {{ include "icm-as.chartLabel" . | indent 12 | trim }}
-            {{ include "icm-as.datadogLabels" . | indent 12 | trim }}
+            {{- include "icm-as.chartLabel" . | indent 12 }}
+            {{- include "icm-as.datadogLabels" . | indent 12 }}
             {{- if $jobValues.Values.deploymentLabels }}
               {{- toYaml $jobValues.Values.deploymentLabels | indent 12 }}
             {{- end }}
         spec:
-          {{ include "icm-as.nodeSelector" $jobValues | indent 10 | trim }}
-          {{ include "icm-as.imagePullSecrets" . | indent 10 | trim }}
+          {{- include "icm-as.nodeSelector" $jobValues | indent 10 }}
+          {{- include "icm-as.imagePullSecrets" . | indent 10 }}
           containers:
           - name: icm-as-server
-            {{ include "icm-as.image" . | indent 12 | trim }}
-            {{ include "icm-as.envJob" $jobValues | indent 12 | trim }}
-            {{ include "icm-as.ports" $jobValues | indent 12 | trim }}
-            {{ include "icm-as.resources" $jobValues | indent 12 | trim }}
-            {{ include "icm-as.volumeMounts" . | indent 12 | trim }}
-            {{ include "icm-as.probes" . | indent 12 | trim }}
-            {{ include "icm-as.lifecycle" $jobValues | indent 12 | trim }}
-          {{ include "icm-as.initContainers" . | indent 10 | trim }}
+            {{- include "icm-as.image" . | indent 12 }}
+            {{- include "icm-as.envJob" $jobValues | indent 12 }}
+            {{- include "icm-as.ports" $jobValues | indent 12 }}
+            {{- include "icm-as.resources" $jobValues | indent 12 }}
+            {{- include "icm-as.volumeMounts" . | indent 12 }}
+            {{- include "icm-as.probes" . | indent 12 }}
+            {{- include "icm-as.lifecycle" $jobValues | indent 12 }}
+          {{- include "icm-as.initContainers" . | indent 10 }}
           restartPolicy: OnFailure
-          {{ include "icm-as.podSecurityContext" $jobValues | indent 10 | trim }}
-          {{ include "icm-as.volumes" . | indent 10 | trim }}
+          {{- include "icm-as.podSecurityContext" $jobValues | indent 10 }}
+          {{- include "icm-as.volumes" . | indent 10 }}
 {{- end -}}
 
 {{/*
