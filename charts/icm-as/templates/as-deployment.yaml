@@ -10,7 +10,7 @@ metadata:
   {{- end }}
   labels:
     app: {{ include "icm-as.fullname" . }}
-    {{- include "icm-as.chartLabel" . | indent 4 }}
+    {{- include "icm-as.chartLabel" . | nindent 4 }}
     {{- if include "icm-as.datadogLabels" . }}
       {{- include "icm-as.datadogLabels" . | nindent 4 }}
     {{- end }}

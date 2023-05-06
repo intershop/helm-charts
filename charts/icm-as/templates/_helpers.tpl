@@ -93,7 +93,7 @@ These are additional parameters defined by deployment, which are not indented to
 {{/*
 Creates a chart-label
 */}}
-{{- define "icm-as.chartLabel" }}
+{{- define "icm-as.chartLabel" -}}
 chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 {{- end -}}
 
