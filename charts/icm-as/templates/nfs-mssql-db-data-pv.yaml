@@ -1,0 +1,17 @@
+{{- if eq .Values.mssql.persistence.data.type "nfs" -}}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ template "icm-as.fullname" . }}-nfs-mssql-db-data-pv
+  labels:
+    type: nfs
+{{ include "icm-as.labels" . | indent 4 }}
+spec:
+  capacity:
+    storage: {{ .Values.mssql.persistence.data.size }}
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: {{ .Values.mssql.persistence.data.nfs.server | quote }}
+    path: {{ .Values.mssql.persistence.data.nfs.path | quote }}
+{{- end -}}
