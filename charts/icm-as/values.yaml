@@ -291,3 +291,34 @@ copySitesDir:
   # resultDir: result folder where a sites.txt is generated to
   # chmodUser: user
   # chmodGroup: group
+
+# configure an ingress here only if you don't use icm-web !
+ingress:
+  enabled: false
+  className: nginx
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  # Paths are treated as list of prefixes. Any URL matching one of the prefixes will
+  # be forwared to ICM.
+  hosts:
+  - host: <dns-name-of-service>
+    paths:
+    - path: /
+      pathType: Prefix
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+webLayer:
+  enabled: false
+sslCertificateRetrieval:
+  enabled: false
+  # secretName: <explicit-ssl-secret-name>
+  keyvault:
+    tenantId: <tenant-ID-of-the-KeyVault>
+    subscriptionId: <subscription-ID-of-the-KeyVault>
+    resourceGroup: <resource-group-of-the-KeyVault>
+    keyvaultName: <name-of-the-KeyVault>
+    certificateName: <name-of-the-certificate>
