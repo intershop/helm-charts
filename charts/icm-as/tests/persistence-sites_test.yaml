@@ -296,14 +296,16 @@ tests:
           value: icm-as-nfs-sites-pvc
       #metadata.annotations
       - equal:
-          path: metadata.annotations.[helm.sh/resource-policy]
-          value: keep
+          path: metadata.annotations
+          value:
+            helm.sh/resource-policy: keep
       #spec
       - equal:
           path: spec.accessModes[0]
           value: ReadWriteMany
-      - isEmpty:
+      - equal:
           path: spec.storageClassName
+          value: ""
       - equal:
           path: spec.volumeName
           value: icm-as-nfs-sites-pv

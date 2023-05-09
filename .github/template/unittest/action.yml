@@ -2,7 +2,7 @@ name: unittest
 
 # Were we can define the inputs that our action will accept
 inputs:
-  chartTestingFile: 
+  chartTestingFile:
     required: true
   chartName:
     required: true
@@ -13,11 +13,11 @@ runs:
   - name: Run chart-testing (lint)
     shell: bash
     run: ct lint --config ${{ inputs.chartTestingFile }}
-    
+
   - name: Run Helm Unittest
     shell: bash
     run: |
-      helm unittest --helm3  --output-file charts/${{ inputs.chartName }}/tests/__results__/junit.xml --output-type JUnit charts/${{ inputs.chartName }}
+      helm unittest --output-file charts/${{ inputs.chartName }}/tests/__results__/junit.xml --output-type JUnit charts/${{ inputs.chartName }}
 
   - name: Publish Helm Unittest Results
     uses: EnricoMi/publish-unit-test-result-action/composite@v1

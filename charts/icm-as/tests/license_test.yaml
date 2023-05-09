@@ -52,8 +52,9 @@ tests:
           value: icm-as-0.8.15
       #data
       - equal:
-          path: data.license\.xml
-          value: "<your license>"
+          path: data
+          value:
+            license.xml: "<your license>"
 
   - it: default values (type=csi) in as-deployment
     release:
