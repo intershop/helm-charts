@@ -10,7 +10,7 @@ spec:
   capacity:
     storage: {{ .Values.persistence.sites.size }}
   accessModes:
-    - ReadWriteMany
+  - ReadWriteMany
   persistentVolumeReclaimPolicy: Delete
   hostPath:
     path: "{{ .Values.persistence.sites.local.path }}"

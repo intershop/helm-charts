@@ -7,7 +7,6 @@ spec:
   accessModes:
     - ReadWriteMany
   storageClassName: {{ .Values.persistence.jgroups.cluster.storageClass | quote }}
-
   resources:
     requests:
       storage: {{ .Values.persistence.jgroups.size }}
