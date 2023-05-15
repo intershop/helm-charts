@@ -76,8 +76,12 @@ nameOverride: ""
 
 fullnameOverride: ""
 
+# Set a custom server name. Defaults to 'appserver'
+# serverName: <customServerName>
+
 # provide custom cluster config from "icm-as.fullname"-system-conf-cluster configmap
-provideCustomConfig: {}
+provideCustomConfig:
+  {}
   # logback-main:
   #   mountPath: /intershop/system-conf/cluster/
   #   fileName: logback-main.xml
@@ -135,7 +139,7 @@ environment:
 
 # ICM license Configuration
 license:
-# type: configMap | csi | secret
+  # type: configMap | csi | secret
   type: configMap
   configMap:
     content: |-
@@ -195,13 +199,13 @@ persistence:
 # Probes, all values are optional, below are the defaults
 probes:
   startup: {}
-#    failureThreshold: 6
-#    initialDelaySeconds: 60
-#    periodSeconds: 10
+  #    failureThreshold: 6
+  #    initialDelaySeconds: 60
+  #    periodSeconds: 10
   liveness: {}
-#    failureThreshold: 3
-#    initialDelaySeconds: 0
-#    periodSeconds: 10
+  #    failureThreshold: 3
+  #    initialDelaySeconds: 0
+  #    periodSeconds: 10
   readiness: {}
 #    failureThreshold: 3
 #    initialDelaySeconds: 0
@@ -220,10 +224,10 @@ mssql:
   resources:
     limits:
       cpu: 1000m
-      memory: 1Gi
+      memory: 2Gi
     requests:
       cpu: 1000m
-      memory: 1Gi
+      memory: 2Gi
   image:
     repository: "intershophub/mssql-intershop:2019-latest"
   # needs to be explicitally switched at deployment to "Y"
@@ -291,3 +295,61 @@ copySitesDir:
   # resultDir: result folder where a sites.txt is generated to
   # chmodUser: user
   # chmodGroup: group
+
+# configure an ingress here only if you don't use icm-web !
+ingress:
+  enabled: false
+  className: nginx
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  # Paths are treated as list of prefixes. Any URL matching one of the prefixes will
+  # be forwared to ICM.
+  hosts:
+  - host: <dns-name-of-service>
+    paths:
+    - path: /
+      pathType: Prefix
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+webLayer:
+  enabled: false
+sslCertificateRetrieval:
+  enabled: false
+  # secretName: <explicit-ssl-secret-name>
+  keyvault:
+    tenantId: <tenant-ID-of-the-KeyVault>
+    subscriptionId: <subscription-ID-of-the-KeyVault>
+    resourceGroup: <resource-group-of-the-KeyVault>
+    keyvaultName: <name-of-the-KeyVault>
+    certificateName: <name-of-the-certificate>
+
+# Configure configuration of the job-server.
+# The job-server template inherits most properties from the configuration of the application-server.
+# In order to override these properties add them in the job section, e.g. add a 'resources' section to
+# configure different cpu or memory limits.
+job:
+  enabled: false
+
+  # If true, job-server-support will be available but no jobs will be created
+  # suspend: false
+
+  # Sets the polling interval of the job-scheduler in seconds, defaults to 30s
+  # pollInterval: value_in_seconds
+
+  # Sets the limit of failed jobs in the history. If the limit gets reached
+  # eldest jobs will be deleted. Defaults to unlimited
+  failedJobsHistoryLimit: 1
+
+  # Sets the limit of successful jobs in the history. If the limit gets reached
+  # eldest jobs will be deleted. Defaults to unlimited
+  successfulJobsHistoryLimit: 3
+
+  # If true the schedule-time-computer will be called with server name 'jobserver' and group == 'JOB'
+  nameSpecific: false
+
+  # Custom job-server name. Defaults to 'jobserver'
+  # serverName: <CustomJobServerName>

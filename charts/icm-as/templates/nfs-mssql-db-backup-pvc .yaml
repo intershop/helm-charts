@@ -1,8 +1,8 @@
-{{- if eq .Values.persistence.sites.type "nfs" -}}
+{{- if eq .Values.mssql.persistence.backup.type "nfs" -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "icm-as.fullname" . }}-nfs-sites-pvc
+  name: {{ template "icm-as.fullname" . }}-nfs-mssql-db-backup-pvc
   annotations:
     # avoid deleting with helm update
     "helm.sh/resource-policy": keep
@@ -10,12 +10,12 @@ metadata:
 {{ include "icm-as.labels" . | indent 4 }}
 spec:
   accessModes:
-  - ReadWriteMany
+    - ReadWriteMany
   storageClassName: ""
-  volumeName: {{ template "icm-as.fullname" . }}-nfs-sites-pv
+  volumeName: {{ template "icm-as.fullname" . }}-nfs-mssql-db-backup-pv
   resources:
     requests:
-      storage: {{ .Values.persistence.sites.size }}
+      storage: {{ .Values.mssql.persistence.backup.size }}
   selector:
     matchLabels:
       type: nfs

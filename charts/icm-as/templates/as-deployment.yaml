@@ -1,25 +1,21 @@
+{{- if not .Values.serverName -}}
+{{- $values_ := set .Values "serverName" "appserver" -}}
+{{- end -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "icm-as.fullname" . }}
   {{- if .Values.deploymentAnnotations }}
-  annotations:
-    {{- toYaml .Values.deploymentAnnotations | trim | nindent 4 }}
+  annotations: {{- toYaml .Values.deploymentAnnotations | nindent 4 }}
   {{- end }}
   labels:
     app: {{ include "icm-as.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    {{- if .Values.datadog.enabled }}
-    tags.datadoghq.com/env: {{ .Values.datadog.env }}
-    tags.datadoghq.com/service: {{ include "icm-as.fullname" . }}
-    {{- if .Values.image.tag }}
-    tags.datadoghq.com/version: {{ .Values.image.tag }}
-    {{- else }}
-    tags.datadoghq.com/version: {{ (split ":" .Values.image.repository)._1 }}
-    {{- end }}
+    {{- include "icm-as.chartLabel" . | nindent 4 }}
+    {{- if include "icm-as.datadogLabels" . }}
+      {{- include "icm-as.datadogLabels" . | nindent 4 }}
     {{- end }}
     {{- if .Values.deploymentLabels }}
-      {{- toYaml .Values.deploymentLabels | trim | nindent 4 }}
+      {{- toYaml .Values.deploymentLabels | nindent 4 }}
     {{- end }}
 spec:
   progressDeadlineSeconds: 600
@@ -33,336 +29,43 @@ spec:
     type: Recreate
   template:
     metadata:
-      {{- if .Values.podAnnotations }}
-      annotations:
-      {{- toYaml .Values.podAnnotations | trim | nindent 8 }}
-      {{- end }}
-      {{- if .Values.podBinding.enabled }}
-      aadpodidbinding: {{ .Values.podBinding.binding }}
+      {{- if include "icm-as.podData" . }}
+        {{- include "icm-as.podData" . | nindent 6 }}
       {{- end }}
       labels:
         app: icm-as
         release: {{ include "icm-as.fullname" . }}
-        {{- if .Values.datadog.enabled }}
-        tags.datadoghq.com/env: {{ .Values.datadog.env }}
-        tags.datadoghq.com/service: {{ include "icm-as.fullname" . }}
-        {{- if .Values.image.tag }}
-        tags.datadoghq.com/version: {{ .Values.image.tag }}
-        {{- else }}
-        tags.datadoghq.com/version: {{ (split ":" .Values.image.repository)._1 }}
+        {{- if include "icm-as.datadogLabels" . }}
+          {{- include "icm-as.datadogLabels" . | nindent 8 }}
         {{- end }}
+        {{- if include "icm-as.podLabels" . }}
+          {{- include "icm-as.podLabels" . | nindent 8 }}
         {{- end }}
-        {{- if .Values.podLabels }}
-          {{- toYaml .Values.podLabels | trim | nindent 8 }}
+        {{- if .Values.podBinding.enabled }}
+        aadpodidbinding: {{ .Values.podBinding.binding }}
         {{- end }}
     spec:
-      {{- if .Values.nodeSelector}}
-      nodeSelector:
-        {{- toYaml .Values.nodeSelector | trim | nindent 8 }}
+      {{- if include "icm-as.nodeSelector" . }}
+        {{- include "icm-as.nodeSelector" . | nindent 6 }}
       {{- end }}
-      {{- if .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- range .Values.imagePullSecrets }}
-        - name: {{ . | quote }}
-        {{- end }}
+      {{- if include "icm-as.imagePullSecrets" . }}
+        {{- include "icm-as.imagePullSecrets" . | nindent 6 }}
       {{- end }}
       containers:
-        - name: icm-as-server
-          image: "{{ .Values.image.repository }}{{ if not (contains ":" .Values.image.repository) }}:{{ .Values.image.tag | default .Chart.AppVersion }}{{ end }}"
-          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
-          {{- if .Values.customCommand }}
-          command:
-            {{- toYaml .Values.customCommand | trim | nindent 10 }}
-          {{- end }}
-          env:
-          - name: IS_DBPREPARE
-            value: "false"
-          - name: SERVER_NAME
-            value: "appserver"
-          - name: INTERSHOP_SERVER_NODE
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.nodeName
-          - name: INTERSHOP_SERVER_NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
-          - name: INTERSHOP_SERVER_PODNAME
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.name
-          - name: INTERSHOP_SERVER_PODIP
-            valueFrom:
-              fieldRef:
-                fieldPath: status.podIP
-          {{- if .Values.jvm.debug.enabled }}
-          - name: DEBUG_ICM
-            value: "true"
-          {{- end }}
-          {{- if .Values.datadog.enabled }}
-          - name: ENABLE_DATADOG
-            value: "true"
-          - name: DD_ENV
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.labels['tags.datadoghq.com/env']
-          - name: DD_SERVICE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.labels['tags.datadoghq.com/service']
-          - name: DD_VERSION
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.labels['tags.datadoghq.com/version']
-          - name: DD_LOGS_INJECTION
-            value: "true"
-          - name: DD_AGENT_HOST
-            valueFrom:
-              fieldRef:
-                fieldPath: status.hostIP
-          {{- end }}
-          {{- if .Values.mssql.enabled }}
-          - name: INTERSHOP_DATABASETYPE
-            value: mssql
-          - name: INTERSHOP_JDBC_URL
-            value: {{ printf "jdbc:sqlserver://%s-mssql-service:1433;database=%s" (include "icm-as.fullname" .) .Values.mssql.databaseName }}
-          - name: INTERSHOP_JDBC_USER
-            value: "{{ .Values.mssql.user }}"
-          - name: INTERSHOP_JDBC_PASSWORD
-            value: "{{ .Values.mssql.password }}"
-          {{- else }}
-          - name: INTERSHOP_DATABASETYPE
-            value: "{{ .Values.database.type }}"
-          - name: INTERSHOP_JDBC_URL
-            value: "{{ .Values.database.jdbcURL }}"
-          - name: INTERSHOP_JDBC_USER
-            value: "{{ .Values.database.jdbcUser }}"
-          - name: INTERSHOP_JDBC_PASSWORD
-            value: "{{ .Values.database.jdbcPassword }}"
-          {{- end }}
-          {{- include "icm-as.featuredJVMArguments" . | nindent 10 }}
-          {{- include "icm-as.additionalJVMArguments" . | nindent 10 }}
-          {{- range $key, $value := .Values.environment }}
-          - name: {{ $key }}
-            value: {{ $value | quote }}
-          {{- end }}
-          ports:
-            # Servlet engine service connector port
-            - name: svc
-              containerPort: 7743
-              protocol: TCP
-            # Servlet engine management connector port
-            - name: mgnt
-              containerPort: 7744
-              protocol: TCP
-          {{- if .Values.jvm.debug.enabled }}
-            # Java Debug port
-            - name: debug
-              containerPort: 7746
-              protocol: TCP
-          {{- end }}
-            # JMX port
-            - name: jmx
-              containerPort: 7747
-              protocol: TCP
-          resources:
-            {{- toYaml .Values.resources | trim | nindent 12 }}
-          volumeMounts:
-          {{- if .Values.provideCustomConfig }}
-          {{- range $k, $v := .Values.provideCustomConfig }}
-            - mountPath: {{ $v.mountPath }}{{ $v.fileName }}
-              name: {{ $k }}-volume
-              subPath: {{ $v.fileName }}
-          {{- end }}
-          {{- end }}
-            - mountPath: /intershop/license/license.xml
-              name: license-volume
-              readOnly: true
-              {{- if or (eq .Values.license.type "configMap") (eq .Values.license.type "secret") }}
-              subPath: license.xml
-              {{- else if eq .Values.license.type "csi" }}
-              subPath: license
-              {{- end }}
-            - mountPath: /intershop/sites
-              name: sites-volume
-          {{- if .Values.persistence.customdata.enabled }}
-            - mountPath: {{ .Values.persistence.customdata.mountPoint }}
-              name: custom-data-volume
-          {{- end }}
-            - mountPath: /intershop/customizations
-              name: customizations-volume
-            - mountPath: /intershop/jgroups-share
-              name: jgroups-volume
-          {{- if hasKey .Values.environment "STAGING_SYSTEM_TYPE" }}
-          {{- if eq .Values.environment.STAGING_SYSTEM_TYPE "editing" }}
-            - mountPath: /intershop/replication-conf/replication-clusters.xml
-              name: replication-volume
-              readOnly: true
-              subPath: replication-clusters.xml
-          {{- end }}
-          {{- end }}
-          startupProbe:
-            httpGet:
-              path: /status/LivenessProbe
-              port: mgnt
-            # wait 60s then poll every 10s up to a total timeout of 120s
-            failureThreshold: {{ .Values.probes.startup.failureThreshold | default 6 }}
-            initialDelaySeconds: {{ .Values.probes.startup.initialDelaySeconds | default 60 }}
-            periodSeconds: {{ .Values.probes.startup.periodSeconds | default 10 }}
-          livenessProbe:
-            httpGet:
-              path: /status/LivenessProbe
-              port: mgnt
-            #after startup: poll every 10s up to a total timeout of 30s
-            failureThreshold: {{ .Values.probes.liveness.failureThreshold | default 3 }}
-            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds | default 0 }}
-            periodSeconds: {{ .Values.probes.liveness.periodSeconds | default 10 }}
-          readinessProbe:
-            httpGet:
-              path: /status/ReadinessProbe
-              port: mgnt
-            #wait 60s (startup min) then poll every 5s up to a total timeout of 15s
-            failureThreshold: {{ .Values.probes.readiness.failureThreshold | default 3 }}
-            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds | default 60 }}
-            periodSeconds: {{ .Values.probes.readiness.periodSeconds | default 5 }}
-          lifecycle:
-            preStop:
-              httpGet:
-                port: mgnt
-                path: /status/action/shutdown
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-      initContainers:
-      {{- if eq .Values.persistence.sites.type "local" }}
-        # the following container
-        # 1) only is active if local storage is enabled
-        # 2) applies permission 777 to sites volume
-        # 3) makes user/group intershop owner of sites volume
-        # !) This is necessary for Windows users with Docker Desktop using WSL[2] backend because:
-        #    Docker Desktop with WSL[2] creates folders for local volume mounts assigning the user root and permissions 700
-        - name: sites-volume-mount-hack
-          image: busybox
-          command: ["sh", "-c", "chmod 777 /intershop/sites && chown -R 150:150 /intershop/sites"]
-          volumeMounts:
-          - name: sites-volume
-            mountPath: /intershop/sites
-          securityContext:
-            runAsUser: 0
-      {{- end }}
-      {{- if .Values.copySitesDir.enabled }}
-        - name: cp-sites-dir
-          image: "{{ .Values.image.repository }}{{ if not (contains ":" .Values.image.repository) }}:{{ .Values.image.tag | default .Chart.AppVersion }}{{ end }}"
-          command:
-            - "/bin/sh"
-            - "-c"
-            - |
-              set -x
-              SITES_DIR={{ .Values.copySitesDir.fromDir }}
-              if [ -d "$SITES_DIR" ]; then
-                SITES_VOL=/intershop
-                cp -r $SITES_DIR $SITES_VOL
-                chmod 777 $SITES_VOL/sites && chown -R {{ .Values.copySitesDir.chmodUser }}:{{ .Values.copySitesDir.chmodGroup }} $SITES_VOL/sites
-                find $SITES_VOL -type f > "{{ .Values.copySitesDir.resultDir }}/sites.txt"
-              fi
-          imagePullPolicy: "IfNotPresent"
-          securityContext:
-            runAsUser: 0
-            runAsGroup: 0
-          volumeMounts:
-            - name: sites-volume
-              mountPath: /intershop/sites
-          {{- if $.Values.persistence.customdata.enabled }}
-            - mountPath: {{ $.Values.persistence.customdata.mountPoint }}
-              name: custom-data-volume
-          {{- end }}
-      {{- end }}
-      {{- if .Values.customizations }}
-      {{- range $k, $v := .Values.customizations }}
-        - name: {{ $k }}
-          image: {{ $v.repository }}
-          imagePullPolicy: {{ $v.pullPolicy | default "IfNotPresent" }}
-          volumeMounts:
-            - mountPath: /customizations
-              name: customizations-volume
-      {{- end }}
-      {{- end }}
+      - name: icm-as-server
+        {{- include "icm-as.image" . | nindent 8 }}
+        {{- include "icm-as.env" . | nindent 8 }}
+        {{- include "icm-as.ports" . | nindent 8 }}
+        {{- include "icm-as.resources" . | nindent 8 }}
+        {{- include "icm-as.volumeMounts" . | nindent 8 }}
+        {{- include "icm-as.probes" . | nindent 8 }}
+        {{- include "icm-as.lifecycle" . | nindent 8 }}
+      {{- include "icm-as.initContainers" . | nindent 6 }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if include "icm-as.podSecurityContext" . }}
+        {{- include "icm-as.podSecurityContext" . | nindent 6 }}
+      {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds | default 30 }}
-      volumes:
-      {{- if .Values.provideCustomConfig }}
-      {{- range $k, $v := .Values.provideCustomConfig }}
-      - name: {{ $k }}-volume
-        configMap:
-          name: {{ template "icm-as.fullname" $ }}-system-conf-cluster
-          defaultMode: 420
-      {{- end }}
-      {{- end }}
-      - name: license-volume
-        {{- if eq .Values.license.type "configMap" }}
-        configMap:
-          defaultMode: 420
-          name: {{ template "icm-as.fullname" . }}-license
-        {{- else if eq .Values.license.type "csi" }}
-        csi:
-          driver: secrets-store.csi.k8s.io
-          readOnly: true
-{{ toYaml .Values.license.csi | indent 10 }}
-        {{- else if eq .Values.license.type "secret" }}
-        secret:
-          secretName: {{ .Values.license.secret.name }}
-        {{- end }}
-      - name: jgroups-volume
-        {{- if eq .Values.persistence.jgroups.type "local" }}
-        persistentVolumeClaim:
-          claimName: "{{ template "icm-as.fullname" . }}-local-jgroups-pvc"
-        {{- else if eq .Values.persistence.jgroups.type "azurefiles" }}
-        azureFile:
-          secretName: {{ .Values.persistence.jgroups.azurefiles.secretName }}
-          shareName: {{ .Values.persistence.jgroups.azurefiles.shareName }}
-          readOnly: false
-        {{- else if eq .Values.persistence.jgroups.type "emptyDir" }}
-        emptyDir: {}
-        {{- else if eq .Values.persistence.jgroups.type "cluster" }}
-        persistentVolumeClaim:
-          claimName: "{{ template "icm-as.fullname" . }}-cluster-jgroups-pvc"
-        {{- else if eq .Values.persistence.jgroups.type "existingClaim" }}
-        persistentVolumeClaim:
-          claimName: "{{ .Values.persistence.jgroups.existingClaim }}"
-        {{- end }}
-      - name: sites-volume
-        {{- if eq .Values.persistence.sites.type "local" }}
-        persistentVolumeClaim:
-          claimName: "{{ template "icm-as.fullname" . }}-local-sites-pvc"
-        {{- else if eq .Values.persistence.sites.type "existingClaim" }}
-        persistentVolumeClaim:
-          claimName: "{{ .Values.persistence.sites.existingClaim }}"
-        {{- else if eq .Values.persistence.sites.type "azurefiles" }}
-        azureFile:
-          secretName: {{ .Values.persistence.sites.azurefiles.secretName }}
-          shareName: {{ .Values.persistence.sites.azurefiles.shareName }}
-          readOnly: false
-        {{- else if eq .Values.persistence.sites.type "nfs" }}
-        persistentVolumeClaim:
-          claimName: "{{ template "icm-as.fullname" . }}-nfs-sites-pvc"
-        {{- else if eq .Values.persistence.sites.type "cluster" }}
-        persistentVolumeClaim:
-          claimName: "{{ template "icm-as.fullname" . }}-cluster-sites-pvc"
-        {{- end }}
-        {{- if hasKey .Values.environment "STAGING_SYSTEM_TYPE" }}
-        {{- if eq .Values.environment.STAGING_SYSTEM_TYPE "editing" }}
-      - name: replication-volume
-        configMap:
-          name: {{ template "icm-as.fullname" . }}-replication-clusters-xml
-        {{- end }}
-        {{- end }}
-        {{- if .Values.persistence.customdata.enabled }}
-      - name: custom-data-volume
-        persistentVolumeClaim:
-          claimName: "{{ .Values.persistence.customdata.existingClaim }}"
-        {{- end }}
-      - name: customizations-volume
-        emptyDir: {}
+      {{- include "icm-as.volumes" . | nindent 6 }}
