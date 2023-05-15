@@ -153,6 +153,10 @@ testrunner:
       chown -R 150:150 ${HELM_DIRECTORY}/pagedumps
       chmod 777 ${HELM_DIRECTORY}/pagedumps
 
+      mkdir -p ${HELM_DIRECTORY}/shared_impex
+      chown -R 150:150 ${HELM_DIRECTORY}/result
+      chmod 777 ${HELM_DIRECTORY}/shared_impex
+
       # be able to zip pagedumps folder
       apt-get -qq update
       apt-get -qq install -y zip
@@ -205,6 +209,7 @@ testrunner:
 
     DEFAULT_PAGEDUMP_DIRECTORY: ${HELM_DIRECTORY}/pagedumps
     REMOVE_SUCCESSFUL_PAGEDUMPS: 'true'
+    SHARED_IMPEX: ${HELM_DIRECTORY}/shared_impex
   resources:
     requests:
       cpu: 800m
