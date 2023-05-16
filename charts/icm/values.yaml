@@ -77,5 +77,8 @@ icm-web:
       local:
         path: <local pagecache folder>
 
+mailhog:
+  enabled: false
+
 test:
   enabled: false
