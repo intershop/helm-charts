@@ -41,8 +41,8 @@ spec:
         {{- if include "icm-as.podLabels" . }}
           {{- include "icm-as.podLabels" . | nindent 8 }}
         {{- end }}
-        {{- if .Values.podBinding.enabled }}
-        aadpodidbinding: {{ .Values.podBinding.binding }}
+        {{- if include "icm-as.podBinding" . }}
+          {{- include "icm-as.podBinding" . | nindent 8 }}
         {{- end }}
     spec:
       {{- if include "icm-as.nodeSelector" . }}

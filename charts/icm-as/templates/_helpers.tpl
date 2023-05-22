@@ -120,23 +120,29 @@ resources: {{- toYaml .Values.resources | nindent 2 }}
 {{- end -}}
 
 {{/*
-Pod-annotations and bindings
+Pod-annotations
 */}}
 {{- define "icm-as.podData" -}}
 {{- if .Values.podAnnotations -}}
 annotations: {{- toYaml .Values.podAnnotations | nindent 2 }}
 {{- end }}
-{{- if .Values.podBinding.enabled -}}
-aadpodidbinding: {{ .Values.podBinding.binding }}
-{{- end }}
 {{- end -}}
 
 {{/*
-Pod-label
+Pod-labels
 */}}
 {{- define "icm-as.podLabels" -}}
 {{- with .Values.podLabels }}
 {{- . | toYaml | nindent 0 }}
+{{- end }}
+{{- end -}}
+
+{{/*
+AAD Pod-binding label
+*/}}
+{{- define "icm-as.podBinding" -}}
+{{- if .Values.podBinding.enabled }}
+aadpodidbinding: {{ .Values.podBinding.binding }}
 {{- end }}
 {{- end -}}
 
