@@ -2,9 +2,9 @@
 ## PR Checklist
 Please check if your PR fulfills the following requirements:
 
-[ ] The commit message follows our guidelines: https://github.com/intershop/helm-charts/blob/develop/CONTRIBUTING.md
-[ ] Docs have been added / updated (for bug fixes / features)
-[ ] Be sure to include PR label `major`, `minor` or `patch` when merging into `main`
+- [ ] The commit message follows our guidelines: https://github.com/intershop/helm-charts/blob/develop/CONTRIBUTING.md
+- [ ] Docs have been added / updated (for bug fixes / features)
+- [ ] Be sure to include PR label `major`, `minor` or `patch` when merging into `main`
 -->
 
 ## PR Type
@@ -14,14 +14,14 @@ What kind of change does this PR introduce?
 Please check the one that applies to this PR using "x".
 -->
 
-[ ] Bugfix
-[ ] Feature
-[ ] Code style update (formatting, local variables)
-[ ] Refactoring (no functional changes, no API changes)
-[ ] Build-related changes
-[ ] CI-related changes
-[ ] Documentation content changes
-[ ] Application / infrastructure changes
+- [ ] Bugfix
+- [ ] Feature
+- [ ] Code style update (formatting, local variables)
+- [ ] Refactoring (no functional changes, no API changes)
+- [ ] Build-related changes
+- [ ] CI-related changes
+- [ ] Documentation content changes
+- [ ] Application / infrastructure changes
 
 ## Release ##
 
@@ -39,7 +39,7 @@ Issue Number: Closes #
 
 <!-- If this PR contains a breaking change, please describe the impact and migration path for existing applications below. -->
 
-[ ] Yes
-[ ] No
+- [ ] Yes
+- [ ] No
 
 ## Other Information
