@@ -40,7 +40,7 @@ tests:
           path: spec.template.spec.containers[0].env
           content:
             name: CARTRIDGE_LIST
-            value: "app_bo_test"
+            value: "ft_e2e_test"
       - contains:
           path: spec.template.spec.containers[0].env
           content:
