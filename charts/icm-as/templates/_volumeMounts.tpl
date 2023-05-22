@@ -37,4 +37,8 @@ volumeMounts:
   subPath: replication-clusters.xml
 {{- end }}
 {{- end }}
+{{- if .Values.sslCertificateRetrieval.enabled }}
+- mountPath: /mnt/secrets
+  name: secrets-store-inline
+{{- end }}
 {{- end -}}

@@ -77,4 +77,8 @@ env:
 - name: {{ $key }}
   value: {{ $value | quote }}
 {{- end -}}
+{{- if .Values.webLayer.enabled }}
+- name: INTERSHOP_WEBADAPTER_ENABLED
+  value: "false"
+{{- end }}
 {{- end -}}
