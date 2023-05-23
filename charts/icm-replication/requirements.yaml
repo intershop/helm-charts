@@ -1,9 +1,0 @@
-dependencies:
-  - name: icm
-    version: 0.9.3
-    repository: file://../icm
-    alias: icm-live
-  - name: icm
-    version: 0.9.3
-    repository: file://../icm
-    alias: icm-edit
