@@ -27,7 +27,7 @@ image:
   pullPolicy: IfNotPresent
   # 'appServer' container provides the application / service endpoint
   repository: "intershophub/icm-as"
-  # tag: "11.0.9"
+  # tag: "11.1.3"
 
 ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
 ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -129,13 +129,6 @@ database:
 
 environment:
   CARTRIDGE_LIST: "ft_icm_as"
-
-  # Staging
-  # STAGING_SYSTEM_TYPE: editing
-  # INTERSHOP_JDBC_USER_LIVE: "intershop_live"
-  # INTERSHOP_WEBSERVERURL: http://icm-replication-icm-web-edit-wa:8080
-  # INTERSHOP_WEBSERVERSECUREURL: https://icm-replication-icm-web-edit-wa:8443
-  # INTERSHOP_WEBSERVERURL_LIVE: http://icm-replication-icm-web-live-wa:8080
 
 # ICM license Configuration
 license:
@@ -353,3 +346,18 @@ job:
 
   # Custom job-server name. Defaults to 'jobserver'
   # serverName: <CustomJobServerName>
+
+# Configuration for a replication/staging scenario
+replication:
+  # enables/disables the replication support: whether or not this icm-as is part of a replication system
+  enabled: false
+
+  # defines the type of this replication system (source | target)
+  role: <source|target>
+
+  # if role=source the following properties are mandatory (otherwise they are ignored)
+  # the external URL of the webServer/proxy/ingress e.g. https://icm-web-live-wa:443
+  targetSystemUrl: <externalUrl>
+
+  # the name of the (source) database to be used at the target-system to read data from e.g. intershop_edit
+  sourceDatabaseName: <databaseName>

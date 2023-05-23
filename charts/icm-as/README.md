@@ -37,12 +37,16 @@ The default is `local` where `persistence.sites.local.path` need to be set to a 
 
 #### jGroups
 
-`emptyDir`, `cluster`, `existingClaim` are possible persistence options.
+`local`, `cluster`, `azurefiles`, `nfs`, `existingClaim` are possible persistence options.
 The default is `emptyDir`.
 
 ### Database
 
-The needed database connection could be configured via environment variables in the [values.yaml](values.yaml) (see `INTERSHOP_JDBC_*`).
+The needed database connection could be configured via section `database`. The chart also supports to deploy a (containerized) MSSQL database. If this is enabled the deployed MSSQL database is used instead of the one configured via section `database`.
+
+### Replication/Staging
+
+A replication/staging scenario is supported via the section `replication`. To use this feature just deploy 2 separate icm-as (+ icm-web) one for the source (*edit*) system and one for the target (*live*) system.
 
 ### Add the Intershop Helm repository
 
