@@ -71,6 +71,14 @@ env:
 - name: INTERSHOP_JDBC_PASSWORD
   value: "{{ .Values.database.jdbcPassword }}"
 {{- end }}
+{{- if .Values.replication.enabled }}
+- name: STAGING_SYSTEM_TYPE
+  {{- if eq .Values.replication.role "source" }}
+  value: editing
+  {{- else }}
+  value: live
+  {{- end }}
+{{- end }}
 {{ include "icm-as.featuredJVMArguments" . }}
 {{ include "icm-as.additionalJVMArguments" . }}
 {{- range $key, $value := .Values.environment }}

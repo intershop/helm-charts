@@ -1,0 +1,135 @@
+suite: test correctness of replication related values
+templates:
+  - templates/as-deployment.yaml
+  - templates/config-replication-clusters-xml-cm.yaml
+tests:
+  - it: as-deployment default values
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: templates/as-deployment.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEM_TYPE
+      - notContains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            mountPath: /intershop/replication-conf/replication-clusters.xml
+      - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: replication-volume
+
+  - it: config-replication-clusters-xml-cm default values
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: templates/config-replication-clusters-xml-cm.yaml
+    asserts:
+      - hasDocuments: 
+          count: 0
+
+  - it: as-deployment role=source
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: true
+      replication.role: source
+      replication.targetSystemUrl: https://icm-web-live-wa:443
+      replication.sourceDatabaseName: intershop_edit
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEM_TYPE
+            value: editing
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            mountPath: /intershop/replication-conf/replication-clusters.xml
+            name: replication-volume
+            readOnly: true
+            subPath: replication-clusters.xml
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: replication-volume
+            configMap:
+              name: icm-as-replication-clusters-xml
+
+  - it: config-replication-clusters-xml-cm default values
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: true
+      replication.role: source
+      replication.targetSystemUrl: https://icm-web-live-wa:443
+      replication.sourceDatabaseName: intershop_edit
+    template: templates/config-replication-clusters-xml-cm.yaml
+    asserts:
+      # unfortunatelly the complex content can not be checked
+      - isNotEmpty:
+          path: data.replication-clusters\.xml
+
+  - it: as-deployment role=target
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: true
+      replication.role: target
+      replication.targetSystemUrl: https://icm-web-live-wa:443
+      replication.sourceDatabaseName: intershop_edit
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEM_TYPE
+            value: live
+      - notContains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            mountPath: /intershop/replication-conf/replication-clusters.xml
+      - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: replication-volume
+
+  - it: config-replication-clusters-xml-cm role=target
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: true
+      replication.role: target
+      replication.targetSystemUrl: https://icm-web-live-wa:443
+      replication.sourceDatabaseName: intershop_edit
+    template: templates/config-replication-clusters-xml-cm.yaml
+    asserts:
+      - hasDocuments: 
+          count: 0
+

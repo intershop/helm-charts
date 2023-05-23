@@ -29,12 +29,10 @@ volumeMounts:
   name: customizations-volume
 - mountPath: /intershop/jgroups-share
   name: jgroups-volume
-{{- if hasKey .Values.environment "STAGING_SYSTEM_TYPE" }}
-{{- if eq .Values.environment.STAGING_SYSTEM_TYPE "editing" }}
+{{- if and (.Values.replication.enabled) (eq .Values.replication.role "source")}}
 - mountPath: /intershop/replication-conf/replication-clusters.xml
   name: replication-volume
   readOnly: true
   subPath: replication-clusters.xml
-{{- end }}
 {{- end }}
 {{- end -}}
