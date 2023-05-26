@@ -22,7 +22,7 @@ runs:
   - name: Run Helm Unittest
     shell: bash
     run: |
-      helm unittest --output-file charts/${{ inputs.chartName }}/tests/__results__/junit.xml --output-type JUnit charts/${{ inputs.chartName }}
+      helm unittest --helm3 --output-file charts/${{ inputs.chartName }}/tests/__results__/junit.xml --output-type JUnit charts/${{ inputs.chartName }}
 
   - name: Publish Helm Unittest Results
     uses: EnricoMi/publish-unit-test-result-action/composite@v1
