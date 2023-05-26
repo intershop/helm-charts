@@ -13,33 +13,31 @@ volumes:
 {{- end }}
 {{- end }}
 - name: license-volume
-  {{- if eq .Values.license.type "configMap" }}
+{{- if eq .Values.license.type "configMap" }}
   configMap:
     defaultMode: 420
     name: {{ template "icm-as.fullname" . }}-license
-  {{- else if eq .Values.license.type "csi" }}
+{{- else if eq .Values.license.type "csi" }}
   csi:
     driver: secrets-store.csi.k8s.io
     readOnly: true
   {{ toYaml .Values.license.csi | nindent 4 }}
-  {{- else if eq .Values.license.type "secret" }}
+{{- else if eq .Values.license.type "secret" }}
   secret:
     secretName: {{ .Values.license.secret.name }}
-  {{- end }}
-  {{- include "icm-as.volume" (list . "jgroups" .Values.persistence.jgroups) }}
-  {{- include "icm-as.volume" (list . "sites" .Values.persistence.sites) }}
-  {{- if hasKey .Values.environment "STAGING_SYSTEM_TYPE" }}
-  {{- if eq .Values.environment.STAGING_SYSTEM_TYPE "editing" }}
+{{- end }}
+{{- include "icm-as.volume" (list . "jgroups" .Values.persistence.jgroups) }}
+{{- include "icm-as.volume" (list . "sites" .Values.persistence.sites) }}
+{{- if and (.Values.replication.enabled) (eq .Values.replication.role "source")}}
 - name: replication-volume
   configMap:
     name: {{ template "icm-as.fullname" . }}-replication-clusters-xml
-  {{- end }}
-  {{- end }}
-  {{- if .Values.persistence.customdata.enabled }}
+{{- end }}
+{{- if .Values.persistence.customdata.enabled }}
 - name: custom-data-volume
   persistentVolumeClaim:
     claimName: "{{ .Values.persistence.customdata.existingClaim }}"
-  {{- end }}
+{{- end }}
 - name: customizations-volume
   emptyDir: {}
 {{- if .Values.sslCertificateRetrieval.enabled }}
