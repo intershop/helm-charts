@@ -53,6 +53,21 @@ icm-as:
         local:
           path: <local mssql backup folder>
 
+  # Configuration for a replication/staging scenario
+  replication:
+    # enables/disables the replication support: whether or not this icm-as is part of a replication system
+    enabled: false
+
+    # defines the type of this replication system (source | target)
+    role: <source|target>
+
+    # if role=source the following properties are mandatory (otherwise they are ignored)
+    # the external URL of the webServer/proxy/ingress e.g. https://icm-web-live-wa:443
+    targetSystemUrl: <externalUrl>
+
+    # the name of the (source) database to be used at the target-system to read data from e.g. intershop_edit
+    sourceDatabaseName: <databaseName>
+
 icm-web:
   imagePullSecrets:
   - "dockerhub"
