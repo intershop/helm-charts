@@ -61,7 +61,11 @@ To install the chart with the release name `icm-as`
 helm install my-release intershop/icm-as --values=values.yaml --namespace icm-as
 ```
 
-This chart will install the ICMJob-CRD per default. If the ICMJob-CRD already exists, it will be skipped with a warning. If you wish to skip this CRD installation step, you can pass the --skip-crds flag.
+This chart will install the ICMJob-CRD per default. If the ICMJob-CRD already exists, it will be skipped with a warning. If you wish to skip this CRD installation step, you can pass the --skip-crds flag. Note that uninstalling this chart will *NOT* uninstall the CRD. In order to uninstall the ICMJob-CRD use:
+
+```bash
+kubectl delete -f crds/icm-job-controller.yaml
+```
 
 ### Testing
 

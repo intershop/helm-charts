@@ -80,8 +80,7 @@ fullnameOverride: ""
 # serverName: <customServerName>
 
 # provide custom cluster config from "icm-as.fullname"-system-conf-cluster configmap
-provideCustomConfig:
-  {}
+provideCustomConfig: {}
   # logback-main:
   #   mountPath: /intershop/system-conf/cluster/
   #   fileName: logback-main.xml
@@ -300,8 +299,7 @@ copySitesDir:
 ingress:
   enabled: false
   className: nginx
-  annotations:
-    {}
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   # Paths are treated as list of prefixes. Any URL matching one of the prefixes will
