@@ -331,7 +331,7 @@ sslCertificateRetrieval:
 # In order to override these properties add them in the job section, e.g. add a 'resources' section to
 # configure different cpu or memory limits.
 job:
-  enabled: true
+  enabled: false
 
   # If true, job-server-support will be available but no jobs will be created
   # suspend: false
