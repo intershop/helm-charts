@@ -35,30 +35,28 @@ spec:
   jobTemplate:
     spec:
       template:
-        metadata:
-          labels:
-            app: {{ include "icm-as.fullname" . }}
-            {{- include "icm-as.chartLabel" . | indent 12 }}
-            {{- include "icm-as.datadogLabels" . | indent 12 }}
-            {{- if $jobValues.Values.deploymentLabels }}
-              {{- toYaml $jobValues.Values.deploymentLabels | nindent 12 }}
-            {{- end }}
         spec:
-          {{- include "icm-as.nodeSelector" $jobValues | indent 10 }}
-          {{- include "icm-as.imagePullSecrets" . | indent 10 }}
+          {{- if include "icm-as.nodeSelector" $jobValues }}
+            {{- include "icm-as.nodeSelector" $jobValues | nindent 10 }}
+          {{- end }}
+          {{- if include "icm-as.imagePullSecrets" . }}
+            {{- include "icm-as.imagePullSecrets" . | nindent 10 }}
+          {{- end }}
           containers:
           - name: icm-as-server
-            {{- include "icm-as.image" . | indent 12 }}
-            {{- include "icm-as.envJob" $jobValues | indent 12 }}
-            {{- include "icm-as.ports" $jobValues | indent 12 }}
-            {{- include "icm-as.resources" $jobValues | indent 12 }}
-            {{- include "icm-as.volumeMounts" . | indent 12 }}
-            {{- include "icm-as.probes" . | indent 12 }}
-            {{- include "icm-as.lifecycle" $jobValues | indent 12 }}
-          {{- include "icm-as.initContainers" . | indent 10 }}
+            {{- include "icm-as.image" . | nindent 12 }}
+            {{- include "icm-as.envJob" $jobValues | nindent 12 }}
+            {{- include "icm-as.ports" $jobValues | nindent 12 }}
+            {{- include "icm-as.resources" $jobValues | nindent 12 }}
+            {{- include "icm-as.volumeMounts" . | nindent 12 }}
+            {{- include "icm-as.probes" . | nindent 12 }}
+            {{- include "icm-as.lifecycle" $jobValues | nindent 12 }}
+          {{- include "icm-as.initContainers" . | nindent 10 }}
           restartPolicy: OnFailure
-          {{- include "icm-as.podSecurityContext" $jobValues | indent 10 }}
-          {{- include "icm-as.volumes" . | indent 10 }}
+          {{- if include "icm-as.podSecurityContext" $jobValues }}
+            {{- include "icm-as.podSecurityContext" $jobValues | nindent 10 }}
+          {{- end }}
+          {{- include "icm-as.volumes" . | nindent 10 }}
 {{- end -}}
 
 {{/*

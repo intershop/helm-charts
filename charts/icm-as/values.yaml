@@ -33,7 +33,7 @@ image:
 ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
 ## Intershop: These secrets also last for customization images
 imagePullSecrets:
-- "dockerhub"
+  - "dockerhub"
 
 # list of customization images each following the structure:
 #  <name>:
@@ -80,8 +80,7 @@ fullnameOverride: ""
 # serverName: <customServerName>
 
 # provide custom cluster config from "icm-as.fullname"-system-conf-cluster configmap
-provideCustomConfig:
-  {}
+provideCustomConfig: {}
   # logback-main:
   #   mountPath: /intershop/system-conf/cluster/
   #   fileName: logback-main.xml
@@ -299,10 +298,10 @@ ingress:
   # Paths are treated as list of prefixes. Any URL matching one of the prefixes will
   # be forwared to ICM.
   hosts:
-  - host: <dns-name-of-service>
-    paths:
-    - path: /
-      pathType: Prefix
+    - host: <dns-name-of-service>
+      paths:
+        - path: /
+          pathType: Prefix
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
