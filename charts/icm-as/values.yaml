@@ -41,7 +41,7 @@ dockerSecret:
 ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
 ## Intershop: These secrets also last for customization images
 imagePullSecrets:
-- "dockerhub"
+  - "dockerhub"
 
 # list of customization images each following the structure:
 #  <name>:
