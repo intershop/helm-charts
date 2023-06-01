@@ -62,10 +62,13 @@ spec:
         persistentVolumeClaim:
           claimName: "{{ .Values.persistence.pagecache.existingClaim }}"
         {{- else if eq .Values.persistence.pagecache.type "azurefiles" }}
-        azureFile:
-          secretName: {{ .Values.persistence.pagecache.azurefiles.secretName }}
-          shareName: {{ .Values.persistence.pagecache.azurefiles.shareName }}
+        csi:
+          driver: file.csi.azure.com
           readOnly: false
+          volumeAttributes:
+            secretName: {{ .Values.persistence.pagecache.azurefiles.secretName }}
+            shareName: {{ .Values.persistence.pagecache.azurefiles.shareName }}
+            mountOptions: "uid={{ .Values.podSecurityContext.runAsUser }},gid={{ .Values.podSecurityContext.runAsGroup }}"
         {{- else if eq .Values.persistence.pagecache.type "local" }}
         persistentVolumeClaim:
           claimName: "{{ template "icm-web.fullname" . }}-local-pagecache-pvc"

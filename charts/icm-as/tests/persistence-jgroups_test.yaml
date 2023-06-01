@@ -79,8 +79,11 @@ tests:
       - contains:
           path: spec.template.spec.volumes
           content:
-            azureFile:
+            csi:
+              driver: file.csi.azure.com
               readOnly: false
-              secretName: custom-secret
-              shareName: custom-share
+              volumeAttributes:
+                mountOptions: uid=150,gid=150
+                secretName: custom-secret
+                shareName: custom-share
             name: jgroups-volume

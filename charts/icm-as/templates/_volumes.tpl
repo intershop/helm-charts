@@ -26,8 +26,8 @@ volumes:
   secret:
     secretName: {{ .Values.license.secret.name }}
 {{- end }}
-{{- include "icm-as.volume" (list . "jgroups" .Values.persistence.jgroups) }}
-{{- include "icm-as.volume" (list . "sites" .Values.persistence.sites) }}
+{{- include "icm-as.volume" (list . "jgroups" .Values.persistence.jgroups .Values.podSecurityContext) }}
+{{- include "icm-as.volume" (list . "sites" .Values.persistence.sites .Values.podSecurityContext) }}
 {{- if and (.Values.replication.enabled) (eq .Values.replication.role "source")}}
 - name: replication-volume
   configMap:
@@ -57,12 +57,16 @@ Creates a volume named {$name}-volume
 {{- $values := index . 0 }}
 {{- $volumeName := index . 1 }}
 {{- $volumeValues := index . 2 }}
+{{- $podSecurityValues := index . 3 }}
 - name: {{ $volumeName }}-volume
 {{- if eq $volumeValues.type "azurefiles" }}
-  azureFile:
-    secretName: {{ $volumeValues.azurefiles.secretName }}
-    shareName: {{ $volumeValues.azurefiles.shareName }}
+  csi:
+    driver: file.csi.azure.com
     readOnly: false
+    volumeAttributes:
+      secretName: {{ $volumeValues.azurefiles.secretName }}
+      shareName: {{ $volumeValues.azurefiles.shareName }}
+      mountOptions: "uid={{ $podSecurityValues.runAsUser }},gid={{ $podSecurityValues.runAsGroup }}"
 {{- else if eq $volumeValues.type "emptyDir" }}
   emptyDir: {}
 {{- else if eq $volumeValues.type "existingClaim" }}
