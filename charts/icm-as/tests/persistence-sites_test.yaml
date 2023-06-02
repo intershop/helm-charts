@@ -159,7 +159,7 @@ tests:
       - mfsymlinks
       - cache=strict
       - actimeo=30
-      persistence.sites.cluster.storageClass.recaimPolicy: Retain
+      persistence.sites.cluster.storageClass.reclaimPolicy: Retain
     template: templates/cluster-sites-sc.yaml
     asserts:
       - isKind:
@@ -198,7 +198,7 @@ tests:
           path: parameters.skuName
           value: Standard_LRS
       - equal:
-          path: recaimPolicy
+          path: reclaimPolicy
           value: Retain
 
   - it: type=azurefiles in as-deployment
