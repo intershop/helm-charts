@@ -12,5 +12,6 @@ mountOptions:
 {{- end }}
 parameters:
   skuName: {{ .Values.persistence.sites.cluster.storageClass.skuName }}
+reclaimPolicy: {{ .Values.persistence.sites.cluster.storageClass.reclaimPolicy }}
 {{- end -}}
 {{- end -}}

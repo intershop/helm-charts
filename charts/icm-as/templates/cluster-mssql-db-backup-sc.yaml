@@ -12,5 +12,6 @@ mountOptions:
 {{- end }}
 parameters:
   skuName: {{ .Values.mssql.persistence.backup.cluster.storageClass.skuName }}
+reclaimPolicy: {{ .Values.mssql.persistence.backup.cluster.storageClass.reclaimPolicy }}
 {{- end -}}
 {{- end -}}

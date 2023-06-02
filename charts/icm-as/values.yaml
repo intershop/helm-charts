@@ -41,7 +41,7 @@ dockerSecret:
 ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
 ## Intershop: These secrets also last for customization images
 imagePullSecrets:
-  - "dockerhub"
+- "dockerhub"
 
 # list of customization images each following the structure:
 #  <name>:
@@ -158,6 +158,7 @@ persistence:
         # - mfsymlinks
         # - cache=strict
         # - actimeo=30
+        reclaimPolicy: Delete
     azurefiles:
       shareName: icm-as-share
       secretName: icm-as-share-secret
@@ -246,6 +247,7 @@ mssql:
           # - mfsymlinks
           # - cache=strict
           # - actimeo=30
+          reclaimPolicy: Delete
       azurefiles:
         shareName: <icm-as-mssql-data-share>
         secretName: <icm-as-mssql-secret>
@@ -271,6 +273,7 @@ mssql:
           # - mfsymlinks
           # - cache=strict
           # - actimeo=30
+          reclaimPolicy: Delete
       azurefiles:
         shareName: <icm-as-mssql-backup-share>
         secretName: <icm-as-mssql-secret>
@@ -295,14 +298,14 @@ ingress:
   # Paths are treated as list of prefixes. Any URL matching one of the prefixes will
   # be forwared to ICM.
   hosts:
-    - host: <dns-name-of-service>
-      paths:
-        - path: /
-          pathType: Prefix
+  - host: <dns-name-of-service>
+    paths:
+    - path: /
+      pathType: Prefix
   tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+#  - secretName: chart-example-tls
+#    hosts:
+#    - chart-example.local
 
 webLayer:
   enabled: false
