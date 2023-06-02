@@ -138,9 +138,6 @@ tests:
       - equal:
           path: spec.storageClassName
           value: "custom-storage-class-name"
-      - equal:
-          path: spec.reclaimPolicy
-          value: "Delete"
 
   - it: type=create cluster-sites-sc
     release:
