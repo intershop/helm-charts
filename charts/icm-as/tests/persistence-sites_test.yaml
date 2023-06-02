@@ -138,6 +138,9 @@ tests:
       - equal:
           path: spec.storageClassName
           value: "custom-storage-class-name"
+      - equal:
+          path: spec.reclaimPolicy
+          value: "Delete"
 
   - it: type=create cluster-sites-sc
     release:
@@ -159,6 +162,7 @@ tests:
       - mfsymlinks
       - cache=strict
       - actimeo=30
+      persistence.sites.cluster.storageClass.recaimPolicy: Retain
     template: templates/cluster-sites-sc.yaml
     asserts:
       - isKind:
@@ -196,6 +200,9 @@ tests:
       - equal:
           path: parameters.skuName
           value: Standard_LRS
+      - equal:
+          path: recaimPolicy
+          value: Retain
 
   - it: type=azurefiles in as-deployment
     release:
