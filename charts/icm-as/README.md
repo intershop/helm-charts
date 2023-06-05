@@ -50,7 +50,7 @@ A replication/staging scenario is supported via the section `replication`. To us
 
 ### Add the Intershop Helm repository
 
-Before installing Intershop helm charts, you need to add the [Intershop helm repository](https://intershop.github.io/helm-charts) to your helm client
+Before installing Intershop helm charts, you need to add the [Intershop helm repository](https://intershop.github.io/helm-charts) to your helm client.
 
 ```bash
 helm repo add intershop https://intershop.github.io/helm-charts

@@ -101,6 +101,9 @@ podSecurityContext:
   # intershop user - defined by icm-base-docker image
   runAsUser: 150
   runAsGroup: 150
+  fsGroup: 150
+  runAsNonRoot: true
+  fsGroupChangePolicy: "OnRootMismatch"
 
 testConnection:
   protocol: http
