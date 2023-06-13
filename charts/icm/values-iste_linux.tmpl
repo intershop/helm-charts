@@ -23,6 +23,7 @@ icm-as:
       EOF
   podSecurityContext:
     runAsUser: 0
+    runAsNonRoot: false
   copySitesDir:
    enabled: true
    fromDir: ${WORKSPACE_DIRECTORY}/../../../sites
@@ -102,6 +103,7 @@ icm-web:
     runAsUser: 0
     runAsGroup: 0
     fsGroup: 0
+    runAsNonRoot: false
   environment:
     HELM_DIRECTORY: "${HELM_DIRECTORY}"
     SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
