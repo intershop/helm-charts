@@ -8941,7 +8941,7 @@ spec:
         command:
         - /manager
         image: icmjoboperator:latest
-        imagePullPolicy: Never
+        imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
             path: /healthz
