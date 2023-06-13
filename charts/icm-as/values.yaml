@@ -102,8 +102,8 @@ podSecurityContext:
   runAsUser: 150
   runAsGroup: 150
   fsGroup: 150
-  runAsNonRoot: true
-  fsGroupChangePolicy: "OnRootMismatch"
+  #runAsNonRoot: true
+  #fsGroupChangePolicy: "OnRootMismatch"
 
 testConnection:
   protocol: http
