@@ -10,9 +10,13 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     app: {{ template "icm-as.fullname" . }}-cleanup
   annotations:
-    # This is what defines this resource as a hook. Without this line, the
-    # job is considered part of the release.
+    # Only include "pre-install" if the site type is "existingClaim" since the 
+    # volume does not exist otherwise.
+    {{- if eq .Values.persistence.sites.type "existingClaim" }}
+    "helm.sh/hook": pre-upgrade,pre-install
+    {{- else }}
     "helm.sh/hook": pre-upgrade
+    {{- end }}
     "helm.sh/hook-weight": "-1"
     "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
 spec:
