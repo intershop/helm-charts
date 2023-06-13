@@ -34,7 +34,7 @@ tests:
       - ../values.yaml
     template: templates/config-replication-clusters-xml-cm.yaml
     asserts:
-      - hasDocuments: 
+      - hasDocuments:
           count: 0
 
   - it: as-deployment role=source
@@ -86,7 +86,7 @@ tests:
     asserts:
       # unfortunatelly the complex content can not be checked
       - isNotEmpty:
-          path: data.replication-clusters\.xml
+          path: data["replication-clusters.xml"]
 
   - it: as-deployment role=target
     release:
@@ -130,6 +130,6 @@ tests:
       replication.sourceDatabaseName: intershop_edit
     template: templates/config-replication-clusters-xml-cm.yaml
     asserts:
-      - hasDocuments: 
+      - hasDocuments:
           count: 0
 
