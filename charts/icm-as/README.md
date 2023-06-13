@@ -84,8 +84,10 @@ Prerequisites are:
 
 * [helm-unittest](https://github.com/helm-unittest/helm-unittest)
 
+Please check the unit tests before pushing changes.
+
 ```bash
-helm unittest --helm3  --output-file unit.xml --output-type JUnit charts/icm-as
+helm unittest --helm3 charts/icm-as
 ```
 
 #### ct lint & install

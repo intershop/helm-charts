@@ -12,6 +12,12 @@ volumes:
     defaultMode: 420
 {{- end }}
 {{- end }}
+{{- if .Values.newrelic.enabled }}
+- name: newrelic-config-volume
+  configMap:
+    defaultMode: 420
+    name: {{ template "icm-as.fullname" . }}-newrelic-yml
+{{- end }}
 - name: license-volume
 {{- if eq .Values.license.type "configMap" }}
   configMap:

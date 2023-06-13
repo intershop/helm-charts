@@ -1,0 +1,41 @@
+suite: tests correctness of newrelic section
+templates:
+  - templates/as-deployment.yaml
+  - templates/config-newrelic-yaml-cm.yaml
+tests:
+  - it: newrelic is enabled
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      newrelic.enabled: true
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ENABLE_NEWRELIC
+            value: "true"
+
+  - it: newrelic license
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      newrelic.enabled: true
+      newrelic.license_key: "secret-license-test"
+    template: config-newrelic-yaml-cm.yaml
+#data:
+#  newrelic.yml:  |-
+#    common: &default_settings
+#      license_key : "secret-license-test"
+#      app_name : "icm"
+    asserts:
+      - isKind:
+          of: ConfigMap
