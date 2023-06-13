@@ -5,8 +5,13 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "icm-as.fullname" . }}
+  annotations:
   {{- if .Values.deploymentAnnotations }}
-  annotations: {{- toYaml .Values.deploymentAnnotations | nindent 4 }}
+    {{- toYaml .Values.deploymentAnnotations | nindent 4 }}
+  {{- end }}
+  # Restarting the ICM-AS pods after clean-up
+  {{- if .Values.cleanup.enabled }}
+    rollme: {{ tpl (toYaml .Values) . | sha256sum | trunc 50 }}{{ randAlphaNum 5 }}
   {{- end }}
   labels:
     app: {{ include "icm-as.fullname" . }}

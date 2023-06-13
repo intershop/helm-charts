@@ -363,3 +363,8 @@ replication:
 
   # the name of the (source) database to be used at the target-system to read data from e.g. intershop_edit
   sourceDatabaseName: <databaseName>
+
+# Configuration for the cleanup Task
+cleanup:
+  # Enable or disable the Cleanup Task. If set to true, the database and the sites folder will be cleaned up before deployment.
+  enabled: false

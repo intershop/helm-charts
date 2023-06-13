@@ -1,0 +1,43 @@
+{{- if .Values.cleanup.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "icm-as.fullname" . }}-cleanup
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "icm-as.fullname" . }}-cleanup
+  annotations:
+    # This is what defines this resource as a hook. Without this line, the
+    # job is considered part of the release.
+    "helm.sh/hook": pre-upgrade
+    "helm.sh/hook-weight": "-1"
+    "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
+spec:
+  ttlSecondsAfterFinished: 100
+  backoffLimit: 10
+  template:
+    spec:
+      restartPolicy: Never
+      {{- if include "icm-as.imagePullSecrets" . }}
+        {{- include "icm-as.imagePullSecrets" . | nindent 6 }}
+      {{- end }}
+      containers:
+      - name: {{ template "icm-as.fullname" . }}-cleanup
+        {{- include "icm-as.image" . | nindent 8 }}
+        {{- include "icm-as.volumeMounts" . | nindent 8 }}
+        {{- include "icm-as.resources" . | nindent 8 }}
+        env: 
+        {{- include "icm-as.envDatabase" . | nindent 8 }}
+        - name: IS_DBPREPARE
+          value: "true"
+        - name:  ADDITIONAL_PARAMETERS
+          value: "-classic --clean=only"
+      {{- if include "icm-as.podSecurityContext" . }}
+        {{- include "icm-as.podSecurityContext" . | nindent 6 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds | default 30 }}
+      {{- include "icm-as.volumes" . | nindent 6 }}
+{{- end }}
