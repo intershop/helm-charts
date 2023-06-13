@@ -98,22 +98,6 @@ spec:
         - name: testdata-volume
           mountPath: /data
       initContainers:
-      {{- if eq .Values.testrunner.persistence.testdata.type "local" }}
-      # the following container
-      # 1) only is active if local storage is enabled
-      # 2) applies permission 777 to sites volume
-      # 3) makes user/group intershop owner of sites volume
-      # !) This is necessary for Windows users with Docker Desktop using WSL[2] backend because:
-      #    Docker Desktop with WSL[2] creates folders for local volume mounts assigning the user root and permissions 700
-      - name: testdata-volume-mount-hack
-        image: busybox:1.31
-        command: ["sh", "-c", "chmod 777 /data && chown -R 150:150 /data"]
-        volumeMounts:
-        - name: testdata-volume
-          mountPath: /data
-        securityContext:
-          runAsUser: 0
-      {{- end }}
       - name: init-wait-for-webserver
         image: busybox:1.31
         resources:

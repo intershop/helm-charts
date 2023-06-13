@@ -13,12 +13,8 @@ tests:
       customizations: {}
     template: templates/as-deployment.yaml
     asserts:
-      - contains:
+      - isEmpty:
           path: spec.template.spec.initContainers
-          content:
-            name: sites-volume-mount-hack
-          count: 1
-          any: true
 
   - it: one customization with default pullPolicy
     release:
@@ -31,11 +27,6 @@ tests:
       customizations.responsive.repository: responsive-repo:0.8.15
     template: templates/as-deployment.yaml
     asserts:
-      - contains:
-          path: spec.template.spec.initContainers
-          content:
-            name: sites-volume-mount-hack
-          any: true
       - contains:
           path: spec.template.spec.initContainers
           content:
@@ -60,11 +51,6 @@ tests:
       customizations.solrcloud.pullPolicy: Never
     template: templates/as-deployment.yaml
     asserts:
-      - contains:
-          path: spec.template.spec.initContainers
-          content:
-            name: sites-volume-mount-hack
-          any: true
       - contains:
           path: spec.template.spec.initContainers
           content:
