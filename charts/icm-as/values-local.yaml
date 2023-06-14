@@ -1,0 +1,4 @@
+# this allows us to use volume hacks for setting needed permissions
+icm-as:
+  podSecurityContext:
+    runAsNonRoot: false
