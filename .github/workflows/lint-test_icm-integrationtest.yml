@@ -53,9 +53,9 @@ jobs:
         kubectl create secret docker-registry dockerhub --namespace=$NAMESPACE --docker-username=${{ secrets.DOCKER_USERNAME }} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=eng-ateam@intershop.com
 
         sudo mkdir -p /data/icm/sites
-        sudo mkdir -p /data/icm/pagecache
+        chmod 777 /data/icm/sites
+        chown 150:150 /data/icm/sites
         sed -i 's/<local sites folder>/\/data\/icm\/sites/' charts/icm/values.yaml
-        sed -i 's/<local pagecache folder>/\/data\/icm\/pagecache/' charts/icm/values.yaml
 
         sudo mkdir -p /data/icm/mssql/data
         sudo mkdir -p /data/icm/mssql/backup
