@@ -6,5 +6,5 @@ charts:
   - charts/icm-as
 check-version-increment: false
 validate-maintainers: false
-helm-extra-args: --timeout 3000s --debug
+helm-extra-args: -f charts/icm-as/values-local.yaml --timeout 3000s --debug
 skip-clean-up: true
