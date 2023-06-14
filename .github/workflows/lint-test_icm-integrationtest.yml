@@ -48,13 +48,15 @@ jobs:
 
         kubectl create namespace icm-system
         kubectl create namespace $NAMESPACE
-          
+
         kubectl create secret docker-registry dockerhub --namespace=icm-system --docker-username=${{ secrets.DOCKER_USERNAME }} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=eng-ateam@intershop.com
         kubectl create secret docker-registry dockerhub --namespace=$NAMESPACE --docker-username=${{ secrets.DOCKER_USERNAME }} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=eng-ateam@intershop.com
 
+        sed -i 's/runAsNonRoot: true/runAsNonRoot: false/' charts/icm-as/values.yaml
+
         sudo mkdir -p /data/icm/sites
         sed -i 's/<local sites folder>/\/data\/icm\/sites/' charts/icm/values.yaml
-
+       
         sudo mkdir -p /data/icm/mssql/data
         sudo mkdir -p /data/icm/mssql/backup
         sed -i 's/<local mssql data folder>/\/data\/icm\/mssql\/data/' charts/icm/values.yaml

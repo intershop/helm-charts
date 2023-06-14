@@ -1,4 +1,6 @@
 icm-as:
+  podSecurityContext:
+    runAsNonRoot: true
 
   podAnnotations:
     # as long as there are no long running job pods we need this annotation for icm-as

@@ -1,3 +1,0 @@
-# this allows us to use volume hacks for setting needed permissions
-podSecurityContext:
-  runAsNonRoot: false
