@@ -4,22 +4,6 @@ Creates init-containers
 */}}
 {{- define "icm-as.initContainers" -}}
 initContainers:
-{{- if eq .Values.persistence.sites.type "local" }}
-# the following container
-# 1) only is active if local storage is enabled
-# 2) applies permission 777 to sites volume
-# 3) makes user/group intershop owner of sites volume
-# !) This is necessary for Windows users with Docker Desktop using WSL[2] backend because:
-#    Docker Desktop with WSL[2] creates folders for local volume mounts assigning the user root and permissions 700
-- name: sites-volume-mount-hack
-  image: busybox
-  command: ["sh", "-c", "chmod 777 /intershop/sites && chown -R 150:150 /intershop/sites"]
-  volumeMounts:
-  - name: sites-volume
-    mountPath: /intershop/sites
-  securityContext:
-    runAsUser: 0
-{{- end }}
 {{- if .Values.copySitesDir.enabled }}
 - name: cp-sites-dir
   image: "{{ .Values.image.repository }}{{ if not (contains ":" .Values.image.repository) }}:{{ .Values.image.tag | default .Chart.AppVersion }}{{ end }}"
