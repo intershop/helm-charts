@@ -68,7 +68,7 @@ jobs:
         
         sed -i '/^mssql:/{n;s/.*/  enabled: true/}' charts/icm-as/values.yaml
         
-        ct install --debug --namespace=$NAMESPACE --config ct_icm-as.yaml --helm-extra-args "-f values-local.yaml"
+        ct install --debug --namespace=$NAMESPACE --config ct_icm-as.yaml --helm-extra-args "-f charts/icm-as/values-local.yaml"
         
     - name: Debug failure
       if: failure() && steps.list-changed.outputs.changed == 'true'
