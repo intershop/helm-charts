@@ -46,8 +46,9 @@ jobs:
         export NAMESPACE=ct-icm-$random_value
         echo "NAMESPACE=$NAMESPACE" >> $GITHUB_ENV
 
+        kubectl create namespace icm-system
         kubectl create namespace $NAMESPACE
-
+          
         kubectl create secret docker-registry dockerhub --namespace=icm-system --docker-username=${{ secrets.DOCKER_USERNAME }} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=eng-ateam@intershop.com
         kubectl create secret docker-registry dockerhub --namespace=$NAMESPACE --docker-username=${{ secrets.DOCKER_USERNAME }} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=eng-ateam@intershop.com
 
