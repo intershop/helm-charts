@@ -8910,6 +8910,8 @@ spec:
                 operator: In
                 values:
                 - linux
+      imagePullSecrets:
+      - "dockerhub"
       containers:
       - args:
         - --secure-listen-address=0.0.0.0:8443
@@ -8940,8 +8942,8 @@ spec:
         - --leader-elect
         command:
         - /manager
-        image: icmjoboperator:latest
-        imagePullPolicy: Never
+        image: intershophub/icm-job-operator:1.0.0-dev5
+        imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
             path: /healthz
