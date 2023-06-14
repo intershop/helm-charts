@@ -48,6 +48,7 @@ jobs:
 
         kubectl create namespace $NAMESPACE
 
+        kubectl create secret docker-registry dockerhub --namespace=icm-system --docker-username=${{ secrets.DOCKER_USERNAME }} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=eng-ateam@intershop.com
         kubectl create secret docker-registry dockerhub --namespace=$NAMESPACE --docker-username=${{ secrets.DOCKER_USERNAME }} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=eng-ateam@intershop.com
 
         sudo mkdir -p /data/icm/sites
