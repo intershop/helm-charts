@@ -55,8 +55,10 @@ jobs:
         sed -i 's/runAsNonRoot: true/runAsNonRoot: false/' charts/icm-as/values.yaml
 
         sudo mkdir -p /data/icm/sites
+        sudo mkdir -p /data/icm/pagecache
         sed -i 's/<local sites folder>/\/data\/icm\/sites/' charts/icm/values.yaml
-       
+        sed -i 's/<local pagecache folder>/\/data\/icm\/pagecache/' charts/icm/values.yaml
+
         sudo mkdir -p /data/icm/mssql/data
         sudo mkdir -p /data/icm/mssql/backup
         sed -i 's/<local mssql data folder>/\/data\/icm\/mssql\/data/' charts/icm/values.yaml
