@@ -21,7 +21,7 @@ spec:
           restartPolicy: Never
           containers:
           - name: prefetch
-            image: 31099/wget:alpine-3.16
+            image: 31099/wget:alpine-3.18
             imagePullPolicy: Always
             env:
             - name: SECS
