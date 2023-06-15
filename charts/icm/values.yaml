@@ -89,10 +89,7 @@ icm-web:
       repository: intershophub/icm-webadapteragent:4.0.0
   persistence:
     pagecache:
-      size: 1Gi
-      type: local
-      local:
-        path: <local pagecache folder>
+      type: emptyDir
 
 mailhog:
   enabled: false
