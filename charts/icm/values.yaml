@@ -1,4 +1,6 @@
 icm-as:
+  podSecurityContext:
+    runAsNonRoot: true
 
   podAnnotations:
     # as long as there are no long running job pods we need this annotation for icm-as
@@ -87,10 +89,7 @@ icm-web:
       repository: intershophub/icm-webadapteragent:4.0.0
   persistence:
     pagecache:
-      size: 1Gi
-      type: local
-      local:
-        path: <local pagecache folder>
+      type: emptyDir
 
 mailhog:
   enabled: false

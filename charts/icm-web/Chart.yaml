@@ -2,4 +2,4 @@ apiVersion: v1
 appVersion: "11.0.13"
 description: Intershop Commerce Management - Web Adapter and Web Adapter Agent
 name: icm-web
-version: 0.7.4
+version: 0.7.5

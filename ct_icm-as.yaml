@@ -1,9 +1,9 @@
 remote: origin
 target-branch: main
 chart-dirs:
-  - charts
+- charts
 charts:
-  - charts/icm-as
+- charts/icm-as
 check-version-increment: false
 validate-maintainers: false
 helm-extra-args: --timeout 3000s

@@ -27,7 +27,7 @@ jobs:
 
     - name: Create kind cluster
       if: steps.list-changed.outputs.changed == 'true'
-      uses: helm/kind-action@v1.3.0
+      uses: helm/kind-action@v1.7.0
       with:
         config: kind.yaml
 
@@ -46,14 +46,16 @@ jobs:
         export NAMESPACE=ct-icm-$random_value
         echo "NAMESPACE=$NAMESPACE" >> $GITHUB_ENV
 
+        kubectl create namespace icm-system
         kubectl create namespace $NAMESPACE
 
+        kubectl create secret docker-registry dockerhub --namespace=icm-system --docker-username=${{ secrets.DOCKER_USERNAME }} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=eng-ateam@intershop.com
         kubectl create secret docker-registry dockerhub --namespace=$NAMESPACE --docker-username=${{ secrets.DOCKER_USERNAME }} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=eng-ateam@intershop.com
 
+        sed -i 's/runAsNonRoot: true/runAsNonRoot: false/' charts/icm/values.yaml
+
         sudo mkdir -p /data/icm/sites
-        sudo mkdir -p /data/icm/pagecache
         sed -i 's/<local sites folder>/\/data\/icm\/sites/' charts/icm/values.yaml
-        sed -i 's/<local pagecache folder>/\/data\/icm\/pagecache/' charts/icm/values.yaml
 
         sudo mkdir -p /data/icm/mssql/data
         sudo mkdir -p /data/icm/mssql/backup
