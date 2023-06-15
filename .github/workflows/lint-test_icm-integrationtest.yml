@@ -52,7 +52,7 @@ jobs:
         kubectl create secret docker-registry dockerhub --namespace=icm-system --docker-username=${{ secrets.DOCKER_USERNAME }} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=eng-ateam@intershop.com
         kubectl create secret docker-registry dockerhub --namespace=$NAMESPACE --docker-username=${{ secrets.DOCKER_USERNAME }} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=eng-ateam@intershop.com
 
-        sed -i 's/runAsNonRoot: true/runAsNonRoot: false/' charts/icm-as/values.yaml
+        sed -i 's/runAsNonRoot: true/runAsNonRoot: false/' charts/icm/values.yaml
 
         sudo mkdir -p /data/icm/sites
         sed -i 's/<local sites folder>/\/data\/icm\/sites/' charts/icm/values.yaml
