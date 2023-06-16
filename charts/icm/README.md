@@ -61,7 +61,11 @@ Some notes on this:
 
 ### helm-unit
 
-There are helm-unit tests to support development and secure several functionality
+There are helm-unit tests to support development and secure several functionality.
+
+Prerequisites are:
+
+* [helm-unittest](https://github.com/helm-unittest/helm-unittest)
 
 ```bash
 helm unittest --helm3  --output-file unit.xml --output-type JUnit charts/icm
@@ -69,9 +73,14 @@ helm unittest --helm3  --output-file unit.xml --output-type JUnit charts/icm
 
 ### ct lint & install
 
+Prerequisites are:
+
+* [kind cluster](https://github.com/kubernetes-sigs/kind)
+* Install cluster: `kind create cluster --config icm.yaml`
+
 ```bash
 docker run -it --network host --workdir=/data --volume <my kube config>:/root/.kube/config:ro --volume
-$(pwd):/data quay.io/helmpack/chart-testing:v3.5.0 ct lint --config ct_icm.yaml
+$(pwd):/data quay.io/helmpack/chart-testing:v3.8.0 ct lint --config ct_icm.yaml
 ```
 
 ## Testing ICM
