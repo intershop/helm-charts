@@ -71,6 +71,7 @@ icm-as:
     sourceDatabaseName: <databaseName>
 
 icm-web:
+  enabled: true
   imagePullSecrets:
   - "dockerhub"
   webadapter:
