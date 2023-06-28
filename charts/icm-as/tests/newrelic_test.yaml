@@ -31,11 +31,9 @@ tests:
       newrelic.enabled: true
       newrelic.license_key: "secret-license-test"
     template: config-newrelic-yaml-cm.yaml
-#data:
-#  newrelic.yml:  |-
-#    common: &default_settings
-#      license_key : "secret-license-test"
-#      app_name : "icm"
     asserts:
       - isKind:
           of: ConfigMap
+      - matchRegex:
+          path: data["newrelic.yml"]
+          pattern: .*(secret-license-test).*
