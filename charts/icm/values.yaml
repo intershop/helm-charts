@@ -14,8 +14,8 @@ icm-as:
   dockerSecret:
     enabled: false
     name: "dockerhub"
-    username: "<your username>"
-    password: "<your password>"
+    username: "<your registry username>"
+    password: "<your registry password>"
 
   imagePullSecrets:
   - "dockerhub"
