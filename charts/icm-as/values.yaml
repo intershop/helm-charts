@@ -29,11 +29,19 @@ image:
   repository: "intershophub/icm-as"
   # tag: "11.1.3"
 
-## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
+## define a secret for a container registry
+dockerSecret:
+  enabled: false
+  name: "dockerhub"
+  username: "<your registry username>"
+  password: "<your registry password>"
+
+## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace
+## or by the above dockerSecrets section.
 ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
 ## Intershop: These secrets also last for customization images
 imagePullSecrets:
-  - "dockerhub"
+- "dockerhub"
 
 # list of customization images each following the structure:
 #  <name>:

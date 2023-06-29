@@ -20,5 +20,6 @@ envsubst "${env_list}" < ./values-iste_linux.tmpl | tee values-iste_linux.yaml
 
 envsubst "${env_list}" < ./values-test-local.tmpl | tee values-test-local.yaml
 
+helm dependency update ../icm-as # wait for https://github.com/helm/helm/issues/2247
 helm dependency update .
 helm upgrade --install ${HELM_DRY_RUN}${HELM_JOB_NAME} . -f ./values-iste_linux.yaml -f ./values-test-local.yaml

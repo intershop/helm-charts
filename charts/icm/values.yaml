@@ -9,6 +9,14 @@ icm-as:
   image:
   #  repository: intershophub/icm-as
   #  tag: :11.0.12-dev1
+
+  ## define a secret for a container registry
+  dockerSecret:
+    enabled: false
+    name: "dockerhub"
+    username: "<your registry username>"
+    password: "<your registry password>"
+
   imagePullSecrets:
   - "dockerhub"
   replicaCount: 1

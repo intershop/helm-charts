@@ -12,8 +12,8 @@ This is the ICM helm chart
 
 This chart will do the following:
 
-* Deploy an ICM Application Server using the [intershop/icm-as](../icm-as) chart
-* Deploy an ICM Web Adapter and Web Adapter Agent using the [intershop/icm-web](../icm-web) chart
+* Deploy an ICM Application Server using the [intershop/icm-as](../icm-as/README.md) chart
+* Deploy an ICM Web Adapter and Web Adapter Agent using the [intershop/icm-web](../icm-web/README.md) chart
 
 ## Installing the Chart
 
