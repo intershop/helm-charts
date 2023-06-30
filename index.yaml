@@ -6,6 +6,30 @@ entries:
       requestedMemoryQuota: 5900Mi
     apiVersion: v1
     appVersion: 11.2.0
+    created: "2023-06-30T07:11:54.229331722Z"
+    dependencies:
+    - name: icm-as
+      repository: file://../icm-as
+      version: 1.2.0
+    - condition: icm-web.enabled
+      name: icm-web
+      repository: file://../icm-web
+      version: 0.7.5
+    - condition: mailhog.enabled
+      name: mailhog
+      repository: https://codecentric.github.io/helm-charts
+      version: 5.2.0
+    description: Intershop Commerce Management - ICM
+    digest: ad29ac2783b45b836e76fbfb9e06c87f25618a5dd7b4ff12546413c97d1b63ce
+    name: icm
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-1.3.0/icm-1.3.0.tgz
+    version: 1.3.0
+  - annotations:
+      requestedCpuQuotaInMinutes: "2500"
+      requestedMemoryQuota: 5900Mi
+    apiVersion: v1
+    appVersion: 11.2.0
     created: "2023-06-15T09:12:22.312277584Z"
     dependencies:
     - name: icm-as
@@ -1967,6 +1991,21 @@ entries:
   icm-as:
   - apiVersion: v2
     appVersion: 11.2.0
+    created: "2023-06-30T07:11:54.494259939Z"
+    dependencies:
+    - condition: job.enabled
+      name: icm-job
+      repository: file://../icm-job
+      version: 1.0.0
+    description: Intershop Commerce Management - AppServer
+    digest: f3fb6a7b21c24239cb5cf77c3b59fd15052870b3d44c397d31d9db6bd9a361f7
+    name: icm-as
+    type: application
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-as-1.2.0/icm-as-1.2.0.tgz
+    version: 1.2.0
+  - apiVersion: v2
+    appVersion: 11.2.0
     created: "2023-06-15T09:12:22.477369997Z"
     description: Intershop Commerce Management - AppServer
     digest: 36acb5134fcb155fde0318768ad5f7dca5e4873a72f61ae86dc39b929185063e
@@ -2645,6 +2684,15 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/icm-as-0.2.6/icm-as-0.2.6.tgz
     version: 0.2.6
+  icm-job:
+  - apiVersion: v1
+    created: "2023-06-30T07:11:54.719919762Z"
+    description: Intershop Commerce Management - ICM Job
+    digest: 43527b56aaf544a5cd5b700d04b6a033436543a64aa90218420c089de9936138
+    name: icm-job
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-job-1.0.0/icm-job-1.0.0.tgz
+    version: 1.0.0
   icm-replication:
   - apiVersion: v1
     appVersion: 11.0.0
@@ -3650,4 +3698,4 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.2.3/pwa-main-0.2.3.tgz
     version: 0.2.3
-generated: "2023-06-15T09:12:22.612885442Z"
+generated: "2023-06-30T07:11:54.721129368Z"
