@@ -44,9 +44,6 @@ icm-web:
       existingClaim: ${HELM_JOB_NAME}-local-testdata-pvc
       mountPoint: /data
 
-mail:
-  nodeSelector: null
-
 testrunner:
   nodeSelector: null
   imagePullSecrets:

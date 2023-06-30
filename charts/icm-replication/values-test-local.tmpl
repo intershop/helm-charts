@@ -1,0 +1,106 @@
+icm-edit:
+  icm-as:
+    nodeSelector: null
+    imagePullSecrets:
+    - "${ICM_AS_PULL_SECRET}"
+    license:
+      secret:
+        name: intershop-license
+    persistence:
+      sites:
+        size: 1Gi
+        type: local
+        local:
+          path: ${LOCAL_MOUNT_BASE}/sites/edit
+      customdata:
+        enabled: true
+        existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
+        mountPoint: /data
+    datadog:
+      enabled: false
+    mssql:
+      enabled: true
+      acceptEula: "Y"
+      persistence:
+        data:
+          size: 1Gi
+          type: local
+          local:
+            path: ${LOCAL_MOUNT_BASE}/mssql/edit/data
+        backup:
+          size: 1Gi
+          type: local
+          local:
+            path: ${LOCAL_MOUNT_BASE}/mssql/edit/backup
+
+  icm-web:
+    nodeSelector: null
+    imagePullSecrets:
+    - "${ICM_WEB_PULL_SECRET}"
+    persistence:
+      pagecache:
+        type: emptyDir
+      customdata:
+        enabled: true
+        existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
+        mountPoint: /data
+
+icm-live:
+  icm-as:
+    nodeSelector: null
+    imagePullSecrets:
+    - "${ICM_AS_PULL_SECRET}"
+    license:
+      secret:
+        name: intershop-license
+    persistence:
+      sites:
+        size: 1Gi
+        type: local
+        local:
+          path: ${LOCAL_MOUNT_BASE}/sites/live
+      customdata:
+        enabled: true
+        existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
+        mountPoint: /data
+    datadog:
+      enabled: false
+    mssql:
+      enabled: true
+      acceptEula: "Y"
+      persistence:
+        data:
+          size: 1Gi
+          type: local
+          local:
+            path: ${LOCAL_MOUNT_BASE}/mssql/live/data
+        backup:
+          size: 1Gi
+          type: local
+          local:
+            path: ${LOCAL_MOUNT_BASE}/mssql/live/backup
+
+  icm-web:
+    nodeSelector: null
+    imagePullSecrets:
+    - "${ICM_WEB_PULL_SECRET}"
+    persistence:
+      pagecache:
+        type: emptyDir
+      customdata:
+        enabled: true
+        existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
+        mountPoint: /data
+
+  testrunner:
+    nodeSelector: null
+    imagePullSecrets:
+    - "${ICM_AS_PULL_SECRET}"
+    persistence:
+      testdata:
+        size: 1Gi
+        type: local
+        local:
+          dir: ${LOCAL_MOUNT_BASE}/testdata
+    datadog:
+      enabled: false
