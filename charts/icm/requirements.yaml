@@ -1,6 +1,6 @@
 dependencies:
   - name: icm-as
-    version: 1.1.0
+    version: 1.2.0
     repository: file://../icm-as
   - name: icm-web
     version: 0.7.5

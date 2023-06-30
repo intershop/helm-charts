@@ -25,7 +25,7 @@ class ProductType(Enum, metaclass=MyEnumMeta):
 	ICM_REPLICATION = 'icm-replication'
 	ICM = 'icm'
 	ICM_AS = 'icm-as'
-    ICM_JOB = 'icm-job'
+	ICM_JOB = 'icm-job'
 	ICM_WEB = 'icm-web'
 
 def handle_subprocess_error(subprocess_result, error_message):
