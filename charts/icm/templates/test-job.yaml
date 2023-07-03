@@ -118,7 +118,7 @@ spec:
         image: busybox:1.31
         resources:
 {{ toYaml .Values.testrunner.initContainer.resources | indent 12 }}
-        {{- if index .Values "icm-as" "replication" "enabled" }}
+        {{- if index .Values "icm-live" "icm-as" "replication" "enabled" }}
         command: ['sh', '-c', "until wget http://{{ .Release.Name }}-icm-web-live-wa:8080/INTERSHOP/wastatistics; do echo waiting for webadapter ; sleep 2; done"]
         {{- else }}
         command: ['sh', '-c', "until wget http://{{ .Release.Name }}-icm-web-wa:8080/INTERSHOP/wastatistics; do echo waiting for webadapter ; sleep 2; done"]
