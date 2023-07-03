@@ -3,3 +3,6 @@ appVersion: "11.0.0"
 description: Intershop Commerce Management - ICM Replication
 name: icm-replication
 version: 1.0.0-alpha
+annotations:
+  requestedMemoryQuota: 10Gi
+  requestedCpuQuotaInMinutes: 2200
