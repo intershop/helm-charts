@@ -2,10 +2,10 @@ apiVersion: v2
 name: icm-as
 description: Intershop Commerce Management - AppServer
 type: application
-version: 1.2.0
+version: 1.2.1
 appVersion: 11.2.0
 dependencies:
 - name: icm-job
-  version: 1.0.0
+  version: 1.0.1
   repository: file://../icm-job
   condition: job.enabled
