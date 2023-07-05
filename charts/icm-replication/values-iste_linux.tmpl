@@ -20,7 +20,7 @@ icm-edit:
       su ${SERVER_DIRECTORY_USER} <<'EOF'
         export PATH=$ROOTPATH
         timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
-        sh /intershop/bin/intershop.sh appserver  2>&1 | tee outfile $HELM_DIRECTORY/server-logs/edit/as${timestamp}.log
+        sh /intershop/bin/intershop.sh appserver  2>&1 | tee outfile $HELM_DIRECTORY/server-logs-edit/as${timestamp}.log
       EOF
     podSecurityContext:
       runAsUser: 0
@@ -51,8 +51,8 @@ icm-edit:
       SERVER_DIRECTORY_GROUP: "${SERVER_DIRECTORY_GROUP}"
       SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
 
-      INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}-icm-web-wa:8080"
-      INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}-icm-web-wa:8443"
+      INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}-icm-web-edit-wa:8080"
+      INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}-icm-web-edit-wa:8443"
 
       SMTPMAILSERVICE_DEFAULTSMTPMAILSERVICE_MAIL_SMTP_HOSTNAMES: "${HELM_JOB_NAME}-mailhog"
       SMTPMAILSERVICE_DEFAULTSMTPMAILSERVICE_MAIL_SMTP_PORT: "1025"
@@ -88,18 +88,18 @@ icm-edit:
       image:
         repository: "${ICM_WEBSERVER_IMAGE}"
         command: |
-          mkdir -p $HELM_DIRECTORY/server-logs/edit
-          chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs
+          mkdir -p $HELM_DIRECTORY/server-logs-edit
+          chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs-edit
           timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
-          su ${SERVER_DIRECTORY_USER} -c "/intershop/bin/intershop.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs/edit/wa${timestamp}.log"
+          su ${SERVER_DIRECTORY_USER} -c "/intershop/bin/intershop.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs-edit/wa${timestamp}.log"
     agent:
       image:
         repository: "${ICM_WEBADAPTER_AGENT_IMAGE}"
         command: |
-          mkdir -p $HELM_DIRECTORY/server-logs/edit
-          chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs
+          mkdir -p $HELM_DIRECTORY/server-logs-edit
+          chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs-edit
           timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
-          su ${SERVER_DIRECTORY_USER} -c "/intershop/bin/start-waa.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs/edit/waa${timestamp}.log"
+          su ${SERVER_DIRECTORY_USER} -c "/intershop/bin/start-waa.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs-edit/waa${timestamp}.log"
     podSecurityContext:
       runAsUser: 0
       runAsGroup: 0
@@ -135,7 +135,7 @@ icm-live:
       su ${SERVER_DIRECTORY_USER} <<'EOF'
         export PATH=$ROOTPATH
         timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
-        sh /intershop/bin/intershop.sh appserver  2>&1 | tee outfile $HELM_DIRECTORY/server-logs/live/as${timestamp}.log
+        sh /intershop/bin/intershop.sh appserver  2>&1 | tee outfile $HELM_DIRECTORY/server-logs-live/as${timestamp}.log
       EOF
     podSecurityContext:
       runAsUser: 0
@@ -166,8 +166,8 @@ icm-live:
       SERVER_DIRECTORY_GROUP: "${SERVER_DIRECTORY_GROUP}"
       SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
 
-      INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}-icm-web-wa:8080"
-      INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}-icm-web-wa:8443"
+      INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}-icm-web-live-wa:8080"
+      INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}-icm-web-live-wa:8443"
 
       SMTPMAILSERVICE_DEFAULTSMTPMAILSERVICE_MAIL_SMTP_HOSTNAMES: "${HELM_JOB_NAME}-mailhog"
       SMTPMAILSERVICE_DEFAULTSMTPMAILSERVICE_MAIL_SMTP_PORT: "1025"
@@ -203,18 +203,18 @@ icm-live:
       image:
         repository: "${ICM_WEBSERVER_IMAGE}"
         command: |
-          mkdir -p $HELM_DIRECTORY/server-logs/live
-          chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs
+          mkdir -p $HELM_DIRECTORY/server-logs-live
+          chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs-live
           timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
-          su ${SERVER_DIRECTORY_USER} -c "/intershop/bin/intershop.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs/live/wa${timestamp}.log"
+          su ${SERVER_DIRECTORY_USER} -c "/intershop/bin/intershop.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs-live/wa${timestamp}.log"
     agent:
       image:
         repository: "${ICM_WEBADAPTER_AGENT_IMAGE}"
         command: |
-          mkdir -p $HELM_DIRECTORY/server-logs/live
-          chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs
+          mkdir -p $HELM_DIRECTORY/server-logs-live
+          chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs-live
           timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
-          su ${SERVER_DIRECTORY_USER} -c "/intershop/bin/start-waa.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs/live/waa${timestamp}.log"
+          su ${SERVER_DIRECTORY_USER} -c "/intershop/bin/start-waa.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs-live/waa${timestamp}.log"
     podSecurityContext:
       runAsUser: 0
       runAsGroup: 0
