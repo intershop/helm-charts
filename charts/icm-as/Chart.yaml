@@ -2,7 +2,7 @@ apiVersion: v2
 name: icm-as
 description: Intershop Commerce Management - AppServer
 type: application
-version: 1.2.1
+version: 1.2.2-alpha
 appVersion: 11.2.0
 dependencies:
 - name: icm-job
