@@ -197,7 +197,7 @@ icm-live:
             existingClass: azurefile
       jgroups:
         type: existingClaim
-        existingClaim: ${HELM_JOB_NAME}-cluster-jgroups-pvc
+        existingClaim: ${HELM_JOB_NAME}-icm-as-edit-cluster-jgroups-pvc
       customdata:
         enabled: true
         existingClaim: icm-nfs
