@@ -118,11 +118,20 @@ spec:
         image: busybox:1.31
         resources:
 {{ toYaml .Values.testrunner.initContainer.resources | indent 12 }}
+
+        command:
+        - /bin/sh
+        - -c
+        - |
         {{- if index .Values "icm-as" "replication" "enabled" }}
-        command: ['sh', '-c', "until wget http://{{ .Release.Name }}-icm-web-live-wa:8080/INTERSHOP/wastatistics; do echo waiting for webadapter ; sleep 2; done"]
+          until result=$(wget -qO- http://{{ .Release.Name }}-icm-as-live:7743/status/ReadinessProbe | grep -o "RUNNING"); do
         {{- else }}
-        command: ['sh', '-c', "until wget http://{{ .Release.Name }}-icm-web-wa:8080/INTERSHOP/wastatistics; do echo waiting for webadapter ; sleep 2; done"]
+          until result=$(wget -qO- http://{{ .Release.Name }}-icm-as:7743/status/ReadinessProbe | grep -o "RUNNING"); do
         {{- end }}
+            echo "Readiness probe of application server has failed"
+            sleep 5
+          done
+          echo "Readiness probe of application server was successful"
       volumes:
       - name: testdata-volume
         {{- if eq .Values.testrunner.persistence.testdata.type "local" }}
