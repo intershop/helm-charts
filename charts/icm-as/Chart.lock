@@ -1,6 +1,0 @@
-dependencies:
-- name: icm-job
-  repository: file://../icm-job
-  version: 1.0.0
-digest: sha256:4228f0f666208ee100a5b688d8892fe543116fcaf5af8920f64eade5c09efdc8
-generated: "2023-06-30T12:38:48.905080182+02:00"
