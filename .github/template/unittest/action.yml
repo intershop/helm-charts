@@ -10,6 +10,11 @@ inputs:
 runs:
   using: "composite"
   steps:
+  - name: Add dependency chart repos
+    shell: bash
+    run: |
+      helm dependency update charts/${{ inputs.chartName }}
+
   - name: Run chart-testing (lint)
     shell: bash
     run: ct lint --config ${{ inputs.chartTestingFile }}
