@@ -52,6 +52,10 @@ env:
     fieldRef:
       fieldPath: status.hostIP
 {{- end }}
+{{- if .Values.newrelic.enabled }}
+- name: ENABLE_NEWRELIC
+  value: "true"
+{{- end }}
 {{- if .Values.mssql.enabled }}
 - name: INTERSHOP_DATABASETYPE
   value: mssql

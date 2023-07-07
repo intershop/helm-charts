@@ -35,6 +35,12 @@ volumeMounts:
   readOnly: true
   subPath: replication-clusters.xml
 {{- end }}
+{{- if .Values.newrelic.enabled }}
+- mountPath: /intershop/lib-newrelic/newrelic.yml
+  name: newrelic-config-volume
+  readOnly: true
+  subPath: newrelic.yml
+{{- end }}
 {{- if .Values.sslCertificateRetrieval.enabled }}
 - mountPath: /mnt/secrets
   name: secrets-store-inline
