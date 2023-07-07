@@ -21,3 +21,9 @@ data:
   caching-ignore-params.yaml: |-
     params: []
   {{- end -}}
+  {{- if .Values.cache.additionalHeaders }}
+  additional-headers.yaml: {{- .Values.cache.additionalHeaders | toYaml | indent 4}}
+  {{- else }}
+  additional-headers.yaml: |-
+    params: []
+  {{- end -}}

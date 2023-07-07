@@ -59,6 +59,10 @@ spec:
           - name: CACHING_IGNORE_PARAMS_SOURCE
             value: "/config/caching-ignore-params.yaml"
         {{- end }}
+        {{- if .Values.cache.additionalHeaders }}
+          - name: ADDITIONAL_HEADERS_SOURCE
+            value: "/config/additional-headers.yaml"
+        {{- end }}
         {{- if $nginxMetricsEnabled }}
           - name: PROMETHEUS
             value: "true"
