@@ -80,6 +80,14 @@ datadog:
   # define (additional) datadog options
   additionalOptions:
 
+# configuration related to New Relic
+newrelic:
+  # enable or disable the New Relic Java agent to monitor the icm-as JVM
+  # https://docs.newrelic.com/docs/kubernetes-pixie/kubernetes-integration/advanced-configuration/link-apm-applications-kubernetes/
+  enabled: false
+  app_name: "icm"
+  license_key: "secret"
+
 nameOverride: ""
 
 fullnameOverride: ""
