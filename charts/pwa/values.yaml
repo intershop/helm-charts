@@ -121,6 +121,16 @@ cache:
   multiChannel: ""
 
   ####
+  ## @param additional headers configuration object
+  ## additionalHeaders: |
+  ##   headers:
+  ##     - X-Frame-Options: 'SAMEORIGIN'
+  #### no additional headers example
+  ##   additionalHeaders: |
+  ##     headers: []
+  additionalHeaders: ""
+
+  ####
   ## @param extraEnvVars Extra environment variables to be set on NGINX containers
   ## E.g:
   ##  extraEnvVars:
