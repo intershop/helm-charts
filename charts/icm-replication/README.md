@@ -6,7 +6,6 @@ This is the ICM Replication helm chart
 
 * helm+kubectl
 * Kubernetes 1.14+
-* Valid license file
 
 ## Chart Details
 

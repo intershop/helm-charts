@@ -2,7 +2,6 @@ suite: test with default values
 templates:
   - templates/as-deployment.yaml
   - templates/as-service.yaml
-  - templates/config-license-xml-cm.yaml
 tests:
   - it: as-deployment is correct
     release:
@@ -104,13 +103,6 @@ tests:
       - contains:
           path: spec.template.spec.containers[0].volumeMounts
           content:
-            mountPath: /intershop/license/license.xml
-            name: license-volume
-            readOnly: true
-            subPath: license.xml
-      - contains:
-          path: spec.template.spec.containers[0].volumeMounts
-          content:
             mountPath: /intershop/sites
             name: sites-volume
       - contains:
@@ -158,13 +150,6 @@ tests:
       - contains:
           path: spec.template.spec.volumes
           content:
-            name: license-volume
-            configMap:
-              defaultMode: 420
-              name: icm-as-license
-      - contains:
-          path: spec.template.spec.volumes
-          content:
             name: jgroups-volume
             emptyDir: {}
       - contains:
@@ -178,35 +163,6 @@ tests:
           content:
             name: customizations-volume
             emptyDir: {}
-
-
-  - it: config-license-xml-cm is correct
-    release:
-      name: icm-as
-    chart:
-      version: 0.8.15
-    values:
-      - ../values.yaml
-    template: templates/config-license-xml-cm.yaml
-    asserts:
-      - isKind:
-          of: ConfigMap
-      - equal:
-          path: metadata.name
-          value: icm-as-license
-      #metadata.labels
-      - equal:
-          path: metadata.labels.app
-          value: icm-as-license
-      - equal:
-          path: metadata.labels.chart
-          value: icm-as-0.8.15
-      #data
-      - equal:
-          path: data
-          value:
-            license.xml: "<your license>"
-
 
   - it: as-service is correct
     release:

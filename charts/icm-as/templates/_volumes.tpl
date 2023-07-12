@@ -18,20 +18,6 @@ volumes:
     defaultMode: 420
     name: {{ template "icm-as.fullname" . }}-newrelic-yml
 {{- end }}
-- name: license-volume
-{{- if eq .Values.license.type "configMap" }}
-  configMap:
-    defaultMode: 420
-    name: {{ template "icm-as.fullname" . }}-license
-{{- else if eq .Values.license.type "csi" }}
-  csi:
-    driver: secrets-store.csi.k8s.io
-    readOnly: true
-  {{ toYaml .Values.license.csi | nindent 4 }}
-{{- else if eq .Values.license.type "secret" }}
-  secret:
-    secretName: {{ .Values.license.secret.name }}
-{{- end }}
 {{- include "icm-as.volume" (list . "jgroups" .Values.persistence.jgroups .Values.podSecurityContext) }}
 {{- include "icm-as.volume" (list . "sites" .Values.persistence.sites .Values.podSecurityContext) }}
 {{- if and (.Values.replication.enabled) (eq .Values.replication.role "source")}}
