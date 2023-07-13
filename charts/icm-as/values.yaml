@@ -295,7 +295,6 @@ copySitesDir:
 # configure an ingress here only if you don't use icm-web !
 ingress:
   enabled: false
-  className: nginx
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
@@ -313,6 +312,12 @@ ingress:
 
 webLayer:
   enabled: false
+  redis:
+    enabled: false
+    image: redis/redis:latest
+    cpu: "0.5"
+    memory: 1Gi
+
 sslCertificateRetrieval:
   enabled: false
   # secretName: <explicit-ssl-secret-name>

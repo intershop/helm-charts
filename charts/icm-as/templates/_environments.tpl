@@ -93,4 +93,10 @@ env:
 - name: INTERSHOP_WEBADAPTER_ENABLED
   value: "false"
 {{- end }}
+{{- if .Values.webLayer.redis.enabled }}
+- name: INTERSHOP_PAGECACHE_REDIS_ENABLED
+  value: "true"
+- name: INTERSHOP_PAGECACHE_REDIS_ADDRESS
+  value: {{ printf "redis://%s-redis-service:6379" (include "icm-as.fullname" .) }}
+{{- end }}
 {{- end -}}

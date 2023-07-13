@@ -1,0 +1,59 @@
+suite: tests ingress configuration
+templates:
+  - templates/ingress.yaml
+tests:
+  - it: should not render if not explicitly enabled
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: should configure sticky cookie
+    set:
+      ingress.enabled: true
+    asserts:
+      - equal:
+          path: metadata.annotations["nginx.ingress.kubernetes.io/affinity"]
+          value: cookie
+      - equal:
+          path: metadata.annotations["nginx.ingress.kubernetes.io/affinity-mode"]
+          value: persistent
+  - it: should render additional metadata.annotations
+    set:
+      ingress.enabled: true
+      ingress.annotations:
+        foo: bar 
+    asserts:
+      - equal:
+          path: metadata.annotations.foo
+          value: bar
+  - it: should configure hosts and tls
+    set:
+      ingress.enabled: true
+      ingress.hosts:
+      - host: foo.com
+        paths:
+        - path: /
+          pathType: Prefix
+      ingress.tls:
+      - secretName: fooSecret
+        hosts:
+        - foo.com
+    asserts:
+      - equal:
+          path: spec.tls
+          value:
+          - secretName: fooSecret
+            hosts:
+            - foo.com
+      - equal:
+          path: spec.rules
+          value:
+          - host: foo.com
+            http:
+              paths:
+              - path: /
+                pathType: Prefix
+                backend:
+                  service:
+                    name: RELEASE-NAME-icm-as
+                    port: 
+                      name: svc 

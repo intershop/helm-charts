@@ -1,0 +1,38 @@
+suite: tests webLayer configuration
+tests:
+  - it: should set env variable for AS
+    templates:
+      - templates/as-deployment.yaml
+    set:
+      webLayer.enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_WEBADAPTER_ENABLED
+            value: "false"
+  - it: should set redis env variables for AS
+    template: templates/as-deployment.yaml
+    set:
+      webLayer.enabled: true
+      webLayer.redis.enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_REDIS_ENABLED
+            value: "true"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_REDIS_ADDRESS
+            value: redis://RELEASE-NAME-icm-as-redis-service:6379
+  - it: should not render redis charts if not explicitly enabled
+    templates:
+    - templates/redis-config.yaml
+    - templates/redis-deployment.yaml
+    - templates/redis-service.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+ 
