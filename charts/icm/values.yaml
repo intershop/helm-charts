@@ -24,21 +24,6 @@ icm-as:
   ## @param environment - extra environment variables to be set on containers
   environment:
 
-  # ICM license Configuration
-  license:
-  # type: configMap | csi | secret
-    type: configMap
-    configMap:
-      content: |-
-        <your license>
-    csi:
-      volumeAttributes:
-        secretProviderClass: "azure-license"
-      nodePublishSecretRef:
-        name: secrets-store-creds
-    secret:
-      name: <secret name>
-
   ## @param persistence - Either choose local (default), cluster, azurefiles or nfs persitence layer
   persistence:
     sites:
