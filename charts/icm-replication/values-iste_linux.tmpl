@@ -33,10 +33,6 @@ icm-edit:
      resultDir: ${RESULT_DIRECTORY}
      chmodUser: ${SERVER_DIRECTORY_USER}
      chmodGroup: ${SERVER_DIRECTORY_GROUP}
-    license:
-      type: secret
-      secret:
-        name: intershop-license
     database:
       type: "${DATABASE_TYPE}"
       jdbcURL: "${DATABASE_CONNECTION_STRING_EDIT}"
@@ -156,10 +152,6 @@ icm-live:
      resultDir: ${RESULT_DIRECTORY}
      chmodUser: ${SERVER_DIRECTORY_USER}
      chmodGroup: ${SERVER_DIRECTORY_GROUP}
-    license:
-      type: secret
-      secret:
-        name: intershop-license
     database:
       type: "${DATABASE_TYPE}"
       jdbcURL: "${DATABASE_CONNECTION_STRING_LIVE}"

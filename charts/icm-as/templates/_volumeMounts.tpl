@@ -11,14 +11,6 @@ volumeMounts:
   subPath: {{ $v.fileName }}
 {{- end }}
 {{- end }}
-- mountPath: /intershop/license/license.xml
-  name: license-volume
-  readOnly: true
-  {{- if or (eq .Values.license.type "configMap") (eq .Values.license.type "secret") }}
-  subPath: license.xml
-  {{- else if eq .Values.license.type "csi" }}
-  subPath: license
-  {{- end }}
 - mountPath: /intershop/sites
   name: sites-volume
 {{- if .Values.persistence.customdata.enabled }}

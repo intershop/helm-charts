@@ -148,21 +148,6 @@ database:
 environment:
   CARTRIDGE_LIST: "ft_icm_as"
 
-# ICM license Configuration
-license:
-  # type: configMap | csi | secret
-  type: configMap
-  configMap:
-    content: |-
-      <your license>
-  csi:
-    volumeAttributes:
-      secretProviderClass: "azure-license"
-    nodePublishSecretRef:
-      name: secrets-store-creds
-  secret:
-    name: <secret name>
-
 persistence:
   sites:
     size: 1Gi

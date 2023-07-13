@@ -6,7 +6,6 @@ Installs the ICM application server independently.
 
 * helm+kubectl
 * Kubernetes 1.14+
-* Valid license file
 
 ## Chart Details
 
@@ -18,15 +17,11 @@ This chart will do the following:
 
 ### Docker pull secret
 
-Create a secret for a docker registry where the images are coming from. The name of the secret must be equal to the configured secrets under `image.secret` within the application deployment. By default the secret name is `dockerhub`.
+Create a secret for a docker registry where the images are coming from. The name of the secret must be equal to the configured secrets under `image.secret` within the application deployment. By default, the secret name is `dockerhub`.
 
 ```bash
 kubectl create secret docker-registry <yourDockerRegistryName> --docker-server=<yourDockerRegistryServer> --docker-username=<yourUsername> --docker-password=<yourPassword> --docker-email=<yourEmail>
 ```
-
-### License file
-
-A license file could either be provided with `helm install ... --set-file license.configMap.content=./license.xml` via ConfigMap or using an [Azure Key Vault Provider for Secrets Store CSI Driver](https://docs.microsoft.com/de-de/azure/aks/csi-secrets-store-driver). Both types are configured in the `values.yaml`.
 
 ### Persistence
 

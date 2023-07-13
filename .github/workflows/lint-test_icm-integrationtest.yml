@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
     - 'charts/icm/**'
-    branches: 
+    branches:
       - main
 
 jobs:
@@ -62,16 +62,10 @@ jobs:
         sed -i 's/<local mssql data folder>/\/data\/icm\/mssql\/data/' charts/icm/values.yaml
         sed -i 's/<local mssql backup folder>/\/data\/icm\/mssql\/backup/' charts/icm/values.yaml
 
-        license=$(cat <<'EOF'
-          ${{ secrets.ICM_LICENSE }}
-        EOF
-        )
-        sed -i "s[<your license>[${license//$'\n'/}[" charts/icm/values.yaml
-
         sed -i '/^  mssql:/{n;s/.*/    enabled: true/}' charts/icm/values.yaml
-        
+
         ct install --namespace=$NAMESPACE --config ct_icm.yaml
-    
+
     - name: Debug failure
       if: failure() && steps.list-changed.outputs.changed == 'true'
       run: |
