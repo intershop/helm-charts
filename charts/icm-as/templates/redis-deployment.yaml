@@ -17,6 +17,9 @@ spec:
       labels:
         app: icm-as-redis
         release: {{ include "icm-as.fullname" . }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9121"
     spec:
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -44,6 +47,21 @@ spec:
           name: data
         - mountPath: /redis
           name: config
+      - name: redis-exporter
+        image: {{ .Values.webLayer.redis.exporter.image }}
+        securityContext:
+          runAsUser: 59000
+          runAsGroup: 59000
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        resources:
+          requests:
+            cpu: {{ .Values.webLayer.redis.exporter.cpu }}
+            memory: {{ .Values.webLayer.redis.exporter.memory }}
+        ports:
+        - containerPort: 9121
       volumes:
         - name: data
           emptyDir: {}
