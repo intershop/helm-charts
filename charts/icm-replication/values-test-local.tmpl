@@ -12,6 +12,11 @@ icm-edit:
         type: local
         local:
           path: ${LOCAL_MOUNT_BASE}/sites/edit
+      jgroups:
+        size: 1Gi
+        type: local
+        local:
+          path: ${LOCAL_MOUNT_BASE}/jgroups
       customdata:
         enabled: true
         existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
@@ -19,19 +24,7 @@ icm-edit:
     datadog:
       enabled: false
     mssql:
-      enabled: true
-      acceptEula: "Y"
-      persistence:
-        data:
-          size: 1Gi
-          type: local
-          local:
-            path: ${LOCAL_MOUNT_BASE}/mssql/edit/data
-        backup:
-          size: 1Gi
-          type: local
-          local:
-            path: ${LOCAL_MOUNT_BASE}/mssql/edit/backup
+      enabled: false
 
   icm-web:
     nodeSelector: null
@@ -59,6 +52,9 @@ icm-live:
         type: local
         local:
           path: ${LOCAL_MOUNT_BASE}/sites/live
+      jgroups:
+        type: existingClaim
+        existingClaim: ${HELM_JOB_NAME}-icm-as-edit-local-jgroups-pvc
       customdata:
         enabled: true
         existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
@@ -66,19 +62,7 @@ icm-live:
     datadog:
       enabled: false
     mssql:
-      enabled: true
-      acceptEula: "Y"
-      persistence:
-        data:
-          size: 1Gi
-          type: local
-          local:
-            path: ${LOCAL_MOUNT_BASE}/mssql/live/data
-        backup:
-          size: 1Gi
-          type: local
-          local:
-            path: ${LOCAL_MOUNT_BASE}/mssql/live/backup
+      enabled: false
 
   icm-web:
     nodeSelector: null

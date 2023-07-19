@@ -43,9 +43,7 @@ icm-edit:
     persistence:
       pagecache:
         size: 1Gi
-        type: local
-        local:
-          path: <local pagecache edit folder>
+        type: emptyDir
 
 icm-live:
   icm-as:
@@ -99,6 +97,4 @@ icm-live:
     persistence:
       pagecache:
         size: 1Gi
-        type: local
-        local:
-          path: <local pagecache live folder>
+        type: emptyDir
