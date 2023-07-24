@@ -17,8 +17,10 @@ metadata:
     {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
-  {{- if .Values.ingress.ingressClassName }}
-  ingressClassName: {{ .Values.ingress.ingressClassName }}
+  {{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- else }}
+  ingressClassName: {{ $fullName }}-ingress
   {{- end }}
   {{- if .Values.ingress.tls }}
   tls:

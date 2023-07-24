@@ -69,12 +69,13 @@ tests:
     set:
       ingress.enabled: true
     asserts:
-      - isNull:
+      - equal:
           path: spec.ingressClassName
+          value: RELEASE-NAME-icm-as-ingress
   - it: should set specified ingress name
     set:
       ingress.enabled: true
-      ingress.ingressClassName: foobar
+      ingress.className: foobar
     asserts:
       - equal:
           path: spec.ingressClassName
