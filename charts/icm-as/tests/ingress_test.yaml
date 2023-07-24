@@ -20,11 +20,19 @@ tests:
     set:
       ingress.enabled: true
       ingress.annotations:
-        foo: bar 
+        foo: bar
+        boolFoo: "true"
+        numFoo: "1"
     asserts:
       - equal:
           path: metadata.annotations.foo
           value: bar
+      - equal:
+          path: metadata.annotations.boolFoo
+          value: "true"
+      - equal:
+          path: metadata.annotations.numFoo
+          value: "1"
   - it: should configure hosts and tls
     set:
       ingress.enabled: true
@@ -56,4 +64,19 @@ tests:
                   service:
                     name: RELEASE-NAME-icm-as
                     port: 
-                      name: svc 
+                      name: svc
+  - it: should set default ingress name.
+    set:
+      ingress.enabled: true
+    asserts:
+      - equal:
+          path: spec.ingressClassName
+          value: RELEASE-NAME-icm-as 
+  - it: should set specified ingress name 
+    set:
+      ingress.enabled: true
+      ingress.className: foobar
+    asserts:
+      - equal:
+          path: spec.ingressClassName
+          value: foobar
