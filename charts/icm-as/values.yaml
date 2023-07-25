@@ -158,7 +158,7 @@ persistence:
         # - mfsymlinks
         # - cache=strict
         # - actimeo=30
-        reclaimPolicy: Delete
+        reclaimPolicy: Retain
     azurefiles:
       shareName: icm-as-share
       secretName: icm-as-share-secret
