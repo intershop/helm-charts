@@ -6,15 +6,6 @@ metadata:
   labels:
     app: {{ template "icm-chart.fullname" . }}-testrunner
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    {{- if .Values.testrunner.datadog.enabled }}
-    tags.datadoghq.com/env: {{ .Values.testrunner.datadog.env }}
-    tags.datadoghq.com/service: {{ include "icm-chart.fullname" . }}-testrunner
-    {{- if .Values.testrunner.image.tag }}
-    tags.datadoghq.com/version: {{ .Values.testrunner.image.tag }}
-    {{- else }}
-    tags.datadoghq.com/version: {{ (split ":" .Values.testrunner.image.repository)._1 }}
-    {{- end }}
-    {{- end }}
 spec:
   backoffLimit: 0
   template:
@@ -22,15 +13,6 @@ spec:
       labels:
         app: {{ template "icm-chart.fullname" . }}-testrunner
         release: {{ .Release.Name }}
-        {{- if .Values.testrunner.datadog.enabled }}
-        tags.datadoghq.com/env: {{ .Values.testrunner.datadog.env }}
-        tags.datadoghq.com/service: {{ include "icm-chart.fullname" . }}-testrunner
-        {{- if .Values.testrunner.image.tag }}
-        tags.datadoghq.com/version: {{ .Values.testrunner.image.tag }}
-        {{- else }}
-        tags.datadoghq.com/version: {{ (split ":" .Values.testrunner.image.repository)._1 }}
-        {{- end }}
-        {{- end }}
     spec:
       {{- if .Values.testrunner.nodeSelector}}
       nodeSelector:
@@ -64,28 +46,6 @@ spec:
           - "-c"
           - {{- toYaml .Values.testrunner.image.command | nindent 12 }}
         env:
-        {{- if .Values.testrunner.datadog.enabled }}
-        - name: ENABLE_DATADOG
-          value: "true"
-        - name: DD_ENV
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.labels['tags.datadoghq.com/env']
-        - name: DD_SERVICE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.labels['tags.datadoghq.com/service']
-        - name: DD_VERSION
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.labels['tags.datadoghq.com/version']
-        - name: DD_LOGS_INJECTION
-          value: "true"
-        - name: DD_AGENT_HOST
-          valueFrom:
-            fieldRef:
-              fieldPath: status.hostIP
-        {{- end }}
         {{- range $key, $value := .Values.testrunner.environment }}
         - name: {{ $key }}
           value: {{ $value | quote }}

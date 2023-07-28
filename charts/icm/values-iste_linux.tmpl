@@ -68,10 +68,6 @@ icm-as:
     customdata:
       enabled: true
       existingClaim: icm-nfs
-  datadog:
-    enabled: true
-    env: eng-iste-testrun
-    options: "-Ddd.profiling.enabled=false -Ddd.trace.analytics.enabled=true -Ddd.jdbc.analytics.enabled=true"
 
 icm-web:
   nodeSelector:
@@ -229,10 +225,6 @@ testrunner:
       size: 1Gi
       type: existingClaim
       existingClaim: icm-nfs
-  datadog:
-    enabled: true
-    env: eng-iste-testrun
-    options: "-Ddd.profiling.enabled=false -Ddd.trace.analytics.enabled=true -Ddd.jdbc.analytics.enabled=true"
   ## Control options regarding the java-vm running the ICM-AS
   jvm:
     # define options / parameters to be used to start the jvm

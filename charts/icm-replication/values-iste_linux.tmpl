@@ -77,10 +77,6 @@ icm-edit:
       customdata:
         enabled: true
         existingClaim: icm-nfs
-    datadog:
-      enabled: true
-      env: eng-iste-testrun
-      options: "-Ddd.profiling.enabled=false -Ddd.trace.analytics.enabled=true -Ddd.jdbc.analytics.enabled=true"
 
   icm-web:
     nodeSelector:
@@ -193,10 +189,6 @@ icm-live:
       customdata:
         enabled: true
         existingClaim: icm-nfs
-    datadog:
-      enabled: true
-      env: eng-iste-testrun
-      options: "-Ddd.profiling.enabled=false -Ddd.trace.analytics.enabled=true -Ddd.jdbc.analytics.enabled=true"
 
   icm-web:
     nodeSelector:
@@ -321,6 +313,9 @@ icm-live:
       LIVE_HOST: "${HELM_JOB_NAME}-icm-web-live-wa"
       EDIT_HOST: "${HELM_JOB_NAME}-icm-web-edit-wa"
       HOST: "${HELM_JOB_NAME}-icm-web-live-wa"
+      LIVE_PORT_HTTPS: 8080
+      LIVE_PORT_HTTPS: 8443
+      EDIT_PORT_HTTPS: 8080
       EDIT_PORT_HTTPS: 8443
 
       APPSERVERNAME: "${HELM_JOB_NAME}-icm-as"
@@ -361,10 +356,6 @@ icm-live:
         size: 1Gi
         type: existingClaim
         existingClaim: icm-nfs
-    datadog:
-      enabled: true
-      env: eng-iste-testrun
-      options: "-Ddd.profiling.enabled=false -Ddd.trace.analytics.enabled=true -Ddd.jdbc.analytics.enabled=true"
     ## Control options regarding the java-vm running the ICM-AS
     jvm:
       # define options / parameters to be used to start the jvm
