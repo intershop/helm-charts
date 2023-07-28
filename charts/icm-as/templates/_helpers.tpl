@@ -69,9 +69,6 @@ These are predefined parameter from serveral features.
 {{- define "icm-as.featuredJVMArguments" -}}
 {{- $addVmOptions := list -}}
 {{- $addVmOptions = append $addVmOptions .Values.jvm.options -}}
-{{- if .Values.datadog.enabled -}}
-    {{- $addVmOptions = append $addVmOptions .Values.datadog.options -}}
-{{- end -}}
 - name: FEATURED_JVM_ARGUMENTS
   value: {{ join " " $addVmOptions | quote }}
 {{- end -}}
@@ -83,9 +80,6 @@ These are additional parameters defined by deployment, which are not indented to
 {{- define "icm-as.additionalJVMArguments" -}}
 {{- $addVmOptions := list -}}
 {{- $addVmOptions = append $addVmOptions .Values.jvm.additionalOptions -}}
-{{- if .Values.datadog.enabled -}}
-    {{- $addVmOptions = append $addVmOptions .Values.datadog.additionalOptions -}}
-{{- end -}}
 - name: ADDITIONAL_JVM_ARGUMENTS
   value: {{ join " " $addVmOptions | quote }}
 {{- end -}}
@@ -95,21 +89,6 @@ Creates a chart-label
 */}}
 {{- define "icm-as.chartLabel" -}}
 chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-{{- end -}}
-
-{{/*
-Applies datadog labels
-*/}}
-{{- define "icm-as.datadogLabels" -}}
-{{- if .Values.datadog.enabled -}}
-tags.datadoghq.com/env: {{ .Values.datadog.env }}
-tags.datadoghq.com/service: {{ include "icm-as.fullname" . }}
-{{- if .Values.image.tag -}}
-tags.datadoghq.com/version: {{ .Values.image.tag }}
-{{- else }}
-tags.datadoghq.com/version: {{ (split ":" .Values.image.repository)._1 }}
-{{- end }}
-{{- end }}
 {{- end -}}
 
 {{/*

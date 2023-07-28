@@ -12,8 +12,6 @@ icm-as:
       enabled: true
       existingClaim: ${HELM_JOB_NAME}-local-testdata-pvc
       mountPoint: /data
-  datadog:
-    enabled: false
   mssql:
     enabled: true
     acceptEula: "Y"
@@ -51,5 +49,3 @@ testrunner:
       type: local
       local:
         dir: ${LOCAL_MOUNT_BASE}/testdata
-  datadog:
-    enabled: false

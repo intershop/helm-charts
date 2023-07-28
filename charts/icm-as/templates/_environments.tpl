@@ -30,28 +30,6 @@ env:
 - name: DEBUG_ICM
   value: "true"
 {{- end }}
-{{- if .Values.datadog.enabled }}
-- name: ENABLE_DATADOG
-  value: "true"
-- name: DD_ENV
-  valueFrom:
-    fieldRef:
-      fieldPath: metadata.labels['tags.datadoghq.com/env']
-- name: DD_SERVICE
-  valueFrom:
-    fieldRef:
-      fieldPath: metadata.labels['tags.datadoghq.com/service']
-- name: DD_VERSION
-  valueFrom:
-    fieldRef:
-      fieldPath: metadata.labels['tags.datadoghq.com/version']
-- name: DD_LOGS_INJECTION
-  value: "true"
-- name: DD_AGENT_HOST
-  valueFrom:
-    fieldRef:
-      fieldPath: status.hostIP
-{{- end }}
 {{- if .Values.newrelic.enabled }}
 - name: ENABLE_NEWRELIC
   value: "true"
