@@ -68,12 +68,6 @@ icm-edit:
         cluster:
           storageClass:
             existingClass: azurefile
-      jgroups:
-        size: 1Gi
-        type: cluster
-        cluster:
-          storageClass:
-            existingClass: azurefile
       customdata:
         enabled: true
         existingClaim: icm-nfs
@@ -183,9 +177,6 @@ icm-live:
         cluster:
           storageClass:
             existingClass: azurefile
-      jgroups:
-        type: existingClaim
-        existingClaim: ${HELM_JOB_NAME}-icm-as-edit-cluster-jgroups-pvc
       customdata:
         enabled: true
         existingClaim: icm-nfs
