@@ -9,11 +9,6 @@ icm-edit:
         type: local
         local:
           path: ${LOCAL_MOUNT_BASE}/sites/edit
-      jgroups:
-        size: 1Gi
-        type: local
-        local:
-          path: ${LOCAL_MOUNT_BASE}/jgroups
       customdata:
         enabled: true
         existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
@@ -44,9 +39,6 @@ icm-live:
         type: local
         local:
           path: ${LOCAL_MOUNT_BASE}/sites/live
-      jgroups:
-        type: existingClaim
-        existingClaim: ${HELM_JOB_NAME}-icm-as-edit-local-jgroups-pvc
       customdata:
         enabled: true
         existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
