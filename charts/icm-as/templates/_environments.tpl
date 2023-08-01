@@ -97,6 +97,6 @@ env:
 - name: INTERSHOP_PAGECACHE_REDIS_ENABLED
   value: "true"
 - name: INTERSHOP_PAGECACHE_REDIS_ADDRESS
-  value: {{ printf "redis://%s-redis-service:6379" (include "icm-as.fullname" .) }}
+  value: {{ printf "redis://%s-redis-headless:6379" .Release.Name }}
 {{- end }}
 {{- end -}}

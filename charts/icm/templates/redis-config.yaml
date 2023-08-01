@@ -1,8 +1,8 @@
-{{- if .Values.webLayer.redis.enabled -}}
+{{- if .Values.redis.enabled -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name:  {{ include "icm-as.fullname" . }}-redis-config
+  name:  {{ .Release.Name }}-redis-configuration
 data:
   redis-config: |
     maxmemory-policy volatile-lru

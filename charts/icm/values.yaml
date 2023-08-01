@@ -90,3 +90,15 @@ mailhog:
 
 test:
   enabled: false
+
+redis:
+  enabled: false
+  createConfigMap: true
+  auth:
+    enabled: false
+  architecture: standalone
+  image:
+  # see https://hub.docker.com/r/bitnami/redis/tags
+    tag: "7.0"
+  metrics:
+    enabled: true
