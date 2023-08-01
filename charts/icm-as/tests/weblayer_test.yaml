@@ -26,13 +26,5 @@ tests:
           path: spec.template.spec.containers[0].env
           content:
             name: INTERSHOP_PAGECACHE_REDIS_ADDRESS
-            value: redis://RELEASE-NAME-icm-as-redis-service:6379
-  - it: should not render redis charts if not explicitly enabled
-    templates:
-    - templates/redis-config.yaml
-    - templates/redis-deployment.yaml
-    - templates/redis-service.yaml
-    asserts:
-      - hasDocuments:
-          count: 0
+            value: redis://RELEASE-NAME-redis-headless:6379
  

@@ -316,8 +316,6 @@ webLayer:
   redis:
     enabled: false
 
-
-
 sslCertificateRetrieval:
   enabled: false
   # secretName: <explicit-ssl-secret-name>
