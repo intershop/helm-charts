@@ -94,6 +94,9 @@ test:
 redis:
   enabled: false
   createConfigMap: true
+  commonConfiguration: |
+    maxmemory 2g
+    maxmemory-policy volatile-lru
   auth:
     enabled: false
   architecture: standalone
