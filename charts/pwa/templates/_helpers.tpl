@@ -63,6 +63,14 @@ pwa cache variables
 {{- printf "%s-%s" (include  "pwa-main.name" . ) "cache" -}}
 {{- end -}}
 
+{{- define "pwa-memcached.fullname" -}}
+{{- printf "%s-%s" (include  "pwa-main.fullname" . ) "memcached" -}}
+{{- end -}}
+
+{{- define "pwa-memcached.name" -}}
+{{- printf "%s-%s" (include  "pwa-main.name" . ) "memcached" -}}
+{{- end -}}
+
 {{/*
 Print jobname of pwa prefetch cron job. Jobname is only allowed to contain 51 chars.
 Usage:

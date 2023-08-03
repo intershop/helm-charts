@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "pwa-memcached.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "pwa-memcached.name" . }}
+    helm.sh/chart: {{ include "pwa-main.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "pwa-memcached.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "pwa-memcached.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "memcached:latest"
+          imagePullPolicy: {{ .Values.cache.image.pullPolicy }}
+          command: ["memcached"]
+          args: ["-vv", "-m", "2048"]
+          ports:
+            - name: http
+              containerPort: 11211
+              protocol: TCP
