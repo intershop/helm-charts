@@ -44,6 +44,8 @@ spec:
           env:
           - name: HELM_RELEASE_REVISION
             value: "{{ .Release.Revision }}"
+          - name: MEMCACHED_HOSTNAME
+            value: "{{ include "pwa-memcached.fullname" . }}"
           - name: UPSTREAM_PWA
             value: "http://{{ include "pwa-main.fullname" . }}:{{ .Values.service.port }}"
           - name: ICM_BASE_URL
