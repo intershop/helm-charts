@@ -68,6 +68,10 @@ icm-as:
     customdata:
       enabled: true
       existingClaim: icm-nfs
+  newrelic:
+    enabled: true
+    app_name: "${HELM_JOB_NAME}-icm-as"
+    license_key: "${NEWRELIC_LICENSE_KEY}"
 
 icm-web:
   nodeSelector:
