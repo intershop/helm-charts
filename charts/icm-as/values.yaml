@@ -172,7 +172,11 @@ persistence:
     type: emptyDir
     existingClaim: <claim name>
     cluster:
-      storageClass: azurefile
+      storageClass:
+        create: false
+        # if create == false an exiting class could be set
+        # if empty value is set the default storage class is used
+        existingClass: ""
     azurefiles:
       shareName: icm-as-jgroups
       secretName: icm-as-jgroups-secret
