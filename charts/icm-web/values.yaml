@@ -14,13 +14,15 @@ webadapter:
     pullPolicy: IfNotPresent
     command: |
       /intershop/bin/intershop.sh
-  # disable HTTP/2 protocol support if required
+    # disable HTTP/2 protocol support if required
   disableHTTP2: false
   customHttpdConfig: false
   # provides custom certificates for webadapter
   customSSLCertificates: false
   overrideSSL: false
   replicaCount: 1
+  # define update strategy
+  updateStrategy: RollingUpdate
   sslCertificateRetrieval:
     enabled: false
     # secretName: <explicit-ssl-secret-name>
@@ -55,7 +57,8 @@ agent:
     command: |
       /intershop/bin/start-waa.sh
   replicaCount: 1
-
+  # define update strategy
+  updateStrategy: RollingUpdate
   # define custom annotations for deployment and pods:
   deploymentAnnotations: {}
   #  myAnnotation: true
