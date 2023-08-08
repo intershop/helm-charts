@@ -79,6 +79,12 @@ icm-edit:
   icm-web:
     nodeSelector:
       agentpool: agentpool2
+    resources:
+      agent:
+        limits:
+          memory: 200Mi
+        requests:
+          memory: 200Mi
     webadapter:
       podAnnotations:
         # as long as there is no new cache system we need this annotation for icm-web
@@ -193,6 +199,12 @@ icm-live:
   icm-web:
     nodeSelector:
       agentpool: agentpool2
+    resources:
+      agent:
+        limits:
+          memory: 200Mi
+        requests:
+          memory: 200Mi
     webadapter:
       podAnnotations:
         # as long as there is no new cache system we need this annotation for icm-web
