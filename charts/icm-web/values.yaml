@@ -14,7 +14,7 @@ webadapter:
     pullPolicy: IfNotPresent
     command: |
       /intershop/bin/intershop.sh
-    # disable HTTP/2 protocol support if required
+  # disable HTTP/2 protocol support if required
   disableHTTP2: false
   customHttpdConfig: false
   # provides custom certificates for webadapter
