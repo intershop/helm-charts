@@ -24,8 +24,13 @@ spec:
           image: "memcached:latest"
           imagePullPolicy: {{ .Values.cache.image.pullPolicy }}
           command: ["memcached"]
-          args: ["-vv", "-m", "2048"]
+          args: ["-vv", "-m", "2900", "-I", "10M"]
           ports:
             - name: http
               containerPort: 11211
               protocol: TCP
+          resources:
+            requests:
+              memory: 1Gi
+            limits:
+              memory: 3Gi
