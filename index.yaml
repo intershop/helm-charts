@@ -4957,6 +4957,20 @@ entries:
     version: 2.1.0
   pwa-main:
   - apiVersion: v2
+    created: "2023-08-09T14:05:57.033291066Z"
+    dependencies:
+    - condition: hybrid.enabled
+      name: icm
+      repository: https://intershop.github.io/helm-charts
+      version: 0.5.0
+    description: Helm Chart to operate Intershop Progressive Web App
+    digest: 2f78470b46f733764c1f4dbd6845b86b1e1db13224277953480acf9d3a66a363
+    name: pwa-main
+    type: application
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.8.0-beta/pwa-main-0.8.0-beta.tgz
+    version: 0.8.0-beta
+  - apiVersion: v2
     created: "2023-08-04T10:15:30.431767073Z"
     dependencies:
     - condition: hybrid.enabled
@@ -5062,4 +5076,4 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.2.3/pwa-main-0.2.3.tgz
     version: 0.2.3
-generated: "2023-08-05T07:56:49.962140854Z"
+generated: "2023-08-09T14:05:57.034902065Z"
