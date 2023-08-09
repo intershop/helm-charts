@@ -29,6 +29,9 @@ spec:
             - name: http
               containerPort: 11211
               protocol: TCP
+          env:
+          - name: HELM_RELEASE_REVISION
+            value: "{{ .Release.Revision }}"
           resources:
             requests:
               memory: 1Gi
