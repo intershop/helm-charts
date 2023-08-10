@@ -100,6 +100,13 @@ These actions will be described as part of the release documentation available o
 
 ## Parameters
 
+### General
+
+| Name             | Description                    | Example Value                                |
+| ---------------- | ------------------------------ | -------------------------------------------- |
+| `updateStrategy` | The Kubernetes update strategy | `Recreate`<br>`RollingUpdate`&nbsp;(default) |
+
+
 ### NGINX
 
 | Name                      | Description                                                | Example Value                                           |

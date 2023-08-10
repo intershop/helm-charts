@@ -11,6 +11,16 @@
         "cache"
     ],
     "properties": {
+        "updateStrategy": {
+          "type": "string",
+          "title": "Update strategy",
+          "description": "Kubernetes update strategy",
+          "default": "RollingUpdate",
+          "enum": [
+            "RollingUpdate",
+            "Recreate"
+          ]
+        },
         "upstream": {
             "$id": "#/properties/upstream",
             "type": "object",
