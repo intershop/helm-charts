@@ -11,6 +11,8 @@ metadata:
     {{- toYaml .Values.podLabels | nindent 4 }}
     {{- end }}
 spec:
+  strategy:
+    type: {{ default "RollingUpdate" .Values.updateStrategy }}
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
