@@ -91,6 +91,18 @@ spec:
             {{- end }}
           resources:
             {{- toYaml .Values.cache.resources | nindent 12 }}
+      initContainers:
+        - name: init-pwa
+          image: busybox:1.28
+          command:
+            - sh
+            - -c
+            - >-
+              until nc -zvw1 {{ include "pwa-main.fullname" . }} {{ .Values.service.port }};
+              do
+                echo "waiting for {{ include "pwa-main.fullname" . }}:{{ .Values.service.port }}";
+                sleep 2;
+              done
       volumes:
       - name: multi-channel-config
         configMap:
