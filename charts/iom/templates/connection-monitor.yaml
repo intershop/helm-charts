@@ -1,9 +1,12 @@
-{{- if and (.Values.oms.db.connectionMonitor.enabled) (semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion) }}
-{{- if semverCompare ">=1.21-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- if .Values.oms }}
+  {{- if .Values.oms.db }}
+    {{- if .Values.oms.db.connectionMonitor }}
+      {{- if and .Values.oms.db.connectionMonitor.enabled (semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion) }}
+        {{- if semverCompare ">=1.21-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: batch/v1
-{{- else if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
+        {{- else if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: batch/v1beta1
-{{-  end }}
+        {{-  end }}
 kind: CronJob
 metadata:
   name: {{ include "iom.fullname" . }}-connection-monitor
@@ -128,4 +131,7 @@ spec:
             command: [ '/opt/oms/bin/connection_monitor.sh' ]
             {{- end }}
           restartPolicy: Never
+      {{- end }}
+    {{- end }}
+  {{- end }}
 {{- end }}

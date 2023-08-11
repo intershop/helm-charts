@@ -353,6 +353,20 @@ spec:
             - name: OMS_DB_CONNECT_TIMEOUT
               value: '{{ .Values.oms.db.connectTimeout }}'
                 {{- end }}
+            - name: OMS_DB_RESET
+                {{- if and .Values.oms.db.resetData .Release.IsInstall }}
+                  {{- if not (kindIs "bool" .Values.oms.db.resetData) }}
+                    {{ fail "oms.db.resetData contains a non boolean value!" }}
+                  {{- end }}
+              value: 'true'
+                {{- else if and .Values.dbaccount.resetData .Values.dbaccount.enabled .Release.IsInstall }}
+                  {{- if not (kindIs "bool" .Values.dbaccount.resetData) }}
+                    {{ fail "dbaccount.resetData contains a non boolean value!" }}
+                  {{- end }}
+              value: 'true'
+                {{- else }}
+              value: 'false'
+                {{- end }}
               {{- end }}
             {{- end }}
             {{- if not .Values.config.enabled }}
@@ -932,20 +946,6 @@ spec:
                 {{- if .Values.oms.db.connectTimeout }}
             - name: OMS_DB_CONNECT_TIMEOUT
               value: '{{ .Values.oms.db.connectTimeout }}'
-                {{- end }}
-            - name: OMS_DB_RESET
-                {{- if and .Values.oms.db.resetData .Release.IsInstall }}
-                  {{- if not (kindIs "bool" .Values.oms.db.resetData) }}
-                    {{ fail "oms.db.resetData contains a non boolean value!" }}
-                  {{- end }}
-              value: 'true'
-                {{- else if and .Values.dbaccount.resetData .Values.dbaccount.enabled. .Release.IsInstall }}
-                  {{- if not (kindIs "bool" .Values.dbaccount.resetData) }}
-                    {{ fail "dbaccount.resetData contains a non boolean value!" }}
-                  {{- end }}
-              value: 'true'
-                {{- else }}
-              value: 'false'
                 {{- end }}
               {{- end }}
             {{- end }}
