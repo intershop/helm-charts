@@ -21,8 +21,8 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "memcached:latest"
-          imagePullPolicy: {{ .Values.cache.image.pullPolicy }}
+          image: "memcached:1.6.21"
+          imagePullPolicy: IfNotPresent
           command: ["memcached"]
           args: ["-vv", "-m", "2900", "-I", "10M"]
           ports:
