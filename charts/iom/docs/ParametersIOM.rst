@@ -417,8 +417,8 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires dbaccount 1.3.0.0 or newer                                                          |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|oms.db.resetData                        |Controls if an already existing IOM database should be reseted during the installation process |false                                                    |
-|                                        |of IOM. If set to *true*, existing data is deleted without backup and further warning.         |                                                         |
+|oms.db.resetData                        |Controls if an already existing IOM database should be reset during the installation process of|false                                                    |
+|                                        |IOM. If set to *true*, existing data is deleted without backup and further warning.            |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires IOM 4.8.0 or newer.                                                                 |                                                         |
 |                                        |                                                                                               |                                                         |
