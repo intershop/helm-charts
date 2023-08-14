@@ -75,9 +75,12 @@ Parameters of IOM Helm Chart
 |dbaccount.image.tag                     |The tag of dbaccount image.                                                                    |1.6.0                                                    |
 |                                        |                                                                                               |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|dbaccount.resetData                     |Controls if dbaccount init-container should reset an already existing IOM                      |false                                                    |
-|                                        |database during the installation process of IOM. If set to *true*, existing data               |                                                         |
-|                                        |is deleted without backup and further warning.                                                 |                                                         |
+|dbaccount.resetData                     |Controls if dbaccount init-container should reset an already existing IOM database during the  |false                                                    |
+|                                        |installation process of IOM. If set to *true*, existing data is deleted without backup and     |                                                         |
+|                                        |further warning.                                                                               |                                                         |
+|                                        |                                                                                               |                                                         |
+|                                        |* Deprecated. Is replaced by *oms.db.resetData*. Will be removed in version 3.1.0 of IOM Helm  |                                                         |
+|                                        |charts.                                                                                        |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |dbaccount.options                       |When creating the IOM database, more options added to OWNER are                                |"ENCODING='UTF8' LC_COLLATE='en_US.utf8'                 |
 |                                        |required. Depending on the configuration of the PostgreSQL server, these options               |LC_CTYPE='en_US.utf8' CONNECTION LIMIT=-1                |
@@ -413,6 +416,13 @@ Parameters of IOM Helm Chart
 |                                        |* Requires IOM 3.6.0.0 or newer                                                                |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires dbaccount 1.3.0.0 or newer                                                          |                                                         |
++----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|oms.db.resetData                        |Controls if an already existing IOM database should be reset during the installation process of|false                                                    |
+|                                        |IOM. If set to *true*, existing data is deleted without backup and further warning.            |                                                         |
+|                                        |                                                                                               |                                                         |
+|                                        |* Requires IOM 4.8.0 or newer.                                                                 |                                                         |
+|                                        |                                                                                               |                                                         |
+|                                        |* Replaces parameter *dbaccount.resetData*.                                                    |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.sso                                 |Parameters in *oms.sso* are bundling the configuration of *single sign-on* (SSO)               |                                                         |
 |                                        |                                                                                               |                                                         |
