@@ -68,7 +68,6 @@ information, please consult the reference documentation of `Helm parameters of I
    .. [3] Helm parameters *oms.sso.\** do not work in this combination.
    .. [4] Helm parameters *newRelic.\** do not work in this combination 
 
-
 =============
 Version 3.0.0
 =============
@@ -76,6 +75,9 @@ Version 3.0.0
 ---------------
 Migration Notes
 ---------------
+
+Removal of internal NGINX
+=========================
 
 Internal NGINX, which was an optional component of IOM Helm Charts, was removed. The internal NGINX could be used in
 following cases:
@@ -97,6 +99,15 @@ NGINX, the measures are different.
 2. Simple demo and test installations have now to use a separately installed Ingress controller. Preferred is an NGINX
    Ingress controller, since the required configuration for session stickiness is already provided by IOM Helm Charts.
 
+*dbaccount.resetData* was replaced by *oms.db.resetData*
+========================================================
+
+Parameter *dbaccout.resetData* was replaced by *oms.db.resetData*. For a limited period of time (until release of IOM
+Helm charts v.3.1.0), the old parameter *dbaccount.resetData* will still be supported.
+Usage of new parameter *oms.db.resetData* requires IOM version 4.8.0 or newer.
+
+See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
+          
 =============
 Version 3.0.0
 =============
