@@ -14,6 +14,8 @@ metadata:
     {{- end }}
 spec:
   replicas: {{ .Values.webadapter.replicaCount }}
+  strategy:
+    type: {{ .Values.webadapter.updateStrategy }}
   selector:
     matchLabels:
       app: icm-wa

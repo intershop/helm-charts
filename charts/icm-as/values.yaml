@@ -4,6 +4,9 @@
 
 replicaCount: 1
 
+# define update strategy
+updateStrategy: RollingUpdate
+
 # define where the application shall run on
 nodeSelector: {}
 #  agentpool: <your agentpool>
