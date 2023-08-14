@@ -80,6 +80,12 @@ newrelic:
   #   application name (~= environment name): calculated from operationalContext section, set to override
   # app_name: "icm"
   license_key: "secret"
+  metrics:
+    # fine grade possibilitity to disable metrics for cost reduction
+    enabled: true
+  apm:
+    # fine grade possibilitity to disable apm for cost reduction
+    enabled: true
 
 nameOverride: ""
 
