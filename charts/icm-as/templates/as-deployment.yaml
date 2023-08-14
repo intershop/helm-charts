@@ -23,7 +23,7 @@ spec:
       app: icm-as
       release: {{ include "icm-as.fullname" . }}
   strategy:
-    type: Recreate
+    type: {{ .Values.updateStrategy }}
   template:
     metadata:
       {{- if include "icm-as.podData" . }}
