@@ -15,6 +15,8 @@ metadata:
     {{- end }}
 spec:
   replicas: {{ .Values.agent.replicaCount }}
+  strategy:
+    type: {{ .Values.agent.updateStrategy }}
   selector:
     matchLabels:
       app: icm-waa
