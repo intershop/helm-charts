@@ -150,6 +150,8 @@ oms:
     # Timeout is passed to jdbc and psql connections
     connectTimeout:     "10"
     # resetData cleans up an existing database during installation process.
+    # ATTENTION! This process destroys the database without backup and further
+    # warning.
     resetData: false
 
   # Mail-server related settings
