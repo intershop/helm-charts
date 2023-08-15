@@ -9,11 +9,12 @@ metadata:
   annotations: {{- toYaml .Values.deploymentAnnotations | nindent 4 }}
   {{- end }}
   labels:
-    app: {{ include "icm-as.fullname" . }}
+    {{- include "icm-as.labels" . | nindent 4 }}
     {{- include "icm-as.chartLabel" . | nindent 4 }}
     {{- if .Values.deploymentLabels }}
       {{- toYaml .Values.deploymentLabels | nindent 4 }}
     {{- end }}
+    app: {{ include "icm-as.fullname" .}}
 spec:
   progressDeadlineSeconds: 600
   replicas: {{ .Values.replicaCount }}
