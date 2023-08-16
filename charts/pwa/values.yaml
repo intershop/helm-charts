@@ -1,3 +1,6 @@
+# install VSCode plugin redhat.vscode-yaml
+# yaml-language-server: $schema=./values.schema.json
+
 # Default values for pwa-main.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
