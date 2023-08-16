@@ -6,7 +6,6 @@
     "description": "The Helm Values Schema to define values necessary to deploy Intershops PWA.",
     "required": [
         "upstream",
-        "hybrid",
         "environment",
         "cache"
     ],
