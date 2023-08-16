@@ -27,6 +27,12 @@ volumeMounts:
   readOnly: true
   subPath: replication-clusters.xml
 {{- end }}
+{{- if and (.Values.webLayer.enabled) (.Values.webLayer.redis.enabled )}}
+- mountPath: /intershop/redis-client-config/redis-client-config.yaml
+  name: redis-client-config-volume
+  readOnly: true
+  subPath: redis-client-config.yaml
+{{- end }}
 {{- if .Values.newrelic.enabled }}
 - mountPath: /intershop/lib-newrelic/newrelic.yml
   name: newrelic-config-volume

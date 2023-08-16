@@ -71,4 +71,10 @@ env:
 - name: INTERSHOP_WEBADAPTER_ENABLED
   value: "false"
 {{- end }}
+{{- if .Values.webLayer.redis.enabled }}
+- name: INTERSHOP_PAGECACHE_REDIS_ENABLED
+  value: "true"
+- name: INTERSHOP_PAGECACHE_REDIS_CONFIG
+  value:  file:/intershop/redis-client-config/redis-client-config.yaml
+{{- end }}
 {{- end -}}

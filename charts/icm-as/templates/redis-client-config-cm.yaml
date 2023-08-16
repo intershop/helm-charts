@@ -1,0 +1,21 @@
+{{- if and (.Values.webLayer.enabled) (.Values.webLayer.redis.enabled )}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "icm-as.fullname" . }}-redis-client-config-yaml
+  labels:
+    app: {{ template "icm-as.fullname" . }}-redis-client-config-yaml
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+data: 
+  {{- if .Values.webLayer.redis.config }}
+  redis-client-config.yaml: |
+    {{- toYaml .Values.webLayer.redis.config | nindent 4}}
+  {{- else }}
+  redis-client-config.yaml: |
+    singleServerConfig: 
+      timeout: 50
+      retryAttempts: 1
+      retryInterval: 50
+      address: {{ printf "redis://%s-redis-headless:6379" .Release.Name }}
+  {{- end -}}
+{{- end -}}

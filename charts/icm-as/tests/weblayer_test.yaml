@@ -1,0 +1,24 @@
+suite: tests webLayer configuration
+tests:
+  - it: should set env variable for AS
+    templates:
+      - templates/as-deployment.yaml
+    set:
+      webLayer.enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_WEBADAPTER_ENABLED
+            value: "false"
+  - it: should set redis env variables for AS
+    template: templates/as-deployment.yaml
+    set:
+      webLayer.enabled: true
+      webLayer.redis.enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_REDIS_ENABLED
+            value: "true"
