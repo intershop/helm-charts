@@ -109,7 +109,7 @@ redis:
   metrics:
     enabled: true
 
-# For redis deployment using multiple masters (and possibly multiple read replicas). 
+# For redis deployment using multiple masters (and possibly multiple read replicas).
 # Supports sharding and can therefore be used for bigger datasets.
 # See https://artifacthub.io/packages/helm/bitnami/redis
 redis-cluster:
@@ -122,7 +122,7 @@ redis-cluster:
       maxmemory 2g
       maxmemory-policy volatile-lru
   cluster:
-    # Total number of nodes in the cluster (replicas and master). 
+    # Total number of nodes in the cluster (replicas and master).
     # There must always be  at least 3 mater nodes, and the number of masters should be odd.
     nodes: 6
     # Number of replicas per master
