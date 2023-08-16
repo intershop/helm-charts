@@ -24,16 +24,8 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                               |                                                         |
 |                                        |Additional information:                                                                        |                                                         |
 |                                        |                                                                                               |                                                         |
-|                                        |* If *downtime* is set to *false*, the DBmigrate process, as part of the process               |                                                         |
-|                                        |  the config init-container is executing, is skipped. This has no impact on the                |                                                         |
-|                                        |  project configuration.                                                                       |                                                         |
-|                                        |                                                                                               |                                                         |
 |                                        |* For the *downtime* parameter to work correctly, the ``--wait`` and                           |                                                         |
 |                                        |  ``--timeout`` command line parameters must always be set when running Helm.                  |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |                                                                                               |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |image.repository                        |Repository of the IOM app product/project image.                                               |docker.tools.intershop.com/iom/intershophub/iom          |
 |                                        |                                                                                               |                                                         |
@@ -42,7 +34,7 @@ Parameters of IOM Helm Chart
 |                                        |more information, see the `official Kubernetes documentation                                   |                                                         |
 |                                        |<https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy>`_.                  |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|image.tag                               |The tag of IOM product/project image.                                                          |4.3.0                                                    |
+|image.tag                               |The tag of IOM product/project image.                                                          |4.8.0                                                    |
 |                                        |                                                                                               |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |dbaccount                               |Parameters bundled by dbaccount are used to control the dbaccount init-container               |                                                         |
@@ -58,8 +50,6 @@ Parameters of IOM Helm Chart
 |                                        |longer. Hence, all IOM installations, except really non-critical demo- and                     |                                                         |
 |                                        |CI-setups, should enable dbaccount init-container only temporarily to initialize               |                                                         |
 |                                        |the database account.                                                                          |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |                                                                                               |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |dbaccount.enabled                       |Controls if the dbaccount init-container should be executed or not. If enabled,                |false                                                    |
 |                                        |dbaccount will only be executed when installing IOM, not on upgrade operations.                |                                                         |
@@ -72,7 +62,7 @@ Parameters of IOM Helm Chart
 |                                        |information, see the `official Kubernetes documentation                                        |                                                         |
 |                                        |<https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy>`_.                  |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|dbaccount.image.tag                     |The tag of dbaccount image.                                                                    |1.6.0                                                    |
+|dbaccount.image.tag                     |The tag of dbaccount image.                                                                    |2.0.0                                                    |
 |                                        |                                                                                               |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |dbaccount.resetData                     |Controls if dbaccount init-container should reset an already existing IOM database during the  |false                                                    |
@@ -110,70 +100,6 @@ Parameters of IOM Helm Chart
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |dbaccount.resources                     |Resource requests & limits.                                                                    |{}                                                       |
 |                                        |                                                                                               |                                                         |
-+----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|config                                  |Parameters, bundled by *config*, are used to control the config init-container                 |                                                         |
-|                                        |which fills the IOM database, to apply database migrations, and to roll out                    |                                                         |
-|                                        |project configurations into the IOM database. To enable the config                             |                                                         |
-|                                        |init-container to do this, it requires access to the IOM database. This                        |                                                         |
-|                                        |information is not contained in config parameters. Instead, the general                        |                                                         |
-|                                        |connection information is retrieved from *pg* or *postgres.pg* parameters. All                 |                                                         |
-|                                        |information about the IOM database user and database are provided by *oms.db*                  |                                                         |
-|                                        |parameters.                                                                                    |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |The config init-container was removed along with IOM 4.0.0. The according                      |                                                         |
-|                                        |functionality is now executed by the IOM container itself. The *config*                        |                                                         |
-|                                        |parameter still exists for backward compatibility.                                             |                                                         |
-+----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|config.enabled                          |The config init-container was removed along with IOM 4.0.0. For backward                       |false                                                    |
-|                                        |compatibility it can still be used, but has to be enabled explicitly now.                      |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Has to be set to *true*, when using Helm charts with an IOM version < 4.0.0.                 |                                                         |
-+----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|config.image.repository                 |Repository of the IOM config product/project image.                                            |                                                         |
-|                                        |                                                                                               |                                                         |
-+----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|config.image.pullPolicy                 |Pull policy, to be applied when getting the IOM config product/project Docker                  |IfNotPresent                                             |
-|                                        |image. For more information, see the `official Kubernetes documentation                        |                                                         |
-|                                        |<https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy>`_.                  |                                                         |
-+----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|config.image.tag                        |The tag of IOM config product/project image.                                                   |                                                         |
-|                                        |                                                                                               |                                                         |
-+----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|config.resources                        |Resource requests & limits.                                                                    |{}                                                       |
-|                                        |                                                                                               |                                                         |
-+----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|oms.skipProcedures                      |Normally, when updating the config image of IOM, stored procedures, migration                  |false                                                    |
-|                                        |scripts, and project configuration are executed. Setting parameter                             |                                                         |
-|                                        |*oms.skipProcedures* to *true* allows to skip the execution of stored                          |                                                         |
-|                                        |procedures. You must not do this when updating IOM.                                            |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM >= 3.6.0.0 and < 4.0.0                                                          |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* In IOM 4.0.0 and newer, execution of                                                         |                                                         |
-|                                        |  procedures, migration, and configuration is tracked internally and will not be               |                                                         |
-|                                        |  executed if already applied. A manual control is not necessary any longer.                   |                                                         |
-+----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|oms.skipMigration                       |Normally, when updating the config image of IOM, stored procedures, migration                  |false                                                    |
-|                                        |scripts, and project configuration are executed. Setting parameter                             |                                                         |
-|                                        |*oms.skipMigration* to *true* allows to skip the execution of migration                        |                                                         |
-|                                        |scripts. You must not do this when updating IOM.                                               |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM >= 3.6.0.0 and < 4.0.0                                                          |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* In IOM 4.0.0 and newer, execution of procedures, migration, and configuration                |                                                         |
-|                                        |  is tracked internally and will not be executed if already applied. A manual                  |                                                         |
-|                                        |  control is not necessary any longer.                                                         |                                                         |
-+----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|oms.skipConfig                          |Normally, when updating the config image of IOM, stored procedures, migration                  |false                                                    |
-|                                        |scripts, and project configuration are executed. Setting parameter                             |                                                         |
-|                                        |*oms.skipConfig* to *true* allows to skip the execution of configuration                       |                                                         |
-|                                        |scripts. You must not do this when updating the project configuration.                         |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM >= 3.6.0.0 and < 4.0.0                                                          |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* In IOM 4.0.0 and newer, execution of procedures, migration, and configuration                |                                                         |
-|                                        |  is tracked internally and will not be executed if already applied. A manual                  |                                                         |
-|                                        |  control is not necessary any longer.                                                         |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |pg                                      |This group of parameters bundles the information required to connect the                       |                                                         |
 |                                        |PostgreSQL server, information about the superuser, and default database                       |                                                         |
@@ -296,14 +222,10 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                               |                                                         |
 |                                        |Exported data are stored under *share/archive*.                                                |                                                         |
 |                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.1.0.0 or newer                                                                |                                                         |
-|                                        |                                                                                               |                                                         |
 |                                        |* Value has to match ``^[1-9]([0-9]+)?``                                                       |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.deleteOrderMessageLogMinAge         |Number of days after which the entries in table "OrderMessageLogDO" will definitely be deleted |"180"                                                    |
 |                                        |in order to reduce the table size. Must be greater than *oms.archiveOrderMessageLogMinAge*.    |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.1.0.0 or newer                                                                |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |* Value has to match ``^[1-9]([0-9]+)?``                                                       |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
@@ -315,16 +237,12 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                               |                                                         |
 |                                        |Exported data are stored under *share/archive*.                                                |                                                         |
 |                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.1.0.0 or newer                                                                |                                                         |
-|                                        |                                                                                               |                                                         |
 |                                        |* Value has to match ``^[1-9]([0-9]+)$``                                                       |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.archiveShopCustomerMailMaxCount     |Maximum number of entries in table "ShopCustomerMailTransmissionDO" to be exported per run of  |"10000"                                                  |
 |                                        |the Quartz job "ShopCustomerMailTransmissionArchive". Default is 10000, however, the export    |                                                         |
 |                                        |will not take place if this property and *oms.archiveShopCustomerMailMinAge* are not set.      |                                                         |
 |                                        |Min. accepted value: 10                                                                        |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.1.0.0 or newer                                                                |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |* Value has to match ``^[1-9]([0-9]+)$``                                                       |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
@@ -333,14 +251,10 @@ Parameters of IOM Helm Chart
 |                                        |"ShopCustomerMailTransmissionArchive"). Default is 2190 for 6 years. However, the deletion     |                                                         |
 |                                        |will not take place if this property is not set.                                               |                                                         |
 |                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.1.0.0 or newer                                                                |                                                         |
-|                                        |                                                                                               |                                                         |
 |                                        |* Value has to match ``^[1-9]([0-9]+)$``                                                       |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.secureCookiesEnabled                |If set to *true*, cookies will be sent with secure flag. In this case OMT requires fully       |true                                                     |
 |                                        |encrypted HTTP traffic in order to work properly.                                              |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.2.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.execBackendApps                     |If set to *false*, no backend applications will be executed in the current cluster. This is    |true                                                     |
 |                                        |required by transregional installations of IOM only, where many local IOM clusters have to     |                                                         |
@@ -378,9 +292,10 @@ Parameters of IOM Helm Chart
 |                                        |* Only required if a high availability cluster of PostgreSQL servers is used, to list all      |                                                         |
 |                                        |  possible connecting possibilities to this cluster.                                           |                                                         |
 |                                        |                                                                                               |                                                         |
-|                                        |* Affects IOM application servers only. All other database clients (config and dbaccount) are  |                                                         |
-|                                        |  using connection information from *pg* parameters group only. The same is true for the IOM   |                                                         |
-|                                        |  application server if *oms.db.hostlist* is empty.                                            |                                                         |
+|                                        |* Affects IOM application servers only. dbaccount-image is using connection information from   |                                                         |
+|                                        |  *pg* parameters group only. The same is true for the IOM application server if               |                                                         |
+|                                        |  *oms.db.hostlist* is empty.                                                                  |                                                         |
+|                                        |                                                                                               |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.db.connectionMonitor                |Parameters in *oms.db.connectionMonitor* are dedicated to control a Kubernetes cronjob that is |                                                         |
 |                                        |writing *INFO* log messages created by process ``connection_monitor.sh`` that provide          |                                                         |
@@ -391,29 +306,21 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                               |                                                         |
 |                                        |``{"tenant":"company-name","environment":"system-name",                                        |                                                         |
 |                                        |"logHost":"ci-iom-connection-monitor-27154801-c6lk4","logVersion":"1.0",                       |                                                         |
-|                                        |"appName":"iom-config","appVersion":"3.6.0.0","logType":"script",                              |                                                         |
-|                                        |"timestamp":"2021-08-18T12:01:01+00:00","level":"INFO",                                        |                                                         |
+|                                        |"appName":"iom","appVersion":"4.5.0","logType":"script",                                       |                                                         |
+|                                        |"timestamp":"2023-08-18T12:01:01+00:00","level":"INFO",                                        |                                                         |
 |                                        |"processName":"connection_monitor.sh","message":                                               |                                                         |
 |                                        |"count,application_name,client_addr\\n51,OMS_ci-iom-0,40.67.249.40\\n2,psql,40.67.249.40",     |                                                         |
 |                                        |"configName":null}``                                                                           |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |``connection_monitor.sh`` ignores settings of parameter *log.level.scripts*. It always uses log|                                                         |
 |                                        |level *INFO*.                                                                                  |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.6.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.db.connectionMonitor.enabled        |Enables/disables Kubernetes cronjob providing the connection monitoring messages.              |false                                                    |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.6.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.db.connectionMonitor.schedule       |Controls frequency of Kubernetes cronjob providing the connection monitoring messages.         |"\*/1 \* \* \* \*"                                       |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.6.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.db.connectTimeout                   |Controls connect timeout of database connections (jdbc- and psql-initiated connections). Value |10                                                       |
 |                                        |is defined in seconds. A value of 0 means to wait infinitely.                                  |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.6.0.0 or newer                                                                |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |* Requires dbaccount 1.3.0.0 or newer                                                          |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
@@ -511,14 +418,12 @@ Parameters of IOM Helm Chart
 |                                        |Kubernetes documentation on Pod-Lifecycle                                                      |                                                         |
 |                                        |<https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#types-of-probe>`_.          |                                                         |
 |                                        |                                                                                               |                                                         |
-|                                        |Startup probe was introduced with IOM Helm charts 2.0.0 when IOM config image was removed. All |                                                         |
-|                                        |the functionality that was executed by the config image before is in IOM version >= 4.0.0 part |                                                         |
-|                                        |of the IOM image. The startup probe must now be used to observe all the tasks (create db       |                                                         |
-|                                        |account, roll out dump, execute stored procedures, run database migrations, apply project      |                                                         |
-|                                        |configuration) that are done before the Wildfly application server is started. The startup     |                                                         |
-|                                        |probe must not finally fail before the end of the startup phase, otherwise the pod will be     |                                                         |
-|                                        |ended and restarted. The startup phase ends when startup probe succeeds. To do so, you need to |                                                         |
-|                                        |configure startupProbe in such a way that                                                      |                                                         |
+|                                        |The startup probe must be used to observe all the tasks (create db account, roll out dump,     |                                                         |
+|                                        |execute stored procedures, run database migrations, apply project configuration) that are done |                                                         |
+|                                        |before the Wildfly application server is started. The startup probe must not finally fail      |                                                         |
+|                                        |before the end of the startup phase, otherwise the pod will be ended and restarted. The startup|                                                         |
+|                                        |phase ends when startup probe succeeds. To do so, you need to configure startupProbe in such a |                                                         |
+|                                        |way that                                                                                       |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |  *initialDelaySeconds + periodSeconds * failureThreshold*                                     |                                                         |
 |                                        |                                                                                               |                                                         |
@@ -529,37 +434,17 @@ Parameters of IOM Helm Chart
 |                                        |unchanged.                                                                                     |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |startupProbe.enabled                    |Enables to switch on/off the startup probe.                                                    |true                                                     |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 4.0.0 or newer                                                                  |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Ignored if *config.enabled* is set to *true* (if an IOM of a version < 4.0.0 is used).       |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |startupProbe.periodSeconds              |How often (in seconds) to perform the probe. Minimum value is 1.                               |10                                                       |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 4.0.0 or newer                                                                  |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Ignored if *config.enabled* is set to *true* (if an IOM of a version < 4.0.0 is used).       |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |startupProbe.initialDelaySeconds        |Number of seconds after the container has started before startup probes are initiated. Minimum |60                                                       |
 |                                        |value is 0.                                                                                    |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 4.0.0 or newer                                                                  |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Ignored if *config.enabled* is set to *true* (if an IOM of a version < 4.0.0 is used).       |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |startupProbe.timeoutSeconds             |Number of seconds after which the probe times out. Default is set to 1 second. Minimum value is|5                                                        |
 |                                        |1.                                                                                             |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 4.0.0 or newer                                                                  |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Ignored if *config.enabled* is set to *true* (if an IOM of a version < 4.0.0 is used).       |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |startupProbe.failureThreshold           |When a probe fails, Kubernetes will try *failureThreshold* times before giving up. Giving up in|354                                                      |
 |                                        |case of startup probe means restarting the container. Minimum value is 1.                      |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 4.0.0 or newer                                                                  |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Ignored if *config.enabled* is set to *true* (if an IOM of a version < 4.0.0 is used).       |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |livenessProbe                           |Group of parameters to fine-tune the liveness probe of Kubernetes. The basic kind of probe is  |                                                         |
 |                                        |fixed and cannot be changed. For an overview of probes and pod lifecycle, see the `official    |                                                         |
@@ -631,8 +516,6 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                               |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |jboss.activemqClientPoolSizeMax         |Maximum size of the ActiveMQ client thread pool.                                               |"50"                                                     |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.7.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |jboss.nodePrefix                        |*jboss.nodePrefix* allows to define the prefix which is used to create a unique ID of the      |                                                         |
 |                                        |server within the cluster. For uniqueness the prefix will be extended by the number of the pod |                                                         |
@@ -651,8 +534,6 @@ Parameters of IOM Helm Chart
 |                                        |   so, every IOM cluster should use a unique value for *jboss.nodePrefix*. Alternatively, it is|                                                         |
 |                                        |   also possible to use different Helm deployment names in each cluster. At least one of these |                                                         |
 |                                        |   two options **MUST** be used for a transregional installation.                              |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.5.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |log                                     |Parameters of group log are all related to the configuration of the logging of IOM.            |                                                         |
 |                                        |                                                                                               |                                                         |
@@ -660,11 +541,9 @@ Parameters of IOM Helm Chart
 |log.access.enabled                      |Controls creation of access log messages.                                                      |true                                                     |
 |                                        |                                                                                               |                                                         |
 |                                        |Allowed values are: *true*, *false*.                                                           |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.2.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |log.level.scripts                       |Controls log level of all shell scripts running in one of the IOM-related containers (as       |INFO                                                     |
-|                                        |defined in image, dbaccount.image and config.image).                                           |                                                         |
+|                                        |defined in image and dbaccount.image).                                                         |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |Allowed values are: *ERROR*, *WARN*, *INFO*, *DEBUG*.                                          |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
@@ -737,9 +616,6 @@ Parameters of IOM Helm Chart
 |                                        |      - getReturnRequests                                                                      |                                                         |
 |                                        |      - updateTransmissions                                                                    |                                                         |
 |                                        |      - createOrderResponse                                                                    |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.6.0.0 or newer                                                                |                                                         |
-|                                        |                                                                                               |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |podDisruptionBudget.maxUnavailable      |Defines the maximum number of unavailable IOM pods, that are allowed during a voluntary        |1                                                        |
 |                                        |disruption of the Kubernetes cluster.                                                          |                                                         |
@@ -790,126 +666,80 @@ Parameters of IOM Helm Chart
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm                              |*datadogApm* bundles parameters required to configure datadog Application Performance          |                                                         |
 |                                        |Monitoring (APM).                                                                              |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.enabled                      |This parameter is mapped to environment variable *DD_APM_ENABLED*. For more information, please|false                                                    |
 |                                        |consult the official datadog documentation.  If set to *true*, IOM will be started with        |                                                         |
 |                                        |``-javaagent`` parameter, loading the datadog javaagent library. This will not be the case when|                                                         |
 |                                        |set to *false*.                                                                                |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.backendOnly                  |If set to *true* and datadog APM is enabled, tracing will only be executed on the one IOM      |true                                                     |
 |                                        |application server that is running the backend applications (singleton applications). If set to|                                                         |
 |                                        |*true* and datadog APM is enabled, tracing will be executed on all IOM application servers.    |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.traceAgentHost               |This parameter is mapped to environment variable *DD_AGENT_HOST*. For more information, please |                                                         |
 |                                        |consult the official Datadog documentation.                                                    |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |Normally this environment variable is injected with the right value by the locally installed   |                                                         |
 |                                        |datadog daemon-set.                                                                            |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.traceAgentPort               |This parameter is mapped to environment variable *DD_TRACE_AGENT_PORT*. For more information,  |                                                         |
 |                                        |please consult the official Datadog documentation.                                             |                                                         |
 |                                        |                                                                                               |                                                         |
 |                                        |Normally this environment variable is injected with the right value by the locally installed   |                                                         |
 |                                        |datadog daemon-set.                                                                            |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.traceAgentTimeout            |This parameter is mapped to environment variable *DD_TRACE_AGENT_TIMEOUT*. For more            |                                                         |
 |                                        |information, please consult the official Datadog documentation.                                |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.logsInjection                |This parameter is mapped to environment variable *DD_LOGS_INJECTION*. For more information,    |false                                                    |
 |                                        |please consult the official Datadog documentation.                                             |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.debug                        |This parameter is mapped to environment variable *DD_TRACE_DEBUG*. For more information, please|false                                                    |
 |                                        |consult the official Datadog documentation.                                                    |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.startupLogs                  |This parameter is mapped to environment variable *DD_TRACE_STARTUP_LOGS*. For more information,|true                                                     |
 |                                        |please consult the official Datadog documentation.                                             |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.tags                         |This parameter is mapped to environment variable *DD_TAGS*. For more information, please       |                                                         |
 |                                        |consult the official Datadog documentation.                                                    |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.serviceMapping               |This parameter is mapped to environment variable *DD_SERVICE_MAPPING*. For more information,   |                                                         |
 |                                        |please consult the official Datadog documentation.                                             |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.writerType                   |This parameter is mapped to environment variable *DD_WRITER_TYPE*. For more information, please|                                                         |
 |                                        |consult the official Datadog documentation.                                                    |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.partialFlushMinSpan          |This parameter is mapped to environment variable *DD_TRACE_PARTIAL_FLUSH_MIN_SPANS*. For more  |                                                         |
 |                                        |information, please consult the official Datadog documentation.                                |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.dbClientSplitByInstance      |This parameter is mapped to environment variable *DD_TRACE_DB_CLIENT_SPLIT_BY_INSTANCE*. For   |                                                         |
 |                                        |more information, please consult the official Datadog documentation.                           |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.healthMetricsEnabled         |This parameter is mapped to environment variable *DD_TRACE_HEALTH_METRICS_ENABLED*. For more   |false                                                    |
 |                                        |information, please consult the official Datadog documentation.                                |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.servletAsyncTimeoutError     |This parameter is mapped to environment variable *DD_TRACE_SERVLET_ASYNC_TIMEOUT_ERROR*. For   |true                                                     |
 |                                        |more information, please consult the official Datadog documentation.                           |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.sampleRate                   |This parameter is mapped to environment variable *DD_TRACE_SAMPLE_RATE*. For more information, |'1.0'                                                    |
 |                                        |please consult the official Datadog documentation.                                             |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.jmsFetchEnabled              |This parameter is mapped to environment variable *DD_JMXFETCH_ENABLED*. For more information,  |true                                                     |
 |                                        |please consult the official Datadog documentation.                                             |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.4.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |project                                 |Within project group of parameters, configuration of Intershop Commerce Platform (previously   |                                                         |
 |                                        |known as CaaS) projects can be controlled.                                                     |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Was named *caas* in IOM Helm charts of version < 2.0.0                                       |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |project.envName                         |Intershop Commerce Platform (previously known as CaaS) projects support different settings for |env-name                                                 |
 |                                        |different environments. *project.envName* defines which one has to be used. See `Guide - IOM   |                                                         |
 |                                        |Standard Project Structure <TODO>`_ for more information.                                      |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Was named *caas.envName* in IOM Helm charts of version < 2.0.0                               |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |project.importTestData                  |Controls the import of test data, which are part of the project. See `Guide - IOM Standard     |false                                                    |
 |                                        |Project Structure <TODO>`_ for more information. If enabled, test data is imported during      |                                                         |
 |                                        |installation and upgrade processes.                                                            |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Was named *caas.importTestData* in IOM Helm charts of version < 2.0.0                        |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |project.importTestDataTimeout           |Timeout in seconds for the import of test data. If the import has not finished before the      |"300"                                                    |
 |                                        |according amount of seconds has passed, the container will end with an error.                  |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Was named *caas.importTestDataTimeout* in IOM Helm charts of version < 2.0.0                 |                                                         |
-|                                        |                                                                                               |                                                         |
-|                                        |* Requires IOM 3.2.0.0 or newer                                                                |                                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |persistence                             |Parameters of group *persistence* control how IOM's shared data is persisted.                  |                                                         |
 |                                        |                                                                                               |                                                         |

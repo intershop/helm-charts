@@ -95,14 +95,7 @@ spec:
           {{- if not (kindIs "bool" .Values.oms.execBackendApps) }}
             {{ fail "oms.execBackendApps contains a non boolean value!" }}
           {{- end }}
-          {{- if .Values.config.enabled }}
-          command:
-            - /bin/sh
-            - "-c"
-            - export OMS_EXEC_BACKEND_APPS=false; if hostname -s | grep -q -- '-0$'; then export OMS_EXEC_BACKEND_APPS={{ .Values.oms.execBackendApps }}; fi; $OMS_HOME/bin/wildfly_start.sh
-          {{- else }}
           args: [ "--run-in-statefulset" ]
-          {{- end }}
           ports:
             - name: http
               containerPort: 8080
@@ -129,7 +122,7 @@ spec:
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
             successThreshold: {{ .Values.readinessProbe.successThreshold }}
           {{- end }}
-          {{- if and .Values.startupProbe.enabled (not .Values.config.enabled) }}
+          {{- if .Values.startupProbe.enabled }}
           startupProbe:
             httpGet:
               path: /
@@ -269,14 +262,11 @@ spec:
             - name: OMS_DB_HOSTLIST
               value: {{ .Release.Name }}-postgres:5432
             
-            # database settings, that were migrated from config image
-            
-              {{- if not .Values.config.enabled }}
+            # database settings
             - name: OMS_DB_HOST
               value: {{ .Release.Name }}-postgres
             - name: OMS_DB_PORT
               value: '5432'
-              {{- end }}
             {{- else }}
             #
             # database settings, if sub-chart postgres is disabled
@@ -293,11 +283,6 @@ spec:
             - name: OMS_DB_HOSTLIST
               value: {{ .Values.oms.db.hostlist }}
                 {{- end }}
-              {{- end }}
-              
-              # database settings, that were migrated from config image
-              
-              {{- if not .Values.config.enabled }}
                 {{- if .Values.pg.host }}
             - name: OMS_DB_HOST
               value: {{ .Values.pg.host }}
@@ -369,31 +354,30 @@ spec:
                 {{- end }}
               {{- end }}
             {{- end }}
-            {{- if not .Values.config.enabled }}
-              {{- if .Values.oms }}
+
+            {{- if .Values.oms }}
             #
             # PlatformConfigProperties
             #
-                {{- if .Values.oms.archiveOrderMessageLogMinAge }}
+              {{- if .Values.oms.archiveOrderMessageLogMinAge }}
             - name: OMS_ARCHIVE_ORDERMSGLOG_MIN_AGE
               value: '{{ .Values.oms.archiveOrderMessageLogMinAge }}'
-                {{- end }}
-                {{- if .Values.oms.deleteOrderMessageLogMinAge }}
+              {{- end }}
+              {{- if .Values.oms.deleteOrderMessageLogMinAge }}
             - name: OMS_DELETE_ORDERMSGLOG_MIN_AGE
               value: '{{ .Values.oms.deleteOrderMessageLogMinAge }}'
-                {{- end }}
-                {{- if .Values.oms.archiveShopCustomerMailMinAge }}
+              {{- end }}
+              {{- if .Values.oms.archiveShopCustomerMailMinAge }}
             - name: OMS_ARCHIVE_SHOPCUSTMAIL_MIN_AGE
               value: '{{ .Values.oms.archiveShopCustomerMailMinAge }}'
-                {{- end }}
-                {{- if .Values.oms.archiveShopCustomerMailMaxCount }}
+              {{- end }}
+              {{- if .Values.oms.archiveShopCustomerMailMaxCount }}
             - name: OMS_ARCHIVE_SHOPCUSTMAIL_MAX_COUNT
               value: '{{ .Values.oms.archiveShopCustomerMailMaxCount }}'
-                {{- end }}
-                {{- if .Values.oms.deleteShopCustomerMailMinAge }}
+              {{- end }}
+              {{- if .Values.oms.deleteShopCustomerMailMinAge }}
             - name: OMS_DELETE_SHOPCUSTMAIL_MIN_AGE
               value: '{{ .Values.oms.deleteShopCustomerMailMinAge }}'
-                {{- end }}
               {{- end }}
             {{- end }}
             {{- if .Values.mailhog.enabled }}
@@ -508,12 +492,10 @@ spec:
               {{- end }}
             {{- end }}
             #
-            # other settings, that were migrated from config image
+            # other settings
             #
-            {{- if not .Values.config.enabled }}
             - name: DB_READY_TIMEOUT
               value: '300'
-            {{- end }}
             {{- if .Values.jboss }}
             #
             # jboss settings
@@ -608,18 +590,10 @@ spec:
             # project settings
             #
               {{- if .Values.project.envName }}
-                {{- if .Values.config.enabled }}
-            - name: CAAS_ENV_NAME
-                {{- else }}
             - name: PROJECT_ENV_NAME
-                {{- end }}
               value: {{ .Values.project.envName }}
               {{- end }}
-              {{- if .Values.config.enabled }}
-            - name: CAAS_IMPORT_TEST_DATA
-              {{- else }}
             - name: PROJECT_IMPORT_TEST_DATA
-              {{- end }}
               {{- if and .Values.project.importTestData .Release.IsInstall }}
                 {{- if not (kindIs "bool" .Values.project.importTestData) }}
                   {{ fail "project.importTestData contains a non boolean value!" }}
@@ -629,11 +603,7 @@ spec:
               value: 'false'
               {{- end }}
               {{- if .Values.project.importTestDataTimeout }}
-                {{- if .Values.config.enabled }}
-            - name: CAAS_IMPORT_TEST_DATA_TIMEOUT
-                {{- else }}
             - name: PROJECT_IMPORT_TEST_DATA_TIMEOUT
-                {{- end }}
               value: '{{ .Values.project.importTestDataTimeout }}'
               {{- end }}
             {{- end }}
@@ -865,203 +835,6 @@ spec:
               value: '/tmp'
             - name: DB_READY_TIMEOUT
               value: '300'
-        {{- end }}
-        {{- if .Values.config.enabled }}
-        - name: config
-          imagePullPolicy: {{ .Values.config.image.pullPolicy }}
-          image: "{{ .Values.config.image.repository }}:{{ .Values.config.image.tag }}"
-          resources:
-            {{- toYaml .Values.config.resources | nindent 12 }}
-          env:
-            {{- if .Values.postgres.enabled }}
-            #
-            # database settings, is sub-chart postgres is enabled
-            #
-            - name: OMS_DB_USER_CONNECTION_SUFFIX
-              value: ''
-            - name: OMS_DB_HOST
-              value: {{ .Release.Name }}-postgres
-            - name: OMS_DB_PORT
-              value: '5432'
-            {{- else }}
-            #
-            # database settings, if sub-chart postgres is disabled
-            #
-              {{- if .Values.pg }}
-                {{- if .Values.pg.userConnectionSuffix }}
-            - name: OMS_DB_USER_CONNECTION_SUFFIX
-              value: '{{ .Values.pg.userConnectionSuffix }}'
-                {{- end }}
-                {{- if .Values.pg.host }}
-            - name: OMS_DB_HOST
-              value: {{ .Values.pg.host }}
-                {{- end }}
-                {{- if .Values.pg.port }}
-            - name: OMS_DB_PORT
-              value: '{{ .Values.pg.port }}'
-                {{- end }}
-                {{- if .Values.pg.sslMode }}
-            - name: PGSSL_MODE
-              value: '{{ .Values.pg.sslMode }}'
-                {{- end }}
-                {{- if .Values.pg.sslCompression }}
-            - name: PGSSL_COMPRESSION
-              value: '{{ .Values.pg.sslCompression }}'
-                {{- end }}
-                {{- if .Values.pg.sslRootCert }}
-            - name: PGSSL_ROOTCERT
-              value: '{{ .Values.pg.sslRootCert | b64enc }}'
-                {{- end }}
-              {{- end }}
-            {{- end }}
-            #
-            # common database settings
-            #
-            {{- if .Values.oms }}
-              {{- if .Values.oms.db }}
-                {{- if .Values.oms.db.name }}
-            - name: OMS_DB_NAME
-              value: {{ .Values.oms.db.name }}
-                {{- end }}
-                {{- /* userSecretKeyRef has precedence over user */ -}}
-                {{- if .Values.oms.db.userSecretKeyRef }}
-            - name: OMS_DB_USER
-              valueFrom:
-                secretKeyRef:
-                  {{- toYaml .Values.oms.db.userSecretKeyRef | nindent 18 }}
-                {{- else if .Values.oms.db.user }}
-            - name: OMS_DB_USER
-              value: {{ .Values.oms.db.user }}
-                {{- end }}
-                {{- /* passwdSecretKeyRef has precedence over passwd */ -}}
-                {{- if .Values.oms.db.passwdSecretKeyRef }}
-            - name: OMS_DB_PASS
-              valueFrom:
-                secretKeyRef:
-                  {{- toYaml .Values.oms.db.passwdSecretKeyRef | nindent 18 }}
-                {{- else if .Values.oms.db.passwd }}
-            - name: OMS_DB_PASS
-              value: {{ .Values.oms.db.passwd }}
-                {{- end }}
-                {{- if .Values.oms.db.connectTimeout }}
-            - name: OMS_DB_CONNECT_TIMEOUT
-              value: '{{ .Values.oms.db.connectTimeout }}'
-                {{- end }}
-              {{- end }}
-            {{- end }}
-            {{- if .Values.oms }}
-            #
-            # PlatformConfigProperties
-            #
-              {{- if .Values.oms.archiveOrderMessageLogMinAge }}
-            - name: OMS_ARCHIVE_ORDERMSGLOG_MIN_AGE
-              value: '{{ .Values.oms.archiveOrderMessageLogMinAge }}'
-              {{- end }}
-              {{- if .Values.oms.deleteOrderMessageLogMinAge }}
-            - name: OMS_DELETE_ORDERMSGLOG_MIN_AGE
-              value: '{{ .Values.oms.deleteOrderMessageLogMinAge }}'
-              {{- end }}
-              {{- if .Values.oms.archiveShopCustomerMailMinAge }}
-            - name: OMS_ARCHIVE_SHOPCUSTMAIL_MIN_AGE
-              value: '{{ .Values.oms.archiveShopCustomerMailMinAge }}'
-              {{- end }}
-              {{- if .Values.oms.archiveShopCustomerMailMaxCount }}
-            - name: OMS_ARCHIVE_SHOPCUSTMAIL_MAX_COUNT
-              value: '{{ .Values.oms.archiveShopCustomerMailMaxCount }}'
-              {{- end }}
-              {{- if .Values.oms.deleteShopCustomerMailMinAge }}
-            - name: OMS_DELETE_SHOPCUSTMAIL_MIN_AGE
-              value: '{{ .Values.oms.deleteShopCustomerMailMinAge }}'
-              {{- end }}
-            {{- end }}
-            {{- if .Values.log }}
-            #
-            # log settings
-            #
-              {{- if .Values.log.level }}  
-                {{- if .Values.log.level.scripts }}
-            - name: OMS_LOGLEVEL_SCRIPTS
-              value: {{ .Values.log.level.scripts }}
-                {{- end }}
-              {{- end }}
-              {{- if .Values.log.metadata }}
-                {{- if .Values.log.metadata.tenant }}
-            - name: TENANT
-              value: {{ .Values.log.metadata.tenant }}
-                {{- end }}
-                {{- if .Values.log.metadata.environment }}
-            - name: ENVIRONMENT
-              value: {{ .Values.log.metadata.environment }}
-                {{- end }}
-              {{- end }}
-            {{- end }}
-            #
-            # control of update steps
-            #
-            - name: SKIP_PROCEDURES
-              {{- if .Values.config.skipProcedures }}
-                {{- if not (kindIs "bool" .Values.config.skipProcedures) }}
-                  {{ fail "config.skipProcedures contains a non boolean value!" }}
-                {{- end }}
-              value: 'true'
-              {{- else }}
-              value: 'false'
-              {{- end }}
-            - name: SKIP_MIGRATION
-              {{- if .Values.config.skipMigration }}
-                {{- if not (kindIs "bool" .Values.config.skipMigration) }}
-                  {{ fail "config.skipMigration contains a non boolean value!" }}
-                {{- end }}
-              value: 'true'
-              {{- else }}
-              value: 'false'
-              {{- end }}
-            - name: SKIP_CONFIG
-              {{- if .Values.config.skipConfig }}
-                {{- if not (kindIs "bool" .Values.config.skipConfig) }}
-                  {{ fail "config.skipConfig contains a non boolean value!" }}
-                {{- end }}
-              value: 'true'
-              {{- else }}
-              value: 'false'
-              {{- end }}
-            {{- if .Values.project }}
-            #
-            # project settings
-            #
-              {{- if .Values.project.envName }}
-            - name: CAAS_ENV_NAME
-              value: {{ .Values.project.envName }}
-              {{- end }}
-            {{- end }}
-            #
-            # execute dbmigrate?
-            # TODO: deprecated, still required for backward compatibilty with versions < 3.3.0.0
-            #
-            - name: OMS_DB_MIGRATION
-            {{- if or .Values.downtime .Release.IsInstall }}
-              value: 'true'
-            {{- else }}
-              value: 'false'
-            {{- end }}
-            #
-            # fixed settings
-            #
-            - name: LOG_SHARE
-              value: '/tmp'
-            - name: DB_READY_TIMEOUT
-              value: '300'
-              
-          # overwrites the default command defined in Dockerfile
-          # db initialization is only executed, if hostname ends with -0, which
-          # only the case for the first server of a stateful set.
-          # TODO: fixed binding on pod ending with "-0" is required for backward compatibility with
-          #   version < 3.3.0.0. Since 3.3.0.0 the file /opt/sql_sha256sum exists and the config
-          #   image is able to decide by himself if db-changes have to be rolled out or not.
-          command:
-            - /bin/sh
-            - "-c"
-            - if [ -f "/opt/sql_sha256sum" ]; then /opt/load_dbmigrate.sh; elif hostname -s | grep -q -- '-0$'; then /opt/load_dbmigrate.sh; fi
         {{- end }}
       volumes:
         - name: app-share-volume

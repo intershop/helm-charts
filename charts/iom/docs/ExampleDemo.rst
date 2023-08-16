@@ -16,12 +16,12 @@ Preconditions
 
 * Mac computer: Mac OS X >= v.12.1
 * Sufficient hardware resources: >= 16 GB main memory, multicore CPU
-* Installation of Docker Desktop: >= v.4.3
+* Installation of Docker Desktop: >= v.4.21.1
 
   * See: https://www.docker.com/products/docker-desktop 
-  * >= 12 GB memory and >= 2 CPUs have to be assigned (Preferences | Resources | Advanced)
+  * >= 12 GB memory and >= 2 CPUs have to be assigned (Settings | Resources | Advanced)
   * Enable Kubernetes (Preferences | Kubernetes)
-  * Directories used to hold persistent data have to be shared with Docker Desktop (Preferences | Resources | File Sharing)
+  * Directories used to hold persistent data have to be shared with Docker Desktop (Settings | Resources | File Sharing)
 * Installation of Helm: >= v3.6
 
   * See: https://helm.sh/docs/intro/install/
@@ -36,7 +36,7 @@ Usage of integrated PostgreSQL server.
 
 1. Usage of integrated *PostgreSQL* database server.
 2. *PostgreSQL* data are stored persistently.
-3. No reset of *PostgreSQL* data during the installation process.
+3. No reset of database during the installation process.
 4. Usage of the integrated SMTP server (*Mailhog*).
 5. Web access to the GUI of *Mailhog*.
 6. The shared file system of IOM has to be stored persistently.
@@ -49,7 +49,7 @@ Values File
 
 This values file cannot be copied as it is. Before it can be used, *persistence.hostPath* and *postgres.persistence.hostPath* have to be changed to existing paths, which are shared with Docker Desktop.
 
-The values file contains minimal settings only, except *dbaccount.resetData*, which was listed explicitly, even if it contains the default value only.
+The values file contains minimal settings only, except *oms.db.resetData*, which was listed explicitly, even if it contains the default value only.
 
 .. code-block:: yaml
 
@@ -61,7 +61,7 @@ The values file contains minimal settings only, except *dbaccount.resetData*, wh
 
   image:
     repository: "docker.tools.intershop.com/iom/intershophub/iom"
-    tag: "4.3.0"
+    tag: "4.8.0"
 
   # define a timeout for startupProbe, that is matching the requirements of the current
   # IOM installation. In combination with the default values, this configuration results
@@ -89,19 +89,21 @@ The values file contains minimal settings only, except *dbaccount.resetData*, wh
   # IOM has to know its own public URL
   oms:
     publicUrl: "https://localhost/"
+    db:
+      # do not reset existing data during installation (requirement #3)
+      resetData: false # optional, since false is default
 
   # store data of shared-FS into local directory (requirement #6, #7)
   persistence:
     hostPath: /Users/username/iom-share
 
   # create IOM database and according database user before starting IOM. 
-  # do not reset existing data during installation (requirement #3)
+
   dbaccount:
     enabled: true
-    resetData: false # optional, since false is default
     image:
       repository: "docker.tools.intershop.com/iom/intershophub/iom-dbaccount"
-      tag: "1.6.0"
+      tag: "2.0.0"
 
   # use integrated PostgreSQL server (requirement #1).
   # store database data persistently into local directory (requirement #2).
@@ -202,7 +204,7 @@ Open a second terminal window and enter the following commands.
   demo-postgres-7b796887fb-j4hdr                        0/1     Init:0/1            0          2s
 
   # After some seconds all pods except IOM are "Running" and READY (integrated Postgresql server, integrated 
-  # SMTP server). IOM is in Init-phase, which means the init-containers are currently executed.
+  # SMTP server). IOM is in Init-phase, which means the init-container is currently executed.
   kubectl get pods -n iom
   NAME                                                  READY   STATUS     RESTARTS   AGE
   demo-iom-0                                            0/1     Init:1/2   0          38s
@@ -214,7 +216,7 @@ Open a second terminal window and enter the following commands.
   # successful execution of create_dbaccount.sh script.
   kubectl logs demo-iom-0 -n iom -f -c dbaccount
   ...
-  {"tenant":"company-name","environment":"system-name","logHost":"demo-iom-0","logVersion":"1.0","appName":"iom-dbaccount","appVersion":"1.6.0","logType":"script","timestamp":"2022-11-06T11:33:17+00:00","level":"INFO","processName":"create_dbaccount.sh","message":"success","configName":null}
+  {"tenant":"company-name","environment":"system-name","logHost":"demo-iom-0","logVersion":"1.0","appName":"iom-dbaccount","appVersion":"2.0.0","logType":"script","timestamp":"2023-11-06T11:33:17+00:00","level":"INFO","processName":"create_dbaccount.sh","message":"success","configName":null}
 
   # When init-container is finished successfully, the iom-pod is now in "Running" state, too. But it is not "READY"
   # yet. Now the IOM database is set up, applications and project customizations are deployed into the Wildfly application server.

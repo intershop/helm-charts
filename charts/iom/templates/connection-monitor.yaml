@@ -24,13 +24,8 @@ spec:
           {{- end }}
           containers:
           - name: connection-monitor
-            {{- if .Values.config.enabled }}
-            image: "{{ .Values.config.image.repository }}:{{ .Values.config.image.tag | default .Chart.AppVersion }}"
-            imagePullPolicy: {{ .Values.config.image.pullPolicy }}
-            {{- else }}
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
             imagePullPolicy: {{ .Values.image.pullPolicy }}
-            {{- end }}
             env:
             {{- if .Values.postgres.enabled }}
             #
@@ -125,11 +120,7 @@ spec:
                 {{- end }}
               {{- end }}
             {{- end }}
-            {{- if .Values.config.enabled }}
-            command: [ '/opt/connection_monitor.sh' ]
-            {{- else }}
             command: [ '/opt/oms/bin/connection_monitor.sh' ]
-            {{- end }}
           restartPolicy: Never
       {{- end }}
     {{- end }}

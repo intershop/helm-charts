@@ -17,11 +17,11 @@ Preconditions
 Please keep in mind that these preconditions reflect the use case described in section `IOM Helm-Charts <ToolsAndConcepts.rst#iom-helm-charts>`_. When using the Intershop Commerce Platform, these preconditions are all covered by Intershop.
 
 * Azure Kubernetes Service (AKS) and virtual machines of sufficient size. 
-* Access to a PostgreSQL server preferred as "Azure Database for PostgreSQL servers".
+* Access to a database provided by a PostgreSQL server.
 * Access to a File service (e.g. Azure Files)
 * Running Ingress controller in AKS
 * Secrets for database access, TLS for Ingress, etc.
-* Installation of kubectl on the machine that is used for installation, >=v.1.22
+* Installation of kubectl on the machine that is used for installation, >=v.1.25
 
   * see: https://kubernetes.io/docs/tasks/tools/
 * Installation of Helm on the machine that is used for installation, >= v.3.6
@@ -36,14 +36,14 @@ Requirements and Characteristics of IOM Installation
 
 Requirements and characteristics are numbered again. You will find these numbers in the `values file`_ listed below in order to see the relation between requirement and current configuration.
 
-* Two IOM application servers must run in parallel.
-* Usage of an external PostgreSQL server (Azure Database for PostgreSQL server).
-* No reset of PostgreSQL data during the installation process. 
-* Usage of an external SMTP server.
-* Shared file system of IOM located on externally provided resources.
-* Usage of an external NGINX Ingress controller.
-* The system should be able to be upgraded without downtime.
-* Time for initialization, migration, and configuration has to be adapted due to the specific characteristics of the project.
+1. Two IOM application servers must run in parallel.
+2. Usage of an external PostgreSQL service.
+3. No reset of database during the installation process. 
+4. Usage of an external SMTP server.
+5. Shared file system of IOM located on externally provided resources.
+6. Usage of an external NGINX Ingress controller.
+7. The system should be able to be upgraded without downtime.
+8. Time for initialization, migration, and configuration has to be adapted due to the specific characteristics of the project.
 
 Values File
 ===========
@@ -93,26 +93,19 @@ Of course, this values file cannot be copied as it is. It references external re
   pg:
     host: postgres-prod.postgres.database.azure.com
     port: 5432
-    userConnectionSuffix: "@postgres-prod"
-
-    # root-database and superuser information. The very first installation initializes
-    # the database of IOM. After that, these information should be removed from values
-    # file completely (and dbaccount should be disabled/removed too)
-    user: postgres
-    passwdSecretKeyRef:
-      name: mycompany-prod-secrets
-      key: pgpasswd
-    db: postgres
 
   # IOM has to know its own public URL
   oms:
     publicUrl: "https://iom.mycompany.com/"
     db:
+      # database has to already exist.
       name: oms_db
       user: oms_user
       passwdSecretKeyRef:
         name: mycompany-prod-secrets
         key: dbpasswd
+      # do not reset database (requirement #3)
+      resetData: false # optional, default value is false
     # configuration of external smtp server (requirement #4)
     smtp:
       host: smpt.external-provider.com
@@ -134,16 +127,6 @@ Of course, this values file cannot be copied as it is. It references external re
   persistence:
     storageClass: azurefile
     storageSize: 60G
-
-  # Create IOM database and according user before starting IOM. Creates IOM database
-  # while running install process. After that, dbaccount should be completely removed
-  # from the values file. Without set explicitly, data are not reset during start
-  # (requirement #3).
-  dbaccount:
-    enabled: true
-    image:
-      repository: docker.tools.intershop.com/iom/intershophub/iom-dbaccount
-      tag: "1.4.0"
 
 Installation of IOM
 ===================
@@ -169,17 +152,12 @@ Just open a second terminal window and enter the following commands.
   NAME                                                 READY   STATUS              RESTARTS   AGE
   prod-iom-0                                           0/1     Pending             0          1s
 
-  # Little bit later, IOM is in initialization phase, which means the init-container is currently executed.
-  kubectl get pods -n mycompany-iom
-  NAME                                                 READY   STATUS     RESTARTS   AGE
-  prod-iom-0                                           0/1     Init:0/1   0          24s
-
-  # After a few minutes IOM is "Running", but not "READY" yet. The init-container is finished
-  # now and the database is initialized, migrated, configured, IOM- and project-applications are 
-  # deployed into the Wildfly application server.
+  # After a few seconds IOM is "Running", but not "READY" yet. The database will now be filled,
+  # migrated and configured. IOM- and project-applications are then deployed into the Wildfly
+  # application server.
   kubectl get pods -n mycompany-iom
   NAME                                                 READY   STATUS    RESTARTS   AGE
-  prod-iom-0                                           0/1     Running   0          2m43s
+  prod-iom-0                                           0/1     Running   0          43s
 
   # The first iom-pod is "Running" and "READY", which means the IOM System is usable now.
   # The second iom-pod has just started and is not ready yet.
