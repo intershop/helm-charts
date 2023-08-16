@@ -47,13 +47,14 @@ tests:
       - ../values.yaml
     set:
       newrelic.enabled: true
+      operationalContext.environmentName: int_01
     template: templates/config-newrelic-yaml-cm.yaml
     asserts:
       - isKind:
           of: ConfigMap
       - matchRegex:
           path: data["newrelic.yml"]
-          pattern: ".*(app_name : \"n_a-prd-icm-standalone\").*"
+          pattern: ".*(app_name : \"n_a-int_01-icm-standalone\").*"
 
   - it: newrelic custom app_name 
     release:

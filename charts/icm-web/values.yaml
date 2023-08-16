@@ -10,16 +10,16 @@ nodeSelector: {}
 
 # operational context (~= environment) this icm is running in
 operationalContext:
-  #   id of the customer e.g. edexx
-  # customerId: 
-  #   type of the environment (one of {int,uat,prd}, default=prd)
-  # environmentType: prd
-  #   name of the environment (environment-type + some sort of id, e.g. int-01)
-  # environmentName: int0
-  #   type of the application (default=icm)
-  # applicationType: icm
-  #   if this is a staging environment define the system type (one of {standalone,live,edit}, default=standalone)
-  # stagingType: standalone
+  #   id of the customer e.g. xxxxx
+  # customerId: <customerId>
+  # type of the environment (one of {int,uat,prd}, default=prd)
+  environmentType: prd
+  # name of the environment (environment-type + some sort of id, e.g. int-01, default=<environmentType>)
+  environmentName: prd
+  # type of the application (default=icm)
+  applicationType: icm
+  # if this is a staging environment define the system type (one of {standalone,live,edit}, default=standalone)
+  stagingType: standalone
 
 webadapter:
   image:

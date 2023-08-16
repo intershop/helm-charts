@@ -40,7 +40,7 @@ Renders the operational context name
     {{- if eq .Values.replication.role "source" -}}
       {{- $_ := set .Values.operationalContext "stagingType" "edit" -}}
     {{- else -}}
-      {{- $_ := set .Values.operationalContext "stagingType" "life" -}}
+      {{- $_ := set .Values.operationalContext "stagingType" "live" -}}
     {{- end -}}
   {{- end -}}
   {{- printf "%s-%s-%s-%s" $customerId $environmentName $applicationType .Values.operationalContext.stagingType -}}
