@@ -74,8 +74,8 @@ newrelic:
   # enable or disable the New Relic Java agent to monitor the icm-as JVM
   # https://docs.newrelic.com/docs/kubernetes-pixie/kubernetes-integration/advanced-configuration/link-apm-applications-kubernetes/
   enabled: false
-  # application name (~= environment name): calucated from operationalContext section, set to override
-  #app_name: "icm"
+  #   application name (~= environment name): calucated from operationalContext section, set to override
+  # app_name: "icm"
   license_key: "secret"
 
 nameOverride: ""
@@ -88,7 +88,7 @@ fullnameOverride: ""
 # operational context (~= environment) this icm is running in
 operationalContext:
   #   id of the customer e.g. edexx
-  # customerId: 
+  # customerId:
   #   type of the environment (one of {int,uat,prd}, default=prd)
   # environmentType: prd
   #   name of the environment (environment-type + some sort of id, e.g. int-01)
