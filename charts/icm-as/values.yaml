@@ -87,14 +87,14 @@ fullnameOverride: ""
 
 # operational context (~= environment) this icm is running in
 operationalContext:
-  # id of the customer e.g. edexx
-  #customerId: 
-  # type of the environment (one of {int,uat,prd}, default=prd)
-  #environmentType: prd
-  # name of the environment (environment-type + some sort of id, e.g. int-01)
-  #environmentName: int0
-  # type of the application (default=icm)
-  #applicationType: icm
+  #   id of the customer e.g. edexx
+  # customerId: 
+  #   type of the environment (one of {int,uat,prd}, default=prd)
+  # environmentType: prd
+  #   name of the environment (environment-type + some sort of id, e.g. int-01)
+  # environmentName: int0
+  #   type of the application (default=icm)
+  # applicationType: icm
 
 # provide custom cluster config from "icm-as.fullname"-system-conf-cluster configmap
 provideCustomConfig: {}
