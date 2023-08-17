@@ -93,7 +93,7 @@ NGINX, the measures are different.
 *dbaccount.resetData* was replaced by *oms.db.resetData*
 ========================================================
 
-Parameter *dbaccout.resetData* was replaced by *oms.db.resetData*. For a limited period of time (until next major release of IOM
+Parameter *dbaccount.resetData* was replaced by *oms.db.resetData*. For a limited period of time (until next major release of IOM
 Helm charts), the old parameter *dbaccount.resetData* will still be supported.
 Usage of new parameter *oms.db.resetData* requires IOM version 4.8.0 or newer.
 
