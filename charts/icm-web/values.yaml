@@ -114,8 +114,36 @@ persistence:
         - cache=strict
         - actimeo=30
     azurefiles:
-      shareName: icm-as-share
-      secretName: icm-as-share-secret
+      shareName: icm-web-pc-share
+      secretName: icm-web-pc-secret
+    nfs:
+      server: <ipaddress or hostname>
+      path: <server folder>
+    local:
+      path: <local folder>
+  logs:
+    size: 10Gi
+    # type cluster | nfs | azurefiles | existingClaim | local | emptyDir
+    type: emptyDir
+    existingClaim: claimName
+    cluster:
+      storageClass:
+        create: true
+        # if create == false an exiting class could be set
+        # if empty value is set the default storage class is used
+        # existingClass: ""
+        skuName: Standard_LRS
+        mountOptions:
+        - uid=150
+        - gid=150
+        - dir_mode=0777
+        - file_mode=0777
+        - mfsymlinks
+        - cache=strict
+        - actimeo=30
+    azurefiles:
+      shareName: icm-web-logs-share
+      secretName: icm-web-logs-secret
     nfs:
       server: <ipaddress or hostname>
       path: <server folder>

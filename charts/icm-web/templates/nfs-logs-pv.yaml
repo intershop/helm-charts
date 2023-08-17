@@ -1,0 +1,17 @@
+{{- if eq .Values.persistence.logs.type "nfs" -}}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "icm-web.fullname" . }}-nfs-logs-pv
+  labels:
+    type: nfs
+{{ include "icm-web.labels" . | indent 4 }}
+spec:
+  capacity:
+    storage: {{ .Values.persistence.logs.size }}
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: {{ .Values.persistence.logs.nfs.server | quote }}
+    path: {{ .Values.persistence.logs.nfs.path | quote }}
+{{- end -}}
