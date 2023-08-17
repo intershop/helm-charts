@@ -10,5 +10,5 @@ data:
   newrelic.yml:  |-
     common: &default_settings
       license_key : "{{ .Values.newrelic.license_key }}"
-      app_name : "{{ .Values.newrelic.app_name }}"
+      app_name : "{{ .Values.newrelic.app_name | default (include "icm-as.operationalContextName" .) }}"
 {{- end -}}
