@@ -20,7 +20,6 @@ tests:
   - it: should render the specified config if one is present
     template: templates/redis-client-config-cm.yaml
     set:
-      webLayer.enabled: true
       webLayer.redis.enabled: true
       webLayer.redis.config.customConfig.foo: bar
     asserts:
@@ -30,7 +29,6 @@ tests:
   - it: should attach volumes if enabled
     template: templates/as-deployment.yaml
     set:
-      webLayer.enabled: true
       webLayer.redis.enabled: true
     asserts:
       - contains:
@@ -51,3 +49,21 @@ tests:
           content:
             name: INTERSHOP_PAGECACHE_REDIS_CONFIG
             value: file:/intershop/redis-client-config/redis-client-config.yaml
+  - it: redis client should be disabled by default
+    template: templates/as-deployment.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_REDIS_ENABLED
+            value: "true"
+  - it: should set redis env variables for AS
+    template: templates/as-deployment.yaml
+    set:
+      webLayer.redis.enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_REDIS_ENABLED
+            value: "true"

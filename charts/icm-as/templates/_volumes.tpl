@@ -25,7 +25,7 @@ volumes:
   configMap:
     name: {{ template "icm-as.fullname" . }}-replication-clusters-xml
 {{- end }}
-{{- if and (.Values.webLayer.enabled) (.Values.webLayer.redis.enabled )}}
+{{- if .Values.webLayer.redis.enabled }}
 - name: redis-client-config-volume
   configMap:
     name: {{ template "icm-as.fullname" . }}-redis-client-config-yaml

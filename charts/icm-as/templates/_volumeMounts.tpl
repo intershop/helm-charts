@@ -27,7 +27,7 @@ volumeMounts:
   readOnly: true
   subPath: replication-clusters.xml
 {{- end }}
-{{- if and (.Values.webLayer.enabled) (.Values.webLayer.redis.enabled )}}
+{{- if .Values.webLayer.redis.enabled }}
 - mountPath: /intershop/redis-client-config/redis-client-config.yaml
   name: redis-client-config-volume
   readOnly: true

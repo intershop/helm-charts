@@ -310,7 +310,7 @@ ingress:
 webLayer:
   enabled: false
   redis:
-    enabled: true
+    enabled: false
     # Redisson client yaml config
     config: null
 
