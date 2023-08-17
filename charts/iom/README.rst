@@ -37,8 +37,8 @@ information, please consult the reference documentation of `Helm parameters of I
    |Helm / IOM   |3.5  |3.6  |3.7  |4.0  |4.1  |4.2  |4.3-4.8|
    |             |     |     |     |     |     |     |       |
    +=============+=====+=====+=====+=====+=====+=====+=======+
-   |**3.0**      |[1]_ |[2]_ |[3]_ |[3]_ |[3]_ |[3]_ |       |
-   |             |[3]_ |[3]_ |     |     |     |     |       |
+   |**3.0**      |x    |x    |x    |[3]_ |[3]_ |[3]_ |       |
+   |             |     |     |     |     |     |     |       |
    +-------------+-----+-----+-----+-----+-----+-----+-------+
    |**2.3**      |[1]_ |[2]_ |[3]_ |[3]_ |[3]_ |[3]_ |       |
    |             |[3]_ |[3]_ |     |     |     |     |       |
@@ -93,12 +93,21 @@ NGINX, the measures are different.
 *dbaccount.resetData* was replaced by *oms.db.resetData*
 ========================================================
 
-Parameter *dbaccout.resetData* was replaced by *oms.db.resetData*. For a limited period of time (until release of IOM
-Helm charts v.3.1.0), the old parameter *dbaccount.resetData* will still be supported.
+Parameter *dbaccount.resetData* was replaced by *oms.db.resetData*. For a limited period of time (until next major release of IOM
+Helm charts), the old parameter *dbaccount.resetData* will still be supported.
 Usage of new parameter *oms.db.resetData* requires IOM version 4.8.0 or newer.
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
+
+-------------
+Removal Notes
+-------------
           
+IOM prior version 4 is not supported any longer
+===============================================
+
+IOM Helm charts of version 3.0.0 are only supporting IOM 4 and newer.
+
 =============
 Version 2.3.0
 =============

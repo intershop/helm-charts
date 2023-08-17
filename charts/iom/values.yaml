@@ -67,18 +67,6 @@ dbaccount:
     pullPolicy: IfNotPresent
   resources: {}
 
-config:
-  enabled: false
-  image:
-    repository:
-    tag:
-    pullPolicy: IfNotPresent
-  resources: {}
-  # Allow skipping of initialization steps
-  skipProcedures: false
-  skipMigration:  false
-  skipConfig:     false
-
 # General postgres settings, required to connect to postgres server
 # If postgres sub-chart is enabled, these settings are ignored by all other
 # components, including the dbaccount job. Instead, the settings defined
@@ -140,8 +128,8 @@ oms:
     userSecretKeyRef:   {}
     passwd:             OmsDB
     passwdSecretKeyRef: {}
-    # Defaults to a combination of pg.host and pg.port, which are used by the config-container.
-    # Can be overwritten to enable failover of the app-container
+    # hostlist defaults to a combination of pg.host and pg.port.
+    # Can be overwritten to enable failover.
     hostlist:
     connectionMonitor:
       enabled:          false
