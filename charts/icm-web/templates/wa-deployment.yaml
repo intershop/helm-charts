@@ -85,6 +85,30 @@ spec:
         persistentVolumeClaim:
           claimName: "{{ template "icm-web.fullname" . }}-cluster-pagecache-pvc"
         {{- end }}
+      - name: logs-volume
+        {{- if eq .Values.persistence.logs.type "existingClaim" }}
+        persistentVolumeClaim:
+          claimName: "{{ .Values.persistence.logs.existingClaim }}"
+        {{- else if eq .Values.persistence.logs.type "azurefiles" }}
+        csi:
+          driver: file.csi.azure.com
+          readOnly: false
+          volumeAttributes:
+            secretName: {{ .Values.persistence.logs.azurefiles.secretName }}
+            shareName: {{ .Values.persistence.logs.azurefiles.shareName }}
+            mountOptions: "uid={{ .Values.podSecurityContext.runAsUser }},gid={{ .Values.podSecurityContext.runAsGroup }}"
+        {{- else if eq .Values.persistence.logs.type "local" }}
+        persistentVolumeClaim:
+          claimName: "{{ template "icm-web.fullname" . }}-local-logs-pvc"
+        {{- else if eq .Values.persistence.logs.type "nfs" }}
+        persistentVolumeClaim:
+          claimName: "{{ template "icm-web.fullname" . }}-nfs-logs-pvc"
+        {{- else if eq .Values.persistence.logs.type "emptyDir" }}
+        emptyDir: {}
+        {{- else if eq .Values.persistence.logs.type "cluster" }}
+        persistentVolumeClaim:
+          claimName: "{{ template "icm-web.fullname" . }}-cluster-logs-pvc"
+        {{- end }}
         {{- if .Values.persistence.customdata.enabled }}
       - name: custom-data-volume
         persistentVolumeClaim:
@@ -134,6 +158,8 @@ spec:
           {{- end }}
           - name: pagecache-volume
             mountPath: /intershop/pagecache
+          - name: logs-volume
+            mountPath: /intershop/logs
           {{- if .Values.persistence.customdata.enabled }}
           - name: custom-data-volume
             mountPath: {{ .Values.persistence.customdata.mountPoint }}
