@@ -1,9 +1,12 @@
 {{/* vim: set filetype=mustache: */}}
+
 {{/*
 Creates the environment section
 */}}
 {{- define "icm-as.env" -}}
 env:
+- name: ENVIRONMENT
+  value: "{{ include "icm-as.environmentName" . }}"
 {{- if not (hasKey .Values.environment "SERVER_NAME") }}
 - name: SERVER_NAME
   value: "{{ .Values.serverName }}"

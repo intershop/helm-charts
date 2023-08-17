@@ -30,10 +30,46 @@ tests:
     set:
       newrelic.enabled: true
       newrelic.license_key: "secret-license-test"
-    template: config-newrelic-yaml-cm.yaml
+    template: templates/config-newrelic-yaml-cm.yaml
     asserts:
       - isKind:
           of: ConfigMap
       - matchRegex:
           path: data["newrelic.yml"]
           pattern: .*(secret-license-test).*
+
+  - it: newrelic app_name from operationalContext (default values)
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      newrelic.enabled: true
+      operationalContext.environmentName: int_01
+    template: templates/config-newrelic-yaml-cm.yaml
+    asserts:
+      - isKind:
+          of: ConfigMap
+      - matchRegex:
+          path: data["newrelic.yml"]
+          pattern: ".*(app_name : \"n_a-int_01-icm-standalone\").*"
+
+  - it: newrelic custom app_name 
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      newrelic.enabled: true
+      newrelic.app_name: icm
+    template: templates/config-newrelic-yaml-cm.yaml
+    asserts:
+      - isKind:
+          of: ConfigMap
+      - matchRegex:
+          path: data["newrelic.yml"]
+          pattern: ".*(app_name : \"icm\").*"

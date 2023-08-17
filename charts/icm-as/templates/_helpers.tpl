@@ -36,10 +36,10 @@ Common labels
 */}}
 {{- define "icm-as.labels" -}}
 helm.sh/chart: {{ include "icm-as.chart" . }}
+environment-name: {{ include "icm-as.environmentName" . }}
+operational-context: {{ include "icm-as.operationalContextName" . }}
 {{ include "icm-as.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
