@@ -484,11 +484,6 @@ spec:
               value: 'false'
               {{- end }}
             {{- end }}
-            #
-            # other settings
-            #
-            - name: DB_READY_TIMEOUT
-              value: '300'
             {{- if .Values.jboss }}
             #
             # jboss settings
