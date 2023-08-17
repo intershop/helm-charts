@@ -1,0 +1,22 @@
+{{- if eq .Values.persistence.logs.type "nfs" -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "icm-web.fullname" . }}-nfs-logs-pvc
+  annotations:
+    # avoid deleting with helm update
+    "helm.sh/resource-policy": keep
+  labels:
+{{ include "icm-web.labels" . | indent 4 }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  volumeName: {{ include "icm-web.fullname" . }}-nfs-logs-pv
+  resources:
+    requests:
+      storage: {{ .Values.persistence.logs.size }}
+  selector:
+    matchLabels:
+      type: nfs
+{{- end -}}

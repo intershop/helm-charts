@@ -1,0 +1,17 @@
+{{- if eq .Values.persistence.logs.type "local" -}}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "icm-web.fullname" . }}-local-logs-pv
+  labels:
+    type: local
+spec:
+  storageClassName: standard
+  capacity:
+    storage: {{ .Values.persistence.logs.size }}
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Delete
+  hostPath:
+    path: "{{ .Values.persistence.logs.local.path }}"
+{{- end -}}
