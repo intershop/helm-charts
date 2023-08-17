@@ -20,6 +20,27 @@ tests:
           value: icm-as
       #metadata.labels
       - equal:
+          path: metadata.labels["helm.sh/chart"]
+          value: icm-as-0.8.15
+      - equal:
+          path: metadata.labels.environment-name
+          value: prd
+      - equal:
+          path: metadata.labels.operational-context
+          value: n_a-prd-icm-standalone
+      - equal:
+          path: metadata.labels["app.kubernetes.io/name"]
+          value: icm-as
+      - equal:
+          path: metadata.labels["app.kubernetes.io/instance"]
+          value: icm-as
+      - equal:
+          path: metadata.labels["app.kubernetes.io/version"]
+          value: "11.0.1"
+      - equal:
+          path: metadata.labels["app.kubernetes.io/managed-by"]
+          value: Helm
+      - equal:
           path: metadata.labels.app
           value: icm-as
       - equal:
@@ -47,6 +68,11 @@ tests:
           path: spec.template.spec.containers[0].imagePullPolicy
           value: IfNotPresent
       #spec.template.spec.containers[0].env
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ENVIRONMENT
+            value: "prd"
       - contains:
           path: spec.template.spec.containers[0].env
           content:
