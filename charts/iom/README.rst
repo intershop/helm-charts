@@ -26,8 +26,8 @@ Dependency Information
 For the best compatibility between IOM Helm Charts and IOM, please always use the newest version of IOM Helm Charts,
 regardless of the IOM version you are currently using. Therefore, update IOM Helm Charts as often as possible.
 
-The current version of Helm Charts is backward compatible with all versions of IOM since 3.5. But only the newest
-IOM version, which is 4.3.0 at the time of writing, supports all features that the Helm Charts are offering. For more
+The current version of Helm Charts is backward compatible with all versions of IOM since 4.0. But only the newest
+IOM version, which is 4.8.0 at the time of writing, supports all features that the Helm Charts are offering. For more
 information, please consult the reference documentation of `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
 ..
