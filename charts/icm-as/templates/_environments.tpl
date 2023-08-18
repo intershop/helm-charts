@@ -35,7 +35,11 @@ env:
 {{- end }}
 {{- if .Values.newrelic.enabled }}
 - name: ENABLE_NEWRELIC
+{{- if .Values.newrelic.apm.enabled }}
   value: "true"
+{{- else }}
+  value: "false"
+{{- end }}
 {{- end }}
 {{- if .Values.mssql.enabled }}
 - name: INTERSHOP_DATABASETYPE
