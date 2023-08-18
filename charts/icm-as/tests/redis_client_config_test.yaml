@@ -34,7 +34,7 @@ tests:
       - contains:
           path: spec.template.spec.containers[0].volumeMounts
           content:
-            mountPath: /intershop/redis-client-config/redis-client-config.yaml
+            mountPath: /intershop/redis-conf/redis-client-config.yaml
             name: redis-client-config-volume
             readOnly: true
             subPath: redis-client-config.yaml
@@ -44,11 +44,6 @@ tests:
             configMap:
               name: RELEASE-NAME-icm-as-redis-client-config-yaml
             name: redis-client-config-volume
-      - contains:
-          path: spec.template.spec.containers[0].env
-          content:
-            name: INTERSHOP_PAGECACHE_REDIS_CONFIG
-            value: file:/intershop/redis-client-config/redis-client-config.yaml
   - it: redis client should be disabled by default
     template: templates/as-deployment.yaml
     asserts:
