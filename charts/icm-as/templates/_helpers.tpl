@@ -102,8 +102,16 @@ resources: {{- toYaml .Values.resources | nindent 2 }}
 Pod-annotations
 */}}
 {{- define "icm-as.podData" -}}
+annotations:
+  {{- if .Values.newrelic.metrics.enabled }}
+  prometheus.io/scrape: 'true'
+  {{- else }}
+  prometheus.io/scrape: 'false'
+  {{- end }}
+  prometheus.io/port: '7744'
+  prometheus.io/path: '/metrics'
 {{- if .Values.podAnnotations -}}
-annotations: {{- toYaml .Values.podAnnotations | nindent 2 }}
+{{- toYaml .Values.podAnnotations | nindent 2 }}
 {{- end }}
 {{- end -}}
 
