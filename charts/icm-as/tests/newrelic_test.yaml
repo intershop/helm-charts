@@ -3,7 +3,7 @@ templates:
   - templates/as-deployment.yaml
   - templates/config-newrelic-yaml-cm.yaml
 tests:
-  - it: newrelic is enabled
+  - it: newrelic is enabled so apm and metrics are enabled
     release:
       name: icm-as
     chart:
@@ -19,7 +19,58 @@ tests:
           content:
             name: ENABLE_NEWRELIC
             value: "true"
-
+      - equal:
+          path: spec.template.metadata.annotations
+          value:
+            prometheus.io/path: /metrics
+            prometheus.io/port: "7744"
+            prometheus.io/scrape: "true"
+  - it: newrelic is enabled apm is disabled
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      newrelic.enabled: true
+      newrelic.apm.enabled: false
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ENABLE_NEWRELIC
+            value: "false"
+      - equal:
+          path: spec.template.metadata.annotations
+          value:
+            prometheus.io/path: /metrics
+            prometheus.io/port: "7744"
+            prometheus.io/scrape: "true"
+  - it: newrelic is enabled metrics are disabled
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      newrelic.enabled: true
+      newrelic.metrics.enabled: false
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ENABLE_NEWRELIC
+            value: "true"
+      - equal:
+          path: spec.template.metadata.annotations
+          value:
+            prometheus.io/path: /metrics
+            prometheus.io/port: "7744"
+            prometheus.io/scrape: "false"
   - it: newrelic license
     release:
       name: icm-as
