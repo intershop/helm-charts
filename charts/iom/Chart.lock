@@ -1,12 +1,12 @@
 dependencies:
 - name: mailhog
   repository: https://codecentric.github.io/helm-charts
-  version: 5.0.6
+  version: 5.2.3
 - name: iom-tests
   repository: ""
   version: 1.0.0
 - name: postgres
   repository: ""
   version: 1.0.0
-digest: sha256:5f38b61305c1a7d62154592a1ca984a8376cef6d702b1ad8d900f0e1d511d5fc
-generated: "2022-11-01T12:56:52.495918+01:00"
+digest: sha256:47a510927405050ea558fec3267046a7189601ec120575dffcfac76af59aa63a
+generated: "2023-08-18T12:41:42.429055+02:00"
