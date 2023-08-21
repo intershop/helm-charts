@@ -23,7 +23,7 @@ The table below only lists parameters that have to be changed for different oper
 |                                        |intended to be used for any kind of serious IOM installation. It should only be used for demo-,|                                              |
 |                                        |CI- or similar types of setups.                                                                |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
-|mailhog.probes.enabled                  |This parameter allows to switch on/off liveness and readiness probes of Mailhog. These probes  |true                                          |
+|mailhog.probes.enabled                  |This parameter allows to switch on/off liveness and readiness probes of Mailhog. These probes  |false                                         |
 |                                        |are producing a lot of messages, which can be avoided if the probes are disabled.              |                                              |
 |                                        |                                                                                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+

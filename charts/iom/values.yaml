@@ -359,7 +359,7 @@ postgres:
 mailhog:
   enabled: false
   probes:
-    enabled: true
+    enabled: false
   ingress:
     enabled: true
     ingressClassName: nginx
