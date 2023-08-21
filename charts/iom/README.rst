@@ -72,6 +72,15 @@ information, please consult the reference documentation of `Helm parameters of I
 Version 3.0.0
 =============
 
+------------
+New Features
+------------
+
+Update of mailhog sub-chart
+===========================
+
+Mailhog sub-chart was updated to version 5.2.3.
+
 ---------------
 Migration Notes
 ---------------
@@ -98,6 +107,12 @@ NGINX, the measures are different.
    configuration has then to be applied in the Helm values.
 2. Simple demo and test installations have now to use a separately installed Ingress controller. Preferred is an NGINX
    Ingress controller, since the required configuration for session stickiness is already provided by IOM Helm Charts.
+
+Default value of *mailhog.probes.enabled* has changed
+=====================================================
+
+The default value of *mailhog.probes.enabled* was changed from *true* to *false*, meaning that there are no probes executed
+unless requested. This new setting reduces amount of log-messages of mailhog even if default values are used.
 
 *dbaccount.resetData* was replaced by *oms.db.resetData*
 ========================================================
