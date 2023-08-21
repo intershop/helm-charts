@@ -3,6 +3,9 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: {{ .Chart.Name }}
+  labels:
+    {{- include "iom.labels" . | nindent 4 }}
+    {{- include "ish.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:

@@ -18,6 +18,7 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "iom.labels" . | nindent 4 }}
+    {{- include "ish.labels" . | nindent 4 }}
   annotations:
   {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
