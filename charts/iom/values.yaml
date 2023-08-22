@@ -379,3 +379,6 @@ mailhog:
 
 iom-tests:
   enabled: false
+
+customerId: ${customer_id}
+

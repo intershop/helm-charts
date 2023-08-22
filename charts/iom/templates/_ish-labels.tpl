@@ -1,6 +1,6 @@
 {{- define "ish.labels" -}}
-  {{- if .Values.customerId -}}
+  {{- if and .Values.customerId (not (hasPrefix "$" .Values.customerId)) -}}
 customer-id: {{ .Values.customerId }}
-  {{- end -}}
+  {{- end }}
 application-type: iom
 {{- end }}
