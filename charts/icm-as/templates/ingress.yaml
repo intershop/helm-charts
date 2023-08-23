@@ -5,22 +5,22 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    app.kubernetes.io/name:  {{ $fullName }}
+    app.kubernetes.io/name: {{ $fullName }}
     helm.sh/chart: {{ include "icm-as.chart" . }}
-    app.kubernetes.io/instance:  {{ $fullName }}
+    app.kubernetes.io/instance: {{ $fullName }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- with .Values.ingress.annotations }}
   annotations:
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
-      proxy_set_header X-Forwarded-Proto $scheme;
-      proxy_set_header X-Forwarded-Host  $http_host;
-      proxy_set_header X-Forwarded-Port  $server_port;
-{{ toYaml . | indent 4 }}
-{{- end }}
+    nginx.ingress.kubernetes.io/affinity: cookie
+    nginx.ingress.kubernetes.io/affinity-mode: persistent
+    nginx.ingress.kubernetes.io/session-cookie-name: stid
+    {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
 spec:
   {{- if .Values.ingress.className }}
   ingressClassName: {{ .Values.ingress.className }}
+  {{- else }}
+  ingressClassName: {{ $fullName }}-ingress
   {{- end }}
   {{- if .Values.ingress.tls }}
   tls:
@@ -40,7 +40,7 @@ spec:
           {{- range .paths }}
           - path: {{ .path }}
             pathType: {{ .pathType }}
-            backend: 
+            backend:
               service:
                 name: {{ $fullName }}
                 port:
