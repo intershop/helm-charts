@@ -10,3 +10,11 @@ dependencies:
     version: 5.2.0
     repository: https://codecentric.github.io/helm-charts
     condition: mailhog.enabled
+  - name: redis
+    version: 17.15.2
+    repository: https://charts.bitnami.com/bitnami
+    condition: redis.enabled
+  - name: redis-cluster
+    version: 8.6.12
+    repository: https://charts.bitnami.com/bitnami
+    condition: redis-cluster.enabled
