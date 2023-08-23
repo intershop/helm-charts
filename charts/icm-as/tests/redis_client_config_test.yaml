@@ -1,0 +1,64 @@
+suite: tests redis client configuration
+templates:
+  - templates/redis-client-config-cm.yaml
+  - templates/as-deployment.yaml
+tests:
+  - it: should not render config by default
+    template: templates/redis-client-config-cm.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: should render default single server config if none is explicitly specified
+    template: templates/redis-client-config-cm.yaml
+    set:
+      webLayer.enabled: true
+      webLayer.redis.enabled: true
+    asserts:
+      - matchRegex:
+          path: data["redis-client-config.yaml"]
+          pattern: singleServerConfig:.*
+  - it: should render the specified config if one is present
+    template: templates/redis-client-config-cm.yaml
+    set:
+      webLayer.redis.enabled: true
+      webLayer.redis.config.customConfig.foo: bar
+    asserts:
+    - matchRegex:
+        path: data["redis-client-config.yaml"]
+        pattern: "customConfig:\n\ \ foo:\ bar"
+  - it: should attach volumes if enabled
+    template: templates/as-deployment.yaml
+    set:
+      webLayer.redis.enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            mountPath: /intershop/redis-conf/redis-client-config.yaml
+            name: redis-client-config-volume
+            readOnly: true
+            subPath: redis-client-config.yaml
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            configMap:
+              name: RELEASE-NAME-icm-as-redis-client-config-yaml
+            name: redis-client-config-volume
+  - it: redis client should be disabled by default
+    template: templates/as-deployment.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_REDIS_ENABLED
+            value: "true"
+  - it: should set redis env variables for AS
+    template: templates/as-deployment.yaml
+    set:
+      webLayer.redis.enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_REDIS_ENABLED
+            value: "true"
