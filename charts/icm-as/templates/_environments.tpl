@@ -78,4 +78,8 @@ env:
 - name: INTERSHOP_WEBADAPTER_ENABLED
   value: "false"
 {{- end }}
+{{- if .Values.webLayer.redis.enabled }}
+- name: INTERSHOP_PAGECACHE_REDIS_ENABLED
+  value: "true"
+{{- end }}
 {{- end -}}
