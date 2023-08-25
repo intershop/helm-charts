@@ -38,6 +38,8 @@ helm.sh/chart: {{ include "iom-tests.chart" . }}
 {{ include "iom-tests.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+app.kubernetes.io/component: tests
+app.kubernetes.io/part-of: iom
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}

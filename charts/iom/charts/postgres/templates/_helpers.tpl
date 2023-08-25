@@ -38,6 +38,8 @@ helm.sh/chart: {{ include "postgres.chart" . }}
 {{ include "postgres.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+app.kubernetes.io/component: database
+app.kubernetes.io/part-of: iom
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}

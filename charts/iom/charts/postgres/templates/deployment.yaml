@@ -4,6 +4,7 @@ metadata:
   name: {{ include "postgres.fullname" . }}
   labels:
     {{- include "postgres.labels" . | nindent 4 }}
+    {{- include "ish.labels" . | nindent 4 }}
 spec:
   # number of replicas is fixed! We cannot handle a postgres cluster
   # this way
@@ -23,6 +24,7 @@ spec:
       {{- end }}
       labels:
         {{- include "postgres.selectorLabels" . | nindent 8 }}
+        {{- include "ish.labels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

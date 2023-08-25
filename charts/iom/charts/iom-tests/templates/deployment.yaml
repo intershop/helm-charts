@@ -4,6 +4,7 @@ metadata:
   name: {{ include "iom-tests.fullname" . }}
   labels:
     {{- include "iom-tests.labels" . | nindent 4 }}
+    {{- include "ish.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -19,6 +20,7 @@ spec:
       {{- end }}
       labels:
         {{- include "iom-tests.selectorLabels" . | nindent 8 }}
+        {{- include "ish.labels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
