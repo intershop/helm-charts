@@ -1,4 +1,4 @@
-{{- if and .Values.mailhog.enabled (not .Values.mailhog.probes.enabled) -}}
+{{- if .Values.mailhog.enabled }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -62,6 +62,7 @@ spec:
       restartPolicy: Never
       serviceAccountName: {{ .Release.Name }}-mailhog-patch
       containers:
+      {{- if not .Values.mailhog.probes.enabled }}        
       - name: patch-mailhog-probes
         image: "bitnami/kubectl"
         args: 
@@ -72,4 +73,83 @@ spec:
         - --type=json
         - -p
         - '[{"op":"remove","path":"/spec/template/spec/containers/0/livenessProbe"},{"op":"remove","path":"/spec/template/spec/containers/0/readinessProbe"}]'
+      {{- end }}
+      - name: patch-mailhog-deployment-labels
+        image: "bitnami/kubectl"
+        args:
+        - label
+        - --overwrite
+        - deployment
+        - {{ .Release.Name }}-mailhog
+        - --namespace={{ .Release.Namespace }}
+        - app.kubernetes.io/component=mailserver
+        - app.kubernetes.io/part-of={{ .Chart.Name }}
+        - application-type=iom
+        {{- if and .Values.customerId (not (hasPrefix "$" .Values.customerId)) -}}
+        - customer-id={{ .Values.customerId }}
+        {{- end }}
+      - name: patch-mailhog-service-labels
+        image: "bitnami/kubectl"
+        args:
+        - label
+        - --overwrite
+        - service
+        - {{ .Release.Name }}-mailhog
+        - --namespace={{ .Release.Namespace }}
+        - app.kubernetes.io/component=mailserver
+        - app.kubernetes.io/part-of={{ .Chart.Name }}
+        - application-type=iom
+        {{- if and .Values.customerId (not (hasPrefix "$" .Values.customerId)) -}}
+        - customer-id={{ .Values.customerId }}
+        {{- end }}
+      {{- if .Values.mailhog.ingress }}
+      - name: patch-mailhog-ingress-labels
+        image: "bitnami/kubectl"
+        args:
+        - label
+        - --overwrite
+        - ingress
+        - {{ .Release.Name }}-mailhog
+        - --namespace={{ .Release.Namespace }}
+        - app.kubernetes.io/component=mailserver
+        - app.kubernetes.io/part-of={{ .Chart.Name }}
+        - application-type=iom
+        {{- if and .Values.customerId (not (hasPrefix "$" .Values.customerId)) -}}
+        - customer-id={{ .Values.customerId }}
+        {{- end }}
+      {{- end }}
+      {{- if .Values.mailhog.serviceAccount.create }}
+      - name: patch-mailhog-serviceaccount-labels
+        image: "bitnami/kubectl"
+        args:
+        - label
+        - --overwrite
+        - sericeaccount
+        - {{ .Release.Name }}-mailhog
+        - --namespace={{ .Release.Namespace }}
+        - app.kubernetes.io/component=mailserver
+        - app.kubernetes.io/part-of={{ .Chart.Name }}
+        - application-type=iom
+        {{- if and .Values.customerId (not (hasPrefix "$" .Values.customerId)) -}}
+        - customer-id={{ .Values.customerId }}
+        {{- end }}
+      {{- end }}
+      - name: patch-mailhog-deployment-spec-apptype-label
+        image: "bitnami/kubectl"
+        args:
+        - patch
+        - deployment
+        - {{ .Release.Name }}-mailhog
+        - --namespace={{ .Release.Namespace }}
+        - '{"spec":{"template":{"metadata":{"labels":{"application-type":"iom"}}}}}'
+      {{- if and .Values.customerId (not (hasPrefix "$" .Values.customerId)) }}
+      - name: patch-mailhog-deployment-spec-customerid-label
+        image: "bitnami/kubectl"
+        args:
+        - patch
+        - deployment
+        - {{ .Release.Name }}-mailhog
+        - --namespace={{ .Release.Namespace }}
+        - '{"spec":{"template":{"metadata":{"labels":{"customer-id":"{{ .Values.customerId }}"}}}}}'
+      {{- end }}
 {{- end }}
