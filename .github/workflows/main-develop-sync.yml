@@ -1,8 +1,9 @@
+name: sync develop with main
+# creates both a branch and a PR to sync changes from main back to the develop branches
 on:
   push:
     branches:
     - main
-name: sync develop with main
 jobs:
   sync:
     strategy:
