@@ -4,7 +4,6 @@ metadata:
   name: {{ include "iom-tests.fullname" . }}
   labels:
     {{- include "iom-tests.labels" . | nindent 4 }}
-    {{- include "ish.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:

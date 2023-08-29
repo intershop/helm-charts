@@ -6,7 +6,6 @@ metadata:
   name: {{ include "postgres.fullname" . }}-data
   labels:
     {{- include "postgres.labels" . | nindent 4 }}
-    {{- include "ish.labels" . | nindent 4 }}
 provisioner: docker.io/hostpath
 volumeBindingMode: WaitForFirstConsumer
 ---
@@ -16,7 +15,6 @@ metadata:
   name: {{ include "postgres.fullname" . }}
   labels:
     {{- include "postgres.labels" . | nindent 4 }}
-    {{- include "ish.labels" . | nindent 4 }}
 spec:
   capacity:
     storage: {{ .Values.persistence.storageSize }}
@@ -40,7 +38,6 @@ metadata:
   name: {{ template "postgres.fullname" . }}
   labels:
     {{- include "postgres.labels" . | nindent 4 }}
-    {{- include "ish.labels" . | nindent 4 }}
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}

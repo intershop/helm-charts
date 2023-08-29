@@ -5,7 +5,6 @@ metadata:
   name: {{ .Release.Name }}-iom-patch
   labels:
     {{- include "iom.labels" . | nindent 4 }}
-    {{- include "ish.labels" . | nindent 4 }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -13,7 +12,6 @@ metadata:
   name: {{ .Release.Name }}-iom-patch
   labels:
     {{- include "iom.labels" . | nindent 4 }}
-    {{- include "ish.labels" . | nindent 4 }}
 rules:
 - apiGroups:
   - apps
@@ -29,7 +27,6 @@ metadata:
   name: {{ .Release.Name }}-iom-patch
   labels:
     {{- include "iom.labels" . | nindent 4 }}
-    {{- include "ish.labels" . | nindent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -44,7 +41,6 @@ metadata:
   name: "{{ .Release.Name }}"
   labels:
     {{- include "iom.labels" . | nindent 4 }}
-    {{- include "ish.labels" . | nindent 4 }}
   annotations:
     # This is what defines this resource as a hook. Without this line, the
     # job is considered part of the release.
@@ -57,7 +53,6 @@ spec:
       name: "{{ .Release.Name }}"
       labels:
         {{- include "iom.labels" . | nindent 8 }}
-        {{- include "ish.labels" . | nindent 8 }}
     spec:
       restartPolicy: Never
       serviceAccountName: {{ .Release.Name }}-iom-patch

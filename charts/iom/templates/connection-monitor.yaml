@@ -12,7 +12,6 @@ metadata:
   name: {{ include "iom.fullname" . }}-connection-monitor
   labels:
     {{- include "iom.labels" . | nindent 4 }}
-    {{- include "ish.labels" . | nindent 4 }}
 spec:
   schedule: "{{ .Values.oms.db.connectionMonitor.schedule }}"
   jobTemplate:
@@ -20,7 +19,7 @@ spec:
       template:
         metadata:
           labels:
-            {{- include "ish.labels" . | nindent 12 }}
+            {{- include "iom.labels" . | nindent 12 }}
         spec:
           {{- with .Values.imagePullSecrets }}
           imagePullSecrets:
