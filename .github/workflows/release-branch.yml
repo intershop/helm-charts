@@ -1,0 +1,41 @@
+name: Create Release Branch
+# creates a release branch, creates a PR and bumps all versions as specified
+on:
+  workflow_dispatch:
+    inputs:
+      changes:
+        description: |
+          A string of charts and their required update, e.g. "icm-as:minor icm-web:patch".
+          Dependent charts don't have to be specified and will be bumped automatically.
+          This action cannot be used for the iom charts, since they don't use bump2version.
+        required: true
+        type: string
+
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with: #fetch all commits, not just the last one
+        fetch-depth: 0
+    - name: Bump versions
+      uses: ./.github/template/bump-version
+      with:
+        changes: ${{ inputs.changes }}
+    - name: Create Release Branch & PR
+      id: pr
+      uses: peter-evans/create-pull-request@v5
+      with: # commits all changes and creates the release branch and PR. If one already exists, it is updated.
+        branch: release/${GITHUB_REF#refs/heads/}
+        base: main
+        title: Release ${{ inputs.changes }}
+        commit-message: "chore: bump versions ${{ inputs.changes }} and dependent charts"
+        delete-branch: true
+        labels: automated pr
+    - name: Enable Pull Request Automerge
+      shell: bash
+      run: gh pr merge --squash --auto ${{ steps.pr.outputs.pull-request-number }}
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
