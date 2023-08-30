@@ -39,7 +39,6 @@ helm.sh/chart: {{ include "postgres.chart" . }}
 {{- if or .Chart.AppVersion .Values.image.tag }}
 app.kubernetes.io/version: {{ .Values.image.tag | default (.Chart.AppVersion | quote) }}
 app.kubernetes.io/component: database
-app.kubernetes.io/part-of: iom
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}

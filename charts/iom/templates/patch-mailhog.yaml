@@ -62,7 +62,6 @@ spec:
         - {{ .Release.Name }}-mailhog
         - --namespace={{ .Release.Namespace }}
         - app.kubernetes.io/component=mailserver
-        - app.kubernetes.io/part-of={{ .Chart.Name }}
       - name: patch-mailhog-deployment-spec-component-label
         image: "bitnami/kubectl"
         args:

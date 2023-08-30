@@ -91,5 +91,3 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
-customerId: ${customer_id}
