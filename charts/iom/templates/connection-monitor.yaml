@@ -12,6 +12,7 @@ metadata:
   name: {{ include "iom.fullname" . }}-connection-monitor
   labels:
     {{- include "iom.labels" . | nindent 4 }}
+    app.kubernetes.io/component: connection-monitor
 spec:
   schedule: "{{ .Values.oms.db.connectionMonitor.schedule }}"
   jobTemplate:
@@ -20,6 +21,7 @@ spec:
         metadata:
           labels:
             {{- include "iom.labels" . | nindent 12 }}
+            app.kubernetes.io/component: connection-monitor
         spec:
           {{- with .Values.imagePullSecrets }}
           imagePullSecrets:
