@@ -24,7 +24,8 @@ spec:
           image: "memcached:1.6.21"
           imagePullPolicy: IfNotPresent
           command: ["memcached"]
-          args: ["-vv", "-m", "2900", "-I", "10M"]
+          # add "-vv" for verbose logging
+          args: ["-m", "2900", "-I", "10M"]
           ports:
             - name: http
               containerPort: 11211
