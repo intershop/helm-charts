@@ -4,8 +4,6 @@ kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
   name: {{ include "postgres.fullname" . }}-data
-  labels:
-    {{- include "postgres.labels" . | nindent 4 }}
 provisioner: docker.io/hostpath
 volumeBindingMode: WaitForFirstConsumer
 ---
@@ -13,8 +11,6 @@ kind: PersistentVolume
 apiVersion: v1
 metadata:
   name: {{ include "postgres.fullname" . }}
-  labels:
-    {{- include "postgres.labels" . | nindent 4 }}
 spec:
   capacity:
     storage: {{ .Values.persistence.storageSize }}
@@ -36,8 +32,6 @@ metadata:
     {{ toYaml .Values.persistence.annotations | indent 4 }}
   {{- end }}
   name: {{ template "postgres.fullname" . }}
-  labels:
-    {{- include "postgres.labels" . | nindent 4 }}
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}

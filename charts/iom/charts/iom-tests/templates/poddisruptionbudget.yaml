@@ -3,8 +3,6 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: {{ .Chart.Name }}
-  labels:
-    {{- include "iom-tests.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:

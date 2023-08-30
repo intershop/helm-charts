@@ -4,8 +4,6 @@ kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
   name: {{ include "iom.fullname" . }}-share
-  labels:
-    {{- include "iom.labels" . | nindent 4 }}
 provisioner: docker.io/hostpath
 volumeBindingMode: WaitForFirstConsumer
 ---
@@ -13,8 +11,6 @@ kind: PersistentVolume
 apiVersion: v1
 metadata:
   name: {{ include "iom.fullname" . }}
-  labels:
-    {{- include "iom.labels" . | nindent 4 }}
 spec:
   capacity:
     storage: {{ .Values.persistence.storageSize }}
@@ -41,8 +37,6 @@ metadata:
     "helm.sh/hook": pre-install
   {{- end }}
   name: {{ include "iom.fullname" . }}
-  labels:
-    {{- include "iom.labels" . | nindent 4 }}
 spec:
   accessModes:
     - ReadWriteMany
