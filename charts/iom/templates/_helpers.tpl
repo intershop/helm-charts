@@ -37,7 +37,7 @@ Common labels
 helm.sh/chart: {{ include "iom.chart" . }}
 {{ include "iom.selectorLabels" . }}
 {{- if or .Chart.AppVersion .Values.image.tag }}
-app.kubernetes.io/version: {{ .Values.image.tag | default (.Chart.AppVersion | quote) }}
+app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 app.kubernetes.io/component: app-server
