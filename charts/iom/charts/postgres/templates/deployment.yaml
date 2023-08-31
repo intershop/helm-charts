@@ -23,6 +23,7 @@ spec:
       {{- end }}
       labels:
         {{- include "postgres.selectorLabels" . | nindent 8 }}
+        {{- include "postgres.labels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
