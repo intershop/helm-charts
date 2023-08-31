@@ -32,8 +32,6 @@ metadata:
     {{ toYaml .Values.persistence.annotations | indent 4 }}
   {{- end }}
   name: {{ template "postgres.fullname" . }}
-  labels:
-    {{- include "postgres.labels" . | nindent 4 }}
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}

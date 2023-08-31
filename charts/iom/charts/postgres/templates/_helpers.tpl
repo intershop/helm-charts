@@ -36,8 +36,9 @@ Common labels
 {{- define "postgres.labels" -}}
 helm.sh/chart: {{ include "postgres.chart" . }}
 {{ include "postgres.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- if or .Chart.AppVersion .Values.image.tag }}
+app.kubernetes.io/version: {{  .Values.image.tag | default .Chart.AppVersion | quote }}
+app.kubernetes.io/component: database
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}

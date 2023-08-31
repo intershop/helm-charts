@@ -37,8 +37,6 @@ metadata:
     "helm.sh/hook": pre-install
   {{- end }}
   name: {{ include "iom.fullname" . }}
-  labels:
-    {{- include "iom.labels" . | nindent 4 }}
 spec:
   accessModes:
     - ReadWriteMany
