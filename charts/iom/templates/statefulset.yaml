@@ -21,6 +21,7 @@ spec:
       {{- end }}
       labels:
         {{- include "iom.selectorLabels" . | nindent 8 }}
+        {{- include "iom.labels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
