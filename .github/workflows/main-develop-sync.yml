@@ -1,0 +1,49 @@
+name: sync develop with main
+# creates both a branch and a PR to sync changes from main back to the develop branches
+on:
+  push:
+    branches:
+    - main
+jobs:
+  sync:
+    strategy:
+      fail-fast: false
+      matrix:
+        branch:
+        - icm
+        - iom
+        - pwa
+        - common
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Create integration branch
+      shell: bash
+      run: |
+        INTEGRATE="feature/${{ matrix.branch }}/integrate-main"
+        # delete previous if exists
+        git branch --delete $INTEGRATE || true
+        git branch $INTEGRATE
+        git checkout $INTEGRATE
+        # force push to override a previously existing branch, if it exists
+        git push --force --set-upstream origin $INTEGRATE
+    - name: Create PR if necessary
+      shell: bash
+      run: |
+        SUBJECT="chore: integrate main to develop/${{ matrix.branch }}"
+        BODY="Automated Sync PR"
+        # this may fail if a PR already exists, this is ignored
+        gh pr create --base "develop/${{ matrix.branch }}" --title "$SUBJECT" --body "$BODY" || true
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Enable PR automerge
+      shell: bash
+      run: |
+        gh pr merge --merge --auto
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
