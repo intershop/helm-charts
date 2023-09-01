@@ -95,7 +95,7 @@ oms:
   publicUrl:                       https://localhost
   # Shared secret for JWT creation / validation
   # Has to be at least 32 characters long.
-  # If left empty, a random secret is created automatically.
+  # If jwtSecret and jwtSecretKeyRef are left empty, a random secret is created automatically.
   jwtSecret:                       ""
   jwtSecretKeyRef:                 {}
   archiveOrderMessageLogMinAge:    "90"
