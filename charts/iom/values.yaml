@@ -94,7 +94,9 @@ oms:
   # Used internally by IOM for link generation.
   publicUrl:                       https://localhost
   # Shared secret for JWT creation / validation
-  jwtSecret:                       length_must_be_at_least_32_chars
+  # Has to be at least 32 characters long.
+  # If left empty, a random secret is created automatically.
+  jwtSecret:                       ""
   jwtSecretKeyRef:                 {}
   archiveOrderMessageLogMinAge:    "90"
   deleteOrderMessageLogMinAge:     "180"
