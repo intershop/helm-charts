@@ -335,6 +335,7 @@ webLayer:
 
 sslCertificateRetrieval:
   enabled: false
+  supportV1: false
   # secretName: <explicit-ssl-secret-name>
   keyvault:
     tenantId: <tenant-ID-of-the-KeyVault>
