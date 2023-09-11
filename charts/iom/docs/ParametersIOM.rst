@@ -206,18 +206,19 @@ Parameters of IOM Helm Chart
 |                                        |3.2. HMAC with SHA-2 Functions <https://tools.ietf.org/html/rfc7518#section-3.2>`_.             |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |If left empty AND *oms.jwtSecretKeyRef* is empty too, a secret with random value is created and |                                                         |
-|                                        |used automatically. The automatically created secret is configured to persist also the deletion |                                                         |
-|                                        |of the Helm release.                                                                            |                                                         |
+|                                        |used automatically.                                                                             |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |* Ignored if *oms.jwtSecretKeyRef* is set.                                                      |                                                         |
+|                                        |* Deprecated                                                                                    |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.jwtSecretKeyRef                     |Instead of storing the JWT secret as plain text in the values file, a reference to a key within |                                                         |
 |                                        |a secret can be used. For more information, see `References to entries of Kubernetes            |                                                         |
 |                                        |secrets`_.                                                                                      |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |If left empty AND *oms.jwtSecret* is empty too, a secret with random value is created and used  |                                                         |
-|                                        |automatically. The automatically created secret is configured to persist also the deletion of   |                                                         |
-|                                        |the Helm release.                                                                               |                                                         |
+|                                        |automatically.                                                                                  |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |* Deprecated                                                                                    |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.archiveOrderMessageLogMinAge        |Number of days after which the entries in table "OrderMessageLogDO" should be exported and the  |"90"                                                     |
 |                                        |columns "request" and "response" set to 'archived' in order to reduce the table size.           |                                                         |

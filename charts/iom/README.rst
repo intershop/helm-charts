@@ -141,6 +141,7 @@ have not set *oms.jwtSecret* and *oms.jwtSecretKeyRef*, this automatically creat
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
+
 -----------------
 Deprecation Notes
 -----------------
@@ -150,6 +151,11 @@ Support for *Datadog APM* is deprecated
 
 The Usage of *Datadog APM* (Application Performance Monitoring) is deprecated. The according parameter group *datadogApm*
 will be removed in a future version of IOM Helm Charts.
+
+*oms.jwtSecret* and *oms.jwtSecretKeyRef* are deprecated
+========================================================
+
+Usage of JWT was deprecated by IOM 4.8.0, therefore the according Helm parameters were deprecated too.
 
 -------------
 Removal Notes
