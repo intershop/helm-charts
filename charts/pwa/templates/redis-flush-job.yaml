@@ -1,0 +1,21 @@
+{{- if and (.Values.redis).uri (not (.Values.redis).keepCache) -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "pwa-cache-clear.fullname" . }}-{{ .Release.Revision }}
+spec:
+  template:
+    metadata:
+      name: {{ include "pwa-cache-clear.fullname" . }}-{{ .Release.Revision }}
+      labels:
+        app.kubernetes.io/name: {{ include "pwa-cache-clear.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      completions: 1
+      parallelism: 1
+      containers:
+      - name: {{ include "pwa-cache-clear.name" . }}
+        image: bitnami/redis
+        command: ["redis-cli", "-u", "{{ .Values.redis.uri }}", "flushdb"]
+      restartPolicy: Never
+{{- end -}}
