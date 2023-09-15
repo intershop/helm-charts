@@ -1,3 +1,4 @@
+{{- $nginxMetricsEnabled := tpl $.Values.calculated.metrics.nginx $ -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -58,7 +59,7 @@ spec:
           - name: CACHING_IGNORE_PARAMS_SOURCE
             value: "/config/caching-ignore-params.yaml"
         {{- end }}
-        {{- if .Values.cache.metrics.enabled }}
+        {{- if $nginxMetricsEnabled }}
           - name: PROMETHEUS
             value: "true"
         {{- end }}
@@ -70,7 +71,7 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
-          {{- if .Values.cache.metrics.enabled }}
+          {{- if $nginxMetricsEnabled }}
             - name: metrics
               containerPort: 9113
               protocol: TCP

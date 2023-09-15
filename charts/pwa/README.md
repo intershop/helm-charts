@@ -19,7 +19,7 @@ In addition, the version changes and necessary migration information is provided
 
 | Chart | PWA    | Changes                                                                                                                                                                                                                    | Migration Information                                                                                                                                                                                                                                         |
 | ----- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0.8.0 | 1.0.0  | <ul><li>delay NGINX until PWA SSR is listening</li><li>configurable update strategy</li><li>less verbose prefetch job</li></ul>                                                                                            | <ul><li>configurable `updateStrategy` stays at `RollingUpdate` by default</li></ul>                                                                                                                                                                           |
+| 0.8.0 | 1.0.0  | <ul><li>monitoring support with Prometheus and Grafana (for development and testing)</li><li>delay NGINX until PWA SSR is listening</li><li>configurable update strategy</li><li>less verbose prefetch job</li></ul>                                                                                            | <ul><li>configurable `updateStrategy` stays at `RollingUpdate` by default</li></ul>                                                                                                                                                                           |
 | 0.7.0 | 1.0.0  | <ul><li>Re-enabled support for `multi-channel.yaml` and `caching-ignore-params.yaml` source code fallbacks</li><li>Added additional Ingress for domain whitelisting</li><li>Added labels on deployment and pod levels</li> | Removed deprecated configuration options:<ul><li>`upstream.icm`</li><li>`cache.enabled` - was not optional</li><li>`cache.channels`</li></ul>See [Migration to 0.7.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.7.0.md) |
 | 0.6.0 | 1.0.0  | Support for Prometheus metrics                                                                                                                                                                                             |                                                                                                                                                                                                                                                               |
 | 0.5.0 | 1.0.0  | Added prefetch job that can heat up caches                                                                                                                                                                                 |                                                                                                                                                                                                                                                               |
@@ -255,6 +255,33 @@ spec:
     # Helm Values - to be adapted by the dev team
   values:
 ```
+
+## Monitoring
+
+The PWA Helm chart supports monitoring via Prometheus and Grafana. To enable it, add the following configuration to your values file:
+
+```yaml
+monitoring:
+  enabled: true
+```
+
+This will deploy a Prometheus instance and a Grafana instance. Both are configured to scrape the metrics of the PWA containers. The Grafana instance is preconfigured with a dashboard for the PWA metrics.
+Both services can be exposed via Ingress. To expose them add the following configuration to your values file:
+
+```yaml
+monitoring:
+  enabled: true
+  prometheus:
+    host: prometheus.example.com
+    annotations:
+      ...
+  grafana:
+    host: grafana.example.com
+    annotations:
+      ...
+```
+
+The grafana access password can be configured via the `monitoring.grafana.password` value. If not set, a default password will be used.
 
 ## Development
 

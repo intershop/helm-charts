@@ -1,3 +1,4 @@
+{{- $pwaMetricsEnabled := tpl $.Values.calculated.metrics.pwa $ -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -52,7 +53,7 @@ spec:
           - name: SSR_HYBRID
             value: "true"
         {{- end }}
-        {{- if .Values.metrics.enabled }}
+        {{- if $pwaMetricsEnabled }}
           - name: PROMETHEUS
             value: "true"
         {{- end }}
@@ -63,7 +64,7 @@ spec:
             - name: http
               containerPort: 4200
               protocol: TCP
-          {{- if .Values.metrics.enabled }}
+          {{- if $pwaMetricsEnabled }}
             - name: metrics
               containerPort: 9113
               protocol: TCP

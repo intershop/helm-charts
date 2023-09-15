@@ -111,6 +111,67 @@
             }
           }
         },
+        "monitoring": {
+          "type": "object",
+          "title": "Configure Monitoring",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Enable or disable monitoring",
+              "description": "Enable or disable monitoring",
+              "additionalProperties": false,
+              "default": false
+            },
+            "prometheus": {
+              "type": "object",
+              "title": "Prometheus configuration",
+              "description": "Prometheus configuration",
+              "additionalProperties": false,
+              "properties": {
+                "host": {
+                  "type": "string",
+                  "title": "Prometheus host",
+                  "description": "Host to expose Prometheus"
+                },
+                "annotations": {
+                  "type": "object",
+                  "title": "Prometheus ingress annotations",
+                  "description": "Prometheus ingress annotations",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "grafana": {
+              "type": "object",
+              "title": "Grafana configuration",
+              "description": "Grafana configuration",
+              "additionalProperties": false,
+              "properties": {
+                "host": {
+                  "type": "string",
+                  "title": "Grafana host",
+                  "description": "Host to expose Grafana"
+                },
+                "annotations": {
+                  "type": "object",
+                  "title": "Grafana ingress annotations",
+                  "description": "Grafana ingress annotations",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "password": {
+                  "type": "string",
+                  "title": "Grafana admin password",
+                  "description": "Grafana admin password"
+                }
+              }
+            }
+          }
+        },
         "cache": {
             "$id": "#/properties/cache",
             "type": "object",

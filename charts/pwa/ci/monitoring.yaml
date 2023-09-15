@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=../values.schema.json
+replicaCount: 3
+image:
+  repository: intershophub/intershop-pwa-ssr
+  tag: latest
+upstream:
+  icmBaseURL: https://pwa-ish-demo.test.intershop.com
+environment:
+  - name: CACHE
+    value: "true"
+readinessProbe:
+  exec:
+    command:
+      - node
+      - /dist/readinessprobe.js
+  initialDelaySeconds: 10
+  periodSeconds: 60
+  failureThreshold: 1
+  timeoutSeconds: 10
+
+cache:
+  replicaCount: 2
+  image:
+    repository: intershophub/intershop-pwa-nginx
+    tag: latest
+
+monitoring:
+  enabled: true
+  prometheus:
+    host: prometheus.pwa.example.local
+    annotations:
+      nginx.ingress.kubernetes.io/auth-type: basic
+      nginx.ingress.kubernetes.io/auth-secret: prometheus-basic-auth
+  grafana:
+    host: grafana.pwa.example.local
+    password: admin
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: pwa.example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
