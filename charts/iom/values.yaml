@@ -207,9 +207,10 @@ newRelic:
     appName:
     # enable APM on backend-server only, which is the server with hostname ending with -0.
     backendOnly: true
-    # define further configuration values except for license_key and app_name, see
+    # define further configuration values except for license_key and app_name, which are defined by the
+    # parameters newRelic.apm.licenseKey and newRelic.apm.appName.
+    # For a full list of available settings, see
     # https://docs.newrelic.com/docs/apm/agents/java-agent/configuration/java-agent-config-file-template/
-    # for full list of configuration options.
     config:
     # send_data_on_exit:     true
     # max_stack_trace_lines: 20
