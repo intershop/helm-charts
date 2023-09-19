@@ -15,9 +15,9 @@ metadata:
       {{- toYaml .Values.webadapter.deploymentLabels | trim | nindent 4 }}
     {{- end }}
 spec:
-  replicas: {{ .Values.webadapter.replicaCount }}
+  replicas: {{ .Values.webadapter.replicaCount | default 1 }}
   strategy:
-    type: {{ .Values.webadapter.updateStrategy }}
+    type: {{ .Values.webadapter.updateStrategy | default "RollingUpdate" }}
   selector:
     matchLabels:
       app: icm-wa
