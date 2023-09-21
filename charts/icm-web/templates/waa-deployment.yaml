@@ -16,9 +16,9 @@ metadata:
       {{- toYaml .Values.agent.deploymentLabels | trim | nindent 4 }}
     {{- end }}
 spec:
-  replicas: {{ .Values.agent.replicaCount }}
+  replicas: {{ .Values.agent.replicaCount | default 1 }}
   strategy:
-    type: {{ .Values.agent.updateStrategy }}
+    type: {{ .Values.agent.updateStrategy | default "RollingUpdate" }}
   selector:
     matchLabels:
       app: icm-waa
