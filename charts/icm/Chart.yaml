@@ -10,7 +10,7 @@ annotations:
   requestedCpuQuotaInMinutes: "2500"
 dependencies:
   - name: icm-as
-    version: 1.3.0
+    version: 1.4.0
     repository: file://../icm-as
   - name: icm-web
     version: 0.8.0
