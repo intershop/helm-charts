@@ -24,6 +24,9 @@ icm-as:
   ## @param environment - extra environment variables to be set on containers
   environment:
 
+  job:
+    enabled: true
+
   ## @param persistence - Either choose local (default), cluster, azurefiles or nfs persitence layer
   persistence:
     sites:
