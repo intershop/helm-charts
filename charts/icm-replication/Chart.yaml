@@ -9,10 +9,10 @@ annotations:
   requestedCpuQuotaInMinutes: 2200
 dependencies:
   - name: icm
-    version: 1.4.0
+    version: 1.5.0
     repository: file://../icm
     alias: icm-live
   - name: icm
-    version: 1.4.0
+    version: 1.5.0
     repository: file://../icm
     alias: icm-edit
