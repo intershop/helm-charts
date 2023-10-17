@@ -1,5 +1,9 @@
 {{- if .Values.sslCertificateRetrieval.enabled }}
+{{- if .Values.sslCertificateRetrieval.supportV1 }}
+apiVersion: secrets-store.csi.x-k8s.io/v1
+{{- else }}
 apiVersion: secrets-store.csi.x-k8s.io/v1alpha1
+{{- end }}
 kind: SecretProviderClass
 metadata:
   name: {{ include "icm-as.fullname" . }}-cert
