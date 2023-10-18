@@ -34,8 +34,8 @@ information, please consult the reference documentation of `Helm parameters of I
 IOM Helm charts are requiring the usage of Helm 3.8 or newer. At the time of writing, functionality was tested
 up to version 3.14 of Helm.
 
-The current version of Helm Charts is backward compatible with all versions of IOM since 3.5. But only the newest
-IOM version, which is 4.3.0 at the time of writing, supports all features that the Helm Charts are offering. For more
+The current version of Helm Charts is backward compatible with all versions of IOM since 4.0. But only the newest
+IOM version, which is 4.8.0 at the time of writing, supports all features that the Helm Charts are offering. For more
 information, please consult the reference documentation of `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
 ..
