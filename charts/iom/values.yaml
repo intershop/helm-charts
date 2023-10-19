@@ -216,6 +216,7 @@ newRelic:
     # max_stack_trace_lines: 20
       
 # Datadog APM related settings
+# Datadog APM is deprecated and will be removed in a future version of IOM Helm Charts.
 datadogApm:
   # APM library is installed only on host, with name ending on -0.
   backendOnly: true
