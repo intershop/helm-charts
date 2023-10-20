@@ -686,7 +686,7 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                                |                                                         |
 |                                        |* Requires IOM 4.8.0 or newer.                                                                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|newRelic.apm.appName                    |Set name of application in *New Relic*. If left empyt, a combination of chart-, release- and    |iom-<helm release>-<namespace>                           |
+|newRelic.apm.appName                    |Set name of application in *New Relic*. If left empty, a combination of chart-, release- and    |<chart name>-<helm release>-<namespace>                  |
 |                                        |namespace-name will be used.                                                                    |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |* Requires IOM 4.8.0 or newer.                                                                  |                                                         |
