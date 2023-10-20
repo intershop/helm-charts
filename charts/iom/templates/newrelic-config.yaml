@@ -1,4 +1,4 @@
-{{- if .Values.newrelic }}
+{{- if .Values.newRelic }}
   {{- if .Values.newRelic.apm }}
     {{- if .Values.newRelic.apm.enabled -}}
 apiVersion: v1
