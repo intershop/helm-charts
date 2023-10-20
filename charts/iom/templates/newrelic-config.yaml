@@ -1,0 +1,18 @@
+{{- if .Values.newRelic.apm.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "iom.fullname" . }}-newrelic-config
+data:
+  newrelic.yml:  |-
+    common: &default_settings
+      license_key: {{ .Values.newRelic.apm.licenseKey }}
+      {{- if empty .Values.newRelic.apm.appName }}
+      app_name: {{ include "iom.fullname" . }}-{{ .Release.Namespace }}
+      {{- else }}
+      app_name: {{ .Values.newRelic.apm.appName }}
+      {{- end }}
+      {{- if .Values.newRelic.apm.config }}
+        {{- toYaml .Values.newRelic.apm.config | nindent 6 }}
+      {{- end }}
+{{- end -}}

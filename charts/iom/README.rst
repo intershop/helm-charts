@@ -33,31 +33,32 @@ information, please consult the reference documentation of `Helm parameters of I
 ..
    Table is commented out, it's used as an internal reference only.
 
-   +-------------+-----+-----+-----+-----+-----+-----+-------+
-   |Helm / IOM   |3.5  |3.6  |3.7  |4.0  |4.1  |4.2  |4.3-4.8|
-   |             |     |     |     |     |     |     |       |
-   +=============+=====+=====+=====+=====+=====+=====+=======+
-   |**3.0**      |x    |x    |x    |[3]_ |[3]_ |[3]_ |       |
-   |             |     |     |     |     |     |     |       |
-   +-------------+-----+-----+-----+-----+-----+-----+-------+
-   |**2.3**      |[1]_ |[2]_ |[3]_ |[3]_ |[3]_ |[3]_ |       |
-   |             |[3]_ |[3]_ |     |     |     |     |       |
-   +-------------+-----+-----+-----+-----+-----+-----+-------+
-   |**2.2**      |[1]_ |[2]_ |     |     |     |     |       |
-   |             |     |     |     |     |     |     |       |
-   +-------------+-----+-----+-----+-----+-----+-----+-------+
-   |**2.1**      |[1]_ |[2]_ |     |     |     |     |       |
-   |             |     |     |     |     |     |     |       |
-   +-------------+-----+-----+-----+-----+-----+-----+-------+
-   |**2.0**      |[1]_ |[2]_ |     |     |x    |x    |x      |
-   |             |     |     |     |     |     |     |       |
-   +-------------+-----+-----+-----+-----+-----+-----+-------+
+   +-------------+-----+-----+-----+-----+-----+-----+-------+-------+
+   |Helm / IOM   |3.5  |3.6  |3.7  |4.0  |4.1  |4.2  |4.3-4.7|4.8    |
+   |             |     |     |     |     |     |     |       |       |
+   +=============+=====+=====+=====+=====+=====+=====+=======+=======+
+   |**3.0**      |x    |x    |x    |[3]_ |[3]_ |[3]_ |[4]_   |       |
+   |             |     |     |     |[4]_ |[4]_ |[4]_ |       |       |
+   +-------------+-----+-----+-----+-----+-----+-----+-------+-------+
+   |**2.3**      |[1]_ |[2]_ |[3]_ |[3]_ |[3]_ |[3]_ |       |       |
+   |             |[3]_ |[3]_ |     |     |     |     |       |       |
+   +-------------+-----+-----+-----+-----+-----+-----+-------+-------+
+   |**2.2**      |[1]_ |[2]_ |     |     |     |     |       |       |
+   |             |     |     |     |     |     |     |       |       |
+   +-------------+-----+-----+-----+-----+-----+-----+-------+-------+
+   |**2.1**      |[1]_ |[2]_ |     |     |     |     |       |       |
+   |             |     |     |     |     |     |     |       |       |
+   +-------------+-----+-----+-----+-----+-----+-----+-------+-------+
+   |**2.0**      |[1]_ |[2]_ |     |     |x    |x    |x      |x      |
+   |             |     |     |     |     |     |     |       |       |
+   +-------------+-----+-----+-----+-----+-----+-----+-------+-------+
 
    x: not supported
 
    .. [1] Helm parameters *log.rest*, *config.skip*, *oms.db.connectionMonitor.*, *oms.db.connectTimeout* do not work in this combination.
    .. [2] Helm parameter *jboss.activemqClientPoolSizeMax* does not work in this combination.
    .. [3] Helm parameters *oms.sso.\** do not work in this combination.
+   .. [4] Helm parameters *newRelic.\** do not work in this combination 
 
 =============
 Version 3.0.0
@@ -71,6 +72,16 @@ Update of mailhog sub-chart
 ===========================
 
 Mailhog sub-chart was updated to version 5.2.3.
+
+Added Support for *New Relic APM*
+=================================
+
+Helm Charts of version 3.0 are now supporting the usage of *New Relic APM* (Application Performance Monitoring). *New
+Relic APM* can be managed by new Helm paramters within parameter-group *newRelic*.
+
+For a description of all new Parameters in detail, please see `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
+
+The usage of *New Relic APM* requires the usage of IOM version 4.8.0 or newer.
 
 ---------------
 Migration Notes
@@ -113,6 +124,16 @@ Helm charts), the old parameter *dbaccount.resetData* will still be supported.
 Usage of new parameter *oms.db.resetData* requires IOM version 4.8.0 or newer.
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
+
+-----------------
+Deprecation Notes
+-----------------
+
+Support for *Datadog APM* is deprecated
+=======================================
+
+The Usage of *Datadog APM* (Application Performance Monitoring) is deprecated. The according parameter group *datadogApm*
+will be removed in a future version of IOM Helm Charts.
 
 -------------
 Removal Notes
