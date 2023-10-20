@@ -47,10 +47,3 @@ jobs:
         commit-message: "release: ${{ inputs.changes }} and dependent charts"
         delete-branch: true
         labels: automated pr
-    - name: Enable Pull Request Automerge
-      shell: bash
-      run: |
-        sleep 10 # give github some time to figure out all required checks
-        gh pr merge --merge --subject "release: ${{ inputs.changes }}" --auto ${{ steps.pr.outputs.pull-request-number }}
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
