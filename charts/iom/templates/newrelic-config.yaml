@@ -1,4 +1,6 @@
-{{- if .Values.newRelic.apm.enabled -}}
+{{- if .Values.newrelic }}
+  {{- if .Values.newRelic.apm }}
+    {{- if .Values.newRelic.apm.enabled -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -6,7 +8,6 @@ metadata:
 data:
   newrelic.yml:  |-
     common: &default_settings
-      license_key: {{ .Values.newRelic.apm.licenseKey }}
       {{- if empty .Values.newRelic.apm.appName }}
       app_name: {{ include "iom.fullname" . }}-{{ .Release.Namespace }}
       {{- else }}
@@ -15,4 +16,6 @@ data:
       {{- if .Values.newRelic.apm.config }}
         {{- toYaml .Values.newRelic.apm.config | nindent 6 }}
       {{- end }}
-{{- end -}}
+    {{- end -}}
+  {{- end }}
+{{- end }}
