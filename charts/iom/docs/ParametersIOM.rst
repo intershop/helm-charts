@@ -62,6 +62,7 @@ Parameters of IOM Helm Chart
 |                                        |most other servers, too.                                                                        |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |See `Options and Requirements of IOM database <IOMDatabase.rst>`_ for details.                  |                                                         |
+|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |dbaccount.searchPath                    |In some circumstances, the search path for database objects has to be extended. This is the case|                                                         |
 |                                        |if custom schemas are used for customizations or tests. To add more schemas to the search-path, |                                                         |
@@ -171,8 +172,7 @@ Parameters of IOM Helm Chart
 |                                        |- Ignored if *oms.jwtSecretKeyRef* is set.                                                      |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.jwtSecretKeyRef                     |Instead of storing the JWT secret as plain text in the values file, a reference to a key within |                                                         |
-|                                        |a secret can be used. For more information, see `References to entries of Kubernetes            |                                                         |
-|                                        |secrets`_.                                                                                      |                                                         |
+|                                        |a secret can be used. For more information, see `References to entries of Kubernetes secrets`_. |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |If left empty AND *oms.jwtSecret* is empty too, a secret with random value is created and used  |                                                         |
 |                                        |automatically.                                                                                  |                                                         |

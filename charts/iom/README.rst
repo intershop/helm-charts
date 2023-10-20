@@ -81,6 +81,16 @@ Update of mailhog sub-chart
 
 Mailhog sub-chart was updated to version 5.2.3.
 
+Added Support for *New Relic APM*
+=================================
+
+Helm Charts of version 3.0 are now supporting the usage of *New Relic APM* (Application Performance Monitoring). *New
+Relic APM* can be managed by new Helm paramters within parameter-group *newRelic*.
+
+For a description of all new Parameters in detail, please see `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
+
+The usage of *New Relic APM* requires the usage of IOM version 4.8.0 or newer.
+
 ---------------
 Migration Notes
 ---------------
@@ -122,6 +132,16 @@ Helm charts), the old parameter *dbaccount.resetData* will still be supported.
 Usage of new parameter *oms.db.resetData* requires IOM version 4.8.0 or newer.
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
+
+-----------------
+Deprecation Notes
+-----------------
+
+Support for *Datadog APM* is deprecated
+=======================================
+
+The Usage of *Datadog APM* (Application Performance Monitoring) is deprecated. The according parameter group *datadogApm*
+will be removed in a future version of IOM Helm Charts.
 
 -------------
 Removal Notes
