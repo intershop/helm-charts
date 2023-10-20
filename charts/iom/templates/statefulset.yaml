@@ -132,6 +132,26 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+            #
+            # new-relic APM agent settings
+            #
+            {{- if .Values.newRelic.apm.enabled }}
+            - name: NEWRELIC_APM_ENABLED
+              value: 'true'
+            - name: NEWRELIC_APM_BACKEND_ONLY
+              {{- if .Values.newRelic.apm.backendOnly }}
+                {{- if not (kindIs "bool" .Values.newRelic.apm.backendOnly) }}
+                  {{ fail "newRelic.apm.backendOnly contains a non boolean value!" }}
+                {{- end }}
+              value: 'true'
+              {{- else }}
+              value: 'false'  
+              {{- end }}
+            {{- else }}
+            - name: NEWRELIC_APM_ENABLED
+              value: 'false'
+            {{- end }}
+            
             {{- if .Values.datadogApm.enabled }}
             #
             # datadog APM agent settings
@@ -608,6 +628,13 @@ spec:
             - name: app-share-volume
               mountPath: /var/opt/share
 
+            {{- if .Values.newRelic.apm.enabled }}
+            - mountPath: /opt/oms/lib/newrelic/newrelic.yml
+              name: newrelic-config-volume
+              readOnly: true
+              subPath: newrelic.yml
+            {{- end }}
+
       initContainers:
         {{- if .Values.persistence.hostPath }}
         # Before usage, owner and group have to be changed!
@@ -805,6 +832,7 @@ spec:
             {{- end }}
           {{- end }}
         {{- end }}
+        
       volumes:
         - name: app-share-volume
           persistentVolumeClaim:
@@ -813,6 +841,13 @@ spec:
         {{- else }}
             claimName: {{ include "iom.fullname" . }}
         {{- end }}
+        
+        {{- if .Values.newRelic.apm.enabled }}
+        - name: newrelic-config-volume
+          configMap:
+            name: {{ include "iom.fullname" . }}-newrelic-config
+        {{- end }}
+        
         {{- with .Values.nodeSelector }}
       nodeSelector:
           {{- toYaml . | nindent 8 }}

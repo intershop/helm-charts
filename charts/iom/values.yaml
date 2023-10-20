@@ -196,7 +196,27 @@ log:
   # of according requests are logged at level DEBUG
   rest: []
 
+newRelic:
+  apm:
+    enabled: false
+    # license-key to enable ingesting the data, see
+    # https://docs.newrelic.com/docs/apis/intro-apis/new-relic-api-keys/#license-key
+    licenseKey:
+    # set name of application in new relic. If left empyt, a combination of release-, chart- and namespace-name
+    # will be used.
+    appName:
+    # enable APM on backend-server only, which is the server with hostname ending with -0.
+    backendOnly: true
+    # define further configuration values except for license_key and app_name, which are defined by the
+    # parameters newRelic.apm.licenseKey and newRelic.apm.appName.
+    # For a full list of available settings, see
+    # https://docs.newrelic.com/docs/apm/agents/java-agent/configuration/java-agent-config-file-template/
+    config:
+    # send_data_on_exit:     true
+    # max_stack_trace_lines: 20
+      
 # Datadog APM related settings
+# Datadog APM is deprecated and will be removed in a future version of IOM Helm Charts.
 datadogApm:
   # APM library is installed only on host, with name ending on -0.
   backendOnly: true
