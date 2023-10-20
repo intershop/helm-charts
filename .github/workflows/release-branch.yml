@@ -35,7 +35,7 @@ jobs:
         git commit -m "chore: bump versions ${{ inputs.changes }} and dependent charts"
     - name: Reset main branch with changes from develop/?
       run: |
-        git fetch origin ${{ github.ref_name }}:${{ github.ref_name }}
+        git checkout main
         git reset --hard ${{ github.ref_name }}
     - name: Create Release Branch & PR
       id: pr
