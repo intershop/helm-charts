@@ -41,9 +41,3 @@ jobs:
         gh pr create --base "develop/${{ matrix.branch }}" --title "$SUBJECT" --body "$BODY" || true
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Enable PR automerge
-      shell: bash
-      run: |
-        gh pr merge --merge --auto
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

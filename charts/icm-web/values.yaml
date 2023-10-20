@@ -2,8 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
-
 # defined where the application shall run on
 nodeSelector: {}
 #  agentpool: <your agentpool>
@@ -33,11 +31,13 @@ webadapter:
   # provides custom certificates for webadapter
   customSSLCertificates: false
   overrideSSL: false
+  # define the number of replicas beeing deployed (int, > 0, default=1)
   replicaCount: 1
-  # define update strategy
+  # define the update strategy (possible values: Recreate, RollingUpdate; default=RollingUpdate)
   updateStrategy: RollingUpdate
   sslCertificateRetrieval:
     enabled: false
+    supportV1: false
     # secretName: <explicit-ssl-secret-name>
     keyvault:
       tenantId: <tenant-ID-of-the-KeyVault>
@@ -69,8 +69,9 @@ agent:
     pullPolicy: IfNotPresent
     command: |
       /intershop/bin/start-waa.sh
+  # define the number of replicas beeing deployed (int, > 0, default=1)
   replicaCount: 1
-  # define update strategy
+  # define update the strategy (possible values: Recreate, RollingUpdate; default=RollingUpdate)
   updateStrategy: RollingUpdate
   # define custom annotations for deployment and pods:
   deploymentAnnotations: {}

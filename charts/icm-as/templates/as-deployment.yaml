@@ -17,14 +17,17 @@ metadata:
     app: {{ include "icm-as.fullname" .}}
 spec:
   progressDeadlineSeconds: 600
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.replicaCount | default 1 }}
   revisionHistoryLimit: 10
   selector:
     matchLabels:
       app: icm-as
       release: {{ include "icm-as.fullname" . }}
   strategy:
-    type: {{ .Values.updateStrategy }}
+    type: {{ .Values.updateStrategy | default "RollingUpdate" }}
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   template:
     metadata:
       {{- if include "icm-as.podData" . }}

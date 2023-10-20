@@ -27,6 +27,16 @@ jobs:
       uses: ./.github/template/bump-version
       with:
         changes: ${{ inputs.changes }}
+    - name: Create commits
+      run: |
+        git config user.name "$GITHUB_ACTOR"
+        git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+        git add -A
+        git commit -m "chore: bump versions ${{ inputs.changes }} and dependent charts"
+    - name: Reset main branch with changes from develop/?
+      run: |
+        git checkout main
+        git reset --hard ${{ github.ref_name }}
     - name: Create Release Branch & PR
       id: pr
       uses: peter-evans/create-pull-request@v5
@@ -34,12 +44,6 @@ jobs:
         branch: release/${{ github.ref_name }}
         base: main
         title: Release ${{ inputs.changes }}
-        commit-message: "chore: bump versions ${{ inputs.changes }} and dependent charts"
+        commit-message: "release: ${{ inputs.changes }} and dependent charts"
         delete-branch: true
         labels: automated pr
-    - name: Enable Pull Request Automerge
-      shell: bash
-      run: |
-        gh pr merge --merge --subject "release: ${{ inputs.changes }}" --auto ${{ steps.pr.outputs.pull-request-number }}
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
