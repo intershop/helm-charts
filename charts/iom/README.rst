@@ -86,8 +86,7 @@ The usage of *New Relic APM* requires the usage of IOM version 4.8.0 or newer.
 Random JWT-secret provided
 ==========================
 
-On default a secret for JWT is created automatically, containing a random value. This secret is configured to also
-persist the deletion of the Helm release.
+On default a secret for JWT is created automatically, containing a random value.
 
 It's still possible to define custom values, by using the parameters *oms.jwtSecret* and *oms.jwtSecretKeyRef*.
 
@@ -151,11 +150,6 @@ Support for *Datadog APM* is deprecated
 
 The Usage of *Datadog APM* (Application Performance Monitoring) is deprecated. The according parameter group *datadogApm*
 will be removed in a future version of IOM Helm Charts.
-
-*oms.jwtSecret* and *oms.jwtSecretKeyRef* are deprecated
-========================================================
-
-Usage of JWT was deprecated by IOM 4.8.0, therefore the according Helm parameters were deprecated too.
 
 -------------
 Removal Notes
