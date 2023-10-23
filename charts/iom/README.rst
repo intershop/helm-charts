@@ -135,11 +135,10 @@ See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 Default value of *oms.jwtSecret* has changed
 ============================================
 
-The default value of *oms.jwtSecret* is now empty, causing the usage of an automatically created random secret. That means, if you
-have not set *oms.jwtSecret* and *oms.jwtSecretKeyRef*, this automatically created secret will be used instead.
+The default value of *oms.jwtSecret* is empty now, causing the usage of an automatically created random secret. That means, if you
+have not set *oms.jwtSecret* and *oms.jwtSecretKeyRef*, this automatically created secret will be used instead. 
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
-
 
 -----------------
 Deprecation Notes
