@@ -476,15 +476,23 @@ spec:
             - name: OMS_PUBLIC_URL
               value: {{ .Values.oms.publicUrl }}
               {{- end }}
-              {{- /* jwtSecretKeyRef has precedence over jwtSecret */ -}}
-              {{- if .Values.oms.jwtSecretKeyRef }}
+              {{- if and (empty .Values.oms.jwtSecret) (empty .Values.oms.jwtSecretKeyRef) }}
             - name: OMS_JWT_SECRET
               valueFrom:
                 secretKeyRef:
-                {{- toYaml .Values.oms.jwtSecretKeyRef | nindent 18 }}
-              {{- else if .Values.oms.jwtSecret }}
+                  name: {{ include "iom.jwt-auto-secret-name" . }}
+                  key:  {{ include "iom.jwt-auto-secret-key" . }}
+              {{- else }}
+                {{- /* jwtSecretKeyRef has precedence over jwtSecret */ -}}
+                {{- if .Values.oms.jwtSecretKeyRef }}
+            - name: OMS_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  {{- toYaml .Values.oms.jwtSecretKeyRef | nindent 18 }}
+                {{- else if .Values.oms.jwtSecret }}
             - name: OMS_JWT_SECRET
               value: {{ .Values.oms.jwtSecret }}
+                {{- end }}
               {{- end }}
             - name: OMS_SECURE_COOKIES_ENABLED
               {{- if .Values.oms.secureCookiesEnabled }}

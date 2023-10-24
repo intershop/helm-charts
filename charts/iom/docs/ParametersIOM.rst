@@ -198,24 +198,24 @@ Parameters of IOM Helm Chart
 |oms.publicUrl                           |The publicly accessible base URL of IOM which could be the DNS name of the load balancer,       |https://localhost                                        |
 |                                        |etc. It is used internally for link generation.                                                 |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|oms.jwtSecret                           |The shared secret for `JSON Web Token <https://jwt.io/>`_ (JWT) creation/validation. JWTs will  |length_must_be_at_least_32_chars                         |
+|oms.jwtSecret                           |The shared secret for `JSON Web Token <https://jwt.io/>`_ (JWT) creation/validation. JWTs will  |                                                         |
 |                                        |be generated with the HMAC algorithm (HS256).                                                   |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |Intershop strongly recommends to change the default shared secret used for the `JSON Web Tokens |                                                         |
-|                                        |<https://jwt.io/>`_ creation/validation.                                                        |                                                         |
+|                                        |To secure the JWT, a key of the same size as the hash output or larger must be used with the    |                                                         |
+|                                        |JWS HMAC SHA-2 algorithms (i.e, 256 bits for "HS256"), see `JSON Web Algorithms (JWA) |         |                                                         |
+|                                        |3.2. HMAC with SHA-2 Functions <https://tools.ietf.org/html/rfc7518#section-3.2>`_.             |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |To secure the JWT, a key of the same size as the hash output or larger must be used with the JWS|                                                         |
-|                                        |HMAC SHA-2 algorithms (i.e, 256 bits for "HS256"), see `JSON Web Algorithms (JWA) | 3.2. HMAC   |                                                         |
-|                                        |with SHA-2 Functions <https://tools.ietf.org/html/rfc7518#section-3.2>`_.                       |                                                         |
+|                                        |If left empty AND *oms.jwtSecretKeyRef* is empty too, a secret with random value is created and |                                                         |
+|                                        |used automatically.                                                                             |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |* Ignored if *oms.jwtSecretKeyRef* is set.                                                      |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.jwtSecretKeyRef                     |Instead of storing the JWT secret as plain text in the values file, a reference to a key within |                                                         |
-|                                        |a secret can be used. For more information, see `References to entries of Kubernetes secrets`_. |                                                         |
+|                                        |a secret can be used. For more information, see `References to entries of Kubernetes            |                                                         |
+|                                        |secrets`_.                                                                                      |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Only required if *oms.jwtSecret* is empty.                                                    |                                                         |
-|                                        |                                                                                                |                                                         |
+|                                        |If left empty AND *oms.jwtSecret* is empty too, a secret with random value is created and used  |                                                         |
+|                                        |automatically.                                                                                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.archiveOrderMessageLogMinAge        |Number of days after which the entries in table "OrderMessageLogDO" should be exported and the  |"90"                                                     |
 |                                        |columns "request" and "response" set to 'archived' in order to reduce the table size.           |                                                         |
