@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: jgroups-kubeping-api-access
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: jgroups-kubeping-pod-reader
+subjects:
+- kind: ServiceAccount
+  name: {{ template "icm-as.fullname" . }}-{{ include "icm-as.serviceAccountName" . }}
+  # jgroups-kubeping-service-account
+  namespace: {{.Release.Namespace}}

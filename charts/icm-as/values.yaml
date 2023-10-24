@@ -45,7 +45,7 @@ dockerSecret:
 ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
 ## Intershop: These secrets also last for customization images
 imagePullSecrets:
-- "dockerhub"
+  - "dockerhub"
 
 # list of customization images each following the structure:
 #  <name>:
@@ -108,6 +108,7 @@ operationalContext:
 
 # provide custom cluster config from "icm-as.fullname"-system-conf-cluster configmap
 provideCustomConfig: {}
+
   # logback-main:
   #   mountPath: /intershop/system-conf/cluster/
   #   fileName: logback-main.xml
@@ -312,7 +313,8 @@ copySitesDir:
 ingress:
   enabled: false
   className: null
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   # Paths are treated as list of prefixes. Any URL matching one of the prefixes will
@@ -386,3 +388,8 @@ replication:
 
   # the name of the (source) database to be used at the target-system to read data from e.g. intershop_edit
   sourceDatabaseName: <databaseName>
+# Configuration of messaging via jgroups
+#jgroups:
+# the discovery protocol to use
+# supported values are file_ping or kube_ping. Defaults to file_ping, but kube_ping is recommended
+# discovery: <kube_ping | file_ping>

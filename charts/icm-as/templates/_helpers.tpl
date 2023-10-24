@@ -175,3 +175,19 @@ securityContext:
   {{- toYaml .Values.podSecurityContext | nindent 2 }}
 {{- end }}
 {{- end -}}
+
+{{/*
+The discovery mode of jgroups messaging
+*/}}
+{{- define "icm-as.jgroups.discovery" -}}
+{{- if .Values.jgroups -}}
+  {{- if .Values.jgroups.discovery -}}
+    {{- .Values.jgroups.discovery -}}
+  {{- else -}}
+    {{- printf "file_ping" }}
+  {{- end -}}
+{{- else -}}
+    {{- printf "file_ping" }}
+{{- end -}}
+{{- end -}}
+

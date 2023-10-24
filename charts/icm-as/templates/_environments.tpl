@@ -7,6 +7,8 @@ Creates the environment section
 env:
 - name: ENVIRONMENT
   value: "{{ include "icm-as.environmentName" . }}"
+- name: INTERSHOP_EVENT_JGROUPSPROTOCOLSTACKCONFIGFILE
+  value: "/intershop/jgroups-conf/jgroups-config.xml"
 {{- if not (hasKey .Values.environment "SERVER_NAME") }}
 - name: SERVER_NAME
   value: "{{ .Values.serverName }}"

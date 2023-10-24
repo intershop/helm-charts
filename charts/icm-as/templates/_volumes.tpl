@@ -30,6 +30,11 @@ volumes:
   configMap:
     name: {{ template "icm-as.fullname" . }}-redis-client-config-yaml
 {{- end }}
+{{- if eq (include "icm-as.jgroups.discovery" .) "kube_ping" -}}
+- name: jgroups-config-volume
+  configMap:
+    name: {{ template "icm-as.fullname" . }}-jgroups-config-xml
+{{- end }}
 {{- if .Values.persistence.customdata.enabled }}
 - name: custom-data-volume
   persistentVolumeClaim:
