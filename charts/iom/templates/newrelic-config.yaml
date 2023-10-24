@@ -6,7 +6,6 @@ metadata:
 data:
   newrelic.yml:  |-
     common: &default_settings
-      license_key: {{ .Values.newRelic.apm.licenseKey }}
       {{- if empty .Values.newRelic.apm.appName }}
       app_name: {{ include "iom.fullname" . }}-{{ .Release.Namespace }}
       {{- else }}

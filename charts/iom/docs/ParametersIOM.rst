@@ -684,6 +684,16 @@ Parameters of IOM Helm Chart
 |newRelic.apm.licenseKey                 |A license-key is required to enable ingesting the data, see `New Relic Documentation about API  |                                                         |
 |                                        |keys <https://docs.newrelic.com/docs/apis/intro-apis/new-relic-api-keys/#license-key>`_.        |                                                         |
 |                                        |                                                                                                |                                                         |
+|                                        |* Ignored if *newRelic.apm.licenseKeySecretKeyRef* is set.                                      |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |* Requires IOM 4.8.0 or newer.                                                                  |                                                         |
++----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|newRelic.apm.licenseKeySecretKeyRef     |Instead of storing the license key as plain text in the values file, a reference to a key within|                                                         |
+|                                        |a secret can be used. For more information see `References to entries of Kubernetes secrets     |                                                         |
+|                                        |<SecretKeyRef.rst>`_                                                                            |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |* Required if *newRelic.apm.enabled* is set to *true* and *newRelic.apm.licenseKey* is not set. |                                                         |
+|                                        |                                                                                                |                                                         |
 |                                        |* Requires IOM 4.8.0 or newer.                                                                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |newRelic.apm.appName                    |Set name of application in *New Relic*. If left empty, a combination of chart-, release- and    |<chart name>-<helm release>-<namespace>                  |
