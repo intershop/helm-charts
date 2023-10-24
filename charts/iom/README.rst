@@ -83,6 +83,13 @@ For a description of all new Parameters in detail, please see `Helm parameters o
 
 The usage of *New Relic APM* requires the usage of IOM version 4.8.0 or newer.
 
+Random JWT-secret provided
+==========================
+
+On default a secret for JWT is created automatically, containing a random value.
+
+It's still possible to define custom values, by using the parameters *oms.jwtSecret* and *oms.jwtSecretKeyRef*.
+
 ---------------
 Migration Notes
 ---------------
@@ -122,6 +129,14 @@ unless requested. This new setting reduces amount of log-messages of mailhog eve
 Parameter *dbaccount.resetData* was replaced by *oms.db.resetData*. For a limited period of time (until next major release of IOM
 Helm charts), the old parameter *dbaccount.resetData* will still be supported.
 Usage of new parameter *oms.db.resetData* requires IOM version 4.8.0 or newer.
+
+See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
+
+Default value of *oms.jwtSecret* has changed
+============================================
+
+The default value of *oms.jwtSecret* is empty now, causing the usage of an automatically created random secret. That means, if you
+have not set *oms.jwtSecret* and *oms.jwtSecretKeyRef*, this automatically created secret will be used instead. 
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
