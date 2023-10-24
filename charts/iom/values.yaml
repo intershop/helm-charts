@@ -204,6 +204,7 @@ newRelic:
     # license-key to enable ingesting the data, see
     # https://docs.newrelic.com/docs/apis/intro-apis/new-relic-api-keys/#license-key
     licenseKey:
+    licenseKeySecretKeyRef: {}
     # set name of application in new relic. If left empyt, a combination of release-, chart- and namespace-name
     # will be used.
     appName:

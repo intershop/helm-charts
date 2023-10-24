@@ -132,10 +132,20 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+            {{- if .Values.newRelic.apm.enabled }}
             #
             # new-relic APM agent settings
             #
-            {{- if .Values.newRelic.apm.enabled }}
+              {{- /* licenseKeySecretKeyRef has precedence over licenseKey */ -}}
+              {{- if .Values.newRelic.apm.licenseKeySecretKeyRef }}
+            - name: NEW_RELIC_LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  {{- toYaml .Values.newRelic.apm.licenseKeySecretKeyRef | nindent 18 }}
+              {{- else if .Values.newRelic.apm.licenseKey }}
+            - name: NEW_RELIC_LICENSE_KEY
+              value: {{ .Values.newRelic.apm.licenseKey }}
+              {{- end }}
             - name: NEWRELIC_APM_ENABLED
               value: 'true'
             - name: NEWRELIC_APM_BACKEND_ONLY
