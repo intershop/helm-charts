@@ -41,14 +41,12 @@ metadata:
     "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
   labels:
     {{- include "iom.labels" . | nindent 4 }}
-    app.kubernetes.io/component: patch-downtime
 spec:
   template:
     metadata:
       name: "{{ .Release.Name }}"
       labels:
         {{- include "iom.labels" . | nindent 8 }}
-        app.kubernetes.io/component: patch-downtime
     spec:
       restartPolicy: Never
       serviceAccountName: {{ .Release.Name }}-iom-patch
