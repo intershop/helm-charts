@@ -17,9 +17,6 @@ spec:
   jobTemplate:
     spec:
       template:
-        metadata:
-          labels:
-            {{- include "iom.selectorLabels" . | nindent 12 }}
         spec:
           {{- with .Values.imagePullSecrets }}
           imagePullSecrets:
