@@ -45,8 +45,6 @@ spec:
   template:
     metadata:
       name: "{{ .Release.Name }}-mailhog-patch"
-      labels:
-        {{- include "iom.selectorLabels" . | nindent 8 }}
     spec:
       restartPolicy: Never
       serviceAccountName: {{ .Release.Name }}-mailhog-patch
