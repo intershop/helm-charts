@@ -46,7 +46,7 @@ spec:
     metadata:
       name: "{{ .Release.Name }}"
       labels:
-        {{- include "iom.labels" . | nindent 8 }}
+        {{- include "iom.selectorLabels" . | nindent 8 }}
     spec:
       restartPolicy: Never
       serviceAccountName: {{ .Release.Name }}-iom-patch
