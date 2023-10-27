@@ -19,7 +19,7 @@ spec:
       template:
         metadata:
           labels:
-            {{- include "iom.labels" . | nindent 12 }}
+            {{- include "iom.selectorLabels" . | nindent 12 }}
         spec:
           {{- with .Values.imagePullSecrets }}
           imagePullSecrets:
