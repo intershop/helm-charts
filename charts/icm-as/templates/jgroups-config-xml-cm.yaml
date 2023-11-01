@@ -11,13 +11,13 @@ data:
       Default stack using IP multicasting. It is similar to the "udp"
       stack in stacks.xml, but doesn't use streaming state transfer and flushing
       author: Bela Ban
-      
+
       ISH-addition: use different discovery types
     -->
     <config xmlns="urn:org:jgroups"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="urn:org:jgroups http://www.jgroups.org/schema/jgroups.xsd"
-            version="5.2.13.Final">
+            version="5.3.0.Final">
         <UDP
             bind_port="7800"
             ip_mcast="false"
@@ -37,20 +37,35 @@ data:
             thread_pool.keep_alive_time="10000"
         />
 
-{{- if eq (include "icm-as.jgroups.discovery" .) "kube_ping" -}}
-        <!-- discover nodes using KUBE_PING  -->
+{{- if eq (include "icm-as.jgroups.discovery" .) "kube_ping" }}
+        <!-- discover nodes using KUBE_PING -->
         <org.jgroups.protocols.kubernetes.KUBE_PING
+          namespace="{{.Release.Namespace}}"
           port_range="5"
-        />
-{{- else -}}
-        <!-- discover nodes by shared FS. may be replaced by static TCP configuration -->
+{{- else if eq (include "icm-as.jgroups.discovery" .) "file_ping" -}}
+        <!-- discover nodes by shared FS -->
         <FILE_PING
           location="/intershop/jgroups-share"
           remove_old_coords_on_view_change="true"
           remove_all_data_on_view_change="true"
           write_data_on_find="true"
+{{- else if eq (include "icm-as.jgroups.discovery" .) "azure_ping" -}}
+        <!-- discover nodes using azure protocol -->
+        <azure.AZURE_PING
+          storage_account_name="${jgroups.azure_ping.storage_account_name}"
+          storage_access_key="${jgroups.azure_ping.storage_access_key}"
+          container="${jgroups.azure_ping.container:ping}"
+{{- else if eq (include "icm-as.jgroups.discovery" .) "dns_ping" -}}
+        <!-- discover nodes using azure protocol -->
+        <dns.DNS_PING 
+          dns_query="{{ .Values.jgroups.dnsQuery }}"
+{{- end }}
+          {{- if .Values.jgroups -}}
+            {{- if .Values.jgroups.discoveryExtraAttributes }}
+          {{ .Values.jgroups.discoveryExtraAttributes }}
+            {{- end -}}
+          {{- end -}}
         />
-{{- end -}}
 
         <MERGE3 max_interval="30000"
                 min_interval="10000"/>

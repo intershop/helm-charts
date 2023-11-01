@@ -36,6 +36,9 @@ spec:
     spec:
       template:
         spec:
+          {{- if .Values.serviceAccount.create }}
+          serviceAccountName: {{ include "icm-as.fullname" . }}-{{ include "icm-as.serviceAccountName" . }}
+          {{- end }}
           {{- if include "icm-as.nodeSelector" $jobValues }}
             {{- include "icm-as.nodeSelector" $jobValues | nindent 10 }}
           {{- end }}
