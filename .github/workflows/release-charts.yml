@@ -1,8 +1,10 @@
 name: Release Charts
-# releases the main branch
-# the new versions must already be specified in all Chart.yaml files
-# before merging to main
+
 on:
+  workflow_dispatch:
+  # releases the main branch
+  # the new versions must already be specified in all Chart.yaml files
+  # before merging to main
   push:
     branches:
     - main
