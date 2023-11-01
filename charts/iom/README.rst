@@ -15,6 +15,7 @@ The following documents provide an extensive documentation how to operate IOM wi
 #. `Helm parameters of Integrated PostgreSQL Server <docs/ParametersPosgres.rst>`_
 #. `Helm parameters of IOM-Tests <docs/ParametersTests.rst>`_
 #. `References to Kubernetes Secrets <docs/SecretKeyRef.rst>`_
+#. `Persistent Storage <docs/PersistentStorage.rst>`_
 #. `Prometheus Metrics <docs/Metrics.rst>`_
 #. `PostgreSQL Server Configuration <docs/Postgresql.rst>`_
 #. `Options and Requirements of IOM Database <docs/IOMDatabase.rst>`_
