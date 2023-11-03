@@ -7,33 +7,53 @@
 Persistent Storage
 ==================
 
-Unterstützung von 3 Arten von Persistent Storage:
-* dynamic provisioning
-* static provisioning
-* local storage
+IOM Helm Charts are supporting three different kinds of provisioning of persistent storage:
 
-Priorität ist umgekehrt.
-Wenn "local storage" konfiguriert ist, werden static and dynamic provisioning ignoriert.
-Wenn "static provisioning" konfiguriert ist, wird dynamic provisioning ignoriert.
+- dynamic provisioning
+- static provisioning
+- local storage
+
+Which kind of provisioning is used by IOM Helm Charts is controlled by parameter *persistence.provisioning*.
+Each available method is represented by an according value. The values are *dynamic* (default), *static* and *local*.
+
+--------
+Overview
+--------
+
+Using *Kubernetes*, the usage of persistent storage is managed on three different levels of abstraction:
+
+- storage-class
+- persistent-volume (pv)
+- persistent-volume-claim (pvc)
+
+A *pvc* claims a portion of storage from a *pv*, which is provided by a *storage-class*. *pv* and *storage-class* are
+usually provided by administrators, whereas a *pvc* is usually part of the Helm Chart:
+
+- *pvc* -> *pv* -> *storage-class*
+
+One important aspect of *persistent-volumes* and *storage-classes* is the behaviour after the application, that
+was using a *persistent-volume*, has gone and with it the according *persistent-volume-claim*. The behaviour can be
+controlled on level of *pv* and *storage-class*, but not on level of the *pvc*. It is defined by the *retain-policy*,
+which can be *delete* or *reclaim*. In case of *delete*, a *pv* is automatically deleted, when the claiming *pvc*
+disappears. If the *retain-policy* is set to *reclaim*, the *pv* will remain along with it's content.
 
 --------------------
 dynamic provisioning
 --------------------
 
-In den allermeisten Installationen ist dies die bevorzugte Nutzung von persistent storage.
-PersistentVolume is created automatically from StorageClass (default: azurefile) with requested size (default: 1Gi).
-Die RetainPolicy (also das Verhalten des PersistentVolume nachdem es nicht mehr benutzt wird) wird durch die StorageClass
-festgelegt und kann nicht über die Helm-Values beeinflusst werden. Z.B. ist die ReclaimPolicy für azurefile "delete", d.h.
-das dynamisch erzeugte PersistentVolume würde in diesem Fall automatisch gelöscht werden.
+Dynamic provisioning is the default method to provide persistent storage for IOM, because it's the preferred method in very most cases.
+When using this method, the *persistent-volume* is created automatically from the requested *storage-class* (default is *azurefile*).
+The *retain-policy* is defined by the *storage-class*. Since the *pv* is created automatically, the *retain-policy* cannot be
+influenced by any Helm parameter. Instead of it, it is inherited from the *storage-class*.
 
-In kritischen Produktionsumgebungen könnte dieses Verhalten dazu führen, dass wichtige Daten aus Versehen gelöscht werden.
-Um das zu verhindern, sollte eine StorageClass verwendet werden, die die ReclaimPolicy "retain" benutzt. Um aber vollkommen
-auf der sicheren Seite zu sein, auch im Fall, dass eine StorageClass mit ReclaimPolicy "delete" verwendet wird, besitzt die
-von den IOM Helm Charts erzeugte PVC per default die Annotation '"helm.sh/resource-policy": keep'. Damit bleibt auch nach dem
-Löschen der Helm Release von IOM der PVC erhalten und das PV wird nicht gelöscht.
+Since the default *storage-class* "azurefile" uses the *reclaim-policy* "delete", the usage of default values could lead to critical
+situations on production systems, if the Helm Chart would not take further measures. To avoid the automatic deletion of content of the shared
+file-system of IOM after deletion of the IOM instance, the default annotation of the *pvc* is "helm.sh/resource-policy: keep".
+This annotation prevents the deletion of the *pvc* in case of deletion of IOM. As long the *pvc* exists, the *pv* and its
+content can be saved.
 
-Empfehlungen zur Konfiguration
-------------------------------
+Recommended Configurations
+--------------------------
 
 Produktions- und produktionsnahe Systeme:
 * Verwenden einer StorageClass mit RetainPolicy "reclaim"
