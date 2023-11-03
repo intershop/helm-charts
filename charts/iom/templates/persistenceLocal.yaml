@@ -7,7 +7,7 @@
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
-  name: {{ include "iom.fullname" . }}-share
+  name: {{ include "iom.fullname" . }}-local-share
   labels:
     {{- include "iom.labels" . | nindent 4 }}    
 provisioner: docker.io/hostpath
@@ -27,7 +27,7 @@ spec:
   {{- if .Values.persistence.local.reclaimPolicy }}
   persistentVolumeReclaimPolicy: {{ .Values.persistence.local.reclaimPolicy }}
   {{- end }}
-  storageClassName: {{ include "iom.fullname" . }}-share
+  storageClassName: {{ include "iom.fullname" . }}-local-share
   hostPath:
     path: {{ .Values.persistence.local.hostPath }}
 ---
@@ -44,7 +44,8 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  volumeName: {{ include "iom.fullname" . }}-share
+  volumeName: {{ include "iom.fullname" . }}
+  storageClassName: {{ include "iom.fullname" . }}-local-share
   resources:
     requests:
       storage: {{ .Values.persistence.storageSize }}
