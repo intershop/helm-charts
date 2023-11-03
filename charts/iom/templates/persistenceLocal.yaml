@@ -1,0 +1,66 @@
+{{- if hasKey .Values "persistence" }}
+  {{- if hasKey .Values.persistence "provisioning" }}
+    {{- if eq .Values.persistence.provisioning "local" }}
+      {{- if hasKey .Values.persistence "local" }}
+        {{- if hasKey .Values.persistence.local "hostPath" }}
+          {{- if .Values.persistence.local.hostPath }}
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: {{ include "iom.fullname" . }}-share
+  labels:
+    {{- include "iom.labels" . | nindent 4 }}    
+provisioner: docker.io/hostpath
+volumeBindingMode: WaitForFirstConsumer
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ include "iom.fullname" . }}
+  labels:
+    {{- include "iom.labels" . | nindent 4 }}    
+spec:
+  capacity:
+    storage: {{ .Values.persistence.storageSize }}
+  accessModes:
+  - ReadWriteMany
+  {{- if .Values.persistence.local.reclaimPolicy }}
+  persistentVolumeReclaimPolicy: {{ .Values.persistence.local.reclaimPolicy }}
+  {{- end }}
+  storageClassName: {{ include "iom.fullname" . }}-share
+  hostPath:
+    path: {{ .Values.persistence.local.hostPath }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "iom.fullname" . }}
+  labels:
+    {{- include "iom.labels" . | nindent 4 }}    
+  annotations:
+    {{- if .Values.persistence.local.annotations }}
+      {{- toYaml .Values.persistence.local.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeName: {{ include "iom.fullname" . }}-share
+  resources:
+    requests:
+      storage: {{ .Values.persistence.storageSize }}
+          {{- else }}
+            {{ fail "parameter persistence.local.hostPath is not defined" }}
+          {{- end }}
+        {{- else }}
+          {{ fail "parameter persistence.local.hostPath is missing" }}
+        {{- end }}
+      {{- else }}
+        {{ fail "parameter persistence.local is missing" }}
+      {{- end }}
+    {{- end }}
+  {{- else }}
+    {{ fail "parameter persistence.provisioning is missing" }}
+  {{- end }}
+{{- else }}
+  {{ fail "parameter persistence is missing" }}
+{{- end }}

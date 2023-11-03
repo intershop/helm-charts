@@ -1,0 +1,39 @@
+{{- if hasKey .Values "persistence" }}
+  {{- if hasKey .Values.persistence "provisioning" }}
+    {{- if eq .Values.persistence.provisioning "static" }}
+      {{- if hasKey .Values.persistence "static" }}
+        {{- if hasKey .Values.persistence.static "pv" }}
+          {{- if .Values.persistence.static.pv }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "iom.fullname" . }}
+  labels:
+    {{- include "iom.labels" . | nindent 4 }}    
+  annotations:
+    {{- if .Values.persistence.static.annotations }}
+      {{- toYaml .Values.persistence.static.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeName: {{ .Values.persistence.static.pv }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.storageSize }}
+          {{- else }}
+            {{ fail "parameter persistence.static.pv is not defined" }}
+          {{- end }}
+        {{- else }}
+          {{ fail "parameter persistence.static.pv is missing" }}
+        {{- end }}
+      {{- else }}
+        {{ fail "parameter persistence.static is missing" }}
+      {{- end }}
+    {{- end }}
+  {{- else }}
+    {{ fail "parameter persistence.provisioning is missing" }}
+  {{- end }}
+{{- else }}
+  {{ fail "parameter persistence is missing" }}
+{{- end }}

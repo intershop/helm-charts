@@ -270,14 +270,37 @@ project:
   importTestDataTimeout: 300
 
 persistence:
-  storageClass: azurefile
+  # Type of provisioning.
+  # Allowed values are: dynamic | static | local
+  # Selects the subset of configuration parameters to be used.
+  provisioning: dynamic
   storageSize: 1Gi
-  # To be used in simple environments (e.g. demos) to persist data on local host.
-  # If set, storageClass will be ignored.
-  hostPath:
-  # To be used in multi-regional installations to persist data in different clusters.
-  # If set, storageClass and hostPath are ignored.
-  pvc:
+    
+  dynamic:
+    storageClass: azurefile
+    # Annotations of persistent-volums-claim.
+    # Default values are:
+    #   "helm.sh/resource-policy": keep
+    #   "helm.sh/hook": pre-install
+    # Use {} to set no annotations at all.
+    # Default values are NOT merged with custom settings.
+    annotations:
+
+  # If an already existing persistent-volume should be used, this can be done by
+  # selecting static provisioning.
+  static:
+    # Name of persistent-volume to be used.
+    pv:
+    # Annotations of persistent-volums-claim.
+    annotations:
+      
+  # To be used in simple, single node environments (e.g. demos) to persist data on local host.
+  local:
+    # Path in local filesystem to be used for persistent storage.
+    hostPath:
+    reclaimPolicy: Retain
+    # Annotations of persistent-volums-claim.
+    annotations:
 
 ingress:
   enabled: true

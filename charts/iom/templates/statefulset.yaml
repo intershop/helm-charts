@@ -643,7 +643,10 @@ spec:
             {{- end }}
 
       initContainers:
-        {{- if .Values.persistence.hostPath }}
+        {{- if (hasKey .Values "persistence") }}
+          {{- if (hasKey .Values.persistence "provisioning") }}
+            {{- if .Values.persistence.provisioning }}
+              {{- if eq .Values.persistence.provisioning "local" }}
         # Before usage, owner and group have to be changed!
         - name: docker-mount-hack
           image: busybox
@@ -651,6 +654,9 @@ spec:
           volumeMounts:
           - name: app-share-volume
             mountPath: /share
+              {{- end }}
+            {{- end }}
+          {{- end }}
         {{- end }}
         {{- if and .Values.dbaccount.enabled .Release.IsInstall }}
         - name: dbaccount
@@ -833,11 +839,7 @@ spec:
       volumes:
         - name: app-share-volume
           persistentVolumeClaim:
-        {{- if .Values.persistence.pvc }}
-            claimName: {{ .Values.persistence.pvc }}
-        {{- else }}
             claimName: {{ include "iom.fullname" . }}
-        {{- end }}
         
         {{- if .Values.newRelic.apm.enabled }}
         - name: newrelic-config-volume
