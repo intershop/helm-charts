@@ -282,15 +282,17 @@ persistence:
     # Default values are:
     #   "helm.sh/resource-policy": keep
     #   "helm.sh/hook": pre-install
-    # Use {} to set no annotations at all.
-    # Default values are NOT merged with custom settings.
-    annotations:
+    # Use an empty "annotations" parameter to set no annotations at all.
+    # Default values are applied only, if NO "annotations" parameter is set at all.
+    #annotations:
 
   # If an already existing persistent-volume should be used, this can be done by
   # selecting static provisioning.
   static:
     # Name of persistent-volume to be used.
     pv:
+    # Name of storageClass to be used. Has to match the storageClass of pv.
+    storageClass:
     # Annotations of persistent-volums-claim.
     annotations:
       
