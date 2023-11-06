@@ -52,7 +52,7 @@ spec:
       containers:
       - name: icm-as-server
         {{- include "icm-as.image" . | nindent 8 }}
-        {{- include "icm-as.env" . | nindent 8 }}
+        {{- include "icm-as.envAS" . | nindent 8 }}
         {{- include "icm-as.ports" . | nindent 8 }}
         {{- include "icm-as.resources" . | nindent 8 }}
         {{- include "icm-as.volumeMounts" . | nindent 8 }}
