@@ -41,21 +41,22 @@ data:
         <!-- discover nodes using KUBE_PING -->
         <org.jgroups.protocols.kubernetes.KUBE_PING
           namespace="{{.Release.Namespace}}"
-          port_range="5"
-{{- else if eq (include "icm-as.jgroups.discovery" .) "file_ping" -}}
+          labels="jgroupscluster={{- .Values.jgroups.clusterLabel | default .Release.Name -}}"
+          port_range="{{- .Values.jgroups.portRange | default 5 -}}"
+{{- else if eq (include "icm-as.jgroups.discovery" .) "file_ping" }}
         <!-- discover nodes by shared FS -->
         <FILE_PING
           location="/intershop/jgroups-share"
           remove_old_coords_on_view_change="true"
           remove_all_data_on_view_change="true"
           write_data_on_find="true"
-{{- else if eq (include "icm-as.jgroups.discovery" .) "azure_ping" -}}
+{{- else if eq (include "icm-as.jgroups.discovery" .) "azure_ping" }}
         <!-- discover nodes using azure protocol -->
         <azure.AZURE_PING
           storage_account_name="${jgroups.azure_ping.storage_account_name}"
           storage_access_key="${jgroups.azure_ping.storage_access_key}"
           container="${jgroups.azure_ping.container:ping}"
-{{- else if eq (include "icm-as.jgroups.discovery" .) "dns_ping" -}}
+{{- else if eq (include "icm-as.jgroups.discovery" .) "dns_ping" }}
         <!-- discover nodes using azure protocol -->
         <dns.DNS_PING 
           dns_query="{{ .Values.jgroups.dnsQuery }}"

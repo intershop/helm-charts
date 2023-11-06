@@ -43,8 +43,8 @@ spec:
           {{- include "icm-as.podBinding" . | nindent 8 }}
         {{- end }}
     spec:
-      {{- if .Values.serviceAccount.create }}
-      serviceAccountName: {{ include "icm-as.fullname" . }}-{{ include "icm-as.serviceAccountName" . }}
+      {{- if eq (include "icm-as.jgroups.discovery" .) "kube_ping" }}
+      serviceAccountName: {{ include "icm-as.serviceAccountName" . }}
       {{- end }}
       {{- if include "icm-as.nodeSelector" . }}
         {{- include "icm-as.nodeSelector" . | nindent 6 }}

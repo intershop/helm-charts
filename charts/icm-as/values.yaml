@@ -118,12 +118,11 @@ provideCustomConfig:
   #   fileName: urlrewriterules.xml
 
 serviceAccount:
-  # Specifies whether a service account should be created
+  # Specifies whether a service account should be created and used
   create: false
   # Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
+  # The name of the service account to use. (default .Release.Name + "-default")
   name:
 
 podSecurityContext:
@@ -392,11 +391,23 @@ replication:
 
 # Configuration of messaging via jgroups
 jgroups:
+
   # the discovery protocol to use
   # supported values are file_ping or kube_ping. Defaults to file_ping, but kube_ping | azure_ping is recommended
-  # discovery: <kube_ping | file_ping | azure_ping | dns_ping>
+  # file_ping (default) requires a mounted file system
+  # kube_ping (recommended) please set serviceAccount.create to create service account if not exists to allow icm to talk with k8s api server
+  # azure_ping (playground) mounts azure storage directly
+  # dns_ping (playground) declared dns query
+  discovery: file_ping
+
   # extra attributes to be added at the ping-section in xml,
   # e.g. "readTimeout=\"1000\" operationAttempts=\"5\""
   # discoveryExtraAttributes: <extra-attributes>
+
   # the DNS-query. Used with discovery type dns_ping
   dnsQuery: <dnsQuery>
+
+  # label for multiple clusters in a release (default: .Release.Name)
+  clusterLabel:
+  # adaption of ports in case a different range is needed
+  portRange:

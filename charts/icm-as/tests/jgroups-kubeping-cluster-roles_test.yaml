@@ -22,7 +22,7 @@ tests:
       - ../values.yaml
     template: "templates/jgroups-kubeping-cr.yaml"
     set:
-      jgroups.discovery: "kube_ping"
+      serviceAccount.create: true
     asserts:
       - isKind:
           of: ClusterRole

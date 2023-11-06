@@ -1,4 +1,4 @@
-{{- if eq (include "icm-as.jgroups.discovery" .) "kube_ping" }}
+{{- if .Values.serviceAccount.create -}}
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
