@@ -48,8 +48,8 @@ Dynamic Provisioning
 Dynamic provisioning is the default method to provide persistent storage for IOM, because it's the most easy to use method, which
 does not need any interaction with a cluster administrator.
 When using this method, the *persistent-volume* is created automatically from the requested *storage-class* (default-value is *azurefile*).
-Since the *pv* is created automatically in case of dynamic provisioning, the
-*reclaim-policy* cannot be influenced by any Helm parameter. Instead of it, it is inherited from the *storage-class*.
+Since the *pv* is created automatically, the *reclaim-policy* cannot be influenced by any Helm parameter. Instead of it,
+it is inherited from the *storage-class*.
 
 *azurefile* is the default-value for *persistence.dynamic.storageClass*, which uses *Delete* for *reclaim-policy*. This implies, that the
 automatically created *pv* uses *Delete* for *reclaim-policy* too. That means, the usage of default-values of IOM Helm charts could
@@ -136,8 +136,8 @@ Production-Systems and the like
 *Static provisioning* is the best choice for production systems. If configured properly, which means, the cluster administrator
 has to create a *pv* in advance, that is using the right *storage-class* along with *reclaim-policy* *Retain*, this kind
 of provisioning of persistent storage is mostly immune against problems. Data stored on persistent storage will not be
-deleted, even if the IOM Helm release is deleted. This storage also can be very easily reused by a new Helm release, without
-the need for changes of Helm parameters.
+deleted, even if the IOM Helm release is deleted. This storage can also be very easily re-used by a new Helm release, without
+the need for any changes of Helm parameters.
 
 As drawback, this provisioning method requires initially assistance by a cluster administrator.
 
@@ -161,6 +161,14 @@ Test- and Demo-System, without any critical Data
 
 *Local storage* must be used only in simple, single node implementations of Kubernetes, like *Minikube* or *Docker-Desktop*.
 It's recommended to set *persistence.local.hostPath* only.
+
+Example:
+
+.. code-block:: yaml
+
+  persistence:
+   local:
+     hostPath: /home/UserName/iom-share
    
 -----------------------------------------------
 Reuse a *pv* after Deletion of IOM Helm Release
@@ -185,7 +193,7 @@ look like this:
        pv: pv-for-iom-xyz
        storageClass: azurefile-iom
 
-Using this configuration, an IOM Helm release can be created, deleted and re-created again, without any need to adapt the configuration. The content of
+Using this configuration, an IOM Helm release can be created, deleted and re-created again and again, without any need to adapt the configuration. The content of
 the shared file-system will never be deleted and is provided to any re-created IOM Helm release.
       
 Dynamic Provisioning, configured with default Values
@@ -208,7 +216,7 @@ IOM Helm release would still exist.
   NAME                                      CAPACITY  ACCESS MODES  RECLAIM POLICY  STATUS  CLAIM                  STORAGECLASS  REASON  AGE
   pvc-873db395-c6c3-4cc5-9ba0-0b56f0f37329  1Gi       RWX           Delete          Bound   test-storage/test-iom  azurefile             48m
 
-The first measure is to change the *reclaim-policy* of the *pv* from "Delete" to "Retain". Otherwise the *pv* would disappear if the *pvc* is
+The first measure is to change the *reclaim-policy* of the *pv* from *Delete* to *Retain*. Otherwise the *pv* would disappear if the *pvc* is
 deleted. To do so, the *Kubernetes* object of the *pv* has to be edited. The value of *persistentVolumeReclaimPolicy* has to be changed from
 *Delete* to *Retain*.
 
@@ -242,7 +250,7 @@ Before the *pv* can be used again, the existing *claimRef* has to be removed. To
   NAME                                      CAPACITY  ACCESS MODES  RECLAIM POLICY  STATUS     CLAIM                 STORAGECLASS  REASON  AGE
   pvc-873db395-c6c3-4cc5-9ba0-0b56f0f37329  1Gi       RWX           Retain          Available                        azurefile             84m
 
-The existing *pv* can now be used by a new IOM Helm release. As now an existing *pv* is used, the *static provisioning* method has to be activated.
+The existing *pv* is now *Available* again and can now be used by a new IOM Helm release. As now an existing *pv* is used, the *static provisioning* method has to be activated.
 The according configuration snippet has to look like this. Please note, that additionally to the name of the *pv* also the correct *storage-class* of
 the *pv* has to be set.
 
@@ -259,7 +267,7 @@ Dynamic Provisioning, configured with a *storage-class* using *Retain* for *recl
 If the *storage-class* uses *Retain* for *reclaim-policy*, the annotations of the *pvc* should be set to allow deletion of the *pvc* along
 with the IOM Helm release.
 
-If *storage-class* and *pvc* are configured this way, *pvc* and *pv* are looking like this way after deletion of the IOM Helm release. It
+If *storage-class* and *pvc* are configured this way, *pvc* and *pv* are looking like this after deletion of the IOM Helm release. It
 can be seen, that the *pvc* is gone and the *pv* still exists.
 
 .. code-block:: shell
@@ -271,7 +279,7 @@ can be seen, that the *pvc* is gone and the *pv* still exists.
   NAME                                      CAPACITY  ACCESS MODES  RECLAIM POLICY  STATUS    CLAIM                  STORAGECLASS   REASON  AGE
   pvc-e9166f21-42de-4682-83d5-4cdae10c18e0  1Gi       RWX           Retain          Released  test-storage/test-iom  azurefile-iom          11m
 
-It can be seen, that the status of the *pv* is *Released*. In order to be able to reuse the *pv*, the *claimRef* has to be removed.
+It can be seen, that the status of the *pv* is *Released*. In order to be able to re-use the *pv*, the *claimRef* has to be removed.
 Just remove the whole *claimRef*-block from the *pv*-object:
 
 .. code-block:: shell
