@@ -281,7 +281,6 @@ persistence:
     # Annotations of persistent-volums-claim.
     # Default values are:
     #   "helm.sh/resource-policy": keep
-    #   "helm.sh/hook": pre-install
     # Use an empty "annotations" parameter to set no annotations at all.
     # Default values are applied only, if NO "annotations" parameter is set at all.
     #annotations:
@@ -300,7 +299,7 @@ persistence:
   local:
     # Path in local filesystem to be used for persistent storage.
     hostPath:
-    reclaimPolicy: Retain
+    reclaimPolicy: Delete
     # Annotations of persistent-volums-claim.
     annotations:
 
