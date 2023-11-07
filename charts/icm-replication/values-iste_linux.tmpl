@@ -75,50 +75,23 @@ icm-edit:
       enabled: true
       app_name: "${HELM_JOB_NAME}-icm-as"
       license_key: "${NEWRELIC_LICENSE_KEY}"
+    webLayer:
+      enabled: true
+      redis:
+        enabled: true
 
   icm-web:
-    nodeSelector:
-      agentpool: agentpool2
+    enabled: false
+
+  redis:
+    enabled: true
     resources:
-      agent:
-        limits:
-          memory: 200Mi
-        requests:
-          memory: 200Mi
-    webadapter:
-      podAnnotations:
-        # as long as there is no new cache system we need this annotation for icm-web
-        "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
-      image:
-        repository: "${ICM_WEBSERVER_IMAGE}"
-        command: |
-          mkdir -p $HELM_DIRECTORY/server-logs-edit
-          chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs-edit
-          timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
-          su ${SERVER_DIRECTORY_USER} -c "/intershop/bin/intershop.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs-edit/wa${timestamp}.log"
-    agent:
-      image:
-        repository: "${ICM_WEBADAPTER_AGENT_IMAGE}"
-        command: |
-          mkdir -p $HELM_DIRECTORY/server-logs-edit
-          chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs-edit
-          timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
-          su ${SERVER_DIRECTORY_USER} -c "/intershop/bin/start-waa.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs-edit/waa${timestamp}.log"
-    podSecurityContext:
-      runAsUser: 0
-      runAsGroup: 0
-      fsGroup: 0
-      runAsNonRoot: false
-    environment:
-      HELM_DIRECTORY: "${HELM_DIRECTORY}"
-      SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
-      SERVER_DIRECTORY_GROUP: "${SERVER_DIRECTORY_GROUP}"
-    service:
-      httpPort: 8080
-      httpsPort: 8443
-    persistence:
-      pagecache:
-        type: emptyDir
+      limits:
+        cpu: 250m
+        memory: 256Mi
+      requests:
+        cpu: 250m
+        memory: 256Mi
 
 icm-live:
   icm-as:
@@ -196,52 +169,23 @@ icm-live:
       app_name: "${HELM_JOB_NAME}-icm-as"
       license_key: "${NEWRELIC_LICENSE_KEY}"
 
-  icm-web:
-    nodeSelector:
-      agentpool: agentpool2
-    resources:
-      agent:
-        limits:
-          memory: 200Mi
-        requests:
-          memory: 200Mi
-    webadapter:
-      podAnnotations:
-        # as long as there is no new cache system we need this annotation for icm-web
-        "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
-      image:
-        repository: "${ICM_WEBSERVER_IMAGE}"
-        command: |
-          mkdir -p $HELM_DIRECTORY/server-logs-live
-          chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs-live
-          timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
-          su ${SERVER_DIRECTORY_USER} -c "/intershop/bin/intershop.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs-live/wa${timestamp}.log"
-    agent:
-      image:
-        repository: "${ICM_WEBADAPTER_AGENT_IMAGE}"
-        command: |
-          mkdir -p $HELM_DIRECTORY/server-logs-live
-          chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs-live
-          timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
-          su ${SERVER_DIRECTORY_USER} -c "/intershop/bin/start-waa.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs-live/waa${timestamp}.log"
-    podSecurityContext:
-      runAsUser: 0
-      runAsGroup: 0
-      fsGroup: 0
-      runAsNonRoot: false
-    environment:
-      HELM_DIRECTORY: "${HELM_DIRECTORY}"
-      SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
-      SERVER_DIRECTORY_GROUP: "${SERVER_DIRECTORY_GROUP}"
-    service:
-      httpPort: 8080
-      httpsPort: 8443
-    persistence:
-      pagecache:
-        type: emptyDir
-      customdata:
+    webLayer:
+      enabled: true
+      redis:
         enabled: true
-        existingClaim: icm-nfs
+
+  icm-web:
+    enabled: false
+
+  redis:
+    enabled: true
+    resources:
+      limits:
+        cpu: 250m
+        memory: 256Mi
+      requests:
+        cpu: 250m
+        memory: 256Mi
 
   test:
     enabled: true
