@@ -25,7 +25,7 @@ spec:
           imagePullPolicy: IfNotPresent
           command: ["memcached"]
           # add "-vv" for verbose logging
-          args: ["-m", "2900", "-I", "10M"]
+          args: ["-m", "6000", "-I", "10M"]
           ports:
             - name: http
               containerPort: 11211
@@ -37,4 +37,4 @@ spec:
             requests:
               memory: 1Gi
             limits:
-              memory: 3Gi
+              memory: 6Gi
