@@ -141,6 +141,16 @@ the need for any changes of Helm parameters.
 
 As drawback, this provisioning method requires initially assistance by a cluster administrator.
 
+Example:
+
+.. code-block:: yaml
+
+  persistence:
+   provisioning: static
+   static:
+     pv: pv-for-iom-xyz
+     storageClass: azurefile-iom
+
 Test- and Demo-System, without any critical Data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -167,6 +177,7 @@ Example:
 .. code-block:: yaml
 
   persistence:
+   provisioning: local
    local:
      hostPath: /home/UserName/iom-share
    
