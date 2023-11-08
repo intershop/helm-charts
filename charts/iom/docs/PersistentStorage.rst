@@ -195,6 +195,18 @@ look like this:
 
 Using this configuration, an IOM Helm release can be created, deleted and re-created again and again, without any need to adapt the configuration. The content of
 the shared file-system will never be deleted and is provided to any re-created IOM Helm release.
+
+But before the *pv* can be re-used, it is necessary to delete the existing *claimRef*. To do so, remove the whole *claimRef*-block from the *pv*.
+
+.. code-block:: shell
+
+  kubectl edit pv pv-for-iom-xyz
+
+  kubectl get pv
+  NAME              CAPACITY  ACCESS MODES  RECLAIM POLICY  STATUS     CLAIM                 STORAGECLASS  REASON  AGE
+  pv-for-iom-xyz    1Gi       RWX           Retain          Available                        azurefile-iom         19m
+
+The existing *pv* is now *Available* again and can be re-used by a new IOM Helm release.
       
 Dynamic Provisioning, configured with default Values
 ----------------------------------------------------
