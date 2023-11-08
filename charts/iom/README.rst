@@ -91,6 +91,16 @@ On default a secret for JWT is created automatically, containing a random value.
 
 It is still possible to define custom values, by using the parameters *oms.jwtSecret* and *oms.jwtSecretKeyRef*.
 
+Handling of persistent storage for shared file-system was improved
+==================================================================
+
+The configuration and documentation of persistent storage for shared file-system was improved.
+
+A new documentation page "`Persistent Storage <docs/PersistentStorage.rst>`_" was added, that describes the configuration of
+shared file-system in detail. Documentation of "`Helm Parameters of IOM <docs/ParametersIOM.rst>`_" was updated.
+
+Please note, that the new configuration requires migration of Helm parameters. 
+
 ---------------
 Migration Notes
 ---------------
@@ -141,6 +151,123 @@ have not set *oms.jwtSecret* and *oms.jwtSecretKeyRef*, this automatically creat
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
+Handling of persistent storage for shared file-system was improved
+==================================================================
+
+In former version of IOM Helm charts the provisioning of persistent storage method was depending on the two parameters *persistence.hostPath*
+and *persistence.storageClass*. There was also a third parameter (*persistence.pvc*), but this
+one was removed. There was a precedence defined for these parameters to select the provisioning method: if *persistence.hostPath* was set,
+*persistence.storageClass* was ignored.
+
+This is now changed. The new parameter *persistence.provisioning* was introduced, that explicitely defines the provisiong method to be used.
+Allowed values for *persistence.provisioning* are *dynamic* (default), *static* and *local*.
+
+- *dynamic* is equivalent to an old configuration, where *persistence.hostPath* and *persistence.pvc* were both not set.
+- *static* is a new provisioning method, that was not supported by older versions of IOM Helm charts.
+- *local* is equivalent to an old configuration, where *persistence.hostPath* was set, but *persistence.pvc* was not.
+
+Each provisioning method can be configured in more detail. Therefore separate parameter-groups were introduced, which mirror the names
+of the provisioning methods: *persistence.dynamic|static|local*.
+
+The old parameter *persistence.storageClass* belongs to *dynamic* provisioning, therefore it was moved to *persistence.dynamic.storageClass*.
+The old parameter *persistence.hostPath*, belongs to *local* provisioning and was therefore
+moved to parameter *persistence.local.hostPath*.
+
+The former parameter *persistence.annotations* was split into three different parameters, one
+for each provisioning method: *persistence.dynamic|static|local.annotations*. This
+way it became possible to define different default-annotations for the different provisioning methods.
+
+In former version of IOM Helm charts the following annotations for *persistent-volume-claim* were used in every case:
+
+.. code-block:: yaml
+
+    "helm.sh/resource-policy": keep
+    "helm.sh/hook": pre-install
+
+In the current version of IOM Helm charts, there are no default-annotations at all for *persistence.static.annotations* and *persistence.local.annotations*.
+Only in case of *dynamic* provisioning, there is a single default-annotation:
+
+.. code-block:: yaml
+
+    "helm.sh/resource-policy": keep
+
+Examples for migrations
+-----------------------
+
++----------------------------------------+------------------------------------------+
+|Old                                     |Migrated                                  |
+|configuration                           |configuration                             |
++========================================+==========================================+
+|Dynamic provisioning of persistent storage using *storage-class* *azurefile*,      |
+|automatic deletion of *pvc* is prevented.                                          |
+|                                                                                   |
+|Preventing deletion of *pvc* and usage of *storage-class* *azurefile* are the      |
+|default behavior. Old and new configuration are identical.                         |
++----------------------------------------+------------------------------------------+
+|.. code-block:: yaml                    |.. code-block:: yaml                      |
+|                                        |                                          |
+|  persistence:                          |  persistence:                            |
+|                                        |                                          |
++----------------------------------------+------------------------------------------+
+|Dynmaic provisioning of persistent storage using a custom *storage-class*,         |
+|automatic deletion of *pvc* is prevented.                                          |
+|                                                                                   |
+|Preventing deletion of *pvc* is the default behavior in both cases, therefore      |
+|annotations are not specified in both cases. The position of *storageClass* has    |
+|changed, it has to be moved to *persistence.dynamic.storageClass*.                 |
++----------------------------------------+------------------------------------------+
+|.. code-block:: yaml                    |.. code-block:: yaml                      |
+|                                        |                                          |
+|  persistence:                          |  persistence:                            |
+|    storageClass: azurefile-iom         |    dynamic:                              |
+|                                        |      storageClass: azurefile-iom         |
++----------------------------------------+------------------------------------------+
+|Dynamic provisioning of persistent storage using *storage-class* *azurefile*,      |
+|automatic deletion of *pvc* is enabled.                                            |
+|                                                                                   |
+|Enabling deletion of *pvc* is done by removing all annotations from *pvc*. This has|
+|not changed in the new version. But the position has changed from                  |
+|*persistence.annotations* to *persistence.dynamic.annotations*.                    |
+|                                                                                   |
+|Since *azurefile* is and was the default-value of *storageClass* and dynamic       |
+|provisioning is the default provisioning method, the other parts of old and new    |
+|configuration have not changed.                                                    |
++----------------------------------------+------------------------------------------+
+|.. code-block:: yaml                    |.. code-block:: yaml                      |
+|                                        |                                          |
+|  persistence:                          |  persistence:                            |
+|    annotations:                        |    dynamic:                              |
+|                                        |      annotations:                        |
++----------------------------------------+------------------------------------------+
+|Dynamic provisioning of persistent storage using a custom *storage-class*,         |
+|automatic deletion of *pvc* is enabled.                                            |
+|                                                                                   |
+|Enabling deletion pf *pvc* is done by removing all annotations from *pvc*. This has|
+|not changed in the new version. But the position has changed from                  |
+|*persistence.annotations* to *persistence.dynamic.annotations*.                    |
+|                                                                                   |
+|Parameter *persistence.storageClass* has moved in the new version to               |
+|*persistence.dynamic.storageClass*.                                                |
++----------------------------------------+------------------------------------------+
+|.. code-block:: yaml                    |.. code-block:: yaml                      |
+|                                        |                                          |
+|  persistence:                          |  persistence                             |
+|    storageClass: azurefile-iom         |    dynamic:                              |
+|    annotations:                        |      storageClass: azurefile-iom         |
+|                                        |      annotations:                        |
++----------------------------------------+------------------------------------------+
+|Local provisioning of persistent storage.                                          |
+|                                                                                   |
+|Parameter *persistence.hostPath* has moved in the new version to                   |
+|*persistence.local.hostPath*.                                                      |
++----------------------------------------+------------------------------------------+
+|.. code-block:: yaml                    |.. code-block:: yaml                      |
+|                                        |                                          |
+|  persistence:                          |  persistence:                            |
+|    hostPath: /home/username/iom-share  |    local:                                |
+|                                        |      hostPath: /home/username/iom-share  |
++----------------------------------------+------------------------------------------+
+
 -----------------
 Deprecation Notes
 -----------------
@@ -163,7 +290,13 @@ IOM Helm charts of version 3.0.0 are only supporting IOM 4 and newer.
 Meta-Data were removed from *log*-Settings
 ==========================================
 
-Helm parameters *log.metaData.tenant* and *log.metaData.environment* were removed from settings
+Helm parameters *log.metaData.tenant* and *log.metaData.environment* were removed from settings.
+
+Passing a *persistent-volume-claim* to be used for shared file-system is not supported any longer
+=================================================================================================
+
+Current version of IOM Helm charts does not support any longer to pass the name of an existing
+*persistent-volume-claim* to be used for shared file-system.
 
 =============
 Version 2.3.0
@@ -194,6 +327,23 @@ Changed default values of *image.tag* and *dbaccount.image.tag*
 
 Default value of IOM version (parameter *image.tag*) was changed to 4.3.0 and default value of dbaccount version
 (parameter *dbaccount.image.tag*) was updated to 1.6.0.
+
+-------------
+Known Defects
+-------------
+
++--------+------------------------------------------------------------------------------------------------+
+|Key     |Summary                                                                                         |
+|        |                                                                                                |
++========+================================================================================================+
+|69933   |It is not possible to use the internal NGINX in combination with a global NGINX                 |
+|        |ingress-controller                                                                              |
+|        |                                                                                                |
++--------+------------------------------------------------------------------------------------------------+
+|76294   |Internal NGINX ingress-controller cannot use custom ingress-class nginx-iom (it is using class  |
+|        |nginx instead)                                                                                  |
+|        |                                                                                                |
++--------+------------------------------------------------------------------------------------------------+
 
 =============
 Version 2.2.0
@@ -278,9 +428,9 @@ Removal Notes
 
 Helm parameter *oms.mailResourcesBaseUrl* has been removed.
 
-=============
+-------------
 Known Defects
-=============
+-------------
 
 +--------+------------------------------------------------------------------------------------------------+
 |Key     |Summary                                                                                         |
