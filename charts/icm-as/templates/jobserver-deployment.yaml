@@ -36,6 +36,9 @@ spec:
     spec:
       template:
         spec:
+          {{- if eq (include "icm-as.jgroups.discovery" .) "kube_ping" }}
+          serviceAccountName: {{ include "icm-as.serviceAccountName" . }}
+          {{- end }}
           {{- if include "icm-as.nodeSelector" $jobValues }}
             {{- include "icm-as.nodeSelector" $jobValues | nindent 10 }}
           {{- end }}

@@ -1,0 +1,47 @@
+suite: tests correctness of cluster role bindings for jgroups KUBE_PING discovery
+templates:
+  - templates/jgroups-kubeping-cr.yaml
+  - templates/jgroups-kubeping-crb.yaml
+tests:
+  - it: no roles or role-bindings if KUBE_PING is not used
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: role jgroups KUBE_PING
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: "templates/jgroups-kubeping-cr.yaml"
+    set:
+      serviceAccount.create: true
+    asserts:
+      - isKind:
+          of: ClusterRole
+  - it: role-binding jgroups KUBE_PING
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: "templates/jgroups-kubeping-crb.yaml"
+    set:
+      jgroups.discovery: "kube_ping"
+    asserts:
+      - isKind:
+          of: ClusterRoleBinding
+      - contains:
+          path: subjects
+          content:
+            kind: ServiceAccount
+            name: icm-as-default
+            namespace: NAMESPACE
