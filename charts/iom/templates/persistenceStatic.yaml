@@ -43,6 +43,4 @@ spec:
   {{- else }}
     {{ fail "parameter persistence.provisioning is missing" }}
   {{- end }}
-{{- else }}
-  {{ fail "parameter persistence is missing" }}
 {{- end }}
