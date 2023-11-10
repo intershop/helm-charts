@@ -13,4 +13,4 @@ imagePullSecrets:
 - "dockerhub"
 
 image:
-  repository: intershophub/icm-job-operator:1.0.0-dev5
+  repository: intershophub/icm-job-operator:1.0.0
