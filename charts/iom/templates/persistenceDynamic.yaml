@@ -26,8 +26,7 @@ metadata:
     # by running helm delete
     "helm.sh/resource-policy": keep
     {{- end }}
-    "meta.helm.sh/release-namespace": {{ .Release.Namespace }}
-    "meta.helm.sh/release-name":  {{ .Release.Name }}
+    {{- include "meta.helm.annotations" . | nindent 4 }}
 spec:
   accessModes:
     - ReadWriteMany

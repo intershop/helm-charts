@@ -41,8 +41,7 @@ metadata:
     {{- if .Values.persistence.local.annotations }}
       {{- toYaml .Values.persistence.local.annotations | nindent 4 }}
     {{- end }}
-    "meta.helm.sh/release-namespace": {{ .Release.Namespace }}
-    "meta.helm.sh/release-name":  {{ .Release.Name }}
+    {{- include "meta.helm.annotations" . | nindent 4 }}
 spec:
   accessModes:
     - ReadWriteMany
