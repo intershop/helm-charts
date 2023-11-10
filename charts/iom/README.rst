@@ -205,8 +205,8 @@ Only in case of *dynamic* provisioning, there is a single default-annotation:
     NAMESPACE=<namespace>
     RELEASE_NAME=<release-name>
                   
-    kubectl annotate pvc iom-$RELEASE_NAME  meta.helm.sh/release-name=$RELEASE_NAME
-    kubectl annotate pvc iom-$RELEASE_NAME  meta.helm.sh/release-namespace=$NAMESPACE
+    kubectl annotate pvc ${RELEASE_NAME}-iom  meta.helm.sh/release-name=$RELEASE_NAME
+    kubectl annotate pvc ${RELEASE_NAME}-iom  meta.helm.sh/release-namespace=$NAMESPACE
   
 
 Examples for migrations
