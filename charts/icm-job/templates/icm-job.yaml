@@ -193,6 +193,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: icm-controller-manager
+  namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -212,6 +213,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: icm-controller-manager
+  namespace: {{ .Release.Namespace }}
 ---
 apiVersion: v1
 kind: Service
