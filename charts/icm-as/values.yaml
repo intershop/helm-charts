@@ -352,6 +352,7 @@ sslCertificateRetrieval:
 # In order to override these properties add them in the job section, e.g. add a 'resources' section to
 # configure different cpu or memory limits.
 job:
+  # if enabled=true the job controller must be deployed at cluster separatelly. see icm-job chart.
   enabled: false
 
   # If true, job-server-support will be available but no jobs will be created
