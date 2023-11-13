@@ -1,6 +1,6 @@
 apiVersion: v2
 name: pwa-main
-version: 0.8.0-epsilon
+version: 0.8.0-zeta
 description: Helm Chart to operate Intershop Progressive Web App
 type: application
 dependencies:
