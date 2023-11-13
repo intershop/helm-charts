@@ -85,6 +85,9 @@ icm-edit:
 
   redis:
     enabled: true
+    architecture: standalone
+    replica:
+      replicaCount: 1
     resources:
       limits:
         cpu: 250m
@@ -179,6 +182,9 @@ icm-live:
 
   redis:
     enabled: true
+    architecture: standalone
+    replica:
+      replicaCount: 1
     resources:
       limits:
         cpu: 250m
