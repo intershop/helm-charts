@@ -1,5 +1,5 @@
 {{/*
-Name of auto-generated JWT secret and name of according key need to be known at
+The name of the auto-generated JWT secret and name of the according key need to be known in
 different places, therefore they are defined centrally.
 */}}
 
