@@ -41,6 +41,7 @@ jobs:
       id: pr
       uses: peter-evans/create-pull-request@v5
       with: # commits all changes and creates the release branch and PR. If one already exists, it is updated.
+        token: ${{ secrets.PR_CREATOR_TOKEN }}
         branch: release/${{ github.ref_name }}
         base: main
         title: Release ${{ inputs.changes }}
