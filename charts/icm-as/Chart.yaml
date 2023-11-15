@@ -1,7 +1,7 @@
 apiVersion: v2
 # name and version must be in this exact order, otherwise bump2version won't work
 name: icm-as
-version: 1.4.0
+version: 1.5.0
 description: Intershop Commerce Management - AppServer
 type: application
 appVersion: 11.2.1
