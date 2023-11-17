@@ -51,7 +51,7 @@ readinessProbe:
 dbaccount:
   # If enabled, dbaccount will be executed during the installation process only, not on upgrade!
   enabled: false
-  # resetData reinitializes an existing database during installation process.
+  # resetData reinitializes an existing database during the installation process.
   # This property is deprecated and is replaced by oms.db.resetData.
   resetData: false
   # Name of dedicated tablespace
@@ -139,7 +139,7 @@ oms:
     # Connect timeout in seconds, a value of 0 indicates to wait indefinitely.
     # Timeout is passed to jdbc and psql connections
     connectTimeout:     "10"
-    # resetData cleans up an existing database during installation process.
+    # resetData cleans up an existing database during the installation process.
     # ATTENTION! This process destroys the database without backup and further
     # warning.
     resetData: false

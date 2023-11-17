@@ -69,7 +69,7 @@ Parameters of IOM Helm Chart
 |                                        |installation process of IOM. If set to *true*, existing data is deleted without backup and      |                                                         |
 |                                        |further warning.                                                                                |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Is replaced by *oms.db.resetData*. Will be removed in |                                                         |
+|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *oms.db.resetData*. Will be removed in    |                                                         |
 |                                        |  a future version.                                                                             |                                                         |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
@@ -89,7 +89,7 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                                |                                                         |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|dbaccount.tablespace                    |Use the passed tablespace as default for IOM database user and IOM database. Tablespace has to  |                                                         |
+|dbaccount.tablespace                    |Use the passed tablespace as default for IOM database users and IOM database. Tablespace has to |                                                         |
 |                                        |exist, it will not be created.                                                                  |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |`Options and Requirements of IOM database`_ will give you some more information.                |                                                         |
@@ -126,7 +126,7 @@ Parameters of IOM Helm Chart
 |                                        |* Ignored if *pg.userSecretKeyRef* is set.                                                      |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |pg.userSecretKeyRef                     |Instead of storing the name of the user as plain text in the values file, a reference to a key  |                                                         |
-|                                        |within a secret can be used. For more information see `References to entries of Kubernetes      |                                                         |
+|                                        |within a secret can be used. For more information, see `References to entries of Kubernetes     |                                                         |
 |                                        |secrets <SecretKeyRef.rst>`_.                                                                   |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |* Required only if *dbaccount.enabled* is set to *true* and *pg.user* is not set.               |                                                         |
@@ -144,7 +144,7 @@ Parameters of IOM Helm Chart
 |                                        |* Ignored if *pg.passwdSecretKeyRef* is set.                                                    |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |pg.passwdSecretKeyRef                   |Instead of storing the password as plain text in the values file, a reference to a key within a |                                                         |
-|                                        |secret can be used. For more information see `References to entries of Kubernetes secrets`_.    |                                                         |
+|                                        |secret can be used. For more information, see `References to entries of Kubernetes secrets`_.   |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |* Required only if *dbaccount.enabled* is set to *true* and *pg.passwd* is not set.             |                                                         |
 |                                        |                                                                                                |                                                         |
@@ -367,7 +367,7 @@ Parameters of IOM Helm Chart
 |                                        |* Requires IOM 4.3.0 or newer                                                                   |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.sso.oidcConfigSecretKeyRef          |Instead of storing the OIDC configuration as plain text in the values file, a reference to a key|{}                                                       |
-|                                        |within a *Kubernetes Secret* can be used. For more information see `References to Kubernetes    |                                                         |
+|                                        |within a *Kubernetes Secret* can be used. For more information, see `References to Kubernetes   |                                                         |
 |                                        |secrets <SecretKeyRef.rst>`_.                                                                   |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |* Requires IOM 4.3.0 or newer                                                                   |                                                         |
@@ -423,29 +423,29 @@ Parameters of IOM Helm Chart
 |                                        |execute stored procedures, run database migrations, apply project configuration) that are done  |                                                         |
 |                                        |before the Wildfly application server is started. The startup probe must not finally fail before|                                                         |
 |                                        |the end of the startup phase, otherwise the pod will be ended and restarted. The startup phase  |                                                         |
-|                                        |ends when startup probe succeeds. To do so, you need to configure startupProbe in such a way    |                                                         |
+|                                        |ends when the startup probe succeeds. To do so, you need to configure startupProbe in such a way|                                                         |
 |                                        |that                                                                                            |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |  *initialDelaySeconds + periodSeconds * failureThreshold*                                      |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |is larger than the time needed for the startup phase! The default values provided by IOM Helm   |                                                         |
-|                                        |charts provide an 1 hour time frame for the startup phase: 60s + 10s * 354 = 3600s = 1h. If your|                                                         |
+|                                        |charts provide a 1 hour time frame for the startup phase: 60s + 10s * 354 = 3600s = 1h. If your |                                                         |
 |                                        |system needs more time for the startup phase, you have to adapt the parameters. It is           |                                                         |
 |                                        |recommended to increase *startupProbe.failureThreshold* only and to leave all other parameters  |                                                         |
 |                                        |unchanged.                                                                                      |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |startupProbe.enabled                    |Enables to switch on/off the startup probe.                                                     |true                                                     |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|startupProbe.periodSeconds              |How often (in seconds) to perform the probe. Minimum value is 1.                                |10                                                       |
+|startupProbe.periodSeconds              |How often (in seconds) to perform the probe. The minimum value is 1.                            |10                                                       |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |startupProbe.initialDelaySeconds        |Number of seconds after the container has started before startup probes are initiated. Minimum  |60                                                       |
 |                                        |value is 0.                                                                                     |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|startupProbe.timeoutSeconds             |Number of seconds after which the probe times out. Default is set to 1 second. Minimum value is |5                                                        |
-|                                        |1.                                                                                              |                                                         |
+|startupProbe.timeoutSeconds             |Number of seconds after which the probe times out. Default is set to 1 second. The minimum value|5                                                        |
+|                                        |is 1.                                                                                           |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |startupProbe.failureThreshold           |When a probe fails, Kubernetes will try *failureThreshold* times before giving up. Giving up in |354                                                      |
-|                                        |case of startup probe means restarting the container. Minimum value is 1.                       |                                                         |
+|                                        |case of startup probe means restarting the container. The minimum value is 1.                   |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |livenessProbe                           |Group of parameters to fine-tune the liveness probe of Kubernetes. The basic kind of probe is   |                                                         |
 |                                        |fixed and cannot be changed. For an overview of probes and pod lifecycle, see the `official     |                                                         |
@@ -456,17 +456,17 @@ Parameters of IOM Helm Chart
 |livenessProbe.enabled                   |Enables to switch on/off the liveness probe.                                                    |true                                                     |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|livenessProbe.periodSeconds             |How often (in seconds) to perform the probe. Minimum value is 1.                                |10                                                       |
+|livenessProbe.periodSeconds             |How often (in seconds) to perform the probe. The minimum value is 1.                            |10                                                       |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |livenessProbe.initialDelaySeconds       |Number of seconds after the container has started before liveness probes are initiated. Minimum |60                                                       |
 |                                        |value is 0.                                                                                     |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|livenessProbe.timeoutSeconds            |Number of seconds after which the probe times out. Default is set to 1 second. Minimum value is |5                                                        |
-|                                        |1.                                                                                              |                                                         |
+|livenessProbe.timeoutSeconds            |Number of seconds after which the probe times out. Default is set to 1 second. The minimum value|5                                                        |
+|                                        |is 1.                                                                                           |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |livenessProbe.failureThreshold          |When a probe fails, Kubernetes will try *failureThreshold* times before giving up. Giving up in |3                                                        |
-|                                        |case of liveness probe means restarting the container. Minimum value is 1.                      |                                                         |
+|                                        |case of liveness probe means restarting the container. The minimum value is 1.                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |readinessProbe                          |Group of parameters to fine-tune the readiness probe of Kubernetes. The basic kind of probe is  |                                                         |
 |                                        |fixed and cannot be changed. For an overview of probes and pod lifecycle, see the `official     |                                                         |
@@ -476,20 +476,20 @@ Parameters of IOM Helm Chart
 |readinessProbe.enabled                  |Allows to switch the readiness probe on/off.                                                    |true                                                     |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|readinessProbe.periodSeconds            |How often (in seconds) to perform the probe. Minimum value is 1.                                |10                                                       |
+|readinessProbe.periodSeconds            |How often (in seconds) to perform the probe. The minimum value is 1.                            |10                                                       |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|readinessProbe.initialDelaySeconds      |Number of seconds after the container has started before readiness probes are initiated. Minimum|60                                                       |
-|                                        |value is 0.                                                                                     |                                                         |
+|readinessProbe.initialDelaySeconds      |Number of seconds after the container has started before readiness probes are initiated. The    |60                                                       |
+|                                        |minimum value is 0.                                                                             |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|readinessProbe.timeoutSeconds           |Number of seconds after which the probe times out. Default is set to 1 second. Minimum value is |8                                                        |
-|                                        |1.                                                                                              |                                                         |
+|readinessProbe.timeoutSeconds           |Number of seconds after which the probe times out. Default is set to 1 second. The minimum value|8                                                        |
+|                                        |is 1.                                                                                           |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |readinessProbe.failureThreshold         |When a probe fails, Kubernetes will try *failureThreshold* times before giving up. Giving up in |1                                                        |
-|                                        |case of readiness probe means the pod will be marked as *Unready*. Minimum value is 1.          |                                                         |
+|                                        |case of readiness probe means the pod will be marked as *Unready*. The minimum value is 1.      |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |readinessProbe.successThreshold         |Minimum consecutive successes for the probe to be considered successful after having            |1                                                        |
-|                                        |failed. Minimum value is 1.                                                                     |                                                         |
+|                                        |failed. The minimum value is 1.                                                                 |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |jboss                                   |Parameters of group jboss are all related to the configuration of Wildfly/JBoss.                |                                                         |
 |                                        |                                                                                                |                                                         |
@@ -501,10 +501,10 @@ Parameters of IOM Helm Chart
 |                                        |recognize this and adapt its memory configuration to this value.                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |jboss.javaOptsAppend                    |Java options, to be passed to the application-server, are built from the two parameters         |                                                         |
-|                                        |*jboss.javaOpts* and *jboss.javaOptsAppend*. It is recommended to not overwrite *jboss.javaOpts*|                                                         |
-|                                        |or only to overwrite it, if really necessary. This way the maintenance effort of your           |                                                         |
-|                                        |values-file will be reduced, since it's not necessary to track changes of the default value of  |                                                         |
-|                                        |*jboss.javaOpts*, that have to be reapplied to the overwritten value.                           |                                                         |
+|                                        |*jboss.javaOpts* and *jboss.javaOptsAppend*. It is recommended not to overwrite *jboss.javaOpts*|                                                         |
+|                                        |or only to overwrite it, if really necessary. This way, the maintenance effort of your          |                                                         |
+|                                        |values-file will be reduced, since it is not necessary to track changes of the default value of |                                                         |
+|                                        |*jboss.javaOpts*, which has to be reapplied to the overwritten value.                           |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |jboss.opts                              |Additional command-line arguments to be used when starting the WildFly application server.      |                                                         |
 |                                        |                                                                                                |                                                         |
@@ -519,7 +519,7 @@ Parameters of IOM Helm Chart
 |jboss.activemqClientPoolSizeMax         |Maximum size of the ActiveMQ client thread pool.                                                |"50"                                                     |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |jboss.nodePrefix                        |*jboss.nodePrefix* allows to define the prefix which is used to create a unique ID of the server|                                                         |
-|                                        |within the cluster. For uniqueness the prefix will be extended by the number of the pod it has  |                                                         |
+|                                        |within the cluster. For uniqueness, the prefix will be extended by the number of the pod it has |                                                         |
 |                                        |as part of the stateful set.                                                                    |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |If *jboss.nodePrefix* is left empty, the hostname is used as unique ID.                         |                                                         |
@@ -606,7 +606,7 @@ Parameters of IOM Helm Chart
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |log.rest                                |This parameter can hold a list of operation IDs of REST interfaces. If the operation ID of a    |[]                                                       |
 |                                        |REST interface is listed here, information about request and response of the according REST     |                                                         |
-|                                        |calls are written into *DEBUG* messages. Operation IDs are part of the YAML specification of IOM|                                                         |
+|                                        |calls is written into *DEBUG* messages. Operation IDs are part of the YAML specification of IOM |                                                         |
 |                                        |REST interfaces.                                                                                |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |Example:                                                                                        |                                                         |
@@ -653,7 +653,7 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                                |                                                         |
 |                                        |When using a dynamically growing Kubernetes cluster, this method spreads the pods only over     |                                                         |
 |                                        |already existing nodes. *spreadPods* is not enforcing the creation of new nodes. The only way to|                                                         |
-|                                        |this, is the usage of *podAntiAffinity.mode: required*.                                         |                                                         |
+|                                        |do this is the usage of *podAntiAffinity.mode: required*.                                       |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |For more information, see `Introducing PodTopologySpread                                        |                                                         |
 |                                        |<https://kubernetes.io/blog/2020/05/introducing-podtopologyspread/>`_.                          |                                                         |
@@ -689,7 +689,7 @@ Parameters of IOM Helm Chart
 |                                        |* Requires IOM 4.8.0 or newer.                                                                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |newRelic.apm.licenseKeySecretKeyRef     |Instead of storing the license key as plain text in the values file, a reference to a key within|                                                         |
-|                                        |a secret can be used. For more information see `References to entries of Kubernetes secrets     |                                                         |
+|                                        |a secret can be used. For more information, see `References to entries of Kubernetes secrets    |                                                         |
 |                                        |<SecretKeyRef.rst>`_                                                                            |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |* Required if *newRelic.apm.enabled* is set to *true* and *newRelic.apm.licenseKey* is not set. |                                                         |
@@ -701,7 +701,7 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                                |                                                         |
 |                                        |* Requires IOM 4.8.0 or newer.                                                                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|newRelic.apm.backendOnly                |If set to *true* and *New Relic APM* is enabled, APM data will captured only on the one IOM     |true                                                     |
+|newRelic.apm.backendOnly                |If set to *true* and *New Relic APM* is enabled, APM data will be captured only on the one IOM  |true                                                     |
 |                                        |application server that is running the backend applications (singleton applications). If set to |                                                         |
 |                                        |*false* and *New Relic APM* is enabled, APM data will be captured on all IOM application        |                                                         |
 |                                        |servers.                                                                                        |                                                         |
@@ -730,7 +730,7 @@ Parameters of IOM Helm Chart
 |datadogApm                              |*datadogApm* bundles parameters required to configure datadog Application Performance Monitoring|                                                         |
 |                                        |(APM).                                                                                          |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Is replaced by *newRelic*. Will be removed in a       |                                                         |
+|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a          |                                                         |
 |                                        |  future version.                                                                               |                                                         |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
@@ -739,7 +739,7 @@ Parameters of IOM Helm Chart
 |                                        |``-javaagent`` parameter, loading the datadog javaagent library. This will not be the case when |                                                         |
 |                                        |set to *false*.                                                                                 |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Is replaced by *newRelic*. Will be removed in a future|                                                         |
+|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
@@ -747,7 +747,7 @@ Parameters of IOM Helm Chart
 |                                        |application server that is running the backend applications (singleton applications). If set to |                                                         |
 |                                        |*true* and datadog APM is enabled, tracing will be executed on all IOM application servers.     |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Is replaced by *newRelic*. Will be removed in a future|                                                         |
+|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
@@ -757,7 +757,7 @@ Parameters of IOM Helm Chart
 |                                        |Normally this environment variable is injected with the right value by the locally installed    |                                                         |
 |                                        |datadog daemon-set.                                                                             |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Is replaced by *newRelic*. Will be removed in a future|                                                         |
+|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
@@ -767,98 +767,98 @@ Parameters of IOM Helm Chart
 |                                        |Normally this environment variable is injected with the right value by the locally installed    |                                                         |
 |                                        |datadog daemon-set.                                                                             |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Is replaced by *newRelic*. Will be removed in a future|                                                         |
+|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.traceAgentTimeout            |This parameter is mapped to environment variable *DD_TRACE_AGENT_TIMEOUT*. For more information,|                                                         |
 |                                        |please consult the official Datadog documentation.                                              |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Is replaced by *newRelic*. Will be removed in a future|                                                         |
+|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.logsInjection                |This parameter is mapped to environment variable *DD_LOGS_INJECTION*. For more information,     |false                                                    |
 |                                        |please consult the official Datadog documentation.                                              |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Is replaced by *newRelic*. Will be removed in a future|                                                         |
+|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.debug                        |This parameter is mapped to environment variable *DD_TRACE_DEBUG*. For more information, please |false                                                    |
 |                                        |consult the official Datadog documentation.                                                     |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Is replaced by *newRelic*. Will be removed in a future|                                                         |
+|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.startupLogs                  |This parameter is mapped to environment variable *DD_TRACE_STARTUP_LOGS*. For more information, |true                                                     |
 |                                        |please consult the official Datadog documentation.                                              |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Is replaced by *newRelic*. Will be removed in a future|                                                         |
+|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.tags                         |This parameter is mapped to environment variable *DD_TAGS*. For more information, please consult|                                                         |
 |                                        |the official Datadog documentation.                                                             |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Is replaced by *newRelic*. Will be removed in a future|                                                         |
+|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.serviceMapping               |This parameter is mapped to environment variable *DD_SERVICE_MAPPING*. For more information,    |                                                         |
 |                                        |please consult the official Datadog documentation.                                              |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Is replaced by *newRelic*. Will be removed in a future|                                                         |
+|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.writerType                   |This parameter is mapped to environment variable *DD_WRITER_TYPE*. For more information, please |                                                         |
 |                                        |consult the official Datadog documentation.                                                     |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Is replaced by *newRelic*. Will be removed in a future|                                                         |
+|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.partialFlushMinSpan          |This parameter is mapped to environment variable *DD_TRACE_PARTIAL_FLUSH_MIN_SPANS*. For more   |                                                         |
 |                                        |information, please consult the official Datadog documentation.                                 |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Is replaced by *newRelic*. Will be removed in a future|                                                         |
+|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.dbClientSplitByInstance      |This parameter is mapped to environment variable *DD_TRACE_DB_CLIENT_SPLIT_BY_INSTANCE*. For    |                                                         |
 |                                        |more information, please consult the official Datadog documentation.                            |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Is replaced by *newRelic*. Will be removed in a future|                                                         |
+|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.healthMetricsEnabled         |This parameter is mapped to environment variable *DD_TRACE_HEALTH_METRICS_ENABLED*. For more    |false                                                    |
 |                                        |information, please consult the official Datadog documentation.                                 |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Is replaced by *newRelic*. Will be removed in a future|                                                         |
+|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.servletAsyncTimeoutError     |This parameter is mapped to environment variable *DD_TRACE_SERVLET_ASYNC_TIMEOUT_ERROR*. For    |true                                                     |
 |                                        |more information, please consult the official Datadog documentation.                            |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Is replaced by *newRelic*. Will be removed in a future|                                                         |
+|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.sampleRate                   |This parameter is mapped to environment variable *DD_TRACE_SAMPLE_RATE*. For more information,  |'1.0'                                                    |
 |                                        |please consult the official Datadog documentation.                                              |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Is replaced by *newRelic*. Will be removed in a future|                                                         |
+|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.jmsFetchEnabled              |This parameter is mapped to environment variable *DD_JMXFETCH_ENABLED*. For more information,   |true                                                     |
 |                                        |please consult the official Datadog documentation.                                              |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Is replaced by *newRelic*. Will be removed in a future|                                                         |
+|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
