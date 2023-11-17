@@ -96,7 +96,7 @@ Random JWT-secret provided
 
 On default a secret for JWT is created automatically, containing a random value.
 
-It's still possible to define custom values, by using the parameters *oms.jwtSecret* and *oms.jwtSecretKeyRef*.
+It is still possible to define custom values, by using the parameters *oms.jwtSecret* and *oms.jwtSecretKeyRef*.
 
 ---------------
 Migration Notes
@@ -105,36 +105,36 @@ Migration Notes
 Removal of internal NGINX
 =========================
 
-Internal NGINX, which was an optional component of IOM Helm Charts, was removed. The internal NGINX could be used in
+Internal NGINX, which was an optional component of IOM Helm Charts, was removed. The internal NGINX could be used in the
 following cases:
 
-1. Main goal of the internal NGINX was to act as a proxy between Ingress controller and IOM application servers in case,
-   the Ingress controller had no ability to provide session stickiness. In this case the internal NGINX was able to
+1. The main goal of the internal NGINX was to act as a proxy between Ingress controller and IOM application servers in case,
+   the Ingress controller had no ability to provide session stickiness. In this case, the internal NGINX was able to
    handle session stickiness for IOM.
-2. In very simple demo and test installations the internal NGINX could also be used as Ingress controller. This made the
-   setup a little bit easier, since the installation of a cluster wide Ingress controller could be skipped.
+2. In very simple demo and test installations, the internal NGINX could also be used as Ingress controller. This made the
+   setup easier, since the installation of a cluster wide Ingress controller could be skipped.
 
 If an installation is currently using the internal NGINX (parameter *nginx.enabled* is set to *true*), then measures
-have to be taken before using IOM Helm Charts 3.0.0. Depending on the use-case, which lead to the usage of the internal
+have to be taken before using IOM Helm Charts 3.0.0. Depending on the use-case, which leads to the usage of the internal
 NGINX, the measures are different.
 
 1. Session stickiness has to be provided by the Ingress controller, otherwise IOM can not be operated. If an NGINX Ingress
-   controller is used, the IOM Helm Charts are already provide the required configuration settings. If any other Ingress
+   controller is used, the IOM Helm Charts already provide the required configuration settings. If any other Ingress
    controller is used, you have to determine how to configure it in order to provide session stickiness. The according
    configuration has then to be applied in the Helm values.
-2. Simple demo and test installations have now to use a separately installed Ingress controller. Preferred is an NGINX
+2. Simple demo and test installations now have to use a separately installed Ingress controller. Preferred is an NGINX
    Ingress controller, since the required configuration for session stickiness is already provided by IOM Helm Charts.
 
 Default value of *mailhog.probes.enabled* has changed
 =====================================================
 
 The default value of *mailhog.probes.enabled* was changed from *true* to *false*, meaning that there are no probes executed
-unless requested. This new setting reduces amount of log-messages of mailhog even if default values are used.
+unless requested. This new setting reduces the amount of log-messages of mailhog even if default values are used.
 
 *dbaccount.resetData* was replaced by *oms.db.resetData*
 ========================================================
 
-Parameter *dbaccount.resetData* was replaced by *oms.db.resetData*. For a limited period of time (until next major release of IOM
+Parameter *dbaccount.resetData* was replaced by *oms.db.resetData*. For a limited period of time (until the next major release of IOM
 Helm charts), the old parameter *dbaccount.resetData* will still be supported.
 Usage of new parameter *oms.db.resetData* requires IOM version 4.8.0 or newer.
 
