@@ -38,6 +38,6 @@ jobs:
         SUBJECT="chore: integrate main to develop/${{ matrix.branch }}"
         BODY="Automated Sync PR"
         # this may fail if a PR already exists, this is ignored
-        gh pr create --base "develop/${{ matrix.branch }}" --title "$SUBJECT" --body "$BODY" || true
+        gh pr create --base "develop/${{ matrix.branch }}" --title "$SUBJECT" --body "$BODY" --label ignore-for-release-notes || true
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

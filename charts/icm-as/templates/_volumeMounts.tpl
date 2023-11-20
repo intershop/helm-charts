@@ -19,14 +19,20 @@ volumeMounts:
 {{- end }}
 - mountPath: /intershop/customizations
   name: customizations-volume
+{{- if eq (include "icm-as.jgroups.discovery" .) "file_ping" }}
 - mountPath: /intershop/jgroups-share
   name: jgroups-volume
+{{- end }}
 {{- if and (.Values.replication.enabled) (eq .Values.replication.role "source")}}
 - mountPath: /intershop/replication-conf/replication-clusters.xml
   name: replication-volume
   readOnly: true
   subPath: replication-clusters.xml
 {{- end }}
+- mountPath: /intershop/jgroups-conf/jgroups-config.xml
+  name: jgroups-config-volume
+  readOnly: true
+  subPath: jgroups-config.xml
 {{- if .Values.webLayer.redis.enabled }}
 - mountPath: /intershop/redis-conf/redis-client-config.yaml
   name: redis-client-config-volume

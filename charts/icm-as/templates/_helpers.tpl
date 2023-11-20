@@ -55,11 +55,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Create the name of the service account to use
 */}}
 {{- define "icm-as.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create -}}
-    {{ default (include "icm-as.fullname" .) .Values.serviceAccount.name }}
-{{- else -}}
-    {{ default "default" .Values.serviceAccount.name }}
-{{- end -}}
+  {{ default (printf "%s-%s" (include "icm-as.fullname" .) "default") .Values.serviceAccount.name }}
 {{- end -}}
 
 {{/*
@@ -119,6 +115,7 @@ annotations:
 Pod-labels
 */}}
 {{- define "icm-as.podLabels" -}}
+jgroupscluster: "{{- .Values.jgroups.clusterLabel | default .Release.Name -}}"
 {{- with .Values.podLabels }}
 {{- . | toYaml | nindent 0 }}
 {{- end }}
@@ -175,3 +172,19 @@ securityContext:
   {{- toYaml .Values.podSecurityContext | nindent 2 }}
 {{- end }}
 {{- end -}}
+
+{{/*
+The discovery mode of jgroups messaging
+*/}}
+{{- define "icm-as.jgroups.discovery" -}}
+{{- if .Values.jgroups -}}
+  {{- if .Values.jgroups.discovery -}}
+    {{- .Values.jgroups.discovery -}}
+  {{- else -}}
+    {{- printf "file_ping" }}
+  {{- end -}}
+{{- else -}}
+    {{- printf "file_ping" }}
+{{- end -}}
+{{- end -}}
+
