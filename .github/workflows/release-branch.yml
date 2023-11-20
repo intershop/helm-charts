@@ -38,7 +38,6 @@ jobs:
       id: list-changed-charts
       uses: tj-actions/changed-files@v40.1.1
       with:
-        dir_names_max_depth: 2
         #ignore files from bump-my-version, which are not chart changes
         files_ignore: "**/*.toml"
         base_sha: ${{ steps.last_tagged_sha.outputs.base_sha }}
