@@ -108,12 +108,12 @@ jobs:
       id: create-release-input-parameter
       run: |
         set -x
-        #echo "Hallo debug_output: ${{ steps.version.outputs.debug_output }}"
-        #echo "Hallo previous_version : ${{ steps.version.outputs.previous_version }}"
-        #echo "Hallo is_tagged  : ${{ steps.version.outputs.is_tagged }}"
-        #echo "Hallo version_type  : ${{ steps.version.outputs.version_type }}"
-        #echo "Hallo previous_commit   : ${{ steps.version.outputs.previous_commit }}"
-        #echo "Hallo previous_version   : ${{ steps.version.outputs.previous_version }}"
+        #echo "debug_output: ${{ steps.version.outputs.debug_output }}"
+        #echo "previous_version : ${{ steps.version.outputs.previous_version }}"
+        #echo "is_tagged  : ${{ steps.version.outputs.is_tagged }}"
+        #echo "version_type  : ${{ steps.version.outputs.version_type }}"
+        #echo "previous_commit   : ${{ steps.version.outputs.previous_commit }}"
+        #echo "previous_version   : ${{ steps.version.outputs.previous_version }}"
         echo -n " ${{ matrix.value }}:${{ steps.version.outputs.version_type }}" >> release-input-parameter.txt
     - name: Update artifact
       uses: actions/upload-artifact@v3
