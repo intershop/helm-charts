@@ -7,6 +7,8 @@ Creates the environment section
 env:
 - name: ENVIRONMENT
   value: "{{ include "icm-as.environmentName" . }}"
+- name: INTERSHOP_EVENT_JGROUPSPROTOCOLSTACKCONFIGFILE
+  value: "/intershop/jgroups-conf/jgroups-config.xml"
 {{- if not (hasKey .Values.environment "SERVER_NAME") }}
 - name: SERVER_NAME
   value: "{{ .Values.serverName }}"
@@ -81,5 +83,29 @@ env:
 {{- if .Values.webLayer.redis.enabled }}
 - name: INTERSHOP_PAGECACHE_REDIS_ENABLED
   value: "true"
+{{- end }}
+{{- end -}}
+
+{{/*
+Job-specific-environment
+*/}}
+{{- define "icm-as.envJob" }}
+{{- include "icm-as.env" . }}
+- name: MAIN_CLASS
+  value: "com.intershop.beehive.core.capi.job.JobServer"
+- name: INTERSHOP_JOB_SERVER_EXCLUSIVE
+  value: "true"
+- name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
+  value: {{ .jobServerGroup }}
+{{- end -}}
+
+{{/*
+AppServer-specific-environment
+*/}}
+{{- define "icm-as.envAS" }}
+{{- include "icm-as.env" . }}
+{{- if .Values.job.enabled }}
+- name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
+  value: "BOS,WSF"
 {{- end }}
 {{- end -}}

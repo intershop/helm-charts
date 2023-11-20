@@ -1,3 +1,4 @@
+{{- if eq (include "icm-as.jgroups.discovery" .) "file_ping" -}}
 {{- if eq .Values.persistence.jgroups.type "local" -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -11,4 +12,5 @@ spec:
     requests:
       storage: {{ .Values.persistence.jgroups.size }}
   volumeName: {{ template "icm-as.fullname" . }}-local-jgroups-pv
+{{- end -}}
 {{- end -}}

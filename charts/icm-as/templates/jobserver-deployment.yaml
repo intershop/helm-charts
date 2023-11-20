@@ -36,6 +36,9 @@ spec:
     spec:
       template:
         spec:
+          {{- if eq (include "icm-as.jgroups.discovery" .) "kube_ping" }}
+          serviceAccountName: {{ include "icm-as.serviceAccountName" . }}
+          {{- end }}
           {{- if include "icm-as.nodeSelector" $jobValues }}
             {{- include "icm-as.nodeSelector" $jobValues | nindent 10 }}
           {{- end }}
@@ -57,21 +60,6 @@ spec:
             {{- include "icm-as.podSecurityContext" $jobValues | nindent 10 }}
           {{- end }}
           {{- include "icm-as.volumes" . | nindent 10 }}
-{{- end -}}
-
-{{/*
-Job-specific-environment
-*/}}
-{{- define "icm-as.envJob" }}
-{{- include "icm-as.env" . }}
-- name: MAIN_CLASS
-  value: "com.intershop.beehive.core.capi.job.JobServer"
-- name: INTERSHOP_JOB_SERVER_EXCLUSIVE
-  value: "true"
-- name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
-  value: {{ .jobServerGroup }}
-- name: SERVER_NAME
-  value: {{ .jobServerName }}
 {{- end -}}
 
 {{/*

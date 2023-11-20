@@ -45,7 +45,7 @@ dockerSecret:
 ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
 ## Intershop: These secrets also last for customization images
 imagePullSecrets:
-- "dockerhub"
+  - "dockerhub"
 
 # list of customization images each following the structure:
 #  <name>:
@@ -107,7 +107,9 @@ operationalContext:
   applicationType: icm
 
 # provide custom cluster config from "icm-as.fullname"-system-conf-cluster configmap
-provideCustomConfig: {}
+provideCustomConfig:
+  {}
+
   # logback-main:
   #   mountPath: /intershop/system-conf/cluster/
   #   fileName: logback-main.xml
@@ -116,12 +118,11 @@ provideCustomConfig: {}
   #   fileName: urlrewriterules.xml
 
 serviceAccount:
-  # Specifies whether a service account should be created
+  # Specifies whether a service account should be created and used
   create: false
   # Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
+  # The name of the service account to use. (default .Release.Name + "-default")
   name:
 
 podSecurityContext:
@@ -312,7 +313,8 @@ copySitesDir:
 ingress:
   enabled: false
   className: null
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   # Paths are treated as list of prefixes. Any URL matching one of the prefixes will
@@ -350,6 +352,7 @@ sslCertificateRetrieval:
 # In order to override these properties add them in the job section, e.g. add a 'resources' section to
 # configure different cpu or memory limits.
 job:
+  # if enabled=true the job controller must be deployed at cluster separatelly. see icm-job chart.
   enabled: false
 
   # If true, job-server-support will be available but no jobs will be created
@@ -386,3 +389,26 @@ replication:
 
   # the name of the (source) database to be used at the target-system to read data from e.g. intershop_edit
   sourceDatabaseName: <databaseName>
+
+# Configuration of messaging via jgroups
+jgroups:
+
+  # the discovery protocol to use
+  # supported values are file_ping or kube_ping. Defaults to file_ping, but kube_ping | azure_ping is recommended
+  # file_ping (default) requires a mounted file system
+  # kube_ping (recommended) please set serviceAccount.create to create service account if not exists to allow icm to talk with k8s api server
+  # azure_ping (playground) mounts azure storage directly
+  # dns_ping (playground) declared dns query
+  discovery: file_ping
+
+  # extra attributes to be added at the ping-section in xml,
+  # e.g. "readTimeout=\"1000\" operationAttempts=\"5\""
+  # discoveryExtraAttributes: <extra-attributes>
+
+  # the DNS-query. Used with discovery type dns_ping
+  dnsQuery: <dnsQuery>
+
+  # label for multiple clusters in a release (default: .Release.Name)
+  clusterLabel:
+  # adaption of ports in case a different range is needed
+  portRange:

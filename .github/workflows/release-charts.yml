@@ -41,10 +41,10 @@ jobs:
           helm repo add intershop https://intershop.github.io/helm-charts
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.5.0
+        uses: helm/chart-releaser-action@v1.6.0
         with:
           charts_dir: "charts"
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          CR_GENERATE_RELEASE_NOTES: true
           CR_SKIP_EXISTING: true
-
