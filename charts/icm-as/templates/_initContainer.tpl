@@ -18,12 +18,16 @@ initContainers:
   - "-c"
   - |
     chmod 777 /intershop/sites && chown -R 150:150 /intershop/sites
+{{- if eq (include "icm-as.jgroups.discovery" .) "file_ping" }}
     chmod 777 /intershop/jgroups-share && chown -R 150:150 /intershop/jgroups-share
+{{- end }}
   volumeMounts:
   - name: sites-volume
     mountPath: /intershop/sites
+{{- if eq (include "icm-as.jgroups.discovery" .) "file_ping" }}
   - name: jgroups-volume
     mountPath: /intershop/jgroups-share
+{{- end }}
   securityContext:
     runAsUser: 0
 {{- end }}

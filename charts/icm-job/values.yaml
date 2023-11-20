@@ -11,3 +11,6 @@ dockerSecret:
 ## Intershop: These secrets also last for customization images
 imagePullSecrets:
 - "dockerhub"
+
+image:
+  repository: intershophub/icm-job-operator:1.0.0
