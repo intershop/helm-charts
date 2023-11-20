@@ -706,19 +706,28 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                                |                                                         |
 |                                        |- Requires IOM 5.0.0 or newer.                                                                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|newRelic.apm.config                     |Define further configuration values except for *license_key* and *app_name*, which are defined  |.. code-block:: yaml                                     |
-|                                        |by the parameters *newRelic.apm.licenseKey* and *newRelic.apm.appName*. For a full list of      |                                                         |
-|                                        |available settings, see `New Relic Docu about Java agent config file template                   |  applicaction_logging:                                  |
+|newRelic.apm.config                     |Define further configuration values except for *app_name*, which is already defined by the      |.. code-block:: yaml                                     |
+|                                        |parameter *newRelic.apm.appName*. For a full list of available settings, see `New Relic Docu    |                                                         |
+|                                        |about Java agent config file template                                                           |  applicaction_logging:                                  |
 |                                        |<https://docs.newrelic.com/docs/apm/agents/java-agent/configuration/                            |    enabled: false                                       |
 |                                        |java-agent-config-file-template>`_.                                                             |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |Please note, that APM for logs is disabled by default values. Any change of                     |                                                         |
-|                                        |*newRelic.apm.config* will overwrite the defaults.                                              |                                                         |
+|                                        |*newRelic.apm.config* will overwrite the default values. E.g. to undo the configuration, that no|                                                         |
+|                                        |logs are sent by APM (default behaviour), just define an empty *config* parameter.              |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |Example:                                                                                        |                                                         |
+|                                        |Examples:                                                                                       |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |.. code-block:: yaml                                                                            |                                                         |
 |                                        |                                                                                                |                                                         |
+|                                        |  # enable logs in APM (overwrite default settings).                                            |                                                         |
+|                                        |  newRelic:                                                                                     |                                                         |
+|                                        |    apm:                                                                                        |                                                         |
+|                                        |      config:                                                                                   |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |.. code-block:: yaml                                                                            |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |  # add more configuration settings, but disable logs.                                          |                                                         |
 |                                        |  newRelic:                                                                                     |                                                         |
 |                                        |    apm:                                                                                        |                                                         |
 |                                        |      config:                                                                                   |                                                         |
