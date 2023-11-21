@@ -14,5 +14,9 @@ runs:
   - name: Bump Version
     shell: bash
     run: |
-      pip install --no-cache-dir bump2version
+      if [[ -z "${{inputs.changes}}" ]]; then
+        echo "Missing parameter inputs.changes" 1>&2
+        exit 1
+      fi
+      pip install --no-cache-dir bump-my-version==0.12.0
       python ./.github/callBump2version.py ${{inputs.changes}}
