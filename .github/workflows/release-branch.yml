@@ -2,18 +2,127 @@ name: Create Release Branch
 # creates a release branch, creates a PR and bumps all versions as specified
 on:
   workflow_dispatch:
-    inputs:
-      changes:
-        description: |
-          A string of charts and their required update, e.g. "icm-as:minor icm-web:patch".
-          Dependent charts don't have to be specified and will be bumped automatically.
-          This action cannot be used for the iom charts, since they don't use bump2version.
-        required: true
-        type: string
-
 
 jobs:
+  find-charts-to-release:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4.1.1
+      with:
+        fetch-depth: 0
+    - name: Get last SHA with tag
+      id: last_tagged_sha
+      run: |
+        git config user.name "$GITHUB_ACTOR"
+        git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+        
+        if [[ ${{ github.ref_name }} = develop/* ]]; then
+          IFS='/' read -ra my_array <<< "${{ github.ref_name }}"
+          
+          last_tag=$(git describe --tags --match="${my_array[1]}-*" --abbrev=0 HEAD)
+          sha=$(git rev-list -n 1 $last_tag)
+          
+          base_sha=$(git rev-parse HEAD)
+        
+          echo "sha=$sha" >> $GITHUB_OUTPUT
+          echo "base_sha=$base_sha" >> $GITHUB_OUTPUT
+        else
+          echo "Only development branches could be released" 1>&2
+          exit 1
+        fi
+
+    - name: Get list of changed charts
+      id: list-changed-charts
+      uses: tj-actions/changed-files@v40.1.1
+      with:
+        #ignore files from bump-my-version, which are not chart changes
+        files_ignore: "**/*.toml"
+        base_sha: ${{ steps.last_tagged_sha.outputs.base_sha }}
+        sha: ${{ steps.last_tagged_sha.outputs.sha }}
+        files: |
+          charts/**
+    - name: Check changed charts
+      id: matrix
+      run: |
+        changed_directories=$(echo ${{ steps.list-changed-charts.outputs.all_changed_and_modified_files }} | grep -o 'charts/[^/]*' | cut -d '/' -f 2)
+        
+        if [[ -z "$changed_directories" ]]; then
+          echo "No chart changes detected. Chore changes need to be released manually." 1>&2
+          exit 1
+        fi
+        
+        # Entferne Duplikate mit tr und sort
+        unique_changed_directories=$(echo "$changed_directories" | tr ' ' '\n' | sort -u | tr '\n' ' ')
+        echo "unique_changed_directories: ${unique_changed_directories}"
+        
+        arr=($unique_changed_directories)
+        for element in "${arr[@]}"; do
+          formatted_output+=" \"$element\","
+        done
+        formatted_output=${formatted_output%,} # Entferne das letzte Komma
+        
+        echo "matrix=[ $formatted_output ]" >> $GITHUB_OUTPUT
+        
+        # to be able to exchange the version information in the next jobs
+        touch release-input-parameter.txt
+    - name: Create artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: release-input-parameter
+        path: release-input-parameter.txt
+
+  determine-semantic-version:
+    needs:
+    - find-charts-to-release
+    strategy:
+      matrix:
+        value: ${{fromJSON(needs.find-charts-to-release.outputs.matrix)}}
+      max-parallel: 1
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4.1.1
+      with: #fetch all commits, not just the last one
+        fetch-depth: 0
+
+    - name: Determine semantic version in loop
+      id: version
+      uses: paulhatch/semantic-version@v5.3.0
+      with:
+        tag_prefix: "${{ matrix.value }}-"
+        change_path: "charts/${{ matrix.value }}"
+        major_pattern: "BREAKING_CHANGE"
+        minor_pattern: '/feat\s*(\(\w+\)*)?:/'
+        search_commit_body: true
+        debug: true
+
+    - uses: actions/download-artifact@v3
+      with:
+        name: release-input-parameter
+
+    - name: Create the release input parameters
+      id: create-release-input-parameter
+      run: |
+        set -x
+        #echo "debug_output: ${{ steps.version.outputs.debug_output }}"
+        #echo "previous_version : ${{ steps.version.outputs.previous_version }}"
+        #echo "is_tagged  : ${{ steps.version.outputs.is_tagged }}"
+        #echo "version_type  : ${{ steps.version.outputs.version_type }}"
+        #echo "previous_commit   : ${{ steps.version.outputs.previous_commit }}"
+        #echo "previous_version   : ${{ steps.version.outputs.previous_version }}"
+        echo -n " ${{ matrix.value }}:${{ steps.version.outputs.version_type }}" >> release-input-parameter.txt
+    - name: Update artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: release-input-parameter
+        path: release-input-parameter.txt
+
   release:
+    needs:
+    - determine-semantic-version
     permissions:
       pull-requests: write
       contents: write
@@ -23,16 +132,26 @@ jobs:
       uses: actions/checkout@v3
       with: #fetch all commits, not just the last one
         fetch-depth: 0
+    - uses: actions/download-artifact@v3
+      with:
+        name: release-input-parameter
+    - name: Read release input parameter
+      id: read-release-input-parameter
+      run: |
+        release_inputs=$(cat release-input-parameter.txt | xargs)
+        echo "release_inputs: $release_inputs"
+        echo "release-input-parameter=$release_inputs" >> $GITHUB_OUTPUT
+        rm -f release-input-parameter.txt
     - name: Bump versions
       uses: ./.github/template/bump-version
       with:
-        changes: ${{ inputs.changes }}
+        changes: ${{ steps.read-release-input-parameter.outputs.release-input-parameter }}
     - name: Create commits
       run: |
         git config user.name "$GITHUB_ACTOR"
         git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
         git add -A
-        git commit -m "chore: bump versions ${{ inputs.changes }} and dependent charts"
+        git commit -m "chore: bump versions ${{ steps.read-release-input-parameter.outputs.release-input-parameter }} and dependent charts"
     - name: Reset main branch with changes from develop/?
       run: |
         git checkout main
@@ -44,7 +163,7 @@ jobs:
         token: ${{ secrets.PR_CREATOR_TOKEN }}
         branch: release/${{ github.ref_name }}
         base: main
-        title: Release ${{ inputs.changes }}
-        commit-message: "release: ${{ inputs.changes }} and dependent charts"
+        title: Release ${{ steps.read-release-input-parameter.outputs.release-input-parameter }}
+        commit-message: "release: ${{ steps.read-release-input-parameter.outputs.release-input-parameter }} and dependent charts"
         delete-branch: true
         labels: automated pr

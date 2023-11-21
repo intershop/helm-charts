@@ -43,7 +43,7 @@ dependencies = {
   ProductType.ICM_REPLICATION: [],
   ProductType.ICM: [ProductType.ICM_REPLICATION],
   ProductType.ICM_AS: [ProductType.ICM],
-  ProductType.ICM_JOB: [ProductType.ICM_AS],
+  ProductType.ICM_JOB: [],
   ProductType.ICM_WEB: [ProductType.ICM]
 }
 
@@ -59,7 +59,7 @@ def handle_subprocess_error(subprocess_result, error_message):
 
 def bumpVersion(chart, bump):
   print(f"Bumping version of \'{chart.value}\' to next \'{bump.value}\' value.")
-  bumpver_process = subprocess.run(f"bump2version --allow-dirty {bump.value}",
+  bumpver_process = subprocess.run(f"bump-my-version --allow-dirty bump {bump.value}",
                                      shell=True,
                                      cwd=f"./charts/{chart.value}",
                                      capture_output=True)
