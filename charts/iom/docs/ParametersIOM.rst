@@ -328,7 +328,7 @@ Parameters of IOM Helm Chart
 |oms.db.resetData                        |Controls if an already existing IOM database should be reset during the installation process of |false                                                    |
 |                                        |IOM. If set to *true*, existing data is deleted without backup and further warning.             |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Requires IOM 4.8.0 or newer.                                                                  |                                                         |
+|                                        |* Requires IOM 5.0.0 or newer.                                                                  |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |* Replaces parameter *dbaccount.resetData*.                                                     |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
@@ -669,62 +669,75 @@ Parameters of IOM Helm Chart
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |newRelic                                |*newRelic* bundles parametes required to configure *New Relic* monitoring system.               |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Requires IOM 4.8.0 or newer.                                                                  |                                                         |
+|                                        |- Requires IOM 5.0.0 or newer.                                                                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |newRelic.apm                            |*newRelic.apm* bundles parameters required to configure *New Relic APM* (Application Performance|                                                         |
 |                                        |Monitoring).                                                                                    |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Requires IOM 4.8.0 or newer.                                                                  |                                                         |
+|                                        |- Requires IOM 5.0.0 or newer.                                                                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |newRelic.apm.enabled                    |If set to *true*, IOM will be started with ``-javagent`` parameter, loading the *New Relic APM* |false                                                    |
 |                                        |javaagent library. This will not be the case when set to *false*.                               |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Requires IOM 4.8.0 or newer.                                                                  |                                                         |
+|                                        |- Requires IOM 5.0.0 or newer.                                                                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |newRelic.apm.licenseKey                 |A license-key is required to enable ingesting the data, see `New Relic Documentation about API  |                                                         |
 |                                        |keys <https://docs.newrelic.com/docs/apis/intro-apis/new-relic-api-keys/#license-key>`_.        |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Ignored if *newRelic.apm.licenseKeySecretKeyRef* is set.                                      |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |* Requires IOM 4.8.0 or newer.                                                                  |                                                         |
+|                                        |- Ignored if *newRelic.apm.licenseKeySecretKeyRef* is set.                                      |                                                         |
+|                                        |- Requires IOM 5.0.0 or newer.                                                                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |newRelic.apm.licenseKeySecretKeyRef     |Instead of storing the license key as plain text in the values file, a reference to a key within|                                                         |
 |                                        |a secret can be used. For more information, see `References to entries of Kubernetes secrets    |                                                         |
 |                                        |<SecretKeyRef.rst>`_                                                                            |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Required if *newRelic.apm.enabled* is set to *true* and *newRelic.apm.licenseKey* is not set. |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |* Requires IOM 4.8.0 or newer.                                                                  |                                                         |
+|                                        |- Required if *newRelic.apm.enabled* is set to *true* and *newRelic.apm.licenseKey* is not set. |                                                         |
+|                                        |- Requires IOM 5.0.0 or newer.                                                                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |newRelic.apm.appName                    |Set name of application in *New Relic*. If left empty, a combination of chart-, release- and    |<chart name>-<helm release>-<namespace>                  |
 |                                        |namespace-name will be used.                                                                    |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Requires IOM 4.8.0 or newer.                                                                  |                                                         |
+|                                        |- Requires IOM 5.0.0 or newer.                                                                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |newRelic.apm.backendOnly                |If set to *true* and *New Relic APM* is enabled, APM data will be captured only on the one IOM  |true                                                     |
 |                                        |application server that is running the backend applications (singleton applications). If set to |                                                         |
 |                                        |*false* and *New Relic APM* is enabled, APM data will be captured on all IOM application        |                                                         |
 |                                        |servers.                                                                                        |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Requires IOM 4.8.0 or newer.                                                                  |                                                         |
+|                                        |- Requires IOM 5.0.0 or newer.                                                                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|newRelic.apm.config                     |Define further configuration values except for *license_key* and *app_name*, which are defined  |                                                         |
-|                                        |by the parameters *newRelic.apm.licenseKey* and *newRelic.apm.appName*. For a full list of      |                                                         |
-|                                        |available settings, see `New Relic Docu about Java agent config file template                   |                                                         |
-|                                        |<https://docs.newrelic.com/docs/apm/agents/java-agent/configuration/                            |                                                         |
+|newRelic.apm.config                     |Define further configuration values except for *app_name*, which is already defined by the      |.. code-block:: yaml                                     |
+|                                        |parameter *newRelic.apm.appName*. For a full list of available settings, see `New Relic Docu    |                                                         |
+|                                        |about Java agent config file template                                                           |  applicaction_logging:                                  |
+|                                        |<https://docs.newrelic.com/docs/apm/agents/java-agent/configuration/                            |    enabled: false                                       |
 |                                        |java-agent-config-file-template>`_.                                                             |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |Example:                                                                                        |                                                         |
+|                                        |Please note, that APM for logs is disabled by default values. Any change of                     |                                                         |
+|                                        |*newRelic.apm.config* will overwrite the default values. E.g. to undo the configuration, that no|                                                         |
+|                                        |logs are sent by APM (default behaviour), just define an empty *config* parameter.              |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |Examples:                                                                                       |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |.. code-block:: yaml                                                                            |                                                         |
 |                                        |                                                                                                |                                                         |
+|                                        |  # Overwrite default settings of IOM Helm charts. This way the default settings of             |                                                         |
+|                                        |  # New Relic APM will be used, which enable logs in APM (see link above).                      |                                                         |
 |                                        |  newRelic:                                                                                     |                                                         |
 |                                        |    apm:                                                                                        |                                                         |
 |                                        |      config:                                                                                   |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |.. code-block:: yaml                                                                            |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |  # add more configuration settings, but disable logs.                                          |                                                         |
+|                                        |  newRelic:                                                                                     |                                                         |
+|                                        |    apm:                                                                                        |                                                         |
+|                                        |      config:                                                                                   |                                                         |
+|                                        |        application_logging:                                                                    |                                                         |
+|                                        |          enabled: false                                                                        |                                                         |
 |                                        |        send_data_on_exit: true                                                                 |                                                         |
 |                                        |        max_stack_trace_lines: 20                                                               |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Requires IOM 4.8.0 or newer.                                                                  |                                                         |
+|                                        |- Requires IOM 5.0.0 or newer.                                                                  |                                                         |
 |                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm                              |*datadogApm* bundles parameters required to configure datadog Application Performance Monitoring|                                                         |
@@ -732,7 +745,6 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                                |                                                         |
 |                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a          |                                                         |
 |                                        |  future version.                                                                               |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.enabled                      |This parameter is mapped to environment variable *DD_APM_ENABLED*. For more information, please |false                                                    |
 |                                        |consult the official datadog documentation.  If set to *true*, IOM will be started with         |                                                         |
