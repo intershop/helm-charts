@@ -39,7 +39,9 @@ jobs:
       uses: tj-actions/changed-files@v40.1.1
       with:
         #ignore files from bump-my-version, which are not chart changes
-        files_ignore: "**/*.toml"
+        files_ignore: |
+          **/*.toml
+          **/*.cfg
         base_sha: ${{ steps.last_tagged_sha.outputs.base_sha }}
         sha: ${{ steps.last_tagged_sha.outputs.sha }}
         files: |
