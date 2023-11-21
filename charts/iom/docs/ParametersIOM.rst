@@ -720,7 +720,8 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                                |                                                         |
 |                                        |.. code-block:: yaml                                                                            |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |  # enable logs in APM (overwrite default settings).                                            |                                                         |
+|                                        |  # Overwrite default settings of IOM Helm charts. This way the default settings of             |                                                         |
+|                                        |  # New Relic APM will be used, which enable logs in APM (see link above).                      |                                                         |
 |                                        |  newRelic:                                                                                     |                                                         |
 |                                        |    apm:                                                                                        |                                                         |
 |                                        |      config:                                                                                   |                                                         |
@@ -737,6 +738,7 @@ Parameters of IOM Helm Chart
 |                                        |        max_stack_trace_lines: 20                                                               |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |- Requires IOM 5.0.0 or newer.                                                                  |                                                         |
+|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm                              |*datadogApm* bundles parameters required to configure datadog Application Performance Monitoring|                                                         |
 |                                        |(APM).                                                                                          |                                                         |
