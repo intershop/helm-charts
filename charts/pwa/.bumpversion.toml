@@ -1,0 +1,28 @@
+[tool.bumpversion]
+current_version = "0.7.0"
+commit = true
+tag = false
+message = "Bump pwa chart version: {current_version} → {new_version}"
+parse = " (?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)(\-(?P<release>.*))?"
+serialize = [
+    "{major}.{minor}.{patch}-{release}",
+    "{major}.{minor}.{patch}"
+]
+
+[tool.bumpversion.parts.release_name]
+values = [
+    "start",
+    "alpha",
+    "beta",
+    "gamma"
+]
+
+[[tool.bumpversion.files]]
+filename = "Chart.yaml"
+search = "name: pwa-main\nversion: {current_version}"
+replace = "name: pwa-main\nversion: {new_version}"
+
+[[tool.bumpversion.files]]
+filename = "README.md"
+search = "version: {current_version}"
+replace = "version: {new_version}"
