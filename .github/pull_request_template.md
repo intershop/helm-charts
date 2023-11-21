@@ -25,7 +25,7 @@ Please check the one that applies to this PR using "x".
 
 ## Release ##
 
-Be sure to include PR label `major`, `minor` or `patch` when merging into `main`. This determines which part of the semantic version number needs to be bumped automatically.
+Be sure that pull requests are build according to the defined release process [here](https://github.com/intershop/helm-charts/wiki/Release-Process). As a main part to mention here is that the semantic version type will be read from the commit messages (`BREAKING_CHANGE` marks a *major* change, `feat(icm):` marks *minor* changes and the rest will be *patch*. So the developer must already know and is responsible.
 
 ## What Is the Current Behavior?
 
