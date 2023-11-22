@@ -12,91 +12,21 @@ $ helm repo update
 $ helm install my-release intershop/pwa-main
 ```
 
-### Using [Flux](https://fluxcd.io) v1
-
-```yaml
-apiVersion: helm.fluxcd.io/v1
-kind: HelmRelease
-metadata:
-  name: xxx-yyy
-  namespace: xxx-yyy
-
-spec:
-  rollback:
-    enable: true
-    force: true
-  wait: true
-  timeout: 270
-  releaseName: xxx-yyy
-  chart:
-    repository: https://intershop.github.io/helm-charts
-    name: pwa-main
-    version: 0.7.0
-  values:
-```
-
-### Using [Flux](https://fluxcd.io) v2
-
-Here you create a HelmRepository resource in addition to the HelmRelease [(helm-operator-migration Guide from Flux v1 to Flux v2)](https://fluxcd.io/flux/migration/helm-operator-migration/)
-
-```yaml
----
-apiVersion: source.toolkit.fluxcd.io/v1beta2
-kind: HelmRepository
-metadata:
-  name: ish-helm-charts
-  namespace: flux-system
-spec:
-  interval: 1m0s
-  url: https://intershop.github.io/helm-charts
-
----
-# PWA HelmRelease
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
-kind: HelmRelease
-metadata:
-  name: ${namespace}
-  namespace: ${namespace}
-spec:
-  chart:
-    spec:
-      # pwa helm chart, version from https://github.com/intershop/helm-charts
-      chart: pwa-main
-      version: 0.7.0
-      # Source reference to the HelmChart Repo
-      sourceRef:
-        kind: HelmRepository
-        name: ish-helm-charts
-        namespace: flux-system
-  # in case multiple pwa instances will be deployed into the given environment namespace, a postfix has to be added to the
-  # release name (i.e. pwa-$ENVIRONMENT-01 or pwa-$ENVIRONMENT-edit)
-  releaseName: ${namespace}
-  targetNamespace: ${namespace}
-  interval: 1m0s
-  timeout: 5m0s
-   # Helm Values - to be adapted by the dev team
-  values:
-```
-
 ## Release Versions
 
 The following table provides an overview of the different PWA Helm Chart versions and the minimum required PWA version to use it with.
 In addition, the version changes and necessary migration information is provided.
 
-| Chart | PWA    | Changes                                                                                                                                                                                           | Migration Information                                                                                                                                                                                                                        |
-| ----- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Chart | PWA    | Changes                                                                                                                                                                                                                    | Migration Information                                                                                                                                                                                                                                         |
+| ----- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0.8.0 | 1.0.0  | <ul><li>delay NGINX until PWA SSR is listening</li><li>configurable update strategy</li><li>less verbose prefetch job</li></ul>                                                                                            | <ul><li>configurable `updateStrategy` stays at `RollingUpdate` by default</li></ul>                                                                                                                                                                           |
 | 0.7.0 | 1.0.0  | <ul><li>Re-enabled support for `multi-channel.yaml` and `caching-ignore-params.yaml` source code fallbacks</li><li>Added additional Ingress for domain whitelisting</li><li>Added labels on deployment and pod levels</li> | Removed deprecated configuration options:<ul><li>`upstream.icm`</li><li>`cache.enabled` - was not optional</li><li>`cache.channels`</li></ul>See [Migration to 0.7.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.7.0.md) |
-| 0.6.0 | 1.0.0  | Support for Prometheus metrics                                                                                                                                                                        |                                                                                                                                                                                                                                              |
-| 0.5.0 | 1.0.0  | Added prefetch job that can heat up caches                                                                                                                                                          |                                                                                                                                                                                                                                              |
-| 0.4.0 | 1.0.0  | Support for PWA Hybrid Approach deployment (with ICM 11)                                                                                                                                                  | Requires PWA 3.2.0 for Hybrid Approach support                                                                                                                                                                                                   |
-| 0.3.0 | 1.0.0  | Use new Ingress controller definition                                                                                                                                                             | [Migration to 0.3.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.3.0.md)                                                                                                                                 |
-| 0.2.4 | 0.25.0 | Support for `multiChannel`, `cacheIgnoreParams` and `extraEnvVars` for nginx/cache deployment                                                                                                     | Missing support for `multi-channel.yaml` and `caching-ignore-params.yaml` source code fallbacks                                                                                                                                              |
-| 0.2.3 | 0.25.0 | Legacy Helm Chart 0.2.3 as initial version                                                                                                                                                        |                                                                                                                                                                                                                                              |
-
-### Upgrading an Existing Release to a New Major Version
-
-A major chart version change (like v1.2.3 -> v2.0.0) indicates that there is an incompatible breaking change that requires manual actions.
-These actions will be described as part of the release documentation available on GitHub.
+| 0.6.0 | 1.0.0  | Support for Prometheus metrics                                                                                                                                                                                             |                                                                                                                                                                                                                                                               |
+| 0.5.0 | 1.0.0  | Added prefetch job that can heat up caches                                                                                                                                                                                 |                                                                                                                                                                                                                                                               |
+| 0.4.0 | 1.0.0  | Support for PWA Hybrid Approach deployment (with ICM 11)                                                                                                                                                                   | Requires PWA 3.2.0 for Hybrid Approach support                                                                                                                                                                                                                |
+| 0.3.0 | 1.0.0  | Use new Ingress controller definition                                                                                                                                                                                      | See [Migration to 0.3.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.3.0.md)                                                                                                                                              |
+| 0.2.4 | 0.25.0 | Support for `multiChannel`, `cacheIgnoreParams` and `extraEnvVars` for nginx/cache deployment                                                                                                                              | Missing support for `multi-channel.yaml` and `caching-ignore-params.yaml` source code fallbacks                                                                                                                                                               |
+| 0.2.3 | 0.25.0 | Legacy Helm Chart 0.2.3 as initial version                                                                                                                                                                                 |                                                                                                                                                                                                                                                               |
 
 ## Parameters
 
@@ -105,7 +35,6 @@ These actions will be described as part of the release documentation available o
 | Name             | Description                    | Example Value                                |
 | ---------------- | ------------------------------ | -------------------------------------------- |
 | `updateStrategy` | The Kubernetes update strategy | `Recreate`<br>`RollingUpdate`&nbsp;(default) |
-
 
 ### NGINX
 
@@ -118,40 +47,13 @@ These actions will be described as part of the release documentation available o
 
 Both `cacheIgnoreParams` and `multiChannel` parameters take precedence over any `extraEnvVars` value containing `MULTI_CHANNEL` or `CACHING_IGNORE_PARAMS` variables.
 
-### SSR (Server-Side Rendering)
+### Hybrid Approach
 
 | Name                     | Description                                  | Example Value |
 | ------------------------ | -------------------------------------------- | ------------- |
 | `hybrid.enabled`         | Enable or disable Hybrid Approach deployment | `true`        |
 | `hybrid.backend.service` | ICM Web Adapter service name                 | `icm-web`     |
 | `hybrid.backend.port`    | ICM Web Adapter service port                 | `443`         |
-
-## Hybrid Approach
-
-Installs the [Intershop PWA and ICM system](https://github.com/intershop/intershop-pwa) all together in a Kubernetes cluster environment (same namespace). For more information about the Hybrid Approach, refer to the official [hybrid Approach concept](https://github.com/intershop/intershop-pwa/blob/develop/docs/concepts/hybrid-approach.md).
-
-To configure the PWA Helm chart for this mode, you must first set `hybrid.enabled` to `true`. This will activate conditional dependencies to an umbrella chart `icm`, which depends on `icm-as` and `icm-web`. Both require individual configuration. Please refer to their documentation for details. Finally, you must add each configuration values object to the `values.yaml` file that reflects your deployment.
-
-Example:
-
-```yaml
-image:
-  repository: intershophub/intershop-pwa-ssr
----
-cache:
-  image:
-    repository: intershophub/intershop-pwa-nginx
----
-icm:
-  icm-as:
-    image:
-      repository: intershophub/icm-as
----
-icm-web:
-  webadapter:
-    image:
-      repository: intershophub/icm-webadapter
-```
 
 ## NGINX Cache Prefetch
 
@@ -226,11 +128,13 @@ ingresssplit:
   tls:
   - secretName: tls-star-pwa-intershop-de
 ```
+
 Please pay attention to which API version of networking.k8s.io you are using. Check [this document](/charts/pwa/docs/migrate-to-0.3.0.md) for differences between the implementations.
 
 ## Pod Labels
 
 To introduce specific labels for the Pods needed for monitoring, change your values file or HelmRelease to the following:
+
 ```yaml
 ### @param podLabels labels for SSR pods and deployment
 ### ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
@@ -256,7 +160,101 @@ metrics:
 
 When enabled, the SSR container will expose the metrics in the deployment cluster on port 9113, while the nginx container exposes its metrics on port 9114 at the `/metrics` endpoint.
 
+## Hybrid Approach
+
+Installs the [Intershop PWA and ICM system](https://github.com/intershop/intershop-pwa) all together in a Kubernetes cluster environment (same namespace). For more information about the Hybrid Approach, refer to the official [hybrid Approach concept](https://github.com/intershop/intershop-pwa/blob/develop/docs/concepts/hybrid-approach.md).
+
+To configure the PWA Helm chart for this mode, you must first set `hybrid.enabled` to `true`. This will activate conditional dependencies to an umbrella chart `icm`, which depends on `icm-as` and `icm-web`. Both require individual configuration. Please refer to their documentation for details. Finally, you must add each configuration values object to the `values.yaml` file that reflects your deployment.
+
+Example:
+
+```yaml
+image:
+  repository: intershophub/intershop-pwa-ssr
 ---
+cache:
+  image:
+    repository: intershophub/intershop-pwa-nginx
+---
+icm:
+  icm-as:
+    image:
+      repository: intershophub/icm-as
+---
+icm-web:
+  webadapter:
+    image:
+      repository: intershophub/icm-webadapter
+```
+
+## Deployment via Flux Repository
+
+### Using [Flux](https://fluxcd.io) v1
+
+```yaml
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: xxx-yyy
+  namespace: xxx-yyy
+
+spec:
+  rollback:
+    enable: true
+    force: true
+  wait: true
+  timeout: 270
+  releaseName: xxx-yyy
+  chart:
+    repository: https://intershop.github.io/helm-charts
+    name: pwa-main
+    version: 0.7.0
+  values:
+```
+
+### Using [Flux](https://fluxcd.io) v2
+
+Here you create a HelmRepository resource in addition to the HelmRelease [(helm-operator-migration Guide from Flux v1 to Flux v2)](https://fluxcd.io/flux/migration/helm-operator-migration/)
+
+```yaml
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: ish-helm-charts
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  url: https://intershop.github.io/helm-charts
+
+---
+# PWA HelmRelease
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: ${namespace}
+  namespace: ${namespace}
+spec:
+  chart:
+    spec:
+      # pwa helm chart, version from https://github.com/intershop/helm-charts
+      chart: pwa-main
+      version: 0.7.0
+      # Source reference to the HelmChart Repo
+      sourceRef:
+        kind: HelmRepository
+        name: ish-helm-charts
+        namespace: flux-system
+  # in case multiple pwa instances will be deployed into the given environment namespace, a postfix has to be added to the
+  # release name (i.e. pwa-$ENVIRONMENT-01 or pwa-$ENVIRONMENT-edit)
+  releaseName: ${namespace}
+  targetNamespace: ${namespace}
+  interval: 1m0s
+  timeout:
+    5m0s
+    # Helm Values - to be adapted by the dev team
+  values:
+```
 
 ## Development
 
