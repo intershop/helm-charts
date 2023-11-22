@@ -976,6 +976,8 @@ Parameters of IOM Helm Chart
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |podAnnotations                          |Annotations to be added to pods.                                                                |{}                                                       |
 |                                        |                                                                                                |                                                         |
+|                                        |Pod annotations can be used to integrate *Prometheus metrics*, provided by IOM, into monitoring |                                                         |
+|                                        |systems like *DataDog* or *New Relic*, see `Prometheus Metrics <Metrics.rst>`_.                 |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |podSecurityContext                      |Security context policies to add to the iom-tests pod.                                          |{}                                                       |
 |                                        |                                                                                                |                                                         |

@@ -15,10 +15,19 @@ IOM version 4.2.0 and later provides an HTTP endpoint */metrics* at port 9990 th
 provided in `Prometheus <https://prometheus.io>`_ format, which is a widely used format that can be understood by most
 monitoring systems.
 
-The metrics are provided by the *Wildfly* sub-system *microprofile-metrics-smallrye*. The according
-`Quickstart guide <https://github.com/wildfly/quickstart/blob/main/microprofile-metrics/README.adoc>`_
-provides more information.
+Example of Integration with *New Relic / OpenTelemetry*
+=======================================================
 
+The combination of `New Relic <https://newrelic.com>`_ and `OpenTelemetry Collector <https://opentelemetry.io>`_ is used by *Intershop Commerce Platform* to collect and report *Prometheus metrics*. The following example shows, how to configure Helm parameters to integrate IOM metrics with *New Relic / OpenTelemetry*.
+
+*OpenTelemetry Collector* gets the information about the endpoint, providing the metrics, from annotations made to the pods. The according Helm parameters have to look like this, to enable the *OpenTelemetry Collector* to receive data from IOM:
+
+.. code-block:: yaml
+
+  podAnnotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/path: '/metrics'
+    prometheus.io/port: '9990'  
 
 Example of Integration with *Datadog*
 =====================================
