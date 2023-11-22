@@ -41,7 +41,7 @@ If you have any questions feel free to also send them to this email address.
 ## Commit Message Guidelines
 
 In general we comply with the rules and formats of [Conventional Commits](https://www.conventionalcommits.org).
-These rules are essential to our automated release processes and the later rollout of a helm chart as commit messages will be used to determine the new semantic version and shall help updating existing projects.
+These rules are essential to our automated release process and the later rollout of a helm chart. Commit messages will be used to determine the new semantic version and shall help updating existing projects.
 
 Some rules to be emphasized for chart related commits:
 * Every commit containing a `BREAKING_CHANGE` will be treated a as _MAJOR_ change, but please do also add a `!` to the semver-type of a commit (e.g.: fix(icm)!:). This will help reading changelogs and release notes.
