@@ -18,7 +18,7 @@ monitoring systems.
 Example of Integration with *New Relic / OpenTelemetry*
 =======================================================
 
-The combination of `New Relic <https://newrelic.com>`_ and `OpenTelemetry Collector <https://opentelemetry.io>`_ is used by *Intershop Commerce Platform* to collect and report *Prometheus metrics*. The following example shows, how to configure Helm parameters to integrate IOM metrics with *New Relic / OpenTelemetry*.
+The combination of `New Relic <https://newrelic.com>`_ and `OpenTelemetry Collector <https://opentelemetry.io>`_ is used by *Intershop Commerce Platform* to collect and report *Prometheus metrics*. The following example shows how to configure Helm parameters to integrate IOM metrics with *New Relic / OpenTelemetry*.
 
 *OpenTelemetry Collector* gets the information about the endpoint, providing the metrics, from annotations made to the pods. The according Helm parameters have to look like this, to enable the *OpenTelemetry Collector* to receive data from IOM:
 
