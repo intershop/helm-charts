@@ -214,3 +214,10 @@ ingresssplit:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+# Calculated values
+# use with `{{ tpl $.Values.calculated.X.Y $ }}`
+calculated:
+  metrics:
+    pwa: '{{ if or (.Values.metrics).enabled (.Values.monitoring).enabled }}on{{ end }}'
+    nginx: '{{ if or (.Values.cache.metrics).enabled (.Values.monitoring).enabled }}on{{ end }}'
