@@ -40,7 +40,6 @@ helm.sh/chart: {{ include "iom.chart" . }}
 app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-app.kubernetes.io/component: app-server
 {{- end }}
 
 {{/*

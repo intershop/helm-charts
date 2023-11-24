@@ -12,21 +12,17 @@ metadata:
   name: {{ include "iom.fullname" . }}-connection-monitor
   labels:
     {{- include "iom.labels" . | nindent 4 }}
-    app.kubernetes.io/component: connection-monitor
 spec:
   schedule: "{{ .Values.oms.db.connectionMonitor.schedule }}"
   jobTemplate:
     spec:
       template:
-        metadata:
-          labels:
-            {{- include "iom.labels" . | nindent 12 }}
-            app.kubernetes.io/component: connection-monitor
         spec:
           {{- with .Values.imagePullSecrets }}
           imagePullSecrets:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          restartPolicy: Never
           containers:
           - name: connection-monitor
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -126,7 +122,6 @@ spec:
               {{- end }}
             {{- end }}
             command: [ '/opt/oms/bin/connection_monitor.sh' ]
-          restartPolicy: Never
       {{- end }}
     {{- end }}
   {{- end }}
