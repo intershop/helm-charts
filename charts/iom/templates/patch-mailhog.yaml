@@ -33,44 +33,22 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: "{{ .Release.Name }}-mailhog-patch"
-  labels:
-    {{- include "iom.labels" . | nindent 4 }}
-    app.kubernetes.io/component: patch-mailhog
   annotations:
     # This is what defines this resource as a hook. Without this line, the
     # job is considered part of the release.
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-weight": "-5"
     "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
+  labels:
+    {{- include "iom.labels" . | nindent 4 }}
 spec:
   template:
     metadata:
       name: "{{ .Release.Name }}-mailhog-patch"
-      labels:
-        {{- include "iom.labels" . | nindent 8 }}
-        app.kubernetes.io/component: patch-mailhog
     spec:
       restartPolicy: Never
       serviceAccountName: {{ .Release.Name }}-mailhog-patch
       containers:
-      - name: patch-mailhog-deployment-labels
-        image: "bitnami/kubectl"
-        args:
-        - label
-        - --overwrite
-        - deployment
-        - {{ .Release.Name }}-mailhog
-        - --namespace={{ .Release.Namespace }}
-        - app.kubernetes.io/component=mailserver
-      - name: patch-mailhog-deployment-spec-component-label
-        image: "bitnami/kubectl"
-        args:
-        - patch
-        - deployment
-        - {{ .Release.Name }}-mailhog
-        - --namespace={{ .Release.Namespace }}
-        - -p
-        - '{"spec":{"template":{"metadata":{"labels":{"app.kubernetes.io/component":"mailserver"}}}}}'
       {{- if not .Values.mailhog.probes.enabled }}        
       - name: patch-mailhog-probes
         image: "bitnami/kubectl"
