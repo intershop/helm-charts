@@ -19,7 +19,6 @@ spec:
       {{- end }}
       labels:
         {{- include "iom-tests.selectorLabels" . | nindent 8 }}
-        {{- include "iom-tests.labels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
