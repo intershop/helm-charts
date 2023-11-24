@@ -310,7 +310,7 @@ spec:
         command:
         - /manager
         image: "{{ .Values.image.repository }}{{ if not (contains ":" .Values.image.repository) }}:{{ .Values.image.tag | default .Chart.AppVersion }}{{ end }}"
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: {{ .Values.image.imagePullPolicy | default "IfNotPresent"}}
         livenessProbe:
           httpGet:
             path: /healthz
