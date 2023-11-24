@@ -22,6 +22,7 @@ spec:
           imagePullSecrets:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          restartPolicy: Never
           containers:
           - name: connection-monitor
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -121,7 +122,6 @@ spec:
               {{- end }}
             {{- end }}
             command: [ '/opt/oms/bin/connection_monitor.sh' ]
-          restartPolicy: Never
       {{- end }}
     {{- end }}
   {{- end }}
