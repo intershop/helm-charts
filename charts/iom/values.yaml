@@ -189,10 +189,6 @@ log:
     customization: WARN
   access:
     enabled:       true
-  # Deprecated since iom-helm-charts 1.3.0
-  metadata:
-    tenant:        company-name
-    environment:   system-name
   # List of operationIDs
   # If an entry matches the operationID of a REST interface, request and response
   # of according requests are logged at level DEBUG

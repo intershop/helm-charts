@@ -110,16 +110,6 @@ spec:
             #
             - name: OMS_LOGLEVEL_SCRIPTS
               value: INFO
-              {{- if .Values.log.metadata }}
-                {{- if .Values.log.metadata.tenant }}
-            - name: TENANT
-              value: {{ .Values.log.metadata.tenant }}
-                {{- end }}
-                {{- if .Values.log.metadata.environment }}
-            - name: ENVIRONMENT
-              value: {{ .Values.log.metadata.environment }}
-                {{- end }}
-              {{- end }}
             {{- end }}
             command: [ '/opt/oms/bin/connection_monitor.sh' ]
       {{- end }}
