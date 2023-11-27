@@ -167,6 +167,11 @@ IOM prior version 4 is not supported any longer
 
 IOM Helm charts of version 3.0.0 are only supporting IOM 4 and newer.
 
+Meta-Data were removed from *log*-Settings
+==========================================
+
+Helm parameters *log.metaData.tenant* and *log.metaData.environment* were removed from settings
+
 =============
 Version 3.0.0
 =============
