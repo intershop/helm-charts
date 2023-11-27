@@ -258,6 +258,79 @@
                 }
               }
           }
+        },
+        "ingress": {
+          "additionalProperties": false,
+          "type": "object",
+          "title": "Ingress configuration",
+          "description": "Configure the ingress for the PWA",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Enable ingress",
+              "description": "Enable ingress",
+              "default": false
+            },
+            "className": {
+              "type": "string",
+              "title": "Ingress class name",
+              "description": "Ingress class name",
+              "default": "nginx"
+            },
+            "instances": {
+              "type": "object",
+              "title": "Ingress instances",
+              "description": "Configure different ingress instances",
+              "additionalProperties": {
+                "type": "object",
+                "title": "Ingress instance",
+                "description": "Ingress instance",
+                "additionalProperties": false,
+                "properties": {
+                  "tlsSecretName": {
+                    "type": "string",
+                    "title": "TLS secret name",
+                    "description": "TLS secret name"
+                  },
+                  "annotations": {
+                    "type": "object",
+                    "title": "Ingress Annotations",
+                    "description": "Ingress Annotations",
+                    "default": {},
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "hosts": {
+                    "type": "array",
+                    "title": "Ingress hosts",
+                    "description": "Ingress hosts",
+                    "default": [],
+                    "items": {
+                      "type": "object",
+                      "title": "Ingress host",
+                      "description": "Ingress host",
+                      "additionalProperties": false,
+                      "required": ["host"],
+                      "properties": {
+                        "host": {
+                          "type": "string",
+                          "title": "Host name",
+                          "description": "Host name",
+                          "default": ""
+                        },
+                        "tlsSecretName": {
+                          "type": "string",
+                          "title": "TLS secret name override",
+                          "description": "TLS secret name override for this host"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
     }
 }

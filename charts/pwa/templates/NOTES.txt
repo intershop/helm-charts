@@ -1,10 +1,6 @@
 {{- if .Values.ingress.enabled }}
-Application is available on the following URL(s):
-{{- range $host := .Values.ingress.hosts }}
-  {{- range $host.paths }}
-  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
-  {{- end }}
-{{- end }}
+Get the application URL by running this command:
+  kubectl get --namespace {{ .Release.Namespace }} ingress
 {{- else if contains "NodePort" .Values.service.type }}
 Get the application URL by running these commands:
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "pwa-main.fullname" . }})
@@ -18,8 +14,7 @@ Get the application URL by running these commands:
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "pwa-main.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo http://$SERVICE_IP:{{ .Values.service.port }}
 {{- else if contains "ClusterIP" .Values.service.type }}
-Get the application URL by running these commands:
+Get the application by running these commands and opening http://127.0.0.1:8080 to use the application afterwards:
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "pwa-main.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-  echo "Visit http://127.0.0.1:8080 to use your application"
-  kubectl port-forward $POD_NAME 8080:80
+  kubectl port-forward $POD_NAME 8080:4200
 {{- end }}
