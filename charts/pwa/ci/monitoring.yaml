@@ -38,8 +38,7 @@ monitoring:
 ingress:
   enabled: true
   className: nginx
-  hosts:
-    - host: pwa.example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
+  instances:
+    ingress:
+      hosts:
+        - host: pwa.example.local
