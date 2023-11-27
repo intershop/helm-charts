@@ -305,8 +305,7 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                                |                                                         |
 |                                        |Example:                                                                                        |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |``{"tenant":"company-name","environment":"system-name",                                         |                                                         |
-|                                        |"logHost":"ci-iom-connection-monitor-27154801-c6lk4","logVersion":"1.0",                        |                                                         |
+|                                        |``{"logHost":"ci-iom-connection-monitor-27154801-c6lk4","logVersion":"1.0",                     |                                                         |
 |                                        |"appName":"iom","appVersion":"4.5.0","logType":"script",                                        |                                                         |
 |                                        |"timestamp":"2023-08-18T12:01:01+00:00","level":"INFO",                                         |                                                         |
 |                                        |"processName":"connection_monitor.sh","message":                                                |                                                         |
@@ -580,29 +579,6 @@ Parameters of IOM Helm Chart
 |                                        |Standard Project Structure <TODO>`_.                                                            |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |Allowed values are: *FATAL*, *ERROR*, *WARN*, *INFO*, *DEBUG*, *TRACE*, *ALL*.                  |                                                         |
-+----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|log.metadata                            |*log.metadata* bundles parameters required to configure additional information to appear in log |                                                         |
-|                                        |messages.                                                                                       |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm Charts 1.3.0. According information will be injected in             |                                                         |
-|                                        |  the future, without the need to loop them through IOM. Will be removed in a future version.   |                                                         |
-|                                        |                                                                                                |                                                         |
-+----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|log.metadata.tenant                     |The name of the tenant is added to every log message.                                           |company-name                                             |
-|                                        |                                                                                                |                                                         |
-|                                        |Example: Intershop                                                                              |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm Charts 1.3.0. According information will be injected in             |                                                         |
-|                                        |  the future, without the need to loop them through IOM. Will be removed in a future version.   |                                                         |
-|                                        |                                                                                                |                                                         |
-+----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|log.metadata.environment                |The name of the environment is added to every log message.                                      |system-name                                              |
-|                                        |                                                                                                |                                                         |
-|                                        |Example: production                                                                             |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm Charts 1.3.0. According information will be injected in             |                                                         |
-|                                        |  the future, without the need to loop them through IOM. Will be removed in a future version.   |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |log.rest                                |This parameter can hold a list of operation IDs of REST interfaces. If the operation ID of a    |[]                                                       |
 |                                        |REST interface is listed here, information about request and response of the according REST     |                                                         |

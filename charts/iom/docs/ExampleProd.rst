@@ -115,11 +115,6 @@ Of course, this values file cannot be copied as it is. It references external re
         name: mycompany-prod-secrets
         key: smtppasswd
 
-  log:
-    metadata:
-      tenant: mycompany
-      environment: prod
-
   project:
     envName: prod
 

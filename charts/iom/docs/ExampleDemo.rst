@@ -216,7 +216,7 @@ Open a second terminal window and enter the following commands.
   # successful execution of create_dbaccount.sh script.
   kubectl logs demo-iom-0 -n iom -f -c dbaccount
   ...
-  {"tenant":"company-name","environment":"system-name","logHost":"demo-iom-0","logVersion":"1.0","appName":"iom-dbaccount","appVersion":"2.0.0","logType":"script","timestamp":"2023-11-06T11:33:17+00:00","level":"INFO","processName":"create_dbaccount.sh","message":"success","configName":null}
+  {"logHost":"demo-iom-0","logVersion":"1.0","appName":"iom-dbaccount","appVersion":"2.0.0","logType":"script","timestamp":"2023-11-06T11:33:17+00:00","level":"INFO","processName":"create_dbaccount.sh","message":"success","configName":null}
 
   # When init-container is finished successfully, the iom-pod is now in "Running" state, too. But it is not "READY"
   # yet. Now the IOM database is set up, applications and project customizations are deployed into the Wildfly application server.

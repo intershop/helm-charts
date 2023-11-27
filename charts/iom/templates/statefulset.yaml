@@ -596,16 +596,6 @@ spec:
               value: {{ .Values.log.level.scripts }}
                 {{- end }}
               {{- end }}
-              {{- if .Values.log.metadata }}
-                {{- if .Values.log.metadata.tenant }}
-            - name: TENANT
-              value: {{ .Values.log.metadata.tenant }}
-                {{- end }}
-                {{- if .Values.log.metadata.environment }}
-            - name: ENVIRONMENT
-              value: {{ .Values.log.metadata.environment }}
-                {{- end }}
-              {{- end }}
               {{- if .Values.log.rest }}
             - name: OMS_LOG_REST_IDS
               value: {{ join "," .Values.log.rest }}
@@ -835,16 +825,6 @@ spec:
               {{- if .Values.log.level.scripts }}
             - name: OMS_LOGLEVEL_SCRIPTS
               value: {{ .Values.log.level.scripts }}
-              {{- end }}
-            {{- end }}
-            {{- if .Values.log.metadata }}
-              {{- if .Values.log.metadata.tenant }}
-            - name: TENANT
-              value: {{ .Values.log.metadata.tenant }}
-              {{- end }}
-              {{- if .Values.log.metadata.environment }}
-            - name: ENVIRONMENT
-              value: {{ .Values.log.metadata.environment }}
               {{- end }}
             {{- end }}
           {{- end }}
