@@ -2,4 +2,4 @@ apiVersion: v2
 description: Intershop Commerce Management - ICM Job Controller
 # name and version must be in this exact order, otherwise bump2version won't work
 name: icm-job
-version: 1.0.1
+version: 1.1.0
