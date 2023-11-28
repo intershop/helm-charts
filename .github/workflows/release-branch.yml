@@ -49,7 +49,8 @@ jobs:
     - name: Check changed charts
       id: matrix
       run: |
-        changed_directories=$(echo ${{ steps.list-changed-charts.outputs.all_changed_and_modified_files }} | grep -o 'charts/[^/]*' | cut -d '/' -f 2)
+        set -x
+        changed_directories=$(echo ${{ steps.list-changed-charts.outputs.all_modified_files }} | grep -o 'charts/[^/]*' | cut -d '/' -f 2)
         
         if [[ -z "$changed_directories" ]]; then
           echo "No chart changes detected. Chore changes need to be released manually." 1>&2
@@ -148,12 +149,40 @@ jobs:
       uses: ./.github/template/bump-version
       with:
         changes: ${{ steps.read-release-input-parameter.outputs.release-input-parameter }}
-    - name: Create commits
+    - name: Create bump version commits
       run: |
         git config user.name "$GITHUB_ACTOR"
         git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
         git add -A
-        git commit -m "chore: bump versions ${{ steps.read-release-input-parameter.outputs.release-input-parameter }} and dependent charts"
+        git commit -m "chore: bump versions of ${{ steps.read-release-input-parameter.outputs.release-input-parameter }}"
+    - name: Create changelog commits
+      run: |
+        mkdir git-chglog
+        wget -q -O - https://github.com/git-chglog/git-chglog/releases/download/v0.15.4/git-chglog_0.15.4_linux_amd64.tar.gz | tar xzf - -C git-chglog
+        
+        all=("${{ steps.read-release-input-parameter.outputs.release-input-parameter }}")
+        for i in $all; do
+          IFS=':' read -ra my_array <<< "$i"
+          ./git-chglog/git-chglog \
+            --path ./charts/${my_array[0]} \
+            --tag-filter-pattern "^${my_array[0]}-\d+.\d+.\d+$" \
+            --next-tag ${my_array[0]}-$(grep -A0 '^version:' ./charts/${my_array[0]}/Chart.yaml | awk '{print $2}' | sed 's/\"//g') \
+            -o ./charts/${my_array[0]}/CHANGELOG.md
+            
+          ./git-chglog/git-chglog \
+            --path ./charts/${my_array[0]} \
+            --tag-filter-pattern "^${my_array[0]}-\d+.\d+.\d+$" \
+            --next-tag ${my_array[0]}-$(grep -A0 '^version:' ./charts/${my_array[0]}/Chart.yaml | awk '{print $2}' | sed 's/\"//g') \
+            -o ./charts/${my_array[0]}/RELEASE_NOTES.md \
+            ${my_array[0]}-$(grep -A0 '^version:' ./charts/${my_array[0]}/Chart.yaml | awk '{print $2}' | sed 's/\"//g') 
+        done
+
+        rm -Rf git-chglog
+
+        git config user.name "$GITHUB_ACTOR"
+        git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+        git add -A
+        git commit -m "chore: generated changelog+release notes for ${{ steps.read-release-input-parameter.outputs.release-input-parameter }}"
     - name: Reset main branch with changes from develop/?
       run: |
         git checkout main
