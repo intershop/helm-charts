@@ -63,6 +63,10 @@ spec:
           - name: PROMETHEUS
             value: "true"
         {{- end }}
+        {{- if (.Values.redis).uri }}
+          - name: REDIS_URI
+            value: "{{ (.Values.redis).uri }}"
+        {{- end }}
         {{- range $key, $obj := .Values.cache.extraEnvVars }}
           - name: {{ $obj.name }}
             value: {{ $obj.value | quote }}

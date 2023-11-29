@@ -259,6 +259,25 @@
               }
           }
         },
+        "redis": {
+          "type": "object",
+          "title": "Redis cache details",
+          "required": ["uri"],
+          "additionalProperties": false,
+          "properties": {
+            "uri": {
+              "type": "string",
+              "title": "Redis URI",
+              "description": "Redis URI"
+            },
+            "keepCache": {
+              "type": "boolean",
+              "title": "Don't flush Redis cache on deployment",
+              "description": "Don't flush Redis cache on deployment",
+              "default": false
+            }
+          }
+        },
         "ingress": {
           "additionalProperties": false,
           "type": "object",
