@@ -3,13 +3,16 @@
 |<SecretKeyRef.rst>`_      |<../README.rst>`_|                          |
 +--------------------------+-----------------+--------------------------+
 
-==================
-Persistent Storage
-==================
+================================================
+Helm Charts for Intershop Order Management (IOM)
+================================================
 
---------
+------------------
+Persistent Storage
+------------------
+
 Overview
---------
+========
 
 Using *Kubernetes*, the usage of persistent storage is managed on three different levels of abstraction:
 
@@ -31,7 +34,7 @@ is deleted. If *reclaim-policy* is set to *Retain*, the *pv* will remain along w
 of the Helm release.
 
 Provisioning of persistent storage
-----------------------------------
+==================================
 
 IOM Helm Charts are supporting three different kinds of provisioning of persistent storage:
 
@@ -43,7 +46,7 @@ Which kind of provisioning is used by IOM Helm Charts is controlled by parameter
 Each available method is represented by an according value. The values are *dynamic* (default), *static* and *local*.
 
 Dynamic Provisioning
-^^^^^^^^^^^^^^^^^^^^
+--------------------
 
 Dynamic provisioning is the default method to provide persistent storage for IOM, because it's the most easy to use method, which
 does not need any interaction with a cluster administrator.
@@ -60,7 +63,7 @@ the *pvc* is "helm.sh/resource-policy: keep". This annotation prevents the delet
 As long the *pvc* exists, the *pv* and its content can be saved.
 
 Static Provisioning
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 When using static provisioning, the *persistent-volume* is not created automatically. Instead of it, it has to be provided
 by a cluster-administrator. In this case, the cluster-administrator is responsible to configure the *pv* properly.
@@ -68,16 +71,15 @@ In difference to dynamic provisioning, there are no default annotations defined 
 of the *pv*, which is in responsibility of the cluster-administrator, will always come into effect immediately.
 
 Local Storage
-^^^^^^^^^^^^^
+-------------
 
 The third and last provisioning method for persistent storage is meant for single node test-installations only (e.g. for running IOM
 in Docker-Desktop). In difference to the two other provisiong methods, the whole chain of *pvc*, *pv* and *storage-class* is managed
 inside the IOM Helm charts. They are created, when the IOM Helm release is created and they will deleted along with the IOM Helm release.
 Hence, it's a kind of a simple, care-free method to provide storage for very simple, single node installations.
 
---------------------------
 Recommended Configurations
---------------------------
+==========================
 
 Dynamic Provisioning
 --------------------
@@ -111,7 +113,7 @@ Example:
   that is using *Retain* for *reclaim-policy*.
 
 Test- and Demo-System, without any critical Data
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 
 - Use a *storage-class* that is using *reclaim-policy* *Delete*. This allows automatic deletion of the *pv*, when the IOM
   Helm release is deleted. A *storage-class* with this property is *azurefile*, which is the default-value.
@@ -152,7 +154,7 @@ Example:
       storageClass: azurefile-iom
 
 Test- and Demo-System, without any critical Data
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 
 *Static provisioning* of persistent storage is not recommended for this type of systems. If IOM is running in a *real*
 Kubernetes cluster, the best choice for this type of system is *dynamic provisioning* of persistent storage.
@@ -181,9 +183,8 @@ Example:
     local:
       hostPath: /home/UserName/iom-share
    
------------------------------------------------
 Reuse a *pv* after Deletion of IOM Helm Release
------------------------------------------------
+===============================================
 
 For a couple of examples, showing the re-use of a *pv* after deletion of IOM Helm release, please see the following `document <PersistentStorageExamplesReusePV.rst>`_.
 

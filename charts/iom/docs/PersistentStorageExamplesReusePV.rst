@@ -3,18 +3,21 @@
 |<PersistentStorage.rst>`_|
 +-------------------------+
 
-===============================================
+================================================
+Helm Charts for Intershop Order Management (IOM)
+================================================
+
+-----------------------------------------------
 Reuse a *pv* after Deletion of IOM Helm Release
-===============================================
+-----------------------------------------------
 
 There might be the case, that persistent data from shared file-system need to be saved or accessed after deletion of
 IOM Helm release. The following examples are showing how this could be done, but they do NOT represent best practice (except for *static provisioning*).
 The examples are showing only ONE possible way, how to access a *pv* after deletion of the IOM Helm release. Furthermore
 the code snippets are not intended to be copied and executed!
 
-------------------------------------------------------------------------------------
 Static Provisioning, configured according the Recommendations for Production Systems
-------------------------------------------------------------------------------------
+====================================================================================
 
 If the *pv* is provided in advance by the cluster administrator and it is using *Retain* for *reclaim-policy*, the according configuration snippet could
 look like this:
@@ -42,9 +45,8 @@ But before the *pv* can be re-used, it is necessary to delete the existing *clai
 
 The existing *pv* is now *Available* again and can be re-used by a new IOM Helm release.
       
-----------------------------------------------------
 Dynamic Provisioning, configured with default Values
-----------------------------------------------------
+====================================================
 
 The default configuration uses *azurefile* for *persistence.dynamic.storageClass*. Storage-class *azurefile* uses *Delete* for *reclaim-policy*.
 Default annotation of the *pvc* created by the Helm release is *"helm.sh/resource-policy": keep*, which keeps the *pvc* alive even after
@@ -109,9 +111,8 @@ the *pv* has to be set.
       pv: pvc-873db395-c6c3-4cc5-9ba0-0b56f0f37329
       storageClass: azurefile
 
--------------------------------------------------------------------------------------------      
 Dynamic Provisioning, configured with a *storage-class* using *Retain* for *reclaim-policy*
--------------------------------------------------------------------------------------------
+===========================================================================================
 
 If the *storage-class* uses *Retain* for *reclaim-policy*, the annotations of the *pvc* should be set to allow deletion of the *pvc* along
 with the IOM Helm release.
