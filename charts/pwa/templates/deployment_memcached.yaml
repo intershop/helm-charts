@@ -25,7 +25,7 @@ spec:
           imagePullPolicy: IfNotPresent
           command: ["memcached"]
           # add "-vv" for verbose logging
-          args: ["-m", "11500", "-I", "10m"]
+          args: {{ default "[\"-m\", \"2900\", \"-I\", \"10M\"]" .Values.cache.memcached.args }}
           ports:
             - name: http
               containerPort: 11211
@@ -35,6 +35,6 @@ spec:
             value: "{{ .Release.Revision }}"
           resources:
             requests:
-              memory: 1Gi
+              memory: {{ default "1G"  .Values.cache.memcached.memoryRequest }}
             limits:
-              memory: 12Gi
+              memory: {{ default "3G"  .Values.cache.memcached.memoryLimit }}
