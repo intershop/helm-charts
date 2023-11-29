@@ -154,12 +154,12 @@ See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 Handling of persistent storage for shared file-system was improved
 ==================================================================
 
-In former version of IOM Helm charts the provisioning of persistent storage method was depending on the two parameters *persistence.hostPath*
-and *persistence.storageClass*. There was also a third parameter (*persistence.pvc*), but this
+In former versions of IOM Helm charts the provisioning of persistent storage method was depending on the two parameters *persistence.hostPath*
+and *persistence.storageClass*. There was also a third parameter *persistence.pvc*, but this
 one was removed. There was a precedence defined for these parameters to select the provisioning method: if *persistence.hostPath* was set,
 *persistence.storageClass* was ignored.
 
-This is now changed. The new parameter *persistence.provisioning* was introduced, that explicitely defines the provisiong method to be used.
+This has now changed. The new parameter *persistence.provisioning* was introduced, that explicitely defines the provisiong method to be used.
 Allowed values for *persistence.provisioning* are *dynamic* (default), *static* and *local*.
 
 - *dynamic* is equivalent to an old configuration, where *persistence.hostPath* and *persistence.pvc* were both not set.
@@ -169,9 +169,8 @@ Allowed values for *persistence.provisioning* are *dynamic* (default), *static* 
 Each provisioning method can be configured in more detail. Therefore separate parameter-groups were introduced, which mirror the names
 of the provisioning methods: *persistence.dynamic|static|local*.
 
-The old parameter *persistence.storageClass* belongs to *dynamic* provisioning, therefore it was moved to *persistence.dynamic.storageClass*.
-The old parameter *persistence.hostPath*, belongs to *local* provisioning and was therefore
-moved to parameter *persistence.local.hostPath*.
+The old parameter *persistence.storageClass* belongs to *dynamic* provisioning, therefore it was renamed to *persistence.dynamic.storageClass*.
+The old parameter *persistence.hostPath*, belongs to *local* provisioning and was therefore renamed to *persistence.local.hostPath*.
 
 The former parameter *persistence.annotations* was split into three different parameters, one
 for each provisioning method: *persistence.dynamic|static|local.annotations*. This
@@ -244,7 +243,7 @@ Examples for migrations
 |automatic deletion of *pvc* is enabled.                                            |
 |                                                                                   |
 |Enabling deletion of *pvc* is done by removing all annotations from *pvc*. This has|
-|not changed in the new version. But the position has changed from                  |
+|not changed in the new version. But the name of the parameter has changed from     |
 |*persistence.annotations* to *persistence.dynamic.annotations*.                    |
 |                                                                                   |
 |Since *azurefile* is and was the default-value of *storageClass* and dynamic       |
@@ -261,28 +260,33 @@ Examples for migrations
 |automatic deletion of *pvc* is enabled.                                            |
 |                                                                                   |
 |Enabling deletion pf *pvc* is done by removing all annotations from *pvc*. This has|
-|not changed in the new version. But the position has changed from                  |
+|not changed in the new version. But the name of parameter has changed from         |
 |*persistence.annotations* to *persistence.dynamic.annotations*.                    |
 |                                                                                   |
-|Parameter *persistence.storageClass* has moved in the new version to               |
+|Parameter *persistence.storageClass* was moved in the new version to               |
 |*persistence.dynamic.storageClass*.                                                |
 +----------------------------------------+------------------------------------------+
 |.. code-block:: yaml                    |.. code-block:: yaml                      |
 |                                        |                                          |
-|  persistence:                          |  persistence                             |
+|  persistence:                          |  persistence:                            |
 |    storageClass: azurefile-iom         |    dynamic:                              |
 |    annotations:                        |      storageClass: azurefile-iom         |
 |                                        |      annotations:                        |
 +----------------------------------------+------------------------------------------+
 |Local provisioning of persistent storage.                                          |
 |                                                                                   |
-|Parameter *persistence.hostPath* has moved in the new version to                   |
+|Parameter *persistence.hostPath* was moved in the new version to                   |
 |*persistence.local.hostPath*.                                                      |
+|                                                                                   |
+|The provisioning method to be used has now to be declared explicitely, if it is not|
+|the default method. Therefore in the migrated configuration, *provisioning* has tp |
+|be set to *local*.                                                                 |
 +----------------------------------------+------------------------------------------+
 |.. code-block:: yaml                    |.. code-block:: yaml                      |
 |                                        |                                          |
 |  persistence:                          |  persistence:                            |
-|    hostPath: /home/username/iom-share  |    local:                                |
+|    hostPath: /home/username/iom-share  |    provisioning: local                   |
+|                                        |    local:                                |
 |                                        |      hostPath: /home/username/iom-share  |
 +----------------------------------------+------------------------------------------+
 
