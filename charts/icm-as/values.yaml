@@ -69,7 +69,7 @@ jvm:
     # enable/disable to java-vm-debugging
     enabled: false
   # define options / parameters to be used to start the jvm
-  options: "-XX:NewRatio=8 -XX:MaxRAMPercentage=80 -XX:InitialRAMPercentage=80"
+  options: "-XX:MaxRAMPercentage=70 -XX:InitialRAMPercentage=70"
   # define additional options / parameters to be used to start the jvm (will be appended to options)
   additionalOptions:
 
