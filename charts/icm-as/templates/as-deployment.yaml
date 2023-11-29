@@ -30,15 +30,11 @@ spec:
       maxSurge: 1
   template:
     metadata:
-      {{- if include "icm-as.podData" . }}
-        {{- include "icm-as.podData" . | nindent 6 }}
-      {{- end }}
+      {{- include "icm-as.podData" . | nindent 6 }}
       labels:
         app: icm-as
         release: {{ include "icm-as.fullname" . }}
-        {{- if include "icm-as.podLabels" . }}
-          {{- include "icm-as.podLabels" . | nindent 8 }}
-        {{- end }}
+        {{- include "icm-as.podLabels" . | nindent 8 }}
         {{- if include "icm-as.podBinding" . }}
           {{- include "icm-as.podBinding" . | nindent 8 }}
         {{- end }}

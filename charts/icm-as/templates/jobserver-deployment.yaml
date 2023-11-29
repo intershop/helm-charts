@@ -18,6 +18,14 @@ apiVersion: batch.core.intershop.de/v1
 kind: ICMJob
 metadata:
   name: {{ include "icm-as.fullname" $jobValues }}-job
+  {{- include "icm-as.podData" $jobValues | nindent 2 }}
+  labels:
+    app: icm-as-job
+    release: {{ include "icm-as.fullname" . }}
+    {{- include "icm-as.podLabels" $jobValues | nindent 4 }}
+    {{- if include "icm-as.podBinding" $jobValues }}
+      {{- include "icm-as.podBinding" $jobValues | nindent 8 }}
+    {{- end }}
 spec:
   scheduleTimeComputer: {{ include "icm-as.scheduleTimeComputer" $jobValues -}}
   {{- if .Values.job.suspend }}
