@@ -18,6 +18,14 @@ apiVersion: batch.core.intershop.de/v1
 kind: ICMJob
 metadata:
   name: {{ include "icm-as.fullname" $jobValues }}-job
+  {{- include "icm-as.podData" $jobValues | nindent 2 }}
+  labels:
+    app: icm-as-job
+    release: {{ include "icm-as.fullname" . }}
+    {{- include "icm-as.podLabels" $jobValues | nindent 4 }}
+    {{- if include "icm-as.podBinding" $jobValues }}
+      {{- include "icm-as.podBinding" $jobValues | nindent 8 }}
+    {{- end }}
 spec:
   scheduleTimeComputer: {{ include "icm-as.scheduleTimeComputer" $jobValues -}}
   {{- if .Values.job.suspend }}
@@ -36,6 +44,9 @@ spec:
     spec:
       template:
         spec:
+          {{- if eq (include "icm-as.jgroups.discovery" .) "kube_ping" }}
+          serviceAccountName: {{ include "icm-as.serviceAccountName" . }}
+          {{- end }}
           {{- if include "icm-as.nodeSelector" $jobValues }}
             {{- include "icm-as.nodeSelector" $jobValues | nindent 10 }}
           {{- end }}
@@ -57,21 +68,6 @@ spec:
             {{- include "icm-as.podSecurityContext" $jobValues | nindent 10 }}
           {{- end }}
           {{- include "icm-as.volumes" . | nindent 10 }}
-{{- end -}}
-
-{{/*
-Job-specific-environment
-*/}}
-{{- define "icm-as.envJob" }}
-{{- include "icm-as.env" . }}
-- name: MAIN_CLASS
-  value: "com.intershop.beehive.core.capi.job.JobServer"
-- name: INTERSHOP_JOB_SERVER_EXCLUSIVE
-  value: "true"
-- name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
-  value: {{ .jobServerGroup }}
-- name: SERVER_NAME
-  value: {{ .jobServerName }}
 {{- end -}}
 
 {{/*

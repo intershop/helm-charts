@@ -50,9 +50,6 @@ These are predefined parameter from serveral features.
 {{- define "icm-chart.testrunner.featuredJVMArguments" -}}
     {{- $addVmOptions := list -}}
     {{- $addVmOptions = append $addVmOptions .Values.testrunner.jvm.options -}}
-    {{- if .Values.testrunner.datadog.enabled -}}
-        {{- $addVmOptions = append $addVmOptions .Values.testrunner.datadog.options -}}
-    {{- end -}}
 - name: FEATURED_JVM_ARGUMENTS
   value: {{ join " " $addVmOptions | quote }}
 {{- end -}}
@@ -64,9 +61,6 @@ These are additional parameters defined by deployment, which are not indented to
 {{- define "icm-chart.testrunner.additionalJVMArguments" -}}
     {{- $addVmOptions := list -}}
     {{- $addVmOptions = append $addVmOptions .Values.testrunner.jvm.additionalOptions -}}
-    {{- if .Values.testrunner.datadog.enabled -}}
-        {{- $addVmOptions = append $addVmOptions .Values.testrunner.datadog.additionalOptions -}}
-    {{- end -}}
 - name: ADDITIONAL_JVM_ARGUMENTS
   value: {{ join " " $addVmOptions | quote }}
 {{- end -}}

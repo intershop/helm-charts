@@ -12,27 +12,29 @@ volumes:
     defaultMode: 420
 {{- end }}
 {{- end }}
-- name: license-volume
-{{- if eq .Values.license.type "configMap" }}
+{{- if .Values.newrelic.enabled }}
+- name: newrelic-config-volume
   configMap:
     defaultMode: 420
-    name: {{ template "icm-as.fullname" . }}-license
-{{- else if eq .Values.license.type "csi" }}
-  csi:
-    driver: secrets-store.csi.k8s.io
-    readOnly: true
-  {{ toYaml .Values.license.csi | nindent 4 }}
-{{- else if eq .Values.license.type "secret" }}
-  secret:
-    secretName: {{ .Values.license.secret.name }}
+    name: {{ template "icm-as.fullname" . }}-newrelic-yml
 {{- end }}
+{{- if eq (include "icm-as.jgroups.discovery" .) "file_ping" }}
 {{- include "icm-as.volume" (list . "jgroups" .Values.persistence.jgroups .Values.podSecurityContext) }}
+{{- end }}
 {{- include "icm-as.volume" (list . "sites" .Values.persistence.sites .Values.podSecurityContext) }}
 {{- if and (.Values.replication.enabled) (eq .Values.replication.role "source")}}
 - name: replication-volume
   configMap:
     name: {{ template "icm-as.fullname" . }}-replication-clusters-xml
 {{- end }}
+{{- if .Values.webLayer.redis.enabled }}
+- name: redis-client-config-volume
+  configMap:
+    name: {{ template "icm-as.fullname" . }}-redis-client-config-yaml
+{{- end }}
+- name: jgroups-config-volume
+  configMap:
+    name: {{ template "icm-as.fullname" . }}-jgroups-config-xml
 {{- if .Values.persistence.customdata.enabled }}
 - name: custom-data-volume
   persistentVolumeClaim:

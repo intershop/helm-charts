@@ -30,10 +30,6 @@ icm-as:
    resultDir: ${RESULT_DIRECTORY}
    chmodUser: ${SERVER_DIRECTORY_USER}
    chmodGroup: ${SERVER_DIRECTORY_GROUP}
-  license:
-    type: secret
-    secret:
-      name: intershop-license
   database:
     type: "${DATABASE_TYPE}"
     jdbcURL: "${DATABASE_CONNECTION_STRING}"
@@ -64,7 +60,7 @@ icm-as:
     SECUREACCESSONLY: "false"
   persistence:
     sites:
-      size: 1Gi
+      size: 2Gi
       type: cluster
       cluster:
         storageClass:
@@ -72,14 +68,20 @@ icm-as:
     customdata:
       enabled: true
       existingClaim: icm-nfs
-  datadog:
+  newrelic:
     enabled: true
-    env: eng-iste-testrun
-    options: "-Ddd.profiling.enabled=false -Ddd.trace.analytics.enabled=true -Ddd.jdbc.analytics.enabled=true"
+    app_name: "${HELM_JOB_NAME}-icm-as"
+    license_key: "${NEWRELIC_LICENSE_KEY}"
 
 icm-web:
   nodeSelector:
     agentpool: agentpool2
+  resources:
+    agent:
+      limits:
+        memory: 200Mi
+      requests:
+        memory: 200Mi
   webadapter:
     podAnnotations:
       # as long as there is no new cache system we need this annotation for icm-web
@@ -233,10 +235,6 @@ testrunner:
       size: 1Gi
       type: existingClaim
       existingClaim: icm-nfs
-  datadog:
-    enabled: true
-    env: eng-iste-testrun
-    options: "-Ddd.profiling.enabled=false -Ddd.trace.analytics.enabled=true -Ddd.jdbc.analytics.enabled=true"
   ## Control options regarding the java-vm running the ICM-AS
   jvm:
     # define options / parameters to be used to start the jvm

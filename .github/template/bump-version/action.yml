@@ -1,0 +1,22 @@
+name: bump-version
+description: Bump chart versions
+
+inputs:
+  changes:
+    description: | 
+      A string of charts and their required update, e.g. "icm-as:minor icm-web:patch". 
+      Dependent charts don't have to be specified and will be bumped automatically.
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+  - name: Bump Version
+    shell: bash
+    run: |
+      if [[ -z "${{inputs.changes}}" ]]; then
+        echo "Missing parameter inputs.changes" 1>&2
+        exit 1
+      fi
+      pip install --no-cache-dir bump-my-version==0.12.0
+      python ./.github/callBump2version.py ${{inputs.changes}}

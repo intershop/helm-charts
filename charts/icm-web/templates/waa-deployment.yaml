@@ -10,11 +10,15 @@ metadata:
   labels:
     app: {{ include "icm-web.fullname" . }}-waa
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    environment-name: "{{ include "icm-as.environmentName" . }}"
+    operational-context: "{{ include "icm-web.operationalContextName" . }}"
     {{- if .Values.agent.deploymentLabels }}
       {{- toYaml .Values.agent.deploymentLabels | trim | nindent 4 }}
     {{- end }}
 spec:
-  replicas: {{ .Values.agent.replicaCount }}
+  replicas: {{ .Values.agent.replicaCount | default 1 }}
+  strategy:
+    type: {{ .Values.agent.updateStrategy | default "RollingUpdate" }}
   selector:
     matchLabels:
       app: icm-waa

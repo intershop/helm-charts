@@ -24,21 +24,6 @@ icm-as:
   ## @param environment - extra environment variables to be set on containers
   environment:
 
-  # ICM license Configuration
-  license:
-  # type: configMap | csi | secret
-    type: configMap
-    configMap:
-      content: |-
-        <your license>
-    csi:
-      volumeAttributes:
-        secretProviderClass: "azure-license"
-      nodePublishSecretRef:
-        name: secrets-store-creds
-    secret:
-      name: <secret name>
-
   ## @param persistence - Either choose local (default), cluster, azurefiles or nfs persitence layer
   persistence:
     sites:
@@ -105,3 +90,40 @@ mailhog:
 
 test:
   enabled: false
+
+
+# For redis deployment using a single master (and possibly multiple read replicas). May use redis sentinel.
+# The whole dataset must fit into the single master node.
+# See https://artifacthub.io/packages/helm/bitnami/redis
+redis:
+  enabled: false
+  createConfigMap: true
+  commonConfiguration: |
+    maxmemory 2g
+    maxmemory-policy volatile-lru
+  auth:
+    enabled: false
+  architecture: replication
+  replica:
+    replicaCount: 3
+  metrics:
+    enabled: true
+
+# For redis deployment using multiple masters (and possibly multiple read replicas).
+# Supports sharding and can therefore be used for bigger datasets.
+# See https://artifacthub.io/packages/helm/bitnami/redis
+redis-cluster:
+  enabled: false
+  usePassword: false
+  metrics:
+    enabled: true
+  redis:
+    configMap: |
+      maxmemory 2g
+      maxmemory-policy volatile-lru
+  cluster:
+    # Total number of nodes in the cluster (replicas and master).
+    # There must always be  at least 3 mater nodes, and the number of masters should be odd.
+    nodes: 6
+    # Number of replicas per master
+    replicas: 1

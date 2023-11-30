@@ -2,7 +2,11 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# define the number of replicas beeing deployed (int, > 0, default=1)
 replicaCount: 1
+
+# define the update strategy (possible values: Recreate, RollingUpdate; default=RollingUpdate)
+updateStrategy: RollingUpdate
 
 # define where the application shall run on
 nodeSelector: {}
@@ -41,7 +45,7 @@ dockerSecret:
 ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
 ## Intershop: These secrets also last for customization images
 imagePullSecrets:
-- "dockerhub"
+  - "dockerhub"
 
 # list of customization images each following the structure:
 #  <name>:
@@ -69,16 +73,20 @@ jvm:
   # define additional options / parameters to be used to start the jvm (will be appended to options)
   additionalOptions:
 
-# configuration related to Datadog
-datadog:
-  # enable or disable the Datadog Java agent to monitor the icm-as JVM
+# configuration related to New Relic
+newrelic:
+  # enable or disable the New Relic Java agent to monitor the icm-as JVM
+  # https://docs.newrelic.com/docs/kubernetes-pixie/kubernetes-integration/advanced-configuration/link-apm-applications-kubernetes/
   enabled: false
-  # define the environment (dd.env)
-  env: "tenant-develop"
-  # enable profiling  (dd.profiling.enabled, dd.trace.analytics.enabled, dd.jdbc.analytics.enabled
-  options: "-Ddd.profiling.enabled=false -Ddd.trace.analytics.enabled=false -Ddd.jdbc.analytics.enabled=false"
-  # define (additional) datadog options
-  additionalOptions:
+  #   application name (~= environment name): calculated from operationalContext section, set to override
+  # app_name: "icm"
+  license_key: "secret"
+  metrics:
+    # fine grade possibilitity to disable metrics for cost reduction
+    enabled: true
+  apm:
+    # fine grade possibilitity to disable apm for cost reduction
+    enabled: true
 
 nameOverride: ""
 
@@ -87,8 +95,21 @@ fullnameOverride: ""
 # Set a custom server name. Defaults to 'appserver'
 # serverName: <customServerName>
 
+# operational context (~= environment) this icm is running in
+operationalContext:
+  #   id of the customer e.g. xxxxx
+  # customerId: <customerId>
+  # type of the environment (one of {int,uat,prd}, default=prd)
+  environmentType: prd
+  # name of the environment (environment-type + some sort of id, e.g. int-01, default=<environmentType>)
+  environmentName: prd
+  # type of the application (default=icm)
+  applicationType: icm
+
 # provide custom cluster config from "icm-as.fullname"-system-conf-cluster configmap
-provideCustomConfig: {}
+provideCustomConfig:
+  {}
+
   # logback-main:
   #   mountPath: /intershop/system-conf/cluster/
   #   fileName: logback-main.xml
@@ -97,12 +118,11 @@ provideCustomConfig: {}
   #   fileName: urlrewriterules.xml
 
 serviceAccount:
-  # Specifies whether a service account should be created
+  # Specifies whether a service account should be created and used
   create: false
   # Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
+  # The name of the service account to use. (default .Release.Name + "-default")
   name:
 
 podSecurityContext:
@@ -137,23 +157,9 @@ database:
   jdbcUser: "intershop"
   jdbcPassword: "intershop"
 
+# environment variables to be propagated to the icm-as-container
 environment:
   CARTRIDGE_LIST: "ft_icm_as"
-
-# ICM license Configuration
-license:
-  # type: configMap | csi | secret
-  type: configMap
-  configMap:
-    content: |-
-      <your license>
-  csi:
-    volumeAttributes:
-      secretProviderClass: "azure-license"
-    nodePublishSecretRef:
-      name: secrets-store-creds
-  secret:
-    name: <secret name>
 
 persistence:
   sites:
@@ -190,7 +196,11 @@ persistence:
     type: emptyDir
     existingClaim: <claim name>
     cluster:
-      storageClass: azurefile
+      storageClass:
+        create: false
+        # if create == false an exiting class could be set
+        # if empty value is set the default storage class is used
+        existingClass: ""
     azurefiles:
       shareName: icm-as-jgroups
       secretName: icm-as-jgroups-secret
@@ -302,8 +312,9 @@ copySitesDir:
 # configure an ingress here only if you don't use icm-web !
 ingress:
   enabled: false
-  className: nginx
-  annotations: {}
+  className: null
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   # Paths are treated as list of prefixes. Any URL matching one of the prefixes will
@@ -320,8 +331,14 @@ ingress:
 
 webLayer:
   enabled: false
+  redis:
+    enabled: false
+    # Redisson client yaml config
+    config: null
+
 sslCertificateRetrieval:
   enabled: false
+  supportV1: false
   # secretName: <explicit-ssl-secret-name>
   keyvault:
     tenantId: <tenant-ID-of-the-KeyVault>
@@ -335,6 +352,7 @@ sslCertificateRetrieval:
 # In order to override these properties add them in the job section, e.g. add a 'resources' section to
 # configure different cpu or memory limits.
 job:
+  # if enabled=true the job controller must be deployed at cluster separatelly. see icm-job chart.
   enabled: false
 
   # If true, job-server-support will be available but no jobs will be created
@@ -371,3 +389,26 @@ replication:
 
   # the name of the (source) database to be used at the target-system to read data from e.g. intershop_edit
   sourceDatabaseName: <databaseName>
+
+# Configuration of messaging via jgroups
+jgroups:
+
+  # the discovery protocol to use
+  # supported values are file_ping or kube_ping. Defaults to file_ping, but kube_ping | azure_ping is recommended
+  # file_ping (default) requires a mounted file system
+  # kube_ping (recommended) please set serviceAccount.create to create service account if not exists to allow icm to talk with k8s api server
+  # azure_ping (playground) mounts azure storage directly
+  # dns_ping (playground) declared dns query
+  discovery: file_ping
+
+  # extra attributes to be added at the ping-section in xml,
+  # e.g. "readTimeout=\"1000\" operationAttempts=\"5\""
+  # discoveryExtraAttributes: <extra-attributes>
+
+  # the DNS-query. Used with discovery type dns_ping
+  dnsQuery: <dnsQuery>
+
+  # label for multiple clusters in a release (default: .Release.Name)
+  clusterLabel:
+  # adaption of ports in case a different range is needed
+  portRange:

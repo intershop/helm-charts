@@ -36,10 +36,10 @@ Common labels
 */}}
 {{- define "icm-as.labels" -}}
 helm.sh/chart: {{ include "icm-as.chart" . }}
+environment-name: {{ include "icm-as.environmentName" . }}
+operational-context: {{ include "icm-as.operationalContextName" . }}
 {{ include "icm-as.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
@@ -55,11 +55,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Create the name of the service account to use
 */}}
 {{- define "icm-as.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create -}}
-    {{ default (include "icm-as.fullname" .) .Values.serviceAccount.name }}
-{{- else -}}
-    {{ default "default" .Values.serviceAccount.name }}
-{{- end -}}
+  {{ default (printf "%s-%s" (include "icm-as.fullname" .) "default") .Values.serviceAccount.name }}
 {{- end -}}
 
 {{/*
@@ -69,9 +65,6 @@ These are predefined parameter from serveral features.
 {{- define "icm-as.featuredJVMArguments" -}}
 {{- $addVmOptions := list -}}
 {{- $addVmOptions = append $addVmOptions .Values.jvm.options -}}
-{{- if .Values.datadog.enabled -}}
-    {{- $addVmOptions = append $addVmOptions .Values.datadog.options -}}
-{{- end -}}
 - name: FEATURED_JVM_ARGUMENTS
   value: {{ join " " $addVmOptions | quote }}
 {{- end -}}
@@ -83,9 +76,6 @@ These are additional parameters defined by deployment, which are not indented to
 {{- define "icm-as.additionalJVMArguments" -}}
 {{- $addVmOptions := list -}}
 {{- $addVmOptions = append $addVmOptions .Values.jvm.additionalOptions -}}
-{{- if .Values.datadog.enabled -}}
-    {{- $addVmOptions = append $addVmOptions .Values.datadog.additionalOptions -}}
-{{- end -}}
 - name: ADDITIONAL_JVM_ARGUMENTS
   value: {{ join " " $addVmOptions | quote }}
 {{- end -}}
@@ -95,21 +85,6 @@ Creates a chart-label
 */}}
 {{- define "icm-as.chartLabel" -}}
 chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-{{- end -}}
-
-{{/*
-Applies datadog labels
-*/}}
-{{- define "icm-as.datadogLabels" -}}
-{{- if .Values.datadog.enabled -}}
-tags.datadoghq.com/env: {{ .Values.datadog.env }}
-tags.datadoghq.com/service: {{ include "icm-as.fullname" . }}
-{{- if .Values.image.tag -}}
-tags.datadoghq.com/version: {{ .Values.image.tag }}
-{{- else }}
-tags.datadoghq.com/version: {{ (split ":" .Values.image.repository)._1 }}
-{{- end }}
-{{- end }}
 {{- end -}}
 
 {{/*
@@ -123,8 +98,16 @@ resources: {{- toYaml .Values.resources | nindent 2 }}
 Pod-annotations
 */}}
 {{- define "icm-as.podData" -}}
+annotations:
+  {{- if .Values.newrelic.metrics.enabled }}
+  prometheus.io/scrape: 'true'
+  {{- else }}
+  prometheus.io/scrape: 'false'
+  {{- end }}
+  prometheus.io/port: '7744'
+  prometheus.io/path: '/metrics'
 {{- if .Values.podAnnotations -}}
-annotations: {{- toYaml .Values.podAnnotations | nindent 2 }}
+{{- toYaml .Values.podAnnotations | nindent 2 }}
 {{- end }}
 {{- end -}}
 
@@ -132,6 +115,7 @@ annotations: {{- toYaml .Values.podAnnotations | nindent 2 }}
 Pod-labels
 */}}
 {{- define "icm-as.podLabels" -}}
+jgroupscluster: "{{- .Values.jgroups.clusterLabel | default .Release.Name -}}"
 {{- with .Values.podLabels }}
 {{- . | toYaml | nindent 0 }}
 {{- end }}
@@ -188,3 +172,19 @@ securityContext:
   {{- toYaml .Values.podSecurityContext | nindent 2 }}
 {{- end }}
 {{- end -}}
+
+{{/*
+The discovery mode of jgroups messaging
+*/}}
+{{- define "icm-as.jgroups.discovery" -}}
+{{- if .Values.jgroups -}}
+  {{- if .Values.jgroups.discovery -}}
+    {{- .Values.jgroups.discovery -}}
+  {{- else -}}
+    {{- printf "file_ping" }}
+  {{- end -}}
+{{- else -}}
+    {{- printf "file_ping" }}
+{{- end -}}
+{{- end -}}
+

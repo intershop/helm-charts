@@ -1,9 +1,14 @@
 {{/* vim: set filetype=mustache: */}}
+
 {{/*
 Creates the environment section
 */}}
 {{- define "icm-as.env" -}}
 env:
+- name: ENVIRONMENT
+  value: "{{ include "icm-as.environmentName" . }}"
+- name: INTERSHOP_EVENT_JGROUPSPROTOCOLSTACKCONFIGFILE
+  value: "/intershop/jgroups-conf/jgroups-config.xml"
 {{- if not (hasKey .Values.environment "SERVER_NAME") }}
 - name: SERVER_NAME
   value: "{{ .Values.serverName }}"
@@ -30,27 +35,13 @@ env:
 - name: DEBUG_ICM
   value: "true"
 {{- end }}
-{{- if .Values.datadog.enabled }}
-- name: ENABLE_DATADOG
+{{- if .Values.newrelic.enabled }}
+- name: ENABLE_NEWRELIC
+{{- if .Values.newrelic.apm.enabled }}
   value: "true"
-- name: DD_ENV
-  valueFrom:
-    fieldRef:
-      fieldPath: metadata.labels['tags.datadoghq.com/env']
-- name: DD_SERVICE
-  valueFrom:
-    fieldRef:
-      fieldPath: metadata.labels['tags.datadoghq.com/service']
-- name: DD_VERSION
-  valueFrom:
-    fieldRef:
-      fieldPath: metadata.labels['tags.datadoghq.com/version']
-- name: DD_LOGS_INJECTION
-  value: "true"
-- name: DD_AGENT_HOST
-  valueFrom:
-    fieldRef:
-      fieldPath: status.hostIP
+{{- else }}
+  value: "false"
+{{- end }}
 {{- end }}
 {{- if .Values.mssql.enabled }}
 - name: INTERSHOP_DATABASETYPE
@@ -88,5 +79,33 @@ env:
 {{- if .Values.webLayer.enabled }}
 - name: INTERSHOP_WEBADAPTER_ENABLED
   value: "false"
+{{- end }}
+{{- if .Values.webLayer.redis.enabled }}
+- name: INTERSHOP_PAGECACHE_REDIS_ENABLED
+  value: "true"
+{{- end }}
+{{- end -}}
+
+{{/*
+Job-specific-environment
+*/}}
+{{- define "icm-as.envJob" }}
+{{- include "icm-as.env" . }}
+- name: MAIN_CLASS
+  value: "com.intershop.beehive.core.capi.job.JobServer"
+- name: INTERSHOP_JOB_SERVER_EXCLUSIVE
+  value: "true"
+- name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
+  value: {{ .jobServerGroup }}
+{{- end -}}
+
+{{/*
+AppServer-specific-environment
+*/}}
+{{- define "icm-as.envAS" }}
+{{- include "icm-as.env" . }}
+{{- if .Values.job.enabled }}
+- name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
+  value: "BOS,WSF"
 {{- end }}
 {{- end -}}

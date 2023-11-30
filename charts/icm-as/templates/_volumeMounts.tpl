@@ -11,14 +11,6 @@ volumeMounts:
   subPath: {{ $v.fileName }}
 {{- end }}
 {{- end }}
-- mountPath: /intershop/license/license.xml
-  name: license-volume
-  readOnly: true
-  {{- if or (eq .Values.license.type "configMap") (eq .Values.license.type "secret") }}
-  subPath: license.xml
-  {{- else if eq .Values.license.type "csi" }}
-  subPath: license
-  {{- end }}
 - mountPath: /intershop/sites
   name: sites-volume
 {{- if .Values.persistence.customdata.enabled }}
@@ -27,13 +19,31 @@ volumeMounts:
 {{- end }}
 - mountPath: /intershop/customizations
   name: customizations-volume
+{{- if eq (include "icm-as.jgroups.discovery" .) "file_ping" }}
 - mountPath: /intershop/jgroups-share
   name: jgroups-volume
+{{- end }}
 {{- if and (.Values.replication.enabled) (eq .Values.replication.role "source")}}
 - mountPath: /intershop/replication-conf/replication-clusters.xml
   name: replication-volume
   readOnly: true
   subPath: replication-clusters.xml
+{{- end }}
+- mountPath: /intershop/jgroups-conf/jgroups-config.xml
+  name: jgroups-config-volume
+  readOnly: true
+  subPath: jgroups-config.xml
+{{- if .Values.webLayer.redis.enabled }}
+- mountPath: /intershop/redis-conf/redis-client-config.yaml
+  name: redis-client-config-volume
+  readOnly: true
+  subPath: redis-client-config.yaml
+{{- end }}
+{{- if .Values.newrelic.enabled }}
+- mountPath: /intershop/lib-newrelic/newrelic.yml
+  name: newrelic-config-volume
+  readOnly: true
+  subPath: newrelic.yml
 {{- end }}
 {{- if .Values.sslCertificateRetrieval.enabled }}
 - mountPath: /mnt/secrets

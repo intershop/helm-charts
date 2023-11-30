@@ -1,0 +1,14 @@
+[tool.bumpversion]
+current_version = "1.6.0"
+
+[[tool.bumpversion.files]]
+filename = "Chart.yaml"
+search = "name: icm-as\nversion: {current_version}"
+replace = "name: icm-as\nversion: {new_version}"
+
+[[tool.bumpversion.files]]
+filename = "../icm/Chart.yaml"
+search = "name: icm-as\n    version: {current_version}"
+replace = "name: icm-as\n    version: {new_version}"
+
+#asdasfd

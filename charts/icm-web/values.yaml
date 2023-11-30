@@ -2,11 +2,22 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
-
 # defined where the application shall run on
 nodeSelector: {}
 #  agentpool: <your agentpool>
+
+# operational context (~= environment) this icm is running in
+operationalContext:
+  #   id of the customer e.g. xxxxx
+  # customerId: <customerId>
+  # type of the environment (one of {int,uat,prd}, default=prd)
+  environmentType: prd
+  # name of the environment (environment-type + some sort of id, e.g. int-01, default=<environmentType>)
+  environmentName: prd
+  # type of the application (default=icm)
+  applicationType: icm
+  # if this is a staging environment define the system type (one of {standalone,live,edit}, default=standalone)
+  stagingType: standalone
 
 webadapter:
   image:
@@ -20,9 +31,13 @@ webadapter:
   # provides custom certificates for webadapter
   customSSLCertificates: false
   overrideSSL: false
+  # define the number of replicas beeing deployed (int, > 0, default=1)
   replicaCount: 1
+  # define the update strategy (possible values: Recreate, RollingUpdate; default=RollingUpdate)
+  updateStrategy: RollingUpdate
   sslCertificateRetrieval:
     enabled: false
+    supportV1: false
     # secretName: <explicit-ssl-secret-name>
     keyvault:
       tenantId: <tenant-ID-of-the-KeyVault>
@@ -44,13 +59,7 @@ webadapter:
 
   # define custom labels for deployment and pods:
   deploymentLabels: {}
-  #  tags.datadoghq.com/env: hell
-  #  tags.datadoghq.com/service: icm-web-waa
-  #  tags.datadoghq.com/version: 11.0.0
   podLabels: {}
-  #  tags.datadoghq.com/env: hell
-  #  tags.datadoghq.com/service: icm-web-waa
-  #  tags.datadoghq.com/version: 11.0.0
 
 agent:
   # in some REST-based environment the webadapteragent isn't mandatory
@@ -60,8 +69,10 @@ agent:
     pullPolicy: IfNotPresent
     command: |
       /intershop/bin/start-waa.sh
+  # define the number of replicas beeing deployed (int, > 0, default=1)
   replicaCount: 1
-
+  # define update the strategy (possible values: Recreate, RollingUpdate; default=RollingUpdate)
+  updateStrategy: RollingUpdate
   # define custom annotations for deployment and pods:
   deploymentAnnotations: {}
   #  myAnnotation: true
@@ -75,13 +86,7 @@ agent:
 
   # define custom labels for deployment and pods:
   deploymentLabels: {}
-  #  tags.datadoghq.com/env: hell
-  #  tags.datadoghq.com/service: icm-web
-  #  tags.datadoghq.com/version: 11.0.0
   podLabels: {}
-  #  tags.datadoghq.com/env: hell
-  #  tags.datadoghq.com/service: icm-web
-  #  tags.datadoghq.com/version: 11.0.0
 
 ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
 ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -110,8 +115,36 @@ persistence:
         - cache=strict
         - actimeo=30
     azurefiles:
-      shareName: icm-as-share
-      secretName: icm-as-share-secret
+      shareName: icm-web-pc-share
+      secretName: icm-web-pc-secret
+    nfs:
+      server: <ipaddress or hostname>
+      path: <server folder>
+    local:
+      path: <local folder>
+  logs:
+    size: 10Gi
+    # type cluster | nfs | azurefiles | existingClaim | local | emptyDir
+    type: emptyDir
+    existingClaim: claimName
+    cluster:
+      storageClass:
+        create: true
+        # if create == false an exiting class could be set
+        # if empty value is set the default storage class is used
+        # existingClass: ""
+        skuName: Standard_LRS
+        mountOptions:
+        - uid=150
+        - gid=150
+        - dir_mode=0777
+        - file_mode=0777
+        - mfsymlinks
+        - cache=strict
+        - actimeo=30
+    azurefiles:
+      shareName: icm-web-logs-share
+      secretName: icm-web-logs-secret
     nfs:
       server: <ipaddress or hostname>
       path: <server folder>
@@ -133,10 +166,10 @@ resources:
   agent:
     limits:
       cpu: 100m
-      memory: 200Mi
+      memory: 500Mi
     requests:
       cpu: 100m
-      memory: 200Mi
+      memory: 500Mi
 
 ingress:
   enabled: false

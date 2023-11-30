@@ -1,0 +1,58 @@
+suite: test correctness of jgroups-configuration
+templates:
+  - templates/jgroups-config-xml-cm.yaml
+tests:
+  - it: jgroups-config.xml default values uses FILE_PING
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: templates/jgroups-config-xml-cm.yaml
+    asserts:
+      - matchRegex:
+          path: data["jgroups-config.xml"]
+          pattern: <FILE_PING*
+  - it: jgroups-config.xml configured to use KUB_PING
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: templates/jgroups-config-xml-cm.yaml
+    set:
+      jgroups.discovery: "kube_ping"
+    asserts:
+      - matchRegex:
+          path: data["jgroups-config.xml"]
+          pattern: <org.jgroups.protocols.kubernetes.KUBE_PING
+  - it: jgroups-config.xml configured to use AZURE_PING
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: templates/jgroups-config-xml-cm.yaml
+    set:
+      jgroups.discovery: "azure_ping"
+    asserts:
+      - matchRegex:
+          path: data["jgroups-config.xml"]
+          pattern: <azure.AZURE_PING
+  - it: jgroups-config.xml configured to use DNS_PING
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: templates/jgroups-config-xml-cm.yaml
+    set:
+      jgroups.discovery: "dns_ping"
+    asserts:
+      - matchRegex:
+          path: data["jgroups-config.xml"]
+          pattern: <dns.DNS_PING

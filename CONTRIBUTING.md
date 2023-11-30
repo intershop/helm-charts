@@ -41,4 +41,13 @@ If you have any questions feel free to also send them to this email address.
 ## Commit Message Guidelines
 
 In general we comply with the rules and formats of [Conventional Commits](https://www.conventionalcommits.org).
+These rules are essential to our automated release process and the later rollout of a helm chart. Commit messages will be used to determine the new semantic version and shall help updating existing projects.
 
+Some rules to be emphasized for chart related commits:
+* Every commit starting with `BREAKING CHANGE(icm):` will be treated as a _MAJOR_ change. Please also use the commit message body to give detailed information.
+* A commit message starting with `feat(icm):` (or e.g.: `feat(pwa):`) will get a _MINOR_ change.
+* The rest will be _PATCH_.
+
+Chart unreleated commits (like e.g. docs, chore, build, test) will not be taken into account but still should be conventional and informative as possible.
+
+All of this will help to read and interpret our changlogs and release notes.

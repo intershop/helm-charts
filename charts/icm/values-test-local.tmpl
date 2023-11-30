@@ -2,12 +2,9 @@ icm-as:
   nodeSelector: null
   imagePullSecrets:
   - "${ICM_AS_PULL_SECRET}"
-  license:
-    secret:
-      name: intershop-license
   persistence:
     sites:
-      size: 1Gi
+      size: 2Gi
       type: local
       local:
         path: ${LOCAL_MOUNT_BASE}/sites
@@ -15,8 +12,6 @@ icm-as:
       enabled: true
       existingClaim: ${HELM_JOB_NAME}-local-testdata-pvc
       mountPoint: /data
-  datadog:
-    enabled: false
   mssql:
     enabled: true
     acceptEula: "Y"
@@ -44,9 +39,6 @@ icm-web:
       existingClaim: ${HELM_JOB_NAME}-local-testdata-pvc
       mountPoint: /data
 
-mail:
-  nodeSelector: null
-
 testrunner:
   nodeSelector: null
   imagePullSecrets:
@@ -57,5 +49,3 @@ testrunner:
       type: local
       local:
         dir: ${LOCAL_MOUNT_BASE}/testdata
-  datadog:
-    enabled: false

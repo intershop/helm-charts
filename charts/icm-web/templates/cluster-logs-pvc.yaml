@@ -1,0 +1,17 @@
+{{- if eq .Values.persistence.logs.type "cluster" -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "icm-web.fullname" . }}-cluster-logs-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  {{- if .Values.persistence.logs.cluster.storageClass.create }}
+  storageClassName: "{{ template "icm-web.fullname" . }}-cluster-logs-sc"
+  {{- else if gt (len .Values.persistence.logs.cluster.storageClass.existingClass) 0 }}
+  storageClassName: {{ .Values.persistence.logs.cluster.storageClass.existingClass | quote }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.logs.size }}
+{{- end -}}
