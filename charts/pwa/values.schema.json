@@ -173,6 +173,37 @@
                     }
                   }
                 },
+                "memcached": {
+                  "$id": "#/properties/cache/properties/memcached",
+                  "type": "object",
+                  "title": "Shared cache settings",
+                  "description": "Specify settings for memcached.",
+                  "default": {},
+                  "required": [ ],
+                  "properties": {
+                    "args": {
+                        "$id": "#/properties/cache/properties/memcached/properties/args",
+                        "type": "string",
+                        "title": "Arguments for memcached service",
+                        "description": "Configure arguments for memcached service",
+                        "additionalProperties": true
+                    },
+                    "memoryRequest": {
+                        "$id": "#/properties/cache/properties/memcached/properties/memoryRequest",
+                        "type": "string",
+                        "title": "Initial memory usage",
+                        "description": "Configure initial memory usage for the memcached service",
+                        "additionalProperties": true
+                    },
+                    "memoryLimit": {
+                        "$id": "#/properties/cache/properties/memcached/properties/memoryLimit",
+                        "type": "string",
+                        "title": "Maximum memory usage",
+                        "description": "Configure maximum memory usage for the memcached service",
+                        "additionalProperties": true
+                    }
+                  }
+                },
                 "metrics": {
                   "type": "object",
                   "form": true,
