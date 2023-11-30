@@ -31,7 +31,7 @@ spec:
   chart:
     repository: https://intershop.github.io/helm-charts
     name: pwa-main
-    version: 0.8.0-eta
+    version: 0.8.0-theta
   values:
 ```
 
@@ -62,7 +62,7 @@ spec:
     spec:
       # pwa helm chart, version from https://github.com/intershop/helm-charts
       chart: pwa-main
-      version: 0.8.0-eta
+      version: 0.8.0-theta
       # Source reference to the HelmChart Repo
       sourceRef:
         kind: HelmRepository
