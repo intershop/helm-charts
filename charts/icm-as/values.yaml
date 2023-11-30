@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# define the number of replicas beeing deployed (int, > 0, default=1)
+# define the number of replicas being deployed (int, > 0, default=1)
 replicaCount: 1
 
 # define the update strategy (possible values: Recreate, RollingUpdate; default=RollingUpdate)
@@ -18,7 +18,7 @@ deploymentAnnotations: {}
 podAnnotations: {}
 #  myAnnotation: true
 
-# define podbinding if required
+# define pod binding if required
 podBinding:
   enabled: false
   binding: <name-of-the-binding>
@@ -69,7 +69,7 @@ jvm:
     # enable/disable to java-vm-debugging
     enabled: false
   # define options / parameters to be used to start the jvm
-  options: "-XX:NewRatio=8 -XX:MaxRAMPercentage=80 -XX:InitialRAMPercentage=80"
+  options: "-XX:MaxRAMPercentage=70 -XX:InitialRAMPercentage=70"
   # define additional options / parameters to be used to start the jvm (will be appended to options)
   additionalOptions:
 
@@ -82,10 +82,10 @@ newrelic:
   # app_name: "icm"
   license_key: "secret"
   metrics:
-    # fine grade possibilitity to disable metrics for cost reduction
+    # fine grade possibility to disable metrics for cost reduction
     enabled: true
   apm:
-    # fine grade possibilitity to disable apm for cost reduction
+    # fine grade possibility to disable apm for cost reduction
     enabled: true
 
 nameOverride: ""
@@ -228,7 +228,7 @@ probes:
 # terminationGracePeriodSeconds: 30
 
 # Enable Microsoft SQL Server for development and testing purposes.
-# ICM will use jdbc:sqlserver://<release>-mssql:1433;database=<msslq.name>;
+# ICM will use jdbc:sqlserver://<release>-mssql:1433;database=<mssql.name>;
 # see values of persistence.mssql-data and persistence.mssql-backup
 mssql:
   enabled: false
@@ -243,7 +243,7 @@ mssql:
       memory: 2Gi
   image:
     repository: "intershophub/mssql-intershop:2019-latest"
-  # needs to be explicitally switched at deployment to "Y"
+  # needs to be explicitly switched at deployment to "Y"
   acceptEula: "N"
   saPassword: "1nstershop5A"
   databaseName: "icmdb"
@@ -318,7 +318,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   # Paths are treated as list of prefixes. Any URL matching one of the prefixes will
-  # be forwared to ICM.
+  # be forwarded to ICM.
   hosts:
     - host: <dns-name-of-service>
       paths:
@@ -352,7 +352,7 @@ sslCertificateRetrieval:
 # In order to override these properties add them in the job section, e.g. add a 'resources' section to
 # configure different cpu or memory limits.
 job:
-  # if enabled=true the job controller must be deployed at cluster separatelly. see icm-job chart.
+  # if enabled=true the job controller must be deployed at cluster separately. see icm-job chart.
   enabled: false
 
   # If true, job-server-support will be available but no jobs will be created
@@ -362,11 +362,11 @@ job:
   # pollInterval: value_in_seconds
 
   # Sets the limit of failed jobs in the history. If the limit gets reached
-  # eldest jobs will be deleted. Defaults to unlimited
+  # the eldest jobs will be deleted. Defaults to unlimited
   failedJobsHistoryLimit: 1
 
   # Sets the limit of successful jobs in the history. If the limit gets reached
-  # eldest jobs will be deleted. Defaults to unlimited
+  # the eldest jobs will be deleted. Defaults to unlimited
   successfulJobsHistoryLimit: 3
 
   # If true the schedule-time-computer will be called with server name 'jobserver' and group == 'JOB'
@@ -377,7 +377,7 @@ job:
 
 # Configuration for a replication/staging scenario
 replication:
-  # enables/disables the replication support: whether or not this icm-as is part of a replication system
+  # enables/disables the replication support: whether this icm-as is part of a replication system or not
   enabled: false
 
   # defines the type of this replication system (source | target)
