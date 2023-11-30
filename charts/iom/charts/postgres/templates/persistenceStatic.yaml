@@ -1,0 +1,47 @@
+{{- if hasKey .Values "persistence" }}
+  {{- if hasKey .Values.persistence "provisioning" }}
+    {{- if eq .Values.persistence.provisioning "static" }}
+      {{- if hasKey .Values.persistence "static" }}
+        {{- if hasKey .Values.persistence.static "pv" }}
+          {{- if .Values.persistence.static.pv }}
+            {{- if hasKey .Values.persistence.static "storageClass" }}
+              {{- if .Values.persistence.static.storageClass }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "postgres.fullname" . }}
+  labels:
+    {{- include "postgres.labels" . | nindent 4 }}    
+  annotations:
+    {{- if .Values.persistence.static.annotations }}
+      {{- toYaml .Values.persistence.static.annotations | nindent 4 }}
+    {{- end }}
+    {{- include "meta.helm.annotations" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeName: {{ .Values.persistence.static.pv }}
+  storageClassName: {{ .Values.persistence.static.storageClass }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.storageSize }}
+              {{- else }}
+                {{ fail "parameter persistence.static.storageClass is not defined" }}
+              {{- end }}
+            {{- else }}
+              {{ fail "parameter persistence.static.storageClass is missing" }}
+            {{- end }}
+          {{- else }}
+            {{ fail "parameter persistence.static.pv is not defined" }}
+          {{- end }}
+        {{- else }}
+          {{ fail "parameter persistence.static.pv is missing" }}
+        {{- end }}
+      {{- else }}
+        {{ fail "parameter persistence.static is missing" }}
+      {{- end }}
+    {{- end }}
+  {{- else }}
+    {{ fail "parameter persistence.provisioning is missing" }}
+  {{- end }}
+{{- end }}
