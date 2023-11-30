@@ -140,6 +140,16 @@ cache:
   ##    stop: 3600
   ##    cron: "0 0 * * *"
   prefetch: []
+
+  ####
+  ## @param memcached Specify settings for the shared cache
+  ## E.g:
+  ## memcached:
+  ##  args: '["-m", "1234", "-I", "10m"]'
+  ##  memoryRequest: 2Gi
+  ##  memoryLimit: 3Gi
+  memcached: {}
+
   ## Prometheus Exporter / Metrics
   ##
   metrics:
