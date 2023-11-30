@@ -16,6 +16,7 @@ metadata:
     {{- if .Values.persistence.static.annotations }}
       {{- toYaml .Values.persistence.static.annotations | nindent 4 }}
     {{- end }}
+    {{- include "meta.helm.annotations" . | nindent 4 }}
 spec:
   accessModes:
     - ReadWriteMany
