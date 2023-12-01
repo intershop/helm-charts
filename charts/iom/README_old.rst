@@ -25,7 +25,7 @@ Migration Notes
 Changed default values of *image.tag* and *dbaccount.image.tag*
 ===============================================================
 
-Default value of IOM version (parameter *image.tag*) was changed to 4.3.0 and default value of dbaccount version
+The default value of the IOM version (parameter *image.tag*) was changed to 4.3.0 and the default value of the dbaccount version
 (parameter *dbaccount.image.tag*) was updated to 1.6.0.
 
 -------------
@@ -73,9 +73,9 @@ See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 Added New Parameter-Group *spreadPods*
 ===============================================
 
-*spreadPods* provides an alternative or additional method to spread IOM pods over nodes. Contrary to *podAntiAffinity*
+*spreadPods* provides an alternative or additional method to spread IOM pods over nodes. Contrary to *podAntiAffinity*,
 it is possible to run more than one pod per node. For example, if there are two nodes and four pods, the pods are evenly spread across the
-nodes. Each node is running two pods. Additionally, it is very easy to combine different topologies.
+nodes. Each node runs two pods. Additionally, it is very easy to combine different topologies.
 
 Unlike *podAntiAffinity*, *spreadPods* is disabled by default.
 
@@ -85,7 +85,7 @@ See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 Migration Notes
 ---------------
 
-*podAntiAffinity* is Enabled and Uses *mode: required* by Default
+*podAntiAffinity* Is Enabled and Uses *mode: required* By Default
 =================================================================
 
 *podAntiAffinity* is enabled and uses *mode: required* by default, which makes the IOM deployment instantly more robust against

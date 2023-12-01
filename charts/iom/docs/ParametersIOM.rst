@@ -799,14 +799,14 @@ Parameters of IOM Helm Chart
 |persistence.storageSize                 |Requested storage size. For more information, see the `official Kubernetes documentation on     |1Gi                                                      |
 |                                        |storage <https://kubernetes.io/docs/concepts/storage/persistent-volumes/>`_.                    |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|persistence.provisioning                |Controls the provisioning method to be used. Currently three different methods of provisioning  |dynamic                                                  |
+|persistence.provisioning                |Controls the provisioning method to be used. Currently, three different methods of provisioning  |dynamic                                                  |
 |                                        |are supported:                                                                                  |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |- *dynamic*                                                                                     |                                                         |
 |                                        |- *static*                                                                                      |                                                         |
 |                                        |- *local*                                                                                       |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |For more information see the description of according parameter-groups and the documantation    |                                                         |
+|                                        |For more information, see the description of according parameter-groups and the documentation    |                                                         |
 |                                        |about usage of `Persistent Storage <PersistentStorage.rst>`_.                                   |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |persistence.dynamic                     |Parameter-group, that bundles all configuration settings of *dynamic* provisioning of persistent|                                                         |
@@ -814,13 +814,13 @@ Parameters of IOM Helm Chart
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |persistence.dynamic.storageClass        |Name of the storage class to be used for dynamic provisioning of IOM's shared storage.          |azurefile                                                |
 |                                        |                                                                                                |                                                         |
-|                                        |- Ignored, if *persistence.provisioning* is set to an other value than *dynamic*.               |                                                         |
+|                                        |- Ignored, if *persistence.provisioning* is set to another value than *dynamic*.               |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |persistence.dynamic.annotations         |Annotations of *persistence-volume-claim* to be created. The default-value prevents automatic   |"helm.sh/resource-policy": keep                          |
 |                                        |deletion of the *persistent-volume-claim* after deletion of IOM Helm release. See               |                                                         |
 |                                        |https://helm.sh/docs/topics/charts_hooks/ for more information.                                 |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |- Ignored if *persistence.provisioning* is set to an other value than *dynamic*                 |                                                         |
+|                                        |- Ignored if *persistence.provisioning* is set to another value than *dynamic*                 |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |persistence.static                      |Parameter-group, that bundles all configuration settings of *static* provisioning of persistent |                                                         |
 |                                        |storage for shared file-system of IOM.                                                          |                                                         |
@@ -828,33 +828,33 @@ Parameters of IOM Helm Chart
 |persistence.static.storageClass         |Name of storage class, that belongs to the *persistent-volume* defined by                       |                                                         |
 |                                        |*persistence.static.pv*.                                                                        |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |- Ignored if *persistence.provisioning* is set to an other value than *static*.                 |                                                         |
+|                                        |- Ignored if *persistence.provisioning* is set to another value than *static*.                 |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |persistence.static.pv                   |Name of *persistent-volume* to be used for static provisioning of IOM's shared storage. The     |                                                         |
 |                                        |*persistent-volume* has to be created by a cluster-admin in advance.                            |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |- Ignored if *persistence.provisioning* is set to an other value than *static*.                 |                                                         |
+|                                        |- Ignored if *persistence.provisioning* is set to another value than *static*.                 |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |persistence.static.annotations          |Annotations of *persistence-volume-claim* to be created.                                        |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |- Ignored if *persistence.provisioning* is set to an other value than *static*.                 |                                                         |
+|                                        |- Ignored if *persistence.provisioning* is set to another value than *static*.                 |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |persistence.local                       |Parameter-group, that bundles all configuration settings of *local* provisioning of persistent  |                                                         |
 |                                        |storage for shared file-system of IOM.                                                          |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|persistence.local.hostPath              |For very simple installations, persistent data can be stored directly at a local disk. In this  |                                                         |
-|                                        |case, the path on local host has to be stored at this parameter.                                |                                                         |
+|persistence.local.hostPath              |For very simple installations, persistent data can be stored directly on a local disk. In this  |                                                         |
+|                                        |case, the path on the local host has to be stored at this parameter.                                |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |- Ignored if *persistence.provisioning* is set to an other value than *local*.                  |                                                         |
+|                                        |- Ignored if *persistence.provisioning* is set to another value than *local*.                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |persistence.local.reclaimPolicy         |*Reclaim-policy* to be used by the *persistent-volume*. Allowed values are *Delete* and         |Delete                                                   |
 |                                        |*Retain*.                                                                                       |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |- Ignored if *persistence.provisioning* is set to an other value than *local*.                  |                                                         |
+|                                        |- Ignored if *persistence.provisioning* is set to another value than *local*.                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |persistence.local.annotations           |Annotations of *persistence-volume-claim* to be created.                                        |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |- Ignored if *persistence.provisioning* is set to an other value than *local*.                  |                                                         |
+|                                        |- Ignored if *persistence.provisioning* is set to another value than *local*.                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |ingress                                 |Group *ingress* bundles configuration of IOM's ingress, which is required to get access to IOM  |                                                         |
 |                                        |from outside of Kubernetes.                                                                     |                                                         |

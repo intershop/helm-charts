@@ -50,10 +50,10 @@ Values File
 ===========
 
 The values file shown below reflects the requirements of the straight Helm approach as described in section `IOM Helm-Charts`_ to demonstrate
-this process in all its details. Within the `Intershop Commerce Platform <ToolsAndConcepts.rst#intershop-commerce-platform>`_ environment
+this process in all its details. Within the `Intershop Commerce Platform <ToolsAndConcepts.rst#intershop-commerce-platform>`_ environment,
 you would edit the values file only. Any further actions are triggered automatically when pushing changes made in the file.
 
-Of course, this values file cannot be copied as it is. It references external resources and external services, which do not exist in other
+Of course, this values file cannot be copied as it is. It references external resources and external services which do not exist in other
 environments. Additionally, the hostname iom.mycompany.com needs to be replaced to match your requirements.
 
 .. code-block:: yaml
@@ -186,7 +186,7 @@ Now we repeat the upgrade process, which was already shown in the `previous exam
 because from a *Helm* perspective, the rollout of any change in values or charts is an upgrade process. The process is identical, no
 matter if only a simple value is changed or if new Docker images of a new IOM release are rolled out.
 
-Also setting the *downtime* parameter (see: `Restrictions on Upgrade <ToolsAndConcepts.rst#restrictions-on-upgrade>`_) is considered.
+Also, setting the *downtime* parameter (see: `Restrictions on Upgrade <ToolsAndConcepts.rst#restrictions-on-upgrade>`_) is considered.
 A change of a log-level is an uncritical change which can be applied without downtime. Since we have more than one IOM application
 server, the upgrade process can now be executed without downtime.
 
@@ -221,7 +221,7 @@ The last process demonstrates how to uninstall IOM. Please keep in mind that the
 
   # Create a backup of the content located in dynamically created *persistent-volume*.
   # After that, the according *persistent-volume* has to be deleted manually.
-  # The steps to do so, are not shown here.
+  # The steps to do so are not shown here.
   
   # delete Kubernetes namespace used for IOM
   kubectl delete namespace mycompany-iom
