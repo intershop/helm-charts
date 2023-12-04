@@ -62,7 +62,6 @@ Parameters of IOM Helm Chart
 |                                        |most other servers, too.                                                                        |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |See `Options and Requirements of IOM database <IOMDatabase.rst>`_ for details.                  |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |dbaccount.searchPath                    |In some circumstances, the search path for database objects has to be extended. This is the case|                                                         |
 |                                        |if custom schemas are used for customizations or tests. To add more schemas to the search-path, |                                                         |
