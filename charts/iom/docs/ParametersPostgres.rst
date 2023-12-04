@@ -42,7 +42,7 @@ Parameters of Integrated PostgreSQL Server
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.pg.user                        |Name of the superuser. The superuser will be created when starting the Postgres server.        |postgres                                      |
 |                                        |                                                                                               |                                              |
-|                                        |* Ignored, if *postgres.pg.userSecretKeyRef* is defined.                                       |                                              |
+|                                        |- Ignored, if *postgres.pg.userSecretKeyRef* is defined.                                       |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.pg.userSecretKeyRef            |Instead of storing the name of the user as plain text in the values file, a reference to a key |                                              |
 |                                        |within a secret can be used. For more information, see section `References to entries of       |                                              |
@@ -50,14 +50,13 @@ Parameters of Integrated PostgreSQL Server
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.pg.passwd                      |The password of the superuser. Password will be set when starting the Postgres server.         |postgres                                      |
 |                                        |                                                                                               |                                              |
-|                                        |* Ignored, if *postgres.pg.passwdSecretKeyRef* is defined.                                     |                                              |
+|                                        |- Ignored, if *postgres.pg.passwdSecretKeyRef* is defined.                                     |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.pg.passwdSecretKeyRef          |Instead of storing the password as plain text in the values file, a reference to a key within a|                                              |
 |                                        |secret can be used. For more information, see section `References to entries of Kubernetes     |                                              |
 |                                        |secrets`_.                                                                                     |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.pg.db                          |Name of default (management) database which will be created when starting the Postgres server. |postgres                                      |
-|                                        |                                                                                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.persistence                    |Parameters of group *postgres.persistence* are controlling if and how the database data are    |                                              |
 |                                        |persisted.                                                                                     |                                              |
@@ -70,17 +69,17 @@ Parameters of Integrated PostgreSQL Server
 |                                        |`official Kubernetes documentation on storage                                                  |                                              |
 |                                        |<https://kubernetes.io/docs/concepts/storage/persistent-volumes/>`_.                           |                                              |
 |                                        |                                                                                               |                                              |
-|                                        |* Ignored if *postgres.persistence.hostPath* is set.                                           |                                              |
+|                                        |- Ignored if *postgres.persistence.hostPath* is set.                                           |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.persistence.storageClass       |Name of existing storage class to be used by the PostgreSQL server.                            |                                              |
 |                                        |                                                                                               |                                              |
-|                                        |* Ignored if *postgres.persistence.hostPath* is set.                                           |                                              |
+|                                        |- Ignored if *postgres.persistence.hostPath* is set.                                           |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.persistence.annotations        |Annotations to be added to the according PersistentVolumeClaim. For more information, see the  |{}                                            |
 |                                        |`official Kubernetes documentation on storage                                                  |                                              |
 |                                        |<https://kubernetes.io/docs/concepts/storage/persistent-volumes/>`_.                           |                                              |
 |                                        |                                                                                               |                                              |
-|                                        |* Ignored if *postgres.persistence.hostPath* is set.                                           |                                              |
+|                                        |- Ignored if *postgres.persistence.hostPath* is set.                                           |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.persistence.storageSize        |Requested storage size. For more information, see the `official Kubernetes documentation on    |20Gi                                          |
 |                                        |storage <https://kubernetes.io/docs/concepts/storage/persistent-volumes/>`_.                   |                                              |
@@ -89,25 +88,18 @@ Parameters of Integrated PostgreSQL Server
 |                                        |case, the path on local host has to be stored at this parameter.                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.resources                      |Resource requests & limits.                                                                    |{}                                            |
-|                                        |                                                                                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.imagePullSecrets               |List of the secrets to get credentials from.                                                   |[]                                            |
-|                                        |                                                                                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.nameOverride                   |Overwrites chart name.                                                                         |                                              |
-|                                        |                                                                                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.fullnameOverride               |Overwrites complete name, constructed from release, and chart name.                            |                                              |
-|                                        |                                                                                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.nodeSelector                   |Node labels for pod assignment.                                                                |{}                                            |
-|                                        |                                                                                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.tolerations                    |Node taints to tolerate (requires Kubernetes >=1.6).                                           |[]                                            |
-|                                        |                                                                                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.affinity                       |Node/pod affinities (requires Kubernetes >=1.6).                                               |{}                                            |
-|                                        |                                                                                               |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 
 +-------------------------+-----------------+--------------------------+

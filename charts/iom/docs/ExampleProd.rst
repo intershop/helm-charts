@@ -14,22 +14,23 @@ Production System Running in Azure Cloud
 Preconditions
 =============
 
-Please keep in mind that these preconditions reflect the use case described in section `IOM Helm-Charts <ToolsAndConcepts.rst#iom-helm-charts>`_. When using the Intershop Commerce Platform, these preconditions are all covered by Intershop.
+Please keep in mind that these preconditions reflect the use case described in section `IOM Helm-Charts <ToolsAndConcepts.rst#iom-helm-charts>`_.
+When using the Intershop Commerce Platform, these preconditions are all covered by Intershop.
 
-* Azure Kubernetes Service (AKS) and virtual machines of sufficient size. 
-* Access to a database provided by a PostgreSQL server.
-* Access to a File service (e.g. Azure Files)
-* Running Ingress controller in AKS
-* Secrets for database access, TLS for Ingress, etc.
-* Installation of kubectl on the machine that is used for installation, >=v.1.25
+- Azure Kubernetes Service (AKS) and virtual machines of sufficient size. 
+- Access to a database provided by a PostgreSQL server.
+- Access to a File service (e.g. Azure Files)
+- Running Ingress controller in AKS
+- Secrets for database access, TLS for Ingress, etc.
+- Installation of kubectl on the machine that is used for installation, >=v.1.25
 
-  * see: https://kubernetes.io/docs/tasks/tools/
-* Installation of Helm on the machine that is used for installation, >= v.3.6
+  - see: https://kubernetes.io/docs/tasks/tools/
+- Installation of Helm on the machine that is used for installation, >= v.3.6
 
-  * see: https://helm.sh/docs/intro/install/
-* Access to AKS from the machine used for installation
-* Access to `IOM Docker images <ToolsAndConcepts.rst#iom-docker-images>`_
-* Access to `IOM Helm-charts`_
+  - see: https://helm.sh/docs/intro/install/
+- Access to AKS from the machine used for installation
+- Access to `IOM Docker images <ToolsAndConcepts.rst#iom-docker-images>`_
+- Access to `IOM Helm-charts`_
 
 Requirements and Characteristics of IOM Installation
 ====================================================
@@ -48,9 +49,12 @@ Requirements and characteristics are numbered again. You will find these numbers
 Values File
 ===========
 
-The values file shown below reflects the requirements of the straight Helm approach as described in section `IOM Helm-Charts`_ to demonstrate this process in all its details. Within the `Intershop Commerce Platform <ToolsAndConcepts.rst#intershop-commerce-platform>`_ environment you would edit the values file only. Any further actions are triggered automatically when pushing changes made in the file.
+The values file shown below reflects the requirements of the straight Helm approach as described in section `IOM Helm-Charts`_ to demonstrate
+this process in all its details. Within the `Intershop Commerce Platform <ToolsAndConcepts.rst#intershop-commerce-platform>`_ environment,
+you would edit the values file only. Any further actions are triggered automatically when pushing changes made in the file.
 
-Of course, this values file cannot be copied as it is. It references external resources and external services, which do not exist in other environments. Additionally, the hostname iom.mycompany.com needs to be replaced to match your requirements.
+Of course, this values file cannot be copied as it is. It references external resources and external services which do not exist in other
+environments. Additionally, the hostname iom.mycompany.com needs to be replaced to match your requirements.
 
 .. code-block:: yaml
 
@@ -120,13 +124,16 @@ Of course, this values file cannot be copied as it is. It references external re
 
   # store data of shared file system at azurefile service (requirement #5)
   persistence:
-    storageClass: azurefile
     storageSize: 60G
+    dynamic:
+      storageClass: azurefile-iom
+      annotations:
 
 Installation of IOM
 ===================
 
-Create a file *values.yaml* and fill it with the content listed above in `Values File`_. Adapt all the changes to the file that are required by your environment. After that, the installation process can be started.
+Create a file *values.yaml* and fill it with the content listed above in `Values File`_. Adapt all the changes to the file that are required
+by your environment. After that, the installation process can be started.
 
 .. code-block:: shell
 
@@ -136,7 +143,9 @@ Create a file *values.yaml* and fill it with the content listed above in `Values
   # install IOM into namespace mycompany-iom
   helm install ci intershop/iom --values=values.yaml --namespace mycompany-iom --timeout 30m0s --wait		
 
-This installation process will now take some minutes to finish. In the meantime, the progress of the installation process can be observed within a second terminal window. Using *kubectl*, you can see the status of every Kubernetes object. For simplicity, the following example shows the status of pods only.
+This installation process will now take some minutes to finish. In the meantime, the progress of the installation process can be observed within
+a second terminal window. Using *kubectl*, you can see the status of every Kubernetes object. For simplicity, the following example shows the
+status of pods only.
 
 Just open a second terminal window and enter the following commands.
 
@@ -167,14 +176,19 @@ Just open a second terminal window and enter the following commands.
   prod-iom-0                                           1/1     Running   0          10m
   prod-iom-1                                           1/1     Running   0          5m49s
 
-When all pods are *Running* and *Ready*, the installation process has finished. You should check the first terminal window where the installation process was started.
+When all pods are *Running* and *Ready*, the installation process has finished. You should check the first terminal window where the
+installation process was started.
 
 Upgrade of IOM
 ==============
 
-Now we repeat the upgrade process, which was already shown in the `previous example <ExampleDemo.rst>`_. This simple example was chosen because from a *Helm* perspective, the rollout of any change in values or charts is an upgrade process. The process is identical, no matter if only a simple value is changed or if new Docker images of a new IOM release are rolled out.
+Now we repeat the upgrade process, which was already shown in the `previous example <ExampleDemo.rst>`_. This simple example was chosen
+because from a *Helm* perspective, the rollout of any change in values or charts is an upgrade process. The process is identical, no
+matter if only a simple value is changed or if new Docker images of a new IOM release are rolled out.
 
-Also setting the *downtime* parameter (see: `Restrictions on Upgrade <ToolsAndConcepts.rst#restrictions-on-upgrade>`_) is considered. A change of a log-level is an uncritical change which can be applied without downtime. Since we have more than one IOM application server, the upgrade process can now be executed without downtime.
+Also, setting the *downtime* parameter (see: `Restrictions on Upgrade <ToolsAndConcepts.rst#restrictions-on-upgrade>`_) is considered.
+A change of a log-level is an uncritical change which can be applied without downtime. Since we have more than one IOM application
+server, the upgrade process can now be executed without downtime.
 
 Add the following lines to the *values.yaml*:
 
@@ -204,6 +218,10 @@ The last process demonstrates how to uninstall IOM. Please keep in mind that the
   # uninstall IOM release
   helm uninstall prod -n mycompany-iom
   release "prod" uninstalled
+
+  # Create a backup of the content located in dynamically created *persistent-volume*.
+  # After that, the according *persistent-volume* has to be deleted manually.
+  # The steps to do so are not shown here.
   
   # delete Kubernetes namespace used for IOM
   kubectl delete namespace mycompany-iom

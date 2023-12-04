@@ -16,26 +16,22 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                                |                                                         |
 +========================================+================================================================================================+=========================================================+
 |replicaCount                            |The number of IOM application server instances to run in parallel.                              |2                                                        |
-|                                        |                                                                                                |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |downtime                                |The *downtime* parameter is a very critical one. Its goal and behavior is already described in  |true                                                     |
 |                                        |`Restrictions on Upgrade <ToolsAndConcepts.rst#restrictions-on-upgrade>`_.                      |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |Additional information:                                                                         |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* For the *downtime* parameter to work correctly, the ``--wait`` and                            |                                                         |
+|                                        |- For the *downtime* parameter to work correctly, the ``--wait`` and                            |                                                         |
 |                                        |  ``--timeout`` command line parameters must always be set when running Helm.                   |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |image.repository                        |Repository of the IOM app product/project image.                                                |docker.tools.intershop.com/iom/intershophub/iom          |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |image.pullPolicy                        |Pull policy, to be applied when getting IOM product/project Docker image. For more information, |IfNotPresent                                             |
 |                                        |see the `official Kubernetes documentation                                                      |                                                         |
 |                                        |<https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy>`_.                   |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |image.tag                               |The tag of IOM product/project image.                                                           |4.8.0                                                    |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |dbaccount                               |Parameters bundled by dbaccount are used to control the dbaccount init-container which creates  |                                                         |
 |                                        |the IOM database-user and the IOM database itself. To enable the dbaccount init-container to do |                                                         |
@@ -48,30 +44,24 @@ Parameters of IOM Helm Chart
 |                                        |Once the IOM database is created, the dbaccount init-container is not needed any longer. Hence, |                                                         |
 |                                        |all IOM installations, except really non-critical demo- and CI-setups, should enable dbaccount  |                                                         |
 |                                        |init-container only temporarily to initialize the database account.                             |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |dbaccount.enabled                       |Controls if the dbaccount init-container should be executed or not. If enabled, dbaccount will  |false                                                    |
 |                                        |only be executed when installing IOM, not on upgrade operations.                                |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |dbaccount.image.repository              |Repository of the dbaccount image.                                                              |docker.tools.intershop.com/iom/intershophub/iom-dbaccount|
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |dbaccount.image.pullPolicy              |Pull policy, to be applied when getting dbaccount Docker image. For more information, see the   |IfNotPresent                                             |
 |                                        |`official Kubernetes documentation                                                              |                                                         |
 |                                        |<https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy>`_.                   |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |dbaccount.image.tag                     |The tag of dbaccount image.                                                                     |2.0.0                                                    |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |dbaccount.resetData                     |Controls if dbaccount init-container should reset an already existing IOM database during the   |false                                                    |
 |                                        |installation process of IOM. If set to *true*, existing data is deleted without backup and      |                                                         |
 |                                        |further warning.                                                                                |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *oms.db.resetData*. Will be removed in    |                                                         |
+|                                        |- Deprecated since IOM Helm charts 3.0.0. Replaced by *oms.db.resetData*. Will be removed in    |                                                         |
 |                                        |  a future version.                                                                             |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |dbaccount.options                       |When creating the IOM database, more options added to OWNER are required. Depending on the      |"ENCODING='UTF8' LC_COLLATE='en_US.utf8'                 |
 |                                        |configuration of the PostgreSQL server, these options may differ. The default values can be used|LC_CTYPE='en_US.utf8' CONNECTION LIMIT=-1                |
@@ -79,28 +69,23 @@ Parameters of IOM Helm Chart
 |                                        |most other servers, too.                                                                        |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |See `Options and Requirements of IOM database <IOMDatabase.rst>`_ for details.                  |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |dbaccount.searchPath                    |In some circumstances, the search path for database objects has to be extended. This is the case|                                                         |
 |                                        |if custom schemas are used for customizations or tests. To add more schemas to the search-path, |                                                         |
 |                                        |set the current parameter to a string containing all additional schemas, separated by a comma,  |                                                         |
 |                                        |e.g. "tests, customschema". The additional entries are inserted at the beginning of the         |                                                         |
 |                                        |search-path, hence objects with the same name as standard objects of IOM are found first.       |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |dbaccount.tablespace                    |Use the passed tablespace as default for IOM database users and IOM database. Tablespace has to |                                                         |
 |                                        |exist, it will not be created.                                                                  |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |`Options and Requirements of IOM database`_ will give you some more information.                |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Ignored if *postgres.enabled* is *true*, since the integrated PostgreSQL                      |                                                         |
+|                                        |- Ignored if *postgres.enabled* is *true*, since the integrated PostgreSQL                      |                                                         |
 |                                        |  server can never create a custom tablespace prior to the initialization of the                |                                                         |
 |                                        |  IOM database user and IOM database.                                                           |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |dbaccount.resources                     |Resource requests & limits.                                                                     |{}                                                       |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |pg                                      |This group of parameters bundles the information required to connect the PostgreSQL server,     |                                                         |
 |                                        |information about the superuser, and default database (management database, not the IOM         |                                                         |
@@ -115,54 +100,40 @@ Parameters of IOM Helm Chart
 |                                        |If integrated PostgreSQL server is enabled (*postgres.enabled* set to *true*), all parameters   |                                                         |
 |                                        |defined by *pg* are ignored completely. In this case, parameters defined by *postgres.pg* are   |                                                         |
 |                                        |used instead.                                                                                   |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |pg.user                                 |Name of the superuser.                                                                          |postgres                                                 |
 |                                        |                                                                                                |                                                         |
-|                                        |* Required only if *dbaccount.enabled* is set to *true*.                                        |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |* Ignored if *postgres.enabled* is set to *true*.                                               |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |* Ignored if *pg.userSecretKeyRef* is set.                                                      |                                                         |
+|                                        |- Required only if *dbaccount.enabled* is set to *true*.                                        |                                                         |
+|                                        |- Ignored if *postgres.enabled* is set to *true*.                                               |                                                         |
+|                                        |- Ignored if *pg.userSecretKeyRef* is set.                                                      |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |pg.userSecretKeyRef                     |Instead of storing the name of the user as plain text in the values file, a reference to a key  |                                                         |
 |                                        |within a secret can be used. For more information, see `References to entries of Kubernetes     |                                                         |
 |                                        |secrets <SecretKeyRef.rst>`_.                                                                   |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Required only if *dbaccount.enabled* is set to *true* and *pg.user* is not set.               |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |* Ignored if *postgres.enabled* is set to *true*.                                               |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |                                                                                                |                                                         |
+|                                        |- Required only if *dbaccount.enabled* is set to *true* and *pg.user* is not set.               |                                                         |
+|                                        |- Ignored if *postgres.enabled* is set to *true*.                                               |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |pg.passwd                               |The password of the superuser.                                                                  |postgres                                                 |
 |                                        |                                                                                                |                                                         |
-|                                        |* Required only if *dbaccount.enabled* is set to *true*.                                        |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |* Ignored if *postgres.enabled* is set to *true*.                                               |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |* Ignored if *pg.passwdSecretKeyRef* is set.                                                    |                                                         |
+|                                        |- Required only if *dbaccount.enabled* is set to *true*.                                        |                                                         |
+|                                        |- Ignored if *postgres.enabled* is set to *true*.                                               |                                                         |
+|                                        |- Ignored if *pg.passwdSecretKeyRef* is set.                                                    |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |pg.passwdSecretKeyRef                   |Instead of storing the password as plain text in the values file, a reference to a key within a |                                                         |
 |                                        |secret can be used. For more information, see `References to entries of Kubernetes secrets`_.   |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Required only if *dbaccount.enabled* is set to *true* and *pg.passwd* is not set.             |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |* Ignored if *postgres.enabled* is set to *true*.                                               |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |                                                                                                |                                                         |
+|                                        |- Required only if *dbaccount.enabled* is set to *true* and *pg.passwd* is not set.             |                                                         |
+|                                        |- Ignored if *postgres.enabled* is set to *true*.                                               |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |pg.db                                   |Name of the default (management) database.                                                      |postgres                                                 |
 |                                        |                                                                                                |                                                         |
-|                                        |* Required only if *dbaccount.enabled* is set to *true*.                                        |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |* Ignored if *postgres.enabled* is set to *true*.                                               |                                                         |
+|                                        |- Required only if *dbaccount.enabled* is set to *true*.                                        |                                                         |
+|                                        |- Ignored if *postgres.enabled* is set to *true*.                                               |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |pg.host                                 |The hostname of the PostgreSQL server.                                                          |postgres-service                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |pg.port                                 |Port of the PostgreSQL server.                                                                  |"5432"                                                   |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |pg.userConnectionSuffix                 |When using the Azure Database for PostgreSQL service, user names have to be extended by a       |                                                         |
 |                                        |suffix, beginning with '@'. For more information, refer to the `official Azure Database for     |                                                         |
@@ -188,12 +159,8 @@ Parameters of IOM Helm Chart
 |                                        |the document `SSL configuration in official Azure Database for PostgreSQL documentation         |                                                         |
 |                                        |<https://docs.microsoft.com/en-us/azure/postgresql/concepts-ssl-connection-security>`_.  To     |                                                         |
 |                                        |handle this case, it is possible to pass the SSL root certificate in *pg.sslRootCert*.          |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms                                     |Parameters of group *oms* are all related to the configuration of IOM.                          |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.publicUrl                           |The publicly accessible base URL of IOM which could be the DNS name of the load balancer,       |https://localhost                                        |
 |                                        |etc. It is used internally for link generation.                                                 |                                                         |
@@ -208,7 +175,7 @@ Parameters of IOM Helm Chart
 |                                        |If left empty AND *oms.jwtSecretKeyRef* is empty too, a secret with random value is created and |                                                         |
 |                                        |used automatically.                                                                             |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Ignored if *oms.jwtSecretKeyRef* is set.                                                      |                                                         |
+|                                        |- Ignored if *oms.jwtSecretKeyRef* is set.                                                      |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.jwtSecretKeyRef                     |Instead of storing the JWT secret as plain text in the values file, a reference to a key within |                                                         |
 |                                        |a secret can be used. For more information, see `References to entries of Kubernetes            |                                                         |
@@ -223,12 +190,12 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                                |                                                         |
 |                                        |Exported data are stored under *share/archive*.                                                 |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Value has to match ``^[1-9]([0-9]+)?``                                                        |                                                         |
+|                                        |- Value has to match ``^[1-9]([0-9]+)?``                                                        |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.deleteOrderMessageLogMinAge         |Number of days after which the entries in table "OrderMessageLogDO" will definitely be deleted  |"180"                                                    |
 |                                        |in order to reduce the table size. Must be greater than *oms.archiveOrderMessageLogMinAge*.     |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Value has to match ``^[1-9]([0-9]+)?``                                                        |                                                         |
+|                                        |- Value has to match ``^[1-9]([0-9]+)?``                                                        |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.archiveShopCustomerMailMinAge       |Number of days after which the entries in table "ShopCustomerMailTransmissionDO" should be      |"1826"                                                   |
 |                                        |exported (Quartz job "ShopCustomerMailTransmissionArchive") and the column "message" set to     |                                                         |
@@ -238,21 +205,21 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                                |                                                         |
 |                                        |Exported data are stored under *share/archive*.                                                 |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Value has to match ``^[1-9]([0-9]+)$``                                                        |                                                         |
+|                                        |- Value has to match ``^[1-9]([0-9]+)$``                                                        |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.archiveShopCustomerMailMaxCount     |Maximum number of entries in table "ShopCustomerMailTransmissionDO" to be exported per run of   |"10000"                                                  |
 |                                        |the Quartz job "ShopCustomerMailTransmissionArchive". Default is 10000, however, the export will|                                                         |
 |                                        |not take place if this property and *oms.archiveShopCustomerMailMinAge* are not set.            |                                                         |
 |                                        |Min. accepted value: 10                                                                         |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Value has to match ``^[1-9]([0-9]+)$``                                                        |                                                         |
+|                                        |- Value has to match ``^[1-9]([0-9]+)$``                                                        |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.deleteShopCustomerMailMinAge        |The number of days after which the entries in table "ShopCustomerMailTransmissionDO" will       |"2190"                                                   |
 |                                        |definitely be deleted in order to reduce the table size (Quartz job                             |                                                         |
 |                                        |"ShopCustomerMailTransmissionArchive"). Default is 2190 for 6 years. However, the deletion will |                                                         |
 |                                        |not take place if this property is not set.                                                     |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Value has to match ``^[1-9]([0-9]+)$``                                                        |                                                         |
+|                                        |- Value has to match ``^[1-9]([0-9]+)$``                                                        |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.secureCookiesEnabled                |If set to *true*, cookies will be sent with secure flag. In this case OMT requires fully        |true                                                     |
 |                                        |encrypted HTTP traffic in order to work properly.                                               |                                                         |
@@ -265,38 +232,32 @@ Parameters of IOM Helm Chart
 |                                        |information required to connect the PostgreSQL server are stored at group *pg*.                 |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.db.name                             |The name of the IOM database.                                                                   |oms_db                                                   |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.db.user                             |The IOM database user.                                                                          |oms_user                                                 |
 |                                        |                                                                                                |                                                         |
-|                                        |* Ignored if *oms.db.userSecretKeyRef* is set.                                                  |                                                         |
+|                                        |- Ignored if *oms.db.userSecretKeyRef* is set.                                                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.db.userSecretKeyRef                 |Instead of storing the name of the user as plain text in the values file, a reference to a key  |                                                         |
 |                                        |within a secret can be used. For more information, see `References to entries of Kubernetes     |                                                         |
 |                                        |secrets`_.                                                                                      |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Only required if *oms.db.user* is not set.                                                    |                                                         |
+|                                        |- Only required if *oms.db.user* is not set.                                                    |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.db.passwd                           |The password of the IOM database user.                                                          |OmsDB                                                    |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.db.passwdSecretKeyRef               |Instead of storing the password as plain text in the values file, a reference to a key within a |                                                         |
 |                                        |secret can be used. For more information, see `References to entries of Kubernetes secrets`_.   |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Only required if *oms.db.passwd* is not set.                                                  |                                                         |
-|                                        |                                                                                                |                                                         |
+|                                        |- Only required if *oms.db.passwd* is not set.                                                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.db.hostlist                         |A comma-separated list of database servers. Each server entry consists of a hostname and port,  |                                                         |
 |                                        |separated by a colon. Setting the port is optional. If not set, standard port 5432 will be used.|                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Only required if a high availability cluster of PostgreSQL servers is used, to list all       |                                                         |
+|                                        |- Only required if a high availability cluster of PostgreSQL servers is used, to list all       |                                                         |
 |                                        |  possible connecting possibilities to this cluster.                                            |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |* Affects IOM application servers only. dbaccount-image is using connection information from    |                                                         |
+|                                        |- Affects IOM application servers only. dbaccount-image is using connection information from    |                                                         |
 |                                        |  *pg* parameters group only. The same is true for the IOM application server if                |                                                         |
 |                                        |  *oms.db.hostlist* is empty.                                                                   |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.db.connectionMonitor                |Parameters in *oms.db.connectionMonitor* are dedicated to control a Kubernetes cronjob that is  |                                                         |
 |                                        |writing *INFO* log messages created by process ``connection_monitor.sh`` that provide           |                                                         |
@@ -322,26 +283,25 @@ Parameters of IOM Helm Chart
 |oms.db.connectTimeout                   |Controls connect timeout of database connections (jdbc- and psql-initiated connections). Value  |10                                                       |
 |                                        |is defined in seconds. A value of 0 means to wait infinitely.                                   |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Requires dbaccount 1.3.0.0 or newer                                                           |                                                         |
+|                                        |- Requires dbaccount 1.3.0.0 or newer                                                           |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.db.resetData                        |Controls if an already existing IOM database should be reset during the installation process of |false                                                    |
 |                                        |IOM. If set to *true*, existing data is deleted without backup and further warning.             |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Requires IOM 5.0.0 or newer.                                                                  |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |* Replaces parameter *dbaccount.resetData*.                                                     |                                                         |
+|                                        |- Requires IOM 5.0.0 or newer.                                                                  |                                                         |
+|                                        |- Replaces parameter *dbaccount.resetData*.                                                     |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.sso                                 |Parameters in *oms.sso* are bundling the configuration of *single sign-on* (SSO)                |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Requires IOM 4.3.0 or newer                                                                   |                                                         |
+|                                        |- Requires IOM 4.3.0 or newer                                                                   |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.sso.enabled                         |Enables/disables *single sign-on*                                                               |false                                                    |
 |                                        |                                                                                                |                                                         |
-|                                        |* Requires IOM 4.3.0 or newer                                                                   |                                                         |
+|                                        |- Requires IOM 4.3.0 or newer                                                                   |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.sso.type                            |Defines the type of *single sign-on* to be used. Allowed values are *azure-ad* and *keycloak*.  |azure-ad                                                 |
 |                                        |                                                                                                |                                                         |
-|                                        |* Requires IOM 4.3.0 or newer                                                                   |                                                         |
+|                                        |- Requires IOM 4.3.0 or newer                                                                   |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.sso.oidcConfig                      |Defines the configuration of *single sign-on*. The value is a JSON structure similar to         |                                                         |
 |                                        |*oidc.json*. See `Elytron OpenID Connect Client Subsystem Configuration                         |                                                         |
@@ -363,13 +323,13 @@ Parameters of IOM Helm Chart
 |                                        |        "ssl-required": "EXTERNAL"                                                              |                                                         |
 |                                        |      }                                                                                         |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Requires IOM 4.3.0 or newer                                                                   |                                                         |
+|                                        |- Requires IOM 4.3.0 or newer                                                                   |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.sso.oidcConfigSecretKeyRef          |Instead of storing the OIDC configuration as plain text in the values file, a reference to a key|{}                                                       |
 |                                        |within a *Kubernetes Secret* can be used. For more information, see `References to Kubernetes   |                                                         |
 |                                        |secrets <SecretKeyRef.rst>`_.                                                                   |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Requires IOM 4.3.0 or newer                                                                   |                                                         |
+|                                        |- Requires IOM 4.3.0 or newer                                                                   |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.smtp                                |Parameters in *oms.smtp* are bundling the information required to connect SMTP server.          |                                                         |
 |                                        |                                                                                                |                                                         |
@@ -379,39 +339,33 @@ Parameters of IOM Helm Chart
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.smtp.host                           |The hostname of the mail server IOM uses to send e-mails.                                       |mail-service                                             |
 |                                        |                                                                                                |                                                         |
-|                                        |* Ignored if *mailhog.enabled* is set to *true*.                                                |                                                         |
+|                                        |- Ignored if *mailhog.enabled* is set to *true*.                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.smtp.port                           |The port of the mail server IOM uses to send e-mails.                                           |"1025"                                                   |
 |                                        |                                                                                                |                                                         |
-|                                        |* Ignored if *mailhog.enabled* is set to *true*.                                                |                                                         |
+|                                        |- Ignored if *mailhog.enabled* is set to *true*.                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.smtp.user                           |The user name for mail server authentication.                                                   |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Only required if the SMTP server requires authentication.                                     |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |* Ignored if *mailhog.enabled* is set to *true*.                                                |                                                         |
+|                                        |- Only required if the SMTP server requires authentication.                                     |                                                         |
+|                                        |- Ignored if *mailhog.enabled* is set to *true*.                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.smtp.userSecretKeyRef               |Instead of storing the user name as plain text in the values file, a reference to a key within a|                                                         |
 |                                        |secret can be used. For more information, see `References to entries of Kubernetes secrets`_.   |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Only required if *oms.smtp.user* is not set and the SMTP server requires authentication.      |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |* Ignored if *mailhog.enabled* is set to *true*.                                                |                                                         |
-|                                        |                                                                                                |                                                         |
+|                                        |- Only required if *oms.smtp.user* is not set and the SMTP server requires authentication.      |                                                         |
+|                                        |- Ignored if *mailhog.enabled* is set to *true*.                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.smtp.passwd                         |The password for mail server authentication.                                                    |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Only required if the SMTP server requires authentication.                                     |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |* Ignored if *mailhog.enabled* is set to *true*.                                                |                                                         |
+|                                        |- Only required if the SMTP server requires authentication.                                     |                                                         |
+|                                        |- Ignored if *mailhog.enabled* is set to *true*.                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.smtp.passwdSecretKeyRef             |Instead of storing the password as plain text in the values file, a reference to a key within a |                                                         |
 |                                        |secret can be used. For more information, see `References to entries of Kubernetes secrets`_.   |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Only required if *oms.smtp.passwd* is not set and the SMTP server requires authentication.    |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |* Ignored if *mailhog.enabled* is set to *true*.                                                |                                                         |
-|                                        |                                                                                                |                                                         |
+|                                        |- Only required if *oms.smtp.passwd* is not set and the SMTP server requires authentication.    |                                                         |
+|                                        |- Ignored if *mailhog.enabled* is set to *true*.                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |startupProbe                            |Group of parameters to fine-tune the startup probe of Kubernetes. The basic kind of probe is    |                                                         |
 |                                        |fixed and cannot be changed. For an overview of probes and pod lifecycle, see the `official     |                                                         |
@@ -450,13 +404,10 @@ Parameters of IOM Helm Chart
 |                                        |fixed and cannot be changed. For an overview of probes and pod lifecycle, see the `official     |                                                         |
 |                                        |Kubernetes documentation on Pod-Lifecycle                                                       |                                                         |
 |                                        |<https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#types-of-probe>`_.           |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |livenessProbe.enabled                   |Enables to switch on/off the liveness probe.                                                    |true                                                     |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |livenessProbe.periodSeconds             |How often (in seconds) to perform the probe. The minimum value is 1.                            |10                                                       |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |livenessProbe.initialDelaySeconds       |Number of seconds after the container has started before liveness probes are initiated. Minimum |60                                                       |
 |                                        |value is 0.                                                                                     |                                                         |
@@ -473,10 +424,8 @@ Parameters of IOM Helm Chart
 |                                        |<https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#types-of-probe>`_.           |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |readinessProbe.enabled                  |Allows to switch the readiness probe on/off.                                                    |true                                                     |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |readinessProbe.periodSeconds            |How often (in seconds) to perform the probe. The minimum value is 1.                            |10                                                       |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |readinessProbe.initialDelaySeconds      |Number of seconds after the container has started before readiness probes are initiated. The    |60                                                       |
 |                                        |minimum value is 0.                                                                             |                                                         |
@@ -491,7 +440,6 @@ Parameters of IOM Helm Chart
 |                                        |failed. The minimum value is 1.                                                                 |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |jboss                                   |Parameters of group jboss are all related to the configuration of Wildfly/JBoss.                |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |jboss.javaOpts                          |The value of *jboss.javaOpts* is passed to Java options of the WildFly application server.      |``"-XX:+UseContainerSupport                              |
 |                                        |                                                                                                |-XX:MinRAMPercentage=85                                  |
@@ -510,10 +458,8 @@ Parameters of IOM Helm Chart
 |                                        |Example: ``"--debug *:8787"``                                                                   |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |jboss.xaPoolsizeMin                     |The minimum value of the pool size of XA datasources.                                           |"50"                                                     |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |jboss.xaPoolsizeMax                     |The maximum value of the pool size of XA datasources.                                           |"125"                                                    |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |jboss.activemqClientPoolSizeMax         |Maximum size of the ActiveMQ client thread pool.                                                |"50"                                                     |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
@@ -536,7 +482,6 @@ Parameters of IOM Helm Chart
 |                                        |   two options **MUST** be used for a transregional installation.                               |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |log                                     |Parameters of group log are all related to the configuration of the logging of IOM.             |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |log.access.enabled                      |Controls creation of access log messages.                                                       |true                                                     |
 |                                        |                                                                                                |                                                         |
@@ -641,7 +586,6 @@ Parameters of IOM Helm Chart
 |                                        |hostname.                                                                                       |  - maxSkew: 1                                           |
 |                                        |                                                                                                |    whenUnsatisfiable: ScheduleAnyway                    |
 |                                        |                                                                                                |    topologyKey: kubernetes.io/hostname                  |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |newRelic                                |*newRelic* bundles parametes required to configure *New Relic* monitoring system.               |                                                         |
 |                                        |                                                                                                |                                                         |
@@ -714,12 +658,11 @@ Parameters of IOM Helm Chart
 |                                        |        max_stack_trace_lines: 20                                                               |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |- Requires IOM 5.0.0 or newer.                                                                  |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm                              |*datadogApm* bundles parameters required to configure datadog Application Performance Monitoring|                                                         |
 |                                        |(APM).                                                                                          |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a          |                                                         |
+|                                        |- Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a          |                                                         |
 |                                        |  future version.                                                                               |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.enabled                      |This parameter is mapped to environment variable *DD_APM_ENABLED*. For more information, please |false                                                    |
@@ -727,17 +670,15 @@ Parameters of IOM Helm Chart
 |                                        |``-javaagent`` parameter, loading the datadog javaagent library. This will not be the case when |                                                         |
 |                                        |set to *false*.                                                                                 |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
+|                                        |- Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.backendOnly                  |If set to *true* and datadog APM is enabled, tracing will only be executed on the one IOM       |true                                                     |
 |                                        |application server that is running the backend applications (singleton applications). If set to |                                                         |
 |                                        |*true* and datadog APM is enabled, tracing will be executed on all IOM application servers.     |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
+|                                        |- Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.traceAgentHost               |This parameter is mapped to environment variable *DD_AGENT_HOST*. For more information, please  |                                                         |
 |                                        |consult the official Datadog documentation.                                                     |                                                         |
@@ -745,9 +686,8 @@ Parameters of IOM Helm Chart
 |                                        |Normally this environment variable is injected with the right value by the locally installed    |                                                         |
 |                                        |datadog daemon-set.                                                                             |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
+|                                        |- Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.traceAgentPort               |This parameter is mapped to environment variable *DD_TRACE_AGENT_PORT*. For more information,   |                                                         |
 |                                        |please consult the official Datadog documentation.                                              |                                                         |
@@ -755,100 +695,86 @@ Parameters of IOM Helm Chart
 |                                        |Normally this environment variable is injected with the right value by the locally installed    |                                                         |
 |                                        |datadog daemon-set.                                                                             |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
+|                                        |- Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.traceAgentTimeout            |This parameter is mapped to environment variable *DD_TRACE_AGENT_TIMEOUT*. For more information,|                                                         |
 |                                        |please consult the official Datadog documentation.                                              |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
+|                                        |- Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.logsInjection                |This parameter is mapped to environment variable *DD_LOGS_INJECTION*. For more information,     |false                                                    |
 |                                        |please consult the official Datadog documentation.                                              |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
+|                                        |- Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.debug                        |This parameter is mapped to environment variable *DD_TRACE_DEBUG*. For more information, please |false                                                    |
 |                                        |consult the official Datadog documentation.                                                     |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
+|                                        |- Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.startupLogs                  |This parameter is mapped to environment variable *DD_TRACE_STARTUP_LOGS*. For more information, |true                                                     |
 |                                        |please consult the official Datadog documentation.                                              |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
+|                                        |- Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.tags                         |This parameter is mapped to environment variable *DD_TAGS*. For more information, please consult|                                                         |
 |                                        |the official Datadog documentation.                                                             |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
+|                                        |- Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.serviceMapping               |This parameter is mapped to environment variable *DD_SERVICE_MAPPING*. For more information,    |                                                         |
 |                                        |please consult the official Datadog documentation.                                              |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
+|                                        |- Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.writerType                   |This parameter is mapped to environment variable *DD_WRITER_TYPE*. For more information, please |                                                         |
 |                                        |consult the official Datadog documentation.                                                     |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
+|                                        |- Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.partialFlushMinSpan          |This parameter is mapped to environment variable *DD_TRACE_PARTIAL_FLUSH_MIN_SPANS*. For more   |                                                         |
 |                                        |information, please consult the official Datadog documentation.                                 |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
+|                                        |- Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.dbClientSplitByInstance      |This parameter is mapped to environment variable *DD_TRACE_DB_CLIENT_SPLIT_BY_INSTANCE*. For    |                                                         |
 |                                        |more information, please consult the official Datadog documentation.                            |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
+|                                        |- Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.healthMetricsEnabled         |This parameter is mapped to environment variable *DD_TRACE_HEALTH_METRICS_ENABLED*. For more    |false                                                    |
 |                                        |information, please consult the official Datadog documentation.                                 |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
+|                                        |- Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.servletAsyncTimeoutError     |This parameter is mapped to environment variable *DD_TRACE_SERVLET_ASYNC_TIMEOUT_ERROR*. For    |true                                                     |
 |                                        |more information, please consult the official Datadog documentation.                            |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
+|                                        |- Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.sampleRate                   |This parameter is mapped to environment variable *DD_TRACE_SAMPLE_RATE*. For more information,  |'1.0'                                                    |
 |                                        |please consult the official Datadog documentation.                                              |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
+|                                        |- Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |datadogApm.jmsFetchEnabled              |This parameter is mapped to environment variable *DD_JMXFETCH_ENABLED*. For more information,   |true                                                     |
 |                                        |please consult the official Datadog documentation.                                              |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
+|                                        |- Deprecated since IOM Helm charts 3.0.0. Replaced by *newRelic*. Will be removed in a future   |                                                         |
 |                                        |  version.                                                                                      |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |project                                 |Within project group of parameters, configuration of Intershop Commerce Platform (previously    |                                                         |
 |                                        |known as CaaS) projects can be controlled.                                                      |                                                         |
@@ -869,36 +795,71 @@ Parameters of IOM Helm Chart
 |                                        |according amount of seconds has passed, the container will end with an error.                   |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |persistence                             |Parameters of group *persistence* control how IOM's shared data is persisted.                   |                                                         |
-|                                        |                                                                                                |                                                         |
-+----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|persistence.storageClass                |Name of the existing storage class to be used for IOM's shared data.                            |azurefile                                                |
-|                                        |                                                                                                |                                                         |
-|                                        |* Ignored if *persistence.hostPath* is set.                                                     |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |* Ignored if *persistence.pvc* is set.                                                          |                                                         |
-+----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|persistence.annotations                 |Annotations for persistence volume claim to be created. See                                     |"helm.sh/resource-policy": keep                          |
-|                                        |https://helm.sh/docs/topics/charts_hooks/ for more information about default annotations.       |"helm.sh/hook": pre-install                              |
-|                                        |                                                                                                |                                                         |
-|                                        |* Ignored if *persistence.pvc* is set.                                                          |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |persistence.storageSize                 |Requested storage size. For more information, see the `official Kubernetes documentation on     |1Gi                                                      |
 |                                        |storage <https://kubernetes.io/docs/concepts/storage/persistent-volumes/>`_.                    |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|persistence.hostPath                    |For very simple installations, persistent data can be stored directly at a local disk. In this  |                                                         |
-|                                        |case, the path on local host has to be stored at this parameter.                                |                                                         |
+|persistence.provisioning                |Controls the provisioning method to be used. Currently, three different methods of provisioning |dynamic                                                  |
+|                                        |are supported:                                                                                  |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |* Ignored if *persistence.pvc* is set.                                                          |                                                         |
+|                                        |- *dynamic*                                                                                     |                                                         |
+|                                        |- *static*                                                                                      |                                                         |
+|                                        |- *local*                                                                                       |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |For more information, see the description of according parameter-groups and the documentation   |                                                         |
+|                                        |about usage of `Persistent Storage <PersistentStorage.rst>`_.                                   |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|persistence.pvc                         |For transregional installations of IOM, it has to be possible to define the Persistence Volume  |                                                         |
-|                                        |Claim (pvc) directly. This way IOM's shared data can be persisted at one place by two or more   |                                                         |
-|                                        |IOM clusters.                                                                                   |                                                         |
+|persistence.dynamic                     |Parameter-group, that bundles all configuration settings of *dynamic* provisioning of persistent|                                                         |
+|                                        |storage for shared file-system of IOM.                                                          |                                                         |
++----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|persistence.dynamic.storageClass        |Name of the storage class to be used for dynamic provisioning of IOM's shared storage.          |azurefile                                                |
+|                                        |                                                                                                |                                                         |
+|                                        |- Ignored, if *persistence.provisioning* is set to another value than *dynamic*.                |                                                         |
++----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|persistence.dynamic.annotations         |Annotations of *persistence-volume-claim* to be created. The default-value prevents automatic   |"helm.sh/resource-policy": keep                          |
+|                                        |deletion of the *persistent-volume-claim* after deletion of IOM Helm release. See               |                                                         |
+|                                        |https://helm.sh/docs/topics/charts_hooks/ for more information.                                 |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |- Ignored if *persistence.provisioning* is set to another value than *dynamic*                  |                                                         |
++----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|persistence.static                      |Parameter-group, that bundles all configuration settings of *static* provisioning of persistent |                                                         |
+|                                        |storage for shared file-system of IOM.                                                          |                                                         |
++----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|persistence.static.storageClass         |Name of storage class, that belongs to the *persistent-volume* defined by                       |                                                         |
+|                                        |*persistence.static.pv*.                                                                        |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |- Ignored if *persistence.provisioning* is set to another value than *static*.                  |                                                         |
++----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|persistence.static.pv                   |Name of *persistent-volume* to be used for static provisioning of IOM's shared storage. The     |                                                         |
+|                                        |*persistent-volume* has to be created by a cluster-admin in advance.                            |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |- Ignored if *persistence.provisioning* is set to another value than *static*.                  |                                                         |
++----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|persistence.static.annotations          |Annotations of *persistence-volume-claim* to be created.                                        |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |- Ignored if *persistence.provisioning* is set to another value than *static*.                  |                                                         |
++----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|persistence.local                       |Parameter-group, that bundles all configuration settings of *local* provisioning of persistent  |                                                         |
+|                                        |storage for shared file-system of IOM.                                                          |                                                         |
++----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|persistence.local.hostPath              |For very simple installations, persistent data can be stored directly on a local disk. In this  |                                                         |
+|                                        |case, the path on the local host has to be stored at this parameter.                            |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |- Ignored if *persistence.provisioning* is set to another value than *local*.                   |                                                         |
++----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|persistence.local.reclaimPolicy         |*Reclaim-policy* to be used by the *persistent-volume*. Allowed values are *Delete* and         |Delete                                                   |
+|                                        |*Retain*.                                                                                       |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |- Ignored if *persistence.provisioning* is set to another value than *local*.                   |                                                         |
++----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|persistence.local.annotations           |Annotations of *persistence-volume-claim* to be created.                                        |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |- Ignored if *persistence.provisioning* is set to another value than *local*.                   |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |ingress                                 |Group *ingress* bundles configuration of IOM's ingress, which is required to get access to IOM  |                                                         |
 |                                        |from outside of Kubernetes.                                                                     |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |ingress.enabled                         |Enables ingress for IOM. If not enabled, IOM cannot be accessed from outside of Kubernetes.     |true                                                     |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |ingress.className                       |Ingress class has to be specified by *ingress.className*. This parameter controls on which      |nginx                                                    |
 |                                        |ingress controller the ingress should be created.                                               |                                                         |
@@ -907,7 +868,6 @@ Parameters of IOM Helm Chart
 |                                        |*ingress.className* has to be set to *nginx-iom*.                                               |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |ingress.annotations                     |Annotations for the ingress.                                                                    |{}                                                       |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |ingress.hosts                           |A list of ingress hosts.                                                                        |.. code-block:: yaml                                     |
 |                                        |                                                                                                |                                                         |
@@ -915,10 +875,8 @@ Parameters of IOM Helm Chart
 |                                        |requirements of Kubernetes 1.19                                                                 |    paths:                                               |
 |                                        |(see https://kubernetes.io/docs/concepts/services-networking/ingress/).                         |      - path: /                                          |
 |                                        |                                                                                                |        pathType: Prefix                                 |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |ingress.tls                             |A list of IngressTLS items.                                                                     |[]                                                       |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |resources                               |Resource requests & limits.                                                                     |.. code-block:: yaml                                     |
 |                                        |                                                                                                |                                                         |
@@ -929,22 +887,17 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                                |    requests:                                            |
 |                                        |                                                                                                |      cpu: 1000m                                         |
 |                                        |                                                                                                |      memory: 2000Mi                                     |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |imagePullSecrets                        |List of the secrets to get credentials from.                                                    |[]                                                       |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |nameOverride                            |Overwrites the chart name.                                                                      |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |fullnameOverride                        |Overwrites the complete name, constructed from release, and chart name.                         |                                                         |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |serviceAccount.create                   |If *true*, creates a backend service account. Only useful if you need a pod security policy to  |true                                                     |
 |                                        |run the backend.                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |serviceAccount.annotations              |Annotations for the service account. Only used if *create* is *true*.                           |{}                                                       |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |serviceAccount.name                     |The name of the backend service account to use. If not set and *create* is *true*, a name is    |                                                         |
 |                                        |generated using the fullname template. Only useful if you need a pod security policy to run the |                                                         |
@@ -956,22 +909,16 @@ Parameters of IOM Helm Chart
 |                                        |systems like *DataDog* or *New Relic*, see `Prometheus Metrics <Metrics.rst>`_.                 |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |podSecurityContext                      |Security context policies to add to the iom-tests pod.                                          |{}                                                       |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |securityContext                         |List of required privileges.                                                                    |{}                                                       |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |service.type                            |Type of service to create.                                                                      |ClusterIP                                                |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |service.port                            |Port to be exposed by service.                                                                  |80                                                       |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |nodeSelector                            |Node labels for pod assignment.                                                                 |{}                                                       |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |tolerations                             |Node taints to tolerate.                                                                        |[]                                                       |
-|                                        |                                                                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 
 +-------------------+-----------------+-------------------------+
