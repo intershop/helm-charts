@@ -219,7 +219,7 @@ Examples for migrations
 |automatic deletion of *pvc* is prevented.                                          |
 |                                                                                   |
 |Preventing deletion of *pvc* and usage of *storage-class* *azurefile* are the      |
-|default behavior in both cases. The old and new configurations are identical.           |
+|default behavior in both cases. The old and new configurations are identical.      |
 +----------------------------------------+------------------------------------------+
 |.. code-block:: yaml                    |.. code-block:: yaml                      |
 |                                        |                                          |
@@ -278,8 +278,8 @@ Examples for migrations
 |Parameter *persistence.hostPath* was moved in the new version to                   |
 |*persistence.local.hostPath*.                                                      |
 |                                                                                   |
-|The provisioning method to be used has now to be declared explicitly, if it is not|
-|the default method. Therefore, in the migrated configuration, *provisioning* has to |
+|The provisioning method to be used has now to be declared explicitly, if it is not |
+|the default method. Therefore, in the migrated configuration, *provisioning* has to|
 |be set to *local*.                                                                 |
 +----------------------------------------+------------------------------------------+
 |.. code-block:: yaml                    |.. code-block:: yaml                      |
