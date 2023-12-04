@@ -1,11 +1,26 @@
 
-<a name="icm-as-1.6.0"></a>
-## [icm-as-1.6.0](https://github.com/intershop/helm-charts/compare/icm-as-1.5.0...icm-as-1.6.0)
+<a name="icm-as-1.6.1"></a>
+## [icm-as-1.6.1](https://github.com/intershop/helm-charts/compare/icm-as-1.6.0...icm-as-1.6.1)
 
-> 2023-11-28
+> 2023-12-04
 
 ### Chore
 
+* bump versions of icm-as:patch
+
+### Fix
+
+* **icm-as:** K8s Memory Pressure ([#499](https://github.com/intershop/helm-charts/issues/499))
+
+
+<a name="icm-as-1.6.0"></a>
+## [icm-as-1.6.0](https://github.com/intershop/helm-charts/compare/icm-as-1.5.0...icm-as-1.6.0)
+
+> 2023-11-29
+
+### Chore
+
+* generated changelog+release notes for icm-as:minor icm-job:minor
 * bump versions of icm-as:minor icm-job:minor
 * further release process automation ([#462](https://github.com/intershop/helm-charts/issues/462))
 * further release process automation ([#462](https://github.com/intershop/helm-charts/issues/462))
