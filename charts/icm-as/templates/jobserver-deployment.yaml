@@ -78,5 +78,5 @@ Job-scheduling service
 {{- if .Values.nameSpecific -}}
 {{- $params = print $params "&serverName=" .jobServerName -}}
 {{- end -}}
-http://{{ include "icm-as.fullname" . }}.{{.Release.Namespace}}:7744/jobserver/nextScheduleDate?{{ $params }}
+http://{{ include "icm-as.fullname" . }}.{{.Release.Namespace}}:{{ .Values.ports.mgnt }}/jobserver/nextScheduleDate?{{ $params }}
 {{- end -}}

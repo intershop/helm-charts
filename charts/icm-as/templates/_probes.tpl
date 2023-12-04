@@ -17,7 +17,7 @@ livenessProbe:
       - /bin/bash
       - -c
       - |
-        [ -f "/tmp/liveness-status" ] || curl -f http://localhost:7744/status/LivenessProbe >/dev/null 2>&1
+        [ -f "/tmp/liveness-status" ] || curl -f http://localhost:{{ .Values.ports.mgnt }}/status/LivenessProbe >/dev/null 2>&1
   #after startup: poll every 10s up to a total timeout of 30s
   failureThreshold: {{ .Values.probes.liveness.failureThreshold | default 3 }}
   initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds | default 0 }}

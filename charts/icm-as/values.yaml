@@ -92,6 +92,13 @@ nameOverride: ""
 
 fullnameOverride: ""
 
+# configure used ports
+ports:
+  svc: 7743
+  mgnt: 7744
+  debug: 7746
+  jmx: 7747
+
 # Set a custom server name. Defaults to 'appserver'
 # serverName: <customServerName>
 

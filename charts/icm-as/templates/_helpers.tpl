@@ -104,7 +104,7 @@ annotations:
   {{- else }}
   prometheus.io/scrape: 'false'
   {{- end }}
-  prometheus.io/port: '7744'
+  prometheus.io/port: {{ .Values.ports.mgnt | quote }}
   prometheus.io/path: '/metrics'
 {{- if .Values.podAnnotations -}}
 {{- toYaml .Values.podAnnotations | nindent 2 }}
