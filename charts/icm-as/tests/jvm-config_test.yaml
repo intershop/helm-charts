@@ -32,7 +32,7 @@ tests:
           path: spec.template.spec.containers[0].env
           content:
             name: FEATURED_JVM_ARGUMENTS
-            value: "-XX:NewRatio=8 -XX:MaxRAMPercentage=80 -XX:InitialRAMPercentage=80"
+            value: "-XX:MaxRAMPercentage=70 -XX:InitialRAMPercentage=70"
 
   - it: custom options
     release:
@@ -66,7 +66,7 @@ tests:
           path: spec.template.spec.containers[0].env
           content:
             name: FEATURED_JVM_ARGUMENTS
-            value: "-XX:NewRatio=8 -XX:MaxRAMPercentage=80 -XX:InitialRAMPercentage=80"
+            value: "-XX:MaxRAMPercentage=70 -XX:InitialRAMPercentage=70"
       - contains:
           path: spec.template.spec.containers[0].env
           content:
