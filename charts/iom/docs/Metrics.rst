@@ -1,6 +1,6 @@
 +--------------------------+-----------------+--------------------------+
 |`< Back                   |`^ Up            |`Next > <Postgresql.rst>`_|
-|<SecretKeyRef.rst>`_      |<../README.rst>`_|                          |
+|<PersistentStorage.rst>`_ |<../README.rst>`_|                          |
 +--------------------------+-----------------+--------------------------+
 
 ================================================
@@ -97,5 +97,5 @@ further usage of this piece of yaml-code, the values of *namespace* and *metrics
 
 +--------------------------+-----------------+--------------------------+
 |`< Back                   |`^ Up            |`Next > <Postgresql.rst>`_|
-|<SecretKeyRef.rst>`_      |<../README.rst>`_|                          |
+|<PersistentStorage.rst>`_ |<../README.rst>`_|                          |
 +--------------------------+-----------------+--------------------------+

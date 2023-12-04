@@ -14,19 +14,19 @@ Local Demo System Running in Docker Desktop on Mac OS X
 Preconditions
 =============
 
-* Mac computer: Mac OS X >= v.12.1
-* Sufficient hardware resources: >= 16 GB main memory, multicore CPU
-* Installation of Docker Desktop: >= v.4.21.1
+- Mac computer: Mac OS X >= v.12.1
+- Sufficient hardware resources: >= 16 GB main memory, multicore CPU
+- Installation of Docker Desktop: >= v.4.21.1
 
-  * See: https://www.docker.com/products/docker-desktop 
-  * >= 12 GB memory and >= 2 CPUs have to be assigned (Settings | Resources | Advanced)
-  * Enable Kubernetes (Preferences | Kubernetes)
-  * Directories used to hold persistent data have to be shared with Docker Desktop (Settings | Resources | File Sharing)
-* Installation of Helm: >= v3.6
+  - See: https://www.docker.com/products/docker-desktop 
+  - >= 12 GB memory and >= 2 CPUs have to be assigned (Settings | Resources | Advanced)
+  - Enable Kubernetes (Preferences | Kubernetes)
+  - Directories used to hold persistent data have to be shared with Docker Desktop (Settings | Resources | File Sharing)
+- Installation of Helm: >= v3.6
 
-  * See: https://helm.sh/docs/intro/install/
-* Access to `IOM Docker images <ToolsAndConcepts.rst#iom-docker-images>`_
-* Access to `IOM Helm-charts <ToolsAndConcepts.rst#iom-helm-charts>`_
+  - See: https://helm.sh/docs/intro/install/
+- Access to `IOM Docker images <ToolsAndConcepts.rst#iom-docker-images>`_
+- Access to `IOM Helm-charts <ToolsAndConcepts.rst#iom-helm-charts>`_
 
 Requirements and Characteristics of IOM Installation
 ====================================================
@@ -47,7 +47,8 @@ Usage of integrated PostgreSQL server.
 Values File
 ===========
 
-This values file cannot be copied as it is. Before it can be used, *persistence.hostPath* and *postgres.persistence.hostPath* have to be changed to existing paths, which are shared with Docker Desktop.
+This values file cannot be copied as it is. Before it can be used, *persistence.local.hostPath* and *postgres.persistence.hostPath* have to be changed to existing paths,
+which are shared with Docker Desktop.
 
 The values file contains minimal settings only, except *oms.db.resetData*, which was listed explicitly, even if it contains the default value only.
 
@@ -95,7 +96,9 @@ The values file contains minimal settings only, except *oms.db.resetData*, which
 
   # store data of shared-FS into local directory (requirement #6, #7)
   persistence:
-    hostPath: /Users/username/iom-share
+    provisioning: local
+    local:
+      hostPath: /Users/username/iom-share
 
   # create IOM database and according database user before starting IOM. 
 
@@ -176,7 +179,7 @@ The easiest way to install the *NGINX Ingress Controller* is by using the accord
 Installation of IOM
 ===================
 
-Create a file *values.yaml* and fill it with the content shown in section `values file`_. Adapt the settings of *persistence.hostPath* and *postgres.persistence.hostPath* to point to directories on your computer, which are shared with Docker Desktop. After that, the installation process of IOM can be started.
+Create a file *values.yaml* and fill it with the content shown in section `values file`_. Adapt the settings of *persistence.local.hostPath* and *postgres.persistence.hostPath* to point to directories on your computer, which are shared with Docker Desktop. After that, the installation process of IOM can be started.
 
 .. code-block:: shell
 

@@ -15,6 +15,7 @@ The following documents provide an extensive documentation how to operate IOM wi
 #. `Helm parameters of Integrated PostgreSQL Server <docs/ParametersPosgres.rst>`_
 #. `Helm parameters of IOM-Tests <docs/ParametersTests.rst>`_
 #. `References to Kubernetes Secrets <docs/SecretKeyRef.rst>`_
+#. `Persistent Storage <docs/PersistentStorage.rst>`_
 #. `Prometheus Metrics <docs/Metrics.rst>`_
 #. `PostgreSQL Server Configuration <docs/Postgresql.rst>`_
 #. `Options and Requirements of IOM Database <docs/IOMDatabase.rst>`_
@@ -90,6 +91,16 @@ On default a secret for JWT is created automatically, containing a random value.
 
 It is still possible to define custom values, by using the parameters *oms.jwtSecret* and *oms.jwtSecretKeyRef*.
 
+Handling of persistent storage for the Shared File System was improved
+==================================================================
+
+The configuration and documentation of persistent storage for the Shared File System was improved.
+
+A new documentation page "`Persistent Storage <docs/PersistentStorage.rst>`_" was added, that describes the configuration of
+the Shared File System in detail. Documentation of "`Helm Parameters of IOM <docs/ParametersIOM.rst>`_" was updated.
+
+Please note, that the new configuration requires migration of Helm parameters. 
+
 ---------------
 Migration Notes
 ---------------
@@ -140,6 +151,145 @@ have not set *oms.jwtSecret* and *oms.jwtSecretKeyRef*, this automatically creat
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
+Handling of persistent storage for the Shared File System was improved
+==================================================================
+
+In former versions of IOM Helm charts, the provisioning of a persistent storage method depended on the two parameters, *persistence.hostPath*
+and *persistence.storageClass*. There was also a third parameter, *persistence.pvc*, but that
+one was removed. There was a precedence defined for these parameters to select the provisioning method: if *persistence.hostPath* was set,
+*persistence.storageClass* was ignored.
+
+This has now changed. The new parameter *persistence.provisioning* was introduced, that explicitly defines the provisioning method to be used.
+Allowed values for *persistence.provisioning* are *dynamic* (default), *static*, and *local*.
+
+- *dynamic* is equivalent to an old configuration, where *persistence.hostPath* and *persistence.pvc* were both not set.
+- *static* is a new provisioning method, that was not supported by older versions of IOM Helm charts.
+- *local* is equivalent to an old configuration, where *persistence.hostPath* was set, but *persistence.pvc* was not.
+
+Each provisioning method can be configured in more detail. Therefore, separate parameter-groups were introduced, which mirror the names
+of the provisioning methods: *persistence.dynamic|static|local*.
+
+The old parameter *persistence.storageClass* belongs to *dynamic* provisioning. Therefore, it was renamed to *persistence.dynamic.storageClass*.
+The old parameter *persistence.hostPath* belongs to *local* provisioning and was therefore renamed to *persistence.local.hostPath*.
+
+The former parameter *persistence.annotations* was split into three different parameters, one
+for each provisioning method: *persistence.dynamic|static|local.annotations*. This
+way, it became possible to define different default annotations for the different provisioning methods.
+
+In the former version of IOM Helm charts, the following annotations for *persistent-volume-claim* were used in every case:
+
+.. code-block:: yaml
+
+    "helm.sh/resource-policy": keep
+    "helm.sh/hook": pre-install
+
+In the current version of IOM Helm charts, there are no default annotations at all for *persistence.static.annotations* and *persistence.local.annotations*.
+Only in case of *dynamic* provisioning, there is a single default annotation:
+
+.. code-block:: yaml
+
+    "helm.sh/resource-policy": keep
+
+.. note::
+
+  Under some circumstances, ``helm upgrade`` is not able to proceed due to an *annotation validation error*, when using the
+  *dynamic* provisioning mode. To avoid this case, you need to manually add annotations to the existing *persistent-volume-claim*
+  in advance.
+
+  The following code shows, how this could be done.
+
+  .. code-block:: shell
+                  
+    # replace <namespace> and <release-name> with actual values
+    NAMESPACE=<namespace>
+    RELEASE_NAME=<release-name>
+                  
+    kubectl annotate pvc ${RELEASE_NAME}-iom  meta.helm.sh/release-name=$RELEASE_NAME
+    kubectl annotate pvc ${RELEASE_NAME}-iom  meta.helm.sh/release-namespace=$NAMESPACE
+  
+
+Examples for migrations
+-----------------------
+
++----------------------------------------+------------------------------------------+
+|Old                                     |Migrated                                  |
+|configuration                           |configuration                             |
++========================================+==========================================+
+|Dynamic provisioning of persistent storage using *storage-class* *azurefile*,      |
+|automatic deletion of *pvc* is prevented.                                          |
+|                                                                                   |
+|Preventing deletion of *pvc* and usage of *storage-class* *azurefile* are the      |
+|default behavior in both cases. The old and new configurations are identical.      |
++----------------------------------------+------------------------------------------+
+|.. code-block:: yaml                    |.. code-block:: yaml                      |
+|                                        |                                          |
+|  # persistence:                        |  # persistence:                          |
+|                                        |                                          |
++----------------------------------------+------------------------------------------+
+|Dynamic provisioning of persistent storage using a custom *storage-class*,         |
+|automatic deletion of *pvc* is prevented.                                          |
+|                                                                                   |
+|Preventing deletion of *pvc* is the default behavior in both cases, therefore      |
+|annotations are not specified in both cases. The position of *storageClass* has    |
+|changed, it has to be moved to *persistence.dynamic.storageClass*.                 |
++----------------------------------------+------------------------------------------+
+|.. code-block:: yaml                    |.. code-block:: yaml                      |
+|                                        |                                          |
+|  persistence:                          |  persistence:                            |
+|    storageClass: azurefile-iom         |    dynamic:                              |
+|                                        |      storageClass: azurefile-iom         |
++----------------------------------------+------------------------------------------+
+|Dynamic provisioning of persistent storage using *storage-class* *azurefile*,      |
+|automatic deletion of *pvc* is enabled.                                            |
+|                                                                                   |
+|Enabling deletion of *pvc* is done by removing all annotations from *pvc*. This has|
+|not changed in the new version. But the name of the parameter has changed from     |
+|*persistence.annotations* to *persistence.dynamic.annotations*.                    |
+|                                                                                   |
+|Since *azurefile* is and was the default value of *storageClass* and dynamic       |
+|provisioning is the default provisioning method, the other parts of old and new    |
+|configuration have not changed.                                                    |
++----------------------------------------+------------------------------------------+
+|.. code-block:: yaml                    |.. code-block:: yaml                      |
+|                                        |                                          |
+|  persistence:                          |  persistence:                            |
+|    annotations:                        |    dynamic:                              |
+|                                        |      annotations:                        |
++----------------------------------------+------------------------------------------+
+|Dynamic provisioning of persistent storage using a custom *storage-class*,         |
+|automatic deletion of *pvc* is enabled.                                            |
+|                                                                                   |
+|Enabling deletion of *pvc* is done by removing all annotations from *pvc*. This has|
+|not changed in the new version. But the name of parameter has changed from         |
+|*persistence.annotations* to *persistence.dynamic.annotations*.                    |
+|                                                                                   |
+|Parameter *persistence.storageClass* was moved in the new version to               |
+|*persistence.dynamic.storageClass*.                                                |
++----------------------------------------+------------------------------------------+
+|.. code-block:: yaml                    |.. code-block:: yaml                      |
+|                                        |                                          |
+|  persistence:                          |  persistence:                            |
+|    storageClass: azurefile-iom         |    dynamic:                              |
+|    annotations:                        |      storageClass: azurefile-iom         |
+|                                        |      annotations:                        |
++----------------------------------------+------------------------------------------+
+|Local provisioning of persistent storage.                                          |
+|                                                                                   |
+|Parameter *persistence.hostPath* was moved in the new version to                   |
+|*persistence.local.hostPath*.                                                      |
+|                                                                                   |
+|The provisioning method to be used has now to be declared explicitly, if it is not |
+|the default method. Therefore, in the migrated configuration, *provisioning* has to|
+|be set to *local*.                                                                 |
++----------------------------------------+------------------------------------------+
+|.. code-block:: yaml                    |.. code-block:: yaml                      |
+|                                        |                                          |
+|  persistence:                          |  persistence:                            |
+|    hostPath: /home/username/iom-share  |    provisioning: local                   |
+|                                        |    local:                                |
+|                                        |      hostPath: /home/username/iom-share  |
++----------------------------------------+------------------------------------------+
+
 -----------------
 Deprecation Notes
 -----------------
@@ -162,134 +312,16 @@ IOM Helm charts of version 3.0.0 are only supporting IOM 4 and newer.
 Meta-Data were removed from *log*-Settings
 ==========================================
 
-Helm parameters *log.metaData.tenant* and *log.metaData.environment* were removed from settings
+Helm parameters *log.metaData.tenant* and *log.metaData.environment* were removed from settings.
 
-=============
-Version 2.3.0
-=============
+Passing a *persistent-volume-claim* to be used for the Shared File System is not supported any longer
+=================================================================================================
 
-------------
-New Features
-------------
+The current version of IOM Helm charts does not support any longer passing the name of an existing
+*persistent-volume-claim* to be used for the Shared File System.
 
-Added Support for *Single Sign-On* (SSO)
-=================================================
+======================
+Previous Release Notes
+======================
 
-You can now configure *single sign-on* (SSO) via the new parameter group *oms.sso*.
-There are four new parameters that control the configuration of IOM in combination with an Identity and
-Access Management System: *oms.sso.enabled*, *oms.sso.type*, *oms.sso.oidcConfig*, and
-*oms.sso.oidcConfigSecretKeyRef*.
-
-Using *SSO*-parameters requires IOM 4.3.0 or newer.
-
-For a detailed description of these parameters, see `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
-
----------------
-Migration Notes
----------------
-
-Changed default values of *image.tag* and *dbaccount.image.tag*
-===============================================================
-
-Default value of IOM version (parameter *image.tag*) was changed to 4.3.0 and default value of dbaccount version
-(parameter *dbaccount.image.tag*) was updated to 1.6.0.
-
-=============
-Version 2.2.0
-=============
-
-------------
-New Features
-------------
-
-Added New Parameter *podDisruptionBudget.maxUnavailable*
-=================================================================
-
-*PodDisruptionBudget* has been added to IOM Helm Charts. *PodDisruptionBudgets* defines the behavior of pods during a
-voluntary disruption of the Kubernetes Cluster. The default value of the parameter *podDisruptionBudget.maxUnavailable*
-is 1, which guarantees that only one IOM pod will be unavailable during a voluntary disruption of the Kubernetes cluster.
-
-See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
-
-Added New Parameter-Group *podAntiAffinity*
-====================================================
-
-Parameter-group *podAntiAffinity*, along with the according default values, prevents scheduling of more than one IOM
-pod of current helm release onto one node. In this way, the IOM deployment is secured against failures of a single node.
-
-See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
-
-Added New Parameter-Group *spreadPods*
-===============================================
-
-*spreadPods* provides an alternative or additional method to spread IOM pods over nodes. Contrary to *podAntiAffinity*
-it is possible to run more than one pod per node. For example, if there are two nodes and four pods, the pods are evenly spread across the
-nodes. Each node is running two pods. Additionally, it is very easy to combine different topologies.
-
-Unlike *podAntiAffinity*, *spreadPods* is disabled by default.
-
-See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
-
----------------
-Migration Notes
----------------
-
-*podAntiAffinity* is Enabled and Uses *mode: required* by Default
-=================================================================
-
-*podAntiAffinity* is enabled and uses *mode: required* by default, which makes the IOM deployment instantly more robust against
-failures of a single node. Each IOM pod requires its own node in this case. However, if the corresponding Kubernetes cluster does not provide
-the required number of nodes, the deployment of IOM will fail.
-
-Please check your cluster in advance. If the capacity is not sufficient, please use *podAntiAffinity.mode: preferred* instead.
-
-Changed Default Value of *startupProbe.failureThreshold*
-===========================================================
-
-The default value of *startupProbe.failureThreshold* has been increased from 60 to 354, which increases the default timeout for database
-initialization and migration from 11 minutes to one hour. If the new default value does not meet the requirements, you must set
-the right value within the values file.
-
-See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
-
-Changed Default Values of *image.repository* and *dbaccount.image.repository*
-==================================================================================
-
-The default values of *image.repository* and *dbaccount.image.repository* now both point to the new Intershop Docker
-repository at *docker.tools.intershop.com*. If you use the default values of these parameters, you need to create a
-pull-secret, which has to be set at *imagePullSecrets*.
-
--------------
-Fixed Defects
--------------
-
-+--------+------------------------------------------------------------------------------------------------+
-|Key     |Summary                                                                                         |
-|        |                                                                                                |
-+========+================================================================================================+
-|78274   |*imagePullSecrets* were missing in job-spec of connection-monitor.                              |
-|        |                                                                                                |
-+--------+------------------------------------------------------------------------------------------------+
-
--------------
-Removal Notes
--------------
-
-Helm parameter *oms.mailResourcesBaseUrl* has been removed.
-
-=============
-Known Defects
-=============
-
-+--------+------------------------------------------------------------------------------------------------+
-|Key     |Summary                                                                                         |
-|        |                                                                                                |
-+========+================================================================================================+
-|69933   |It is not possible to use the internal NGINX in combination with a global NGINX                 |
-|        |ingress-controller                                                                              |
-|        |                                                                                                |
-+--------+------------------------------------------------------------------------------------------------+
-|76294   |Internal NGINX ingress-controller cannot use custom ingress-class nginx-iom (it is using class  |
-|        |nginx instead)                                                                                  |
-|        |                                                                                                |
-+--------+------------------------------------------------------------------------------------------------+
+When updating from a version of IOM Helm charts, older than 2.3.0, please consult the `List of older Release Notes <README_old.rst>`_.
