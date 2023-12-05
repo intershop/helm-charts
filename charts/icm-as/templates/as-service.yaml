@@ -8,10 +8,10 @@ metadata:
 spec:
   ports:
   - name: svc
-    port: {{ .Values.ports.svc }}
+    port: 7743
     targetPort: svc
   - name: mgnt
-    port: {{ .Values.ports.mgnt }}
+    port: 7744
     targetPort: mgnt
   selector:
     app: icm-as

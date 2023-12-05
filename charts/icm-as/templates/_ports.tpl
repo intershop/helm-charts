@@ -6,20 +6,20 @@ Creates the ports
 ports:
 # Servlet engine service connector port
 - name: svc
-  containerPort: {{ .Values.ports.svc }}
+  containerPort: 7743
   protocol: TCP
 # Servlet engine management connector port
 - name: mgnt
-  containerPort: {{ .Values.ports.mgnt }}
+  containerPort: 7744
   protocol: TCP
 {{- if .Values.jvm.debug.enabled }}
 # Java Debug port
 - name: debug
-  containerPort: {{ .Values.ports.debug }}
+  containerPort: 7746
   protocol: TCP
 {{- end }}
 # JMX port
 - name: jmx
-  containerPort: {{ .Values.ports.jmx }}
+  containerPort: 7747
   protocol: TCP
 {{- end -}}
