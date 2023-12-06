@@ -8,4 +8,7 @@
   {{- if hasKey .Values.persistence "pvc" }}
     {{ fail "parameter persistence.pvc belongs to outdated configuration of persistent-storage. Please migrate your configuration." }}
   {{- end }}
+  {{- if hasKey .Values.persistence "annotations" }}
+    {{ fail "parameter persistence.annotations belongs to outdated configuration of persistent-storage. Please migrate your configuration." }}
+  {{- end }}
 {{- end }}
