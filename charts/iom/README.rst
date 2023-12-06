@@ -92,7 +92,7 @@ On default a secret for JWT is created automatically, containing a random value.
 It is still possible to define custom values, by using the parameters *oms.jwtSecret* and *oms.jwtSecretKeyRef*.
 
 Handling of persistent storage for the Shared File System was improved
-==================================================================
+======================================================================
 
 The configuration and documentation of persistent storage for the Shared File System was improved.
 
@@ -163,7 +163,10 @@ The default value of the IOM version (parameter *image.tag*) was changed to 5.0.
 (parameter *dbaccount.image.tag*) was updated to 2.0.0.
 
 Handling of persistent storage for the Shared File System was improved
-==================================================================
+======================================================================
+
+.. warning::
+   If persistent storage for the Shared File System was configured by *persistence.hostPath*, an upgrade of the Helm release is not supported!
 
 In former versions of IOM Helm charts, the provisioning of a persistent storage method depended on the two parameters, *persistence.hostPath*
 and *persistence.storageClass*. There was also a third parameter, *persistence.pvc*, but that
@@ -215,8 +218,8 @@ Only in case of *dynamic* provisioning, there is a single default annotation:
     NAMESPACE=<namespace>
     RELEASE_NAME=<release-name>
                   
-    kubectl annotate pvc ${RELEASE_NAME}-iom  meta.helm.sh/release-name=$RELEASE_NAME
-    kubectl annotate pvc ${RELEASE_NAME}-iom  meta.helm.sh/release-namespace=$NAMESPACE
+    kubectl annotate pvc ${RELEASE_NAME}-iom  meta.helm.sh/release-name=$RELEASE_NAME -n $NAMESPACE
+    kubectl annotate pvc ${RELEASE_NAME}-iom  meta.helm.sh/release-namespace=$NAMESPACE -n $NAMESPACE
   
 
 Examples for migrations
@@ -283,22 +286,6 @@ Examples for migrations
 |    storageClass: azurefile-iom         |    dynamic:                              |
 |    annotations:                        |      storageClass: azurefile-iom         |
 |                                        |      annotations:                        |
-+----------------------------------------+------------------------------------------+
-|Local provisioning of persistent storage.                                          |
-|                                                                                   |
-|Parameter *persistence.hostPath* was moved in the new version to                   |
-|*persistence.local.hostPath*.                                                      |
-|                                                                                   |
-|The provisioning method to be used has now to be declared explicitly, if it is not |
-|the default method. Therefore, in the migrated configuration, *provisioning* has to|
-|be set to *local*.                                                                 |
-+----------------------------------------+------------------------------------------+
-|.. code-block:: yaml                    |.. code-block:: yaml                      |
-|                                        |                                          |
-|  persistence:                          |  persistence:                            |
-|    hostPath: /home/username/iom-share  |    provisioning: local                   |
-|                                        |    local:                                |
-|                                        |      hostPath: /home/username/iom-share  |
 +----------------------------------------+------------------------------------------+
 
 Changed default value of *postgres.image.tag*

@@ -12,24 +12,7 @@ metadata:
     {{- include "postgres.labels" . | nindent 4 }}    
 provisioner: docker.io/hostpath
 volumeBindingMode: WaitForFirstConsumer
----
-kind: PersistentVolume
-apiVersion: v1
-metadata:
-  name: {{ include "postgres.fullname" . }}
-  labels:
-    {{- include "postgres.labels" . | nindent 4 }}    
-spec:
-  capacity:
-    storage: {{ .Values.persistence.storageSize }}
-  accessModes:
-  - ReadWriteOnce
-  {{- if .Values.persistence.local.reclaimPolicy }}
-  persistentVolumeReclaimPolicy: {{ .Values.persistence.local.reclaimPolicy }}
-  {{- end }}
-  storageClassName: {{ include "postgres.fullname" . }}-data
-  hostPath:
-    path: {{ .Values.persistence.local.hostPath }}
+allowVolumeExpansion: false
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -45,7 +28,6 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  volumeName: {{ include "postgres.fullname" . }}
   storageClassName: {{ include "postgres.fullname" . }}-data
   resources:
     requests:
