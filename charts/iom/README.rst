@@ -99,7 +99,16 @@ The configuration and documentation of persistent storage for the Shared File Sy
 A new documentation page "`Persistent Storage <docs/PersistentStorage.rst>`_" was added, that describes the configuration of
 the Shared File System in detail. Documentation of "`Helm Parameters of IOM <docs/ParametersIOM.rst>`_" was updated.
 
-Please note, that the new configuration requires migration of Helm parameters. 
+Please note, that the new configuration requires migration of Helm parameters.
+
+Handling of persistent storage for PostgreSQL data was improved
+===============================================================
+
+The configuration of persistent storage for PostgreSQL data was improved. The configuration is now fully identical
+to the configuration of persistent storage for the Shared File System.
+
+The new documentation page "`Persistent Storage <docs/PersistentStorage.rst>`_" is valid for persistent storage for
+PostgreSQL data too, except for the *Recommendations*-section, that is related to Shared File System only.
 
 ---------------
 Migration Notes

@@ -42,13 +42,14 @@ IOM Helm Charts are supporting three different kinds of provisioning of persiste
 - static provisioning
 - local storage
 
-Which kind of provisioning is used by IOM Helm Charts is controlled by parameter *persistence.provisioning*.
+Which kind of provisioning is used by IOM Helm Charts is controlled by parameters *persistence.provisioning* and
+*postgres.persistence.provisioning*.
 Each available method is represented by an according value. The values are *dynamic* (default), *static* and *local*.
 
 Dynamic Provisioning
 --------------------
 
-Dynamic provisioning is the default method to provide persistent storage for IOM, because it's the easiest to use method, which
+Dynamic provisioning is the default method to provide persistent storage, because it's the easiest to use method, which
 does not need any interaction with a cluster administrator.
 When using this method, the *persistent-volume* (*pv*) is created automatically from the requested *storage-class* (default-value is *azurefile*).
 Since the *pv* is created automatically, the *reclaim-policy* cannot be influenced by any Helm parameter. Instead of it,
@@ -78,8 +79,8 @@ in Docker-Desktop). In difference to the two other provisioning methods, the who
 inside the IOM Helm charts. They are created when the IOM Helm release is created and they will be deleted along with the IOM Helm release.
 Hence, it is a kind of a simple, care-free method to provide storage for very simple, single node installations.
 
-Recommended Configurations
-==========================
+Recommended Configurations for the Shared File System
+=====================================================
 
 Dynamic Provisioning
 --------------------
