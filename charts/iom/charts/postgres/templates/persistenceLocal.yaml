@@ -44,7 +44,7 @@ metadata:
     {{- include "meta.helm.annotations" . | nindent 4 }}
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   volumeName: {{ include "postgres.fullname" . }}
   storageClassName: {{ include "postgres.fullname" . }}-data
   resources:
