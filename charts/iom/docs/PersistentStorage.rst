@@ -88,8 +88,9 @@ be used for persistent storage. Additionally the path has to be prefixed with ``
 
 Example for *Windows* + *WSL 2*:
 
-When using ``C:\Users\username\iom-share``, running ``pwd`` will deliver ``/c/Users/username/iom-share``. Together with the prefix
-``/run/desktop/mnt/host`` a valid configuration for a *Windows* system with *WSL 2* looks like this:
+When using ``C:\Users\username\iom-share`` for Shared File System, running ``pwd`` within this directory
+will deliver ``/c/Users/username/iom-share``. Together with the prefix ``/run/desktop/mnt/host`` a valid configuration
+for a *Windows* system with *WSL 2* has to look like this:
 
 .. code-block:: yaml
 

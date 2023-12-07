@@ -133,13 +133,18 @@ The values file contains minimal settings only, except *oms.db.resetData*, which
 
   **Windows: IOM Share**
    
-  The current example just works when using Docker Desktop on Windows. When working on Windows, you have to take care to use Unix-Style path names, e.g., if the IOM share is located at C:\Users\username\iom-share, the according entry in values.yaml has to be noted as /c/Users/unsername/iom-share.
+  The current example just works when using Docker Desktop on Windows. When working on Windows in combination with *WSL 2* (Windows Subsystem for Linux 2), you
+  have to take care to use Unix-Style path names, e.g., if the IOM share is located at ``C:\Users\username\iom-share``, the according entry in *values.yaml* has to
+  be noted as ``/c/Users/unsername/iom-share``. Additionally the prefix ``/run/desktop/mnt/host`` has to be used.
+
+  Please also consult documentation about `Persistent Storage <PersistentStorage.rst>`_.
 
 .. note::
 
   **Windows: persistent PostgreSQL data**
    
-  Setting *postgresql.persistence.hostPath* to a local directory does not work on Windows, even if the directory is correctly shared with Docker Desktop. When starting the PostgreSQL server, it tries to take ownership of the data directory, which is not working in this case. There are two possibilities to overcome this problem:
+  Setting *postgresql.persistence.hostPath* to a local directory does not work on Windows, even if everything is correctly configured. When starting the PostgreSQL
+  server, it tries to take ownership of the data directory, which is not working in this case. There are two possibilities to overcome this problem:
   
   * Do not store PostgreSQL data persistently, by setting *postgres.persistence.enabled* to false.
   * Use a Docker volume for persistent storage of PostgreSQL data. The following box shows how to do this.

@@ -297,10 +297,17 @@ Examples for migrations
 |                                        |      annotations:                        |
 +----------------------------------------+------------------------------------------+
 
+
 Changed default value of *postgres.image.tag*
 =============================================
 
 The default value of PostgreSQL version (parameter *postgres.image.tag*) was changed from 12 to 15.
+
+Handling of persistent storage for PostgreSQL data was improved
+===============================================================
+
+.. warning::
+   If persistent storage for PostgreSQL data was enabled, an upgrade of the Helm release is not supported!
 
 -----------------
 Deprecation Notes
