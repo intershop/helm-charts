@@ -79,6 +79,25 @@ in Docker-Desktop). In difference to the two other provisioning methods, the who
 inside the IOM Helm charts. They are created when the IOM Helm release is created and they will be deleted along with the IOM Helm release.
 Hence, it is a kind of a simple, care-free method to provide storage for very simple, single node installations.
 
+When running IOM on *Unix*-like system, like *Linux*, *Mac OS X*, etc., the usage of the according parameter *persistence.local.hostPath*
+is straight forward. Just set the name of the directory, to be used for persistent storage.
+
+When using *Windows* to run IOM, it is more complicated. It is recommended to use *WSL 2* in this case. When using *WSL 2*, the path to be
+set on *persistence.local.hostPath* has to be *Unix*-style. To get the right format, use ``pwd`` to print out the name of the directory to
+be used for persistent storage. Additionally the path has to be prefixed with ``/run/desktop/mnt/host``.
+
+Example for *Windows* + *WSL 2*:
+
+When using ``C:\Users\username\iom-share``, running ``pwd`` will deliver ``/c/Users/username/iom-share``. Together with the prefix
+``/run/desktop/mnt/host`` a valid configuration for a *Windows* system with *WSL 2* looks like this:
+
+.. code-block:: yaml
+
+  persistence:
+    provisioning: local
+    local:
+      hostPath: /run/desktop/mnt/host/c/Users/username/iom-share
+
 Recommended Configurations for the Shared File System
 =====================================================
 
