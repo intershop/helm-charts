@@ -151,6 +151,13 @@ have not set *oms.jwtSecret* and *oms.jwtSecretKeyRef*, this automatically creat
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
+Default value of *jboss.javaOpts* has changed
+=============================================
+
+The default value of *jboss.javaOpts* was changed, in order to reduce the memory usage of Java from 85% to 80%.
+
+See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
+
 Handling of persistent storage for the Shared File System was improved
 ==================================================================
 
