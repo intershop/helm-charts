@@ -60,7 +60,7 @@ dbaccount:
   searchPath:
   image:
     repository: docker.tools.intershop.com/iom/intershophub/iom-dbaccount
-    tag:        1.6.0
+    tag:        2.0.0
     pullPolicy: IfNotPresent
   resources: {}
 
@@ -155,7 +155,7 @@ oms:
 # Wildfly related settings
 jboss:
   # Set java options
-  javaOpts: "-XX:+UseContainerSupport -XX:MinRAMPercentage=85 -XX:MaxRAMPercentage=85"
+  javaOpts: "-XX:+UseContainerSupport -XX:MinRAMPercentage=80 -XX:MaxRAMPercentage=80"
   # Provide the possibility to append java options w/o the need to overwrite javaOpts
   javaOptsAppend:
   # Set options for wildfly application server, e.g.:

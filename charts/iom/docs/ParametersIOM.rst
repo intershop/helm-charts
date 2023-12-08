@@ -31,7 +31,7 @@ Parameters of IOM Helm Chart
 |                                        |see the `official Kubernetes documentation                                                      |                                                         |
 |                                        |<https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy>`_.                   |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|image.tag                               |The tag of IOM product/project image.                                                           |4.8.0                                                    |
+|image.tag                               |The tag of IOM product/project image.                                                           |5.0.0                                                    |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |dbaccount                               |Parameters bundled by dbaccount are used to control the dbaccount init-container which creates  |                                                         |
 |                                        |the IOM database-user and the IOM database itself. To enable the dbaccount init-container to do |                                                         |
@@ -434,8 +434,8 @@ Parameters of IOM Helm Chart
 |jboss                                   |Parameters of group jboss are all related to the configuration of Wildfly/JBoss.                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |jboss.javaOpts                          |The value of *jboss.javaOpts* is passed to Java options of the WildFly application server.      |``"-XX:+UseContainerSupport                              |
-|                                        |                                                                                                |-XX:MinRAMPercentage=85                                  |
-|                                        |The default value used by Helm charts 1.5.0 and newer allows for not having to care about Java  |-XX:MaxRAMPercentage=85"``                               |
+|                                        |                                                                                                |-XX:MinRAMPercentage=80                                  |
+|                                        |The default value used by Helm charts 1.5.0 and newer allows for not having to care about Java  |-XX:MaxRAMPercentage=80"``                               |
 |                                        |memory settings any longer. Just set the memory size in parameter resources and the JVM will    |                                                         |
 |                                        |recognize this and adapt its memory configuration to this value.                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
