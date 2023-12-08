@@ -51,9 +51,6 @@ readinessProbe:
 dbaccount:
   # If enabled, dbaccount will be executed during the installation process only, not on upgrade!
   enabled: false
-  # resetData reinitializes an existing database during the installation process.
-  # This property is deprecated and is replaced by oms.db.resetData.
-  resetData: false
   # Name of dedicated tablespace
   tablespace:
   # Options allows to set database options.

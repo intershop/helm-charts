@@ -367,11 +367,6 @@ spec:
                     {{ fail "oms.db.resetData contains a non boolean value!" }}
                   {{- end }}
               value: 'true'
-                {{- else if and .Values.dbaccount.resetData .Values.dbaccount.enabled .Release.IsInstall }}
-                  {{- if not (kindIs "bool" .Values.dbaccount.resetData) }}
-                    {{ fail "dbaccount.resetData contains a non boolean value!" }}
-                  {{- end }}
-              value: 'true'
                 {{- else }}
               value: 'false'
                 {{- end }}
@@ -771,17 +766,19 @@ spec:
             #
             # db settings, which do not depend on .Values.postgres.enabled 
             #
-          {{- if .Values.dbaccount }}
+          {{- if .Values.oms.db }}
             # deprecated!
             - name: OMS_DB_RESET
-            {{- if .Values.dbaccount.resetData }}
-              {{- if not (kindIs "bool" .Values.dbaccount.resetData) }}
-                {{ fail "dbaccount.resetData contains a non boolean value!" }}
+            {{- if and .Values.oms.db.resetData .Release.IsInstall }}
+              {{- if not (kindIs "bool" .Values.oms.db.resetData) }}
+                {{ fail "oms.db.resetData contains a non boolean value!" }}
               {{- end }}
               value: 'true'
             {{- else }}
               value: 'false'
             {{- end }}
+          {{- end }}
+          {{- if .Values.dbaccount }}
             {{- if .Values.dbaccount.options }}
             - name: OMS_DB_OPTIONS
               value: {{ .Values.dbaccount.options }}
