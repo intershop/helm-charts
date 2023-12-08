@@ -58,7 +58,7 @@ service:
 
 persistence:
   # postgres data are written to memory only
-  enabled: false
+  enabled: true
   # Type of provisioning.
   # Allowed values are: dynamic | static | local
   # Selects the subset of configuration parameters to be used.
