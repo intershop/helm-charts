@@ -31,7 +31,7 @@ Parameters of IOM Helm Chart
 |                                        |see the `official Kubernetes documentation                                                      |                                                         |
 |                                        |<https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy>`_.                   |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|image.tag                               |The tag of IOM product/project image.                                                           |4.8.0                                                    |
+|image.tag                               |The tag of IOM product/project image.                                                           |5.0.0                                                    |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |dbaccount                               |Parameters bundled by dbaccount are used to control the dbaccount init-container which creates  |                                                         |
 |                                        |the IOM database-user and the IOM database itself. To enable the dbaccount init-container to do |                                                         |
