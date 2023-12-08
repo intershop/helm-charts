@@ -144,9 +144,7 @@ unless requested. This new setting reduces the amount of log-messages of mailhog
 *dbaccount.resetData* was replaced by *oms.db.resetData*
 ========================================================
 
-Parameter *dbaccount.resetData* was replaced by *oms.db.resetData*. For a limited period of time (until the next major release of IOM
-Helm charts), the old parameter *dbaccount.resetData* will still be supported.
-Usage of new parameter *oms.db.resetData* requires IOM version 5.0.0 or newer.
+Parameter *dbaccount.resetData* was replaced by *oms.db.resetData*.
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
