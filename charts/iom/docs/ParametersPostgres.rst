@@ -20,13 +20,13 @@ Parameters of Integrated PostgreSQL Server
 |                                        |demo-, CI- or similar types of setups.                                                         |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.args                           |An array containing command line arguments, which are passed to the Postgres server at         |["-N", "200", "-c",                           |
-|                                        |start. For more information, see the `official PostgreSQL 12 documentation                     |"max_prepared_transactions=100"]              |
-|                                        |<https://www.postgresql.org/docs/12/config-setting.html#id-1.6.6.4.5>`_.                       |                                              |
+|                                        |start. For more information, see the `official PostgreSQL 15 documentation                     |"max_prepared_transactions=100"]              |
+|                                        |<https://www.postgresql.org/docs/15/config-setting.html#id-1.6.7.4.5>`_.                       |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.image.repository               |Repository of the PostgreSQL image. For more information, see `official Docker hub             |postgres                                      |
 |                                        |<https://hub.docker.com/_/postgres>`_.                                                         |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
-|postgres.image.tag                      |Tag of PostgreSQL image. For more information, see `official Docker hub                        |"12"                                          |
+|postgres.image.tag                      |Tag of PostgreSQL image. For more information, see `official Docker hub                        |"15"                                          |
 |                                        |<https://hub.docker.com/_/postgres>`_.                                                         |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.image.pullPolicy               |Pull policy to be applied when getting PostgreSQL Docker images. For more information, see the |IfNotPresent                                  |
