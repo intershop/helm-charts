@@ -401,7 +401,7 @@ postgres:
     provisioning: dynamic
     storageSize: 20Gi
     dynamic:
-      storageClass: azurefile
+      storageClass: default
       # Annotations of persistent-volums-claim.
       # Default values are:
       #   "helm.sh/resource-policy": keep
