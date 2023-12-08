@@ -290,6 +290,11 @@ Examples for migrations
 |                                        |      hostPath: /home/username/iom-share  |
 +----------------------------------------+------------------------------------------+
 
+Changed default value of *postgres.image.tag*
+=============================================
+
+The default value of PostgreSQL version (parameter *postgres.image.tag*) was changed from 12 to 15.
+
 -----------------
 Deprecation Notes
 -----------------
