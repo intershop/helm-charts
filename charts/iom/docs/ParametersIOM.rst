@@ -442,8 +442,8 @@ Parameters of IOM Helm Chart
 |jboss                                   |Parameters of group jboss are all related to the configuration of Wildfly/JBoss.                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |jboss.javaOpts                          |The value of *jboss.javaOpts* is passed to Java options of the WildFly application server.      |``"-XX:+UseContainerSupport                              |
-|                                        |                                                                                                |-XX:MinRAMPercentage=85                                  |
-|                                        |The default value used by Helm charts 1.5.0 and newer allows for not having to care about Java  |-XX:MaxRAMPercentage=85"``                               |
+|                                        |                                                                                                |-XX:MinRAMPercentage=80                                  |
+|                                        |The default value used by Helm charts 1.5.0 and newer allows for not having to care about Java  |-XX:MaxRAMPercentage=80"``                               |
 |                                        |memory settings any longer. Just set the memory size in parameter resources and the JVM will    |                                                         |
 |                                        |recognize this and adapt its memory configuration to this value.                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
