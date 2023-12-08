@@ -35,7 +35,7 @@ IOM Helm charts are requiring the usage of Helm 3.8 or newer. At the time of wri
 up to version 3.14 of Helm.
 
 The current version of Helm Charts is backward compatible with all versions of IOM since 4.0. But only the newest
-IOM version, which is 4.8.0 at the time of writing, supports all features that the Helm Charts are offering. For more
+IOM version, which is 5.0.0 at the time of writing, supports all features that the Helm Charts are offering. For more
 information, please consult the reference documentation of `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
 ..
@@ -89,7 +89,7 @@ Relic APM* can be managed by new Helm paramters within parameter-group *newRelic
 
 For a description of all new Parameters in detail, please see `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
-The usage of *New Relic APM* requires the usage of IOM version 4.8.0 or newer.
+The usage of *New Relic APM* requires the usage of IOM version 5.0.0 or newer.
 
 Random JWT-secret provided
 ==========================
@@ -146,7 +146,7 @@ unless requested. This new setting reduces the amount of log-messages of mailhog
 
 Parameter *dbaccount.resetData* was replaced by *oms.db.resetData*. For a limited period of time (until the next major release of IOM
 Helm charts), the old parameter *dbaccount.resetData* will still be supported.
-Usage of new parameter *oms.db.resetData* requires IOM version 4.8.0 or newer.
+Usage of new parameter *oms.db.resetData* requires IOM version 5.0.0 or newer.
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
@@ -157,6 +157,12 @@ The default value of *oms.jwtSecret* is empty now, causing the usage of an autom
 have not set *oms.jwtSecret* and *oms.jwtSecretKeyRef*, this automatically created secret will be used instead. 
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
+
+Changed default values of *image.tag* and *dbaccount.image.tag*
+===============================================================
+
+The default value of the IOM version (parameter *image.tag*) was changed to 5.0.0 and the default value of the dbaccount version
+(parameter *dbaccount.image.tag*) was updated to 2.0.0.
 
 Handling of persistent storage for the Shared File System was improved
 ==================================================================
