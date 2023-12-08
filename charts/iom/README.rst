@@ -28,14 +28,14 @@ For the best compatibility between IOM Helm Charts and IOM, please always use th
 regardless of the IOM version you are currently using. Therefore, update IOM Helm Charts as often as possible.
 
 The current version of Helm Charts is backward compatible with all versions of IOM since 4.0. But only the newest
-IOM version, which is 4.8.0 at the time of writing, supports all features that the Helm Charts are offering. For more
+IOM version, which is 5.0.0 at the time of writing, supports all features that the Helm Charts are offering. For more
 information, please consult the reference documentation of `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
 ..
    Table is commented out, it's used as an internal reference only.
 
    +-------------+-----+-----+-----+-----+-----+-----+-------+-------+
-   |Helm / IOM   |3.5  |3.6  |3.7  |4.0  |4.1  |4.2  |4.3-4.7|4.8    |
+   |Helm / IOM   |3.5  |3.6  |3.7  |4.0  |4.1  |4.2  |4.3-4.7|5.0    |
    |             |     |     |     |     |     |     |       |       |
    +=============+=====+=====+=====+=====+=====+=====+=======+=======+
    |**3.0**      |x    |x    |x    |[3]_ |[3]_ |[3]_ |[4]_   |       |
@@ -82,7 +82,7 @@ Relic APM* can be managed by new Helm paramters within parameter-group *newRelic
 
 For a description of all new Parameters in detail, please see `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
-The usage of *New Relic APM* requires the usage of IOM version 4.8.0 or newer.
+The usage of *New Relic APM* requires the usage of IOM version 5.0.0 or newer.
 
 Random JWT-secret provided
 ==========================
@@ -139,7 +139,7 @@ unless requested. This new setting reduces the amount of log-messages of mailhog
 
 Parameter *dbaccount.resetData* was replaced by *oms.db.resetData*. For a limited period of time (until the next major release of IOM
 Helm charts), the old parameter *dbaccount.resetData* will still be supported.
-Usage of new parameter *oms.db.resetData* requires IOM version 4.8.0 or newer.
+Usage of new parameter *oms.db.resetData* requires IOM version 5.0.0 or newer.
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
@@ -150,6 +150,12 @@ The default value of *oms.jwtSecret* is empty now, causing the usage of an autom
 have not set *oms.jwtSecret* and *oms.jwtSecretKeyRef*, this automatically created secret will be used instead. 
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
+
+Changed default values of *image.tag* and *dbaccount.image.tag*
+===============================================================
+
+The default value of the IOM version (parameter *image.tag*) was changed to 5.0.0 and the default value of the dbaccount version
+(parameter *dbaccount.image.tag*) was updated to 2.0.0.
 
 Handling of persistent storage for the Shared File System was improved
 ==================================================================
