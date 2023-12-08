@@ -1,0 +1,5 @@
+{{- if hasKey .Values "dbaccount" }}
+  {{- if hasKey .Values.dbaccount "resetData" }}
+    {{ fail "parameter dbaccount.resetData is outdated. Please migrate your configuration." }}
+  {{- end }}
+{{- end }}
