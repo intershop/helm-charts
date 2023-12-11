@@ -174,7 +174,9 @@ The default value of the IOM version (parameter *image.tag*) was changed to 5.0.
 Handling of persistent storage for the Shared File System was improved
 ======================================================================
 
-[!WARNING]  
+> [!WARNING]
+> Test
+
 .. warning::
    
    If persistent storage for the Shared File System was configured by *persistence.hostPath*, an upgrade of the Helm release is not supported!
