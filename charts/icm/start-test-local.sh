@@ -6,7 +6,7 @@ set -o allexport
 source start-test-local_vars.sh
 read -e -p 'Helm chart name: ' -i 'icm-11-test' HELM_JOB_NAME
 read -e -p 'Testsuite: ' -i 'tests.remote.com.intershop.cms.suite.PageListingTestSuite' TESTSUITE
-read -e -p 'Test image: ' -i 'intershophub/icm-as-test:11.2.0' ICM_TEST_IMAGE
+read -e -p 'Test image: ' -i 'intershophub/icm-as-test:11.7.0' ICM_TEST_IMAGE
 read -e -p 'Base path of your local folder mount: ' -i '/run/desktop/mnt/host/d/tmp/pv' LOCAL_MOUNT_BASE
 read -e -p 'The pull secret for the icm-as+testrunner image (e.g. dockerhub or icmbuildsnapshot): ' -i 'dockerhub' ICM_AS_PULL_SECRET
 read -e -p 'The pull secret for the icm-wa+waa image: ' -i 'dockerhub' ICM_WEB_PULL_SECRET
