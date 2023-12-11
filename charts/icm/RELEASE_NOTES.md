@@ -1,6 +1,6 @@
 
-<a name="icm-as-1.7.0"></a>
-## [icm-as-1.7.0](https://github.com/intershop/helm-charts/compare/icm-as-1.6.1...icm-as-1.7.0)
+<a name="icm-1.8.0"></a>
+## [icm-1.8.0](https://github.com/intershop/helm-charts/compare/icm-1.7.1...icm-1.8.0)
 
 > 2023-12-11
 
