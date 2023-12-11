@@ -174,10 +174,9 @@ The default value of the IOM version (parameter *image.tag*) was changed to 5.0.
 Handling of persistent storage for the Shared File System was improved
 ======================================================================
 
-> [!WARNING]
-> Test
+.. regular warnings are not rendered correctly in GitHub
 
-.. warning::
+**warning**
    
    If persistent storage for the Shared File System was configured by *persistence.hostPath*, an upgrade of the Helm release is not supported!
 
@@ -217,7 +216,9 @@ Only in case of *dynamic* provisioning, there is a single default annotation:
 
     "helm.sh/resource-policy": keep
 
-.. note::
+.. regular warnings are not rendered correctly in GitHub
+
+**note**
 
   Under some circumstances, ``helm upgrade`` is not able to proceed due to an *annotation validation error*, when using the
   *dynamic* provisioning mode. To avoid this case, you need to manually add annotations to the existing *persistent-volume-claim*
@@ -310,7 +311,10 @@ The default value of PostgreSQL version (parameter *postgres.image.tag*) was cha
 Handling of persistent storage for PostgreSQL data was improved
 ===============================================================
 
-.. warning::
+.. regular warnings are not rendered correctly in GitHub
+
+**warning**
+   
    If persistent storage for PostgreSQL data was enabled, an upgrade of the Helm release is not supported!
 
 -----------------
@@ -338,7 +342,7 @@ Meta-Data were removed from *log*-Settings
 Helm parameters *log.metaData.tenant* and *log.metaData.environment* were removed from settings.
 
 Passing a *persistent-volume-claim* to be used for the Shared File System is not supported any longer
-=================================================================================================
+=====================================================================================================
 
 The current version of IOM Helm charts does not support any longer passing the name of an existing
 *persistent-volume-claim* to be used for the Shared File System.
