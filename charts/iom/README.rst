@@ -175,6 +175,7 @@ Handling of persistent storage for the Shared File System was improved
 ======================================================================
 
 .. warning::
+   
    If persistent storage for the Shared File System was configured by *persistence.hostPath*, an upgrade of the Helm release is not supported!
 
 In former versions of IOM Helm charts, the provisioning of a persistent storage method depended on the two parameters, *persistence.hostPath*
