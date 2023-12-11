@@ -144,5 +144,5 @@ Parameters of Integrated PostgreSQL Server
 
 +-------------------------+-----------------+--------------------------+
 |`< Back                  |`^ Up            |`Next >                   |
-|<ParametersNGINX.rst>`_  |<../README.rst>`_|<ParametersTests.rst>`_   |
+|<ParametersMailhog.rst>`_|<../README.rst>`_|<ParametersTests.rst>`_   |
 +-------------------------+-----------------+--------------------------+

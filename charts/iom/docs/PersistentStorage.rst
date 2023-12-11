@@ -128,7 +128,9 @@ Example:
       storageClass: azurefile-iom
       annotations:
 
-.. note::
+.. regular note is not properly rendered by GitHub      
+
+**Note**   
 
   *azurefile-iom* is a *storage-class*, that is provided by *Intershop* within the *Intershop Commerce Platform*,
   which is using *Retain* for *reclaim-policy*.
