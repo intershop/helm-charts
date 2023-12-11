@@ -13,7 +13,24 @@ metadata:
 provisioner: docker.io/hostpath
 volumeBindingMode: WaitForFirstConsumer
 allowVolumeExpansion: false
-reclaimPolicy: Delete
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ include "iom.fullname" . }}
+  labels:
+    {{- include "iom.labels" . | nindent 4 }}    
+spec:
+  capacity:
+    storage: {{ .Values.persistence.storageSize }}
+  accessModes:
+  - ReadWriteMany
+  {{- if .Values.persistence.local.reclaimPolicy }}
+  persistentVolumeReclaimPolicy: {{ .Values.persistence.local.reclaimPolicy }}
+  {{- end }}
+  storageClassName: {{ include "iom.fullname" . }}-share
+  hostPath:
+    path: {{ .Values.persistence.local.hostPath }}
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
