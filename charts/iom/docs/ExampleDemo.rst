@@ -131,8 +131,10 @@ The values file contains minimal settings only, except for *oms.db.resetData*, w
             - path: "/"
               pathType: Prefix
 
-.. note:: 
-
+.. regualar notes are not rendered correctly in GitHub
+              
+**Note**
+   
   **Windows: IOM Share and PostgreSQL data**
    
   The current example needs some modifications when running in Docker Desktop on Windows. When working on Windows in combination with *WSL 2* (Windows Subsystem for Linux 2), you

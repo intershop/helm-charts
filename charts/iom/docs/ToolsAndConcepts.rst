@@ -44,7 +44,11 @@ The images are available at:
 * docker.tools.intershop.com/iom/intershophub/iom-dbaccount:1.4.0
 * docker.tools.intershop.com/iom/intershophub/iom:4.0.0
 
-.. note:: Adapt the tag (version number) if you use a newer version of IOM. For a full list of available versions see `Overview - IOM Public Release Notes <https://support.intershop.com/kb/283D59>`_.
+.. regular notes are not rendedered correctly in GitHub
+  
+**Note**
+   
+   Adapt the tag (version number) if you use a newer version of IOM. For a full list of available versions see `Overview - IOM Public Release Notes <https://support.intershop.com/kb/283D59>`_.
 
 *docker.tools.intershop.com* is a private Docker registry. Private Docker registries require authentication and sufficient rights to pull images from them. The according authentication data can be passed in a Kubernetes secret object, which has to be set using the Helm parameter *imagePullSecrets*.
 
@@ -102,7 +106,9 @@ To overcome this problem, IOM Helm-charts provide the parameter *downtime* (see 
 
 Within the context of projects, many changes can be applied to the running IOM cluster without requiring a downtime. In this case, the value of *downtime* has to be set to *false* before starting the upgrade process.
 
-.. note::
+.. regular notes are not rendered correctly in GitHug
+
+**Note**
 
   For security reasons, the default value of *downtime* is *true* to avoid any inconsistencies.
   Once you have understood the concept of the *downtime* parameter, you should set it to *false* to avoid downtimes as often as possible, and only set it to *true* when really required.

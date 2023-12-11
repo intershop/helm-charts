@@ -176,7 +176,7 @@ Handling of persistent storage for the Shared File System was improved
 
 .. regular warnings are not rendered correctly in GitHub
 
-**warning**
+**Warning**
    
    If persistent storage for the Shared File System was configured by *persistence.hostPath*, an upgrade of the Helm release is not supported!
 
@@ -218,7 +218,7 @@ Only in case of *dynamic* provisioning, there is a single default annotation:
 
 .. regular warnings are not rendered correctly in GitHub
 
-**note**
+**Note**
 
   Under some circumstances, ``helm upgrade`` is not able to proceed due to an *annotation validation error*, when using the
   *dynamic* provisioning mode. To avoid this case, you need to manually add annotations to the existing *persistent-volume-claim*
@@ -313,7 +313,7 @@ Handling of persistent storage for PostgreSQL data was improved
 
 .. regular warnings are not rendered correctly in GitHub
 
-**warning**
+**Warning**
    
    If persistent storage for PostgreSQL data was enabled, an upgrade of the Helm release is not supported!
 
