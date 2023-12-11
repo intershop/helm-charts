@@ -13,6 +13,7 @@ metadata:
 provisioner: docker.io/hostpath
 volumeBindingMode: WaitForFirstConsumer
 allowVolumeExpansion: false
+reclaimPolicy: Delete
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
