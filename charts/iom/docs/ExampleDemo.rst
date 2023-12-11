@@ -14,9 +14,9 @@ Local Demo System Running in Docker Desktop on Mac OS X
 Preconditions
 =============
 
-- Mac computer: Mac OS X >= v.12.1
+- Mac computer: Mac OS X >= v.14.1
 - Sufficient hardware resources: >= 16 GB main memory, multicore CPU
-- Installation of Docker Desktop: >= v.4.21.1
+- Installation of Docker Desktop: >= v.4.25.2
 
   - See: https://www.docker.com/products/docker-desktop 
   - >= 12 GB memory and >= 2 CPUs have to be assigned (Settings | Resources | Advanced)
@@ -47,10 +47,10 @@ Usage of integrated PostgreSQL server.
 Values File
 ===========
 
-This values file cannot be copied as it is. Before it can be used, *persistence.local.hostPath* and *postgres.persistence.hostPath* have to be changed to existing paths,
+This values file cannot be copied as it is. Before it can be used, *persistence.local.hostPath* and *postgres.persistence.local.hostPath* have to be changed to existing paths,
 which are shared with Docker Desktop.
 
-The values file contains minimal settings only, except *oms.db.resetData*, which was listed explicitly, even if it contains the default value only.
+The values file contains minimal settings only, except for *oms.db.resetData*, which was listed explicitly, even if it contains the default value only.
 
 .. code-block:: yaml
 
@@ -62,7 +62,7 @@ The values file contains minimal settings only, except *oms.db.resetData*, which
 
   image:
     repository: "docker.tools.intershop.com/iom/intershophub/iom"
-    tag: "4.8.0"
+    tag: "5.0.0"
 
   # define a timeout for startupProbe, that is matching the requirements of the current
   # IOM installation. In combination with the default values, this configuration results
@@ -114,7 +114,9 @@ The values file contains minimal settings only, except *oms.db.resetData*, which
     enabled: true
     persistence:
       enabled: true
-      hostPath: /Users/username/pgdata
+      provisioning: local
+      local:
+        hostPath: /Users/username/pgdata
 
   # enable integrated SMTP server (requirement #4).
   # configure ingress to forward requests for any host to mailhog GUI (requirements #5).
@@ -131,36 +133,24 @@ The values file contains minimal settings only, except *oms.db.resetData*, which
 
 .. note:: 
 
-  **Windows: IOM Share**
+  **Windows: IOM Share and PostgreSQL data**
    
-  The current example just works when using Docker Desktop on Windows. When working on Windows in combination with *WSL 2* (Windows Subsystem for Linux 2), you
+  The current example needs some modifications when running in Docker Desktop on Windows. When working on Windows in combination with *WSL 2* (Windows Subsystem for Linux 2), you
   have to take care to use Unix-Style path names, e.g., if the IOM share is located at ``C:\Users\username\iom-share``, the according entry in *values.yaml* has to
   be noted as ``/c/Users/unsername/iom-share``. Additionally the prefix ``/run/desktop/mnt/host`` has to be used.
 
+  The modified configuration of the Shared-Filesystem has to look like that:
+
+  .. code-block:: yaml
+                  
+    persistence:
+      provisioning: local
+      local:
+        hostPath: /run/desktop/mnt/host/c/Users/username/iom-share
+
+  The same same modifications have to be applied to the configuration of persistent storage of postgres sub-chart.
+
   Please also consult documentation about `Persistent Storage <PersistentStorage.rst>`_.
-
-.. note::
-
-  **Windows: persistent PostgreSQL data**
-   
-  Setting *postgresql.persistence.hostPath* to a local directory does not work on Windows, even if everything is correctly configured. When starting the PostgreSQL
-  server, it tries to take ownership of the data directory, which is not working in this case. There are two possibilities to overcome this problem:
-  
-  * Do not store PostgreSQL data persistently, by setting *postgres.persistence.enabled* to false.
-  * Use a Docker volume for persistent storage of PostgreSQL data. The following box shows how to do this.
-
-.. code-block:: shell
-
-  # create docker volume "iom-pgdata"
-  docker volume create —name=iom-pgdata -d local
-
-  # get mount-point of newly created docker volume
-  # use mount-point as value for helm-parameter postgres.persistence.hostPath
-  docker volume inspect —format='{{.Mountpoint}}' iom-pgdata
-  /var/lib/docker/volumes/iom-pgdata/_data
-
-  # to remove docker volume, execute the following command
-  docker volume rm iom-pgdata
 
 Installation of NGINX Ingress Controller
 ========================================
