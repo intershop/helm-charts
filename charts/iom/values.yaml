@@ -330,7 +330,11 @@ resources:
     cpu: 1000m
     memory: 2000Mi
 
+# List all pull-secrets.
 imagePullSecrets: []
+# - name: <pull-secret-1>
+# - name: <pull-secret-2>
+
 nameOverride:
 fullnameOverride:
 

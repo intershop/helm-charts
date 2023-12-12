@@ -41,14 +41,14 @@ IOM is provided in the form of Docker images. These images can be used directly,
 
 The images are available at:
 
-* docker.tools.intershop.com/iom/intershophub/iom-dbaccount:1.4.0
-* docker.tools.intershop.com/iom/intershophub/iom:4.0.0
+* docker.tools.intershop.com/iom/intershophub/iom-dbaccount:2.0.0
+* docker.tools.intershop.com/iom/intershophub/iom:5.0.0
 
 .. regular notes are not rendedered correctly in GitHub
   
 **Note**
    
-   Adapt the tag (version number) if you use a newer version of IOM. For a full list of available versions see `Overview - IOM Public Release Notes <https://support.intershop.com/kb/283D59>`_.
+   Adapt the tag (version number) if you use a different version of IOM. For a full list of available versions see `Overview - IOM Public Release Notes <https://support.intershop.com/kb/283D59>`_.
 
 *docker.tools.intershop.com* is a private Docker registry. Private Docker registries require authentication and sufficient rights to pull images from them. The according authentication data can be passed in a Kubernetes secret object, which has to be set using the Helm parameter *imagePullSecrets*.
 
@@ -62,7 +62,14 @@ The following box shows an example of how to create a Kubernetes secret to be us
       --docker-server=docker.tools.intershop.com \
       --docker-username='<user name>' \
       --docker-password='<password>' \
-      -n <kubernetes namespace>	
+      -n <kubernetes namespace>
+
+In order to use the newly created pull-secret, it has to be defined in IOM Helm values:
+
+.. code-block:: yaml
+
+   imagePullSecrets:
+     - name: intershop-pull-secret
 
 IOM Helm-Charts
 ===============
@@ -80,7 +87,7 @@ IOM Helm-charts is a package containing the description of all Kubernetes-object
   # It is shown here only for demonstration of how to reference the IOM Helm-chart after adding the according repository.
   helm install demo intershop/iom --values=values.yaml --namespace iom --timeout 20m0s --wait		
 
-The following illustration shows the most important components and personas when operating IOM with Helm. The project owner has to define a values file (available configuration parameters are explained in `Helm parameters of IOM <ParametersIOM.rst>`_, `Helm parameters of Integrated SMTP server <dParametersMailhog.rst>`_, `Helm parameters of Integrated NGINX Ingress Controller <ParametersNGINX.rst>`_, `Helm parameters of Integrated PostgreSQL Server <ParametersPosgres.rst>`_ and `Helm parameters of IOM-Tests <ParametersTests.rst>`_), which can be used along with IOM Helm-charts to install, upgrade, rollback, and uninstall IOM within a Kubernetes runtime environment.
+The following illustration shows the most important components and personas when operating IOM with Helm. The project owner has to define a values file (available configuration parameters are explained in `Helm parameters of IOM <ParametersIOM.rst>`_, `Helm parameters of Integrated SMTP server <dParametersMailhog.rst>`_, `Helm parameters of Integrated PostgreSQL Server <ParametersPosgres.rst>`_ and `Helm parameters of IOM-Tests <ParametersTests.rst>`_), which can be used along with IOM Helm-charts to install, upgrade, rollback, and uninstall IOM within a Kubernetes runtime environment.
 
 This is a very generalized view which has some restrictions when used with IOM. The next section explains these restrictions in detail.
 
@@ -121,9 +128,9 @@ IOM relies on sticky sessions, a functionality which has to be provided by the *
 Intershop Commerce Platform
 ===========================
 
-The previous section `IOM Helm-Charts`_ gave a general view on Helm, the IOM Helm-charts, and the according processes. The Intershop Commerce Platform environment modifies this concept a little bit, as shown in the following illustration.
+The previous section `IOM Helm-Charts`_ gave a general view on Helm, the IOM Helm-charts, and the according processes. The *Intershop Commerce Platform* environment modifies this concept a little bit, as shown in the following illustration.
 
-Project owners are not able to trigger any processes directly. They can only manage a sub-set of values to be applied along with the IOM Helm-chart. The processes are triggered by a flux-controller that observes the Git repository holding the values files. Depending on the type of IOM installation (*INT*, *Pre-PROD*, *PROD*, etc.) processes might need to be triggered manually by Intershop Operations. Intershop Operations also maintains a values file, which has higher precedence than the file of the project owner. This way it is ensured that the project owner is not able to change any critical settings. Which ones are affected depends on the type of IOM installation (*INT*, *Pre-PROD*, *PROD*, etc.). For example, a project owner should never be able to set log-level to *DEBUG* or *TRACE* on *PROD* environments.
+Project owners are not able to trigger any processes directly. They can only manage the Helm values to be applied along with the IOM Helm-chart. The processes are triggered by a flux-controller that observes the Git repository holding the values files. Depending on the type of IOM installation (*INT*, *Pre-PROD*, *PROD*, etc.) the changes made to IOM values might to be reviewed by Intershop Operations.
 
 In short, this concept is well known as GitOps.
 
