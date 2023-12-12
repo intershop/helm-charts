@@ -64,7 +64,7 @@ The following box shows an example of how to create a Kubernetes secret to be us
       --docker-password='<password>' \
       -n <kubernetes namespace>
 
-In order to use the newly created pull-secret, it has to be defined in IOM Helm values:
+In order to use the newly created pull-secret, it has to be defined in IOM Helm values too:
 
 .. code-block:: yaml
 

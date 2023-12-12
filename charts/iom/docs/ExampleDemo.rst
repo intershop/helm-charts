@@ -138,7 +138,7 @@ The values file contains minimal settings only, except for *oms.db.resetData*, w
   **Windows: IOM Share and PostgreSQL data**
    
   The current example needs some modifications when running in Docker Desktop on Windows. When working on Windows in combination with *WSL 2* (Windows Subsystem for Linux 2), you
-  have to take care to use Unix-Style path names, e.g., if the IOM share is located at ``C:\Users\username\iom-share``, the according entry in *values.yaml* has to
+  have to take care to use Unix-Style path names. E.g., if the IOM share is located at ``C:\Users\username\iom-share``, the according entry in *values.yaml* has to
   be noted as ``/c/Users/unsername/iom-share``. Additionally the prefix ``/run/desktop/mnt/host`` has to be used.
 
   The modified configuration of the Shared-Filesystem has to look like that:
@@ -150,14 +150,14 @@ The values file contains minimal settings only, except for *oms.db.resetData*, w
       local:
         hostPath: /run/desktop/mnt/host/c/Users/username/iom-share
 
-  The same same modifications have to be applied to the configuration of persistent storage of postgres sub-chart.
+  The same modifications have to be applied to the configuration of persistent storage of postgres sub-chart.
 
   Please also consult documentation about `Persistent Storage <PersistentStorage.rst>`_.
 
 Installation of NGINX Ingress Controller
 ========================================
 
-The installation of an *Ingress Controller* is a precondition for the installation of IOM. The *Ingress Controller* has to have support session stickiness, which is required by IOM. If the *NGINX Ingress Controller* is used, this precondition is satisfied and additionally the IOM Helm Charts are configuring the *NGINX Ingress Controller* right oit of the box to enable session stickiness.
+The installation of an *Ingress Controller* is a precondition for the installation of IOM. The *Ingress Controller* has to have support session stickiness, which is required by IOM. If the *NGINX Ingress Controller* is used, this precondition is satisfied and additionally the IOM Helm Charts are configuring the *NGINX Ingress Controller* right out of the box to enable session stickiness.
 
 The easiest way to install the *NGINX Ingress Controller* is by using the according Helm Charts. With the help of *Helm* the *NGINX Ingress Controller* will be installed within a separate Kubernetes namespace.
 
@@ -176,7 +176,7 @@ The easiest way to install the *NGINX Ingress Controller* is by using the accord
 Installation of IOM
 ===================
 
-Create a file *values.yaml* and fill it with the content shown in section `values file`_. Adapt the settings of *persistence.local.hostPath* and *postgres.persistence.hostPath* to point to directories on your computer, which are shared with Docker Desktop. After that, the installation process of IOM can be started.
+Create a file *values.yaml* and fill it with the content shown in section `values file`_. Adapt the settings of *persistence.local.hostPath* and *postgres.persistence.local.hostPath* to point to directories on your computer, which are shared with Docker Desktop. After that, the installation process of IOM can be started.
 
 .. code-block:: shell
 
@@ -254,7 +254,7 @@ Before the start, keep the `restrictions on upgrade <ToolsAndConcepts.rst#restri
        level:
          quartz: INFO		  
 		   
-  These changes are now rolled out by running Helm's upgrade process to the existing IOM installation.
+   These changes are now rolled out by running Helm's upgrade process to the existing IOM installation.
 
 2. Start the upgrade process within a terminal window.
 
