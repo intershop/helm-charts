@@ -83,7 +83,7 @@ Parameters of Integrated PostgreSQL Server
 |postgres.persistence.dynamic             |Parameter-group, that bundles all configuration settings of *dynamic* provisioning of          |                                              |
 |                                         |persistent storage for PostgreSQL data-storage.                                                |                                              |
 +-----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
-|postgres.persistence.dynamic.storageClass|Name of the storage class to be used for dynamic provisioning of PostgreSQLs data-storage.     |azurefile                                     |
+|postgres.persistence.dynamic.storageClass|Name of the storage class to be used for dynamic provisioning of PostgreSQLs data-storage.     |default                                       |
 |                                         |                                                                                               |                                              |
 |                                         |- Ignored, if *postgres.persistence.provisioning* is set to an other value than *dynamic*.     |                                              |
 +-----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
