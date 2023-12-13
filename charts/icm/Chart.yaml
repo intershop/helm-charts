@@ -6,7 +6,7 @@ name: icm
 version: 1.6.0-alpha
 # test related annotations
 annotations:
-  requestedMemoryQuota: 5900Mi
+  requestedMemoryQuota: 5100Mi
   requestedCpuQuotaInMinutes: "2500"
 dependencies:
   - name: icm-as

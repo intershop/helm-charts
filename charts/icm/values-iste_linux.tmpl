@@ -46,9 +46,6 @@ icm-as:
     SERVER_DIRECTORY_GROUP: "${SERVER_DIRECTORY_GROUP}"
     SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
 
-    INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}-icm-web-wa:8080"
-    INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}-icm-web-wa:8443"
-
     SMTPMAILSERVICE_DEFAULTSMTPMAILSERVICE_MAIL_SMTP_HOSTNAMES: "${HELM_JOB_NAME}-mailhog"
     SMTPMAILSERVICE_DEFAULTSMTPMAILSERVICE_MAIL_SMTP_PORT: "1025"
     MAIL_SMTP_HOST: "${HELM_JOB_NAME}-mailhog"
@@ -74,24 +71,22 @@ icm-as:
     license_key: "${NEWRELIC_LICENSE_KEY}"
   webLayer:
     enabled: true
-    redis:
-      enabled: true
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    hosts:
+    - host: "${HELM_JOB_NAME}.test.intershop.com"
+      paths:
+        - path: /
+          pathType: Prefix
+    tls:
+    - secretName: ingress-tls-csi
+      hosts:
+      - "${HELM_JOB_NAME}.test.intershop.com"
 
 icm-web:
   enabled: false
-
-redis:
-  enabled: true
-  architecture: standalone
-  replica:
-    replicaCount: 1
-  resources:
-    limits:
-      cpu: 250m
-      memory: 256Mi
-    requests:
-      cpu: 250m
-      memory: 256Mi
 
 mailhog:
   enabled: true
