@@ -73,8 +73,9 @@ icm-as:
     enabled: true
   ingress:
     enabled: true
+    className: nginx
     annotations:
-      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/proxy-body-size: "600m"
     hosts:
     - host: "${HELM_JOB_NAME}.test.intershop.com"
       paths:
