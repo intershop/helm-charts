@@ -5,7 +5,7 @@
 Helm Charts for Intershop Order Management (IOM)
 ================================================
 
-The following documents provide an extensive documentation how to operate IOM with IOM Helm Charts:
+The following documents provide an extensive documentation on how to operate IOM with IOM Helm Charts:
 
 1. `Tools & Concepts <docs/ToolsAndConcepts.rst>`_
 #. `Example: local Demo running in Docker-Desktop <docs/ExampleDemo.rst>`_
@@ -24,11 +24,11 @@ The following documents provide an extensive documentation how to operate IOM wi
 Dependency Information
 ======================
 
-For the best compatibility between IOM Helm Charts and IOM, please always use the newest version of IOM Helm Charts,
-regardless of the IOM version you are currently using. Therefore, update IOM Helm Charts as often as possible.
+For the best compatibility between IOM Helm Charts and IOM, always use the latest version of IOM Helm Charts,
+regardless of which IOM version you are currently using. Therefore, update IOM Helm Charts as often as possible.
 
-The current version of Helm Charts is backward compatible with all versions of IOM since 4.0. But only the newest
-IOM version, which is 5.0.0 at the time of writing, supports all features that the Helm Charts are offering. For more
+The current version of Helm Charts is backward compatible with all versions of IOM since 4.0. But only the latest
+IOM version, which is 5.0.0 at the time of writing, supports all features that the Helm Charts offer. For more
 information, please consult the reference documentation of `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
 ..
@@ -77,38 +77,38 @@ Mailhog sub-chart was updated to version 5.2.3.
 Added Support for *New Relic APM*
 =================================
 
-Helm Charts of version 3.0 are now supporting the usage of *New Relic APM* (Application Performance Monitoring). *New
-Relic APM* can be managed by new Helm paramters within parameter-group *newRelic*.
+Helm Charts 3.0 now support the use of *New Relic APM* (Application Performance Monitoring). *New
+Relic APM* can be managed through new Helm parameters within the *newRelic* parameter group. 
 
-For a description of all new Parameters in detail, please see `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
+For a detailed description of all new parameters, see `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
-The usage of *New Relic APM* requires the usage of IOM version 5.0.0 or newer.
+*New Relic APM* requires IOM version 5.0.0 or later.
 
 Random JWT-secret provided
 ==========================
 
-On default a secret for JWT is created automatically, containing a random value.
+By default, a secret for JWT is created automatically, containing a random value.
 
 It is still possible to define custom values, by using the parameters *oms.jwtSecret* and *oms.jwtSecretKeyRef*.
 
-Handling of persistent storage for the Shared File System was improved
-======================================================================
+Improved Handling of persistent storage for the shared file system
+==================================================================
 
-The configuration and documentation of persistent storage for the Shared File System was improved.
+The configuration and documentation of persistent storage for the shared file system was improved.
 
-A new documentation page "`Persistent Storage <docs/PersistentStorage.rst>`_" was added, that describes the configuration of
-the Shared File System in detail. Documentation of "`Helm Parameters of IOM <docs/ParametersIOM.rst>`_" was updated.
+A new documentation page "`Persistent Storage <docs/PersistentStorage.rst>`_" was added, detailing the configuration of the shared file system.
+Furthermore, the documentation of "`Helm Parameters of IOM <docs/ParametersIOM.rst>`_" was updated.
 
-Please note, that the new configuration requires migration of Helm parameters.
+Note that the new configuration requires a migration of Helm parameters.
 
-Handling of persistent storage for PostgreSQL data was improved
-===============================================================
+Improved handling of persistent storage for PostgreSQL data
+===========================================================
 
-The configuration of persistent storage for PostgreSQL data was improved. The configuration is now fully identical
-to the configuration of persistent storage for the Shared File System.
+The configuration of persistent storage for PostgreSQL data was improved. The configuration is now completely identical
+to the configuration of persistent storage for the shared file system.
 
-The new documentation page "`Persistent Storage <docs/PersistentStorage.rst>`_" is valid for persistent storage for
-PostgreSQL data too, except for the *Recommendations*-section, that is related to Shared File System only.
+The new documentation page "`Persistent Storage <docs/PersistentStorage.rst>`_" applies to persistent storage for
+PostgreSQL data too, except for the *Recommendations*-section, which only applies to the shared file system.
 
 ---------------
 Migration Notes
@@ -120,28 +120,27 @@ Removal of internal NGINX
 Internal NGINX, which was an optional component of IOM Helm Charts, was removed. The internal NGINX could be used in the
 following cases:
 
-1. The main goal of the internal NGINX was to act as a proxy between Ingress controller and IOM application servers in case,
-   the Ingress controller had no ability to provide session stickiness. In this case, the internal NGINX was able to
+1. The main goal of the internal NGINX was to act as a proxy between the Ingress controller and the IOM application servers in case
+   the Ingress controller did not have the ability to provide session stickiness. In this case, the internal NGINX was able to
    handle session stickiness for IOM.
 2. In very simple demo and test installations, the internal NGINX could also be used as Ingress controller. This made the
-   setup easier, since the installation of a cluster wide Ingress controller could be skipped.
+   setup easier, since the installation of a cluster-wide Ingress controller could be skipped.
 
-If an installation is currently using the internal NGINX (parameter *nginx.enabled* is set to *true*), then measures
-have to be taken before using IOM Helm Charts 3.0.0. Depending on the use-case, which leads to the usage of the internal
-NGINX, the measures are different.
+If an installation is currently using the internal NGINX (*nginx.enabled* parameter is set to *true*), then measures must be taken 
+before using IOM Helm Charts 3.0.0. Depending on the use case that is causing the internal NGINX to be used, the steps will vary.
 
-1. Session stickiness has to be provided by the Ingress controller, otherwise IOM can not be operated. If an NGINX Ingress
+1. Session stickiness must be provided by the Ingress controller, otherwise IOM can not be operated. If an NGINX Ingress
    controller is used, the IOM Helm Charts already provide the required configuration settings. If any other Ingress
-   controller is used, you have to determine how to configure it in order to provide session stickiness. The according
-   configuration has then to be applied in the Helm values.
-2. Simple demo and test installations now have to use a separately installed Ingress controller. Preferred is an NGINX
+   controller is used, you have to determine how to configure it in order to provide session stickiness. The appropriate 
+   configuration must then be applied to the Helm values.
+2. Simple demo and test installations must now use a separately installed Ingress controller. Preferred is an NGINX
    Ingress controller, since the required configuration for session stickiness is already provided by IOM Helm Charts.
 
 Default value of *mailhog.probes.enabled* has changed
 =====================================================
 
 The default value of *mailhog.probes.enabled* was changed from *true* to *false*, meaning that there are no probes executed
-unless requested. This new setting reduces the amount of log-messages of mailhog even if default values are used.
+unless requested. This new setting reduces the amount of log-messages of MailHog, even if the default values are used.
 
 *dbaccount.resetData* was replaced by *oms.db.resetData*
 ========================================================
@@ -153,15 +152,15 @@ See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 Default value of *oms.jwtSecret* has changed
 ============================================
 
-The default value of *oms.jwtSecret* is empty now, causing the usage of an automatically created random secret. That means, if you
-have not set *oms.jwtSecret* and *oms.jwtSecretKeyRef*, this automatically created secret will be used instead. 
+The default value of *oms.jwtSecret* is now empty, causing the usage of an automatically generated random secret. This means that if you
+have not set *oms.jwtSecret* and *oms.jwtSecretKeyRef*, this automatically generated secret will be used instead. 
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
 Default value of *jboss.javaOpts* has changed
 =============================================
 
-The default value of *jboss.javaOpts* was changed, in order to reduce the memory usage of Java from 85% to 80%.
+The default value of *jboss.javaOpts* was changed to reduce the memory usage of Java from 85% to 80%.
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
@@ -171,29 +170,29 @@ Changed default values of *image.tag* and *dbaccount.image.tag*
 The default value of the IOM version (parameter *image.tag*) was changed to 5.0.0 and the default value of the dbaccount version
 (parameter *dbaccount.image.tag*) was updated to 2.0.0.
 
-Handling of persistent storage for the Shared File System was improved
-======================================================================
+Improved handling of persistent storage for the shared file system
+==================================================================
 
 .. regular warnings are not rendered correctly in GitHub
 
 **Warning**
    
-   If persistent storage for the Shared File System was configured by *persistence.hostPath*, an upgrade of the Helm release is not supported!
+   If persistent storage for the shared file system has been configured via *persistence.hostPath*, upgrading the Helm release is not supported.
 
-In former versions of IOM Helm charts, the provisioning of a persistent storage method depended on the two parameters, *persistence.hostPath*
-and *persistence.storageClass*. There was also a third parameter, *persistence.pvc*, but that
-one was removed. There was a precedence defined for these parameters to select the provisioning method: if *persistence.hostPath* was set,
+In previous versions of IOM Helm Charts, the provisioning of a persistent storage method depended on the two parameters, *persistence.hostPath*
+and *persistence.storageClass*. There was also a third parameter, *persistence.pvc*, but it has been removed. 
+There was a precedence defined for these parameters to select the provisioning method: if *persistence.hostPath* was set,
 *persistence.storageClass* was ignored.
 
-This has now changed. The new parameter *persistence.provisioning* was introduced, that explicitly defines the provisioning method to be used.
+This has now changed. The new parameter *persistence.provisioning* was introduced. It explicitly defines the provisioning method to be used.
 Allowed values for *persistence.provisioning* are *dynamic* (default), *static*, and *local*.
 
-- *dynamic* is equivalent to an old configuration, where *persistence.hostPath* and *persistence.pvc* were both not set.
-- *static* is a new provisioning method, that was not supported by older versions of IOM Helm charts.
-- *local* is equivalent to an old configuration, where *persistence.hostPath* was set, but *persistence.pvc* was not.
+- *dynamic* is equivalent to an old configuration where both *persistence.hostPath* and *persistence.pvc* were not set.
+- *static* is a new provisioning method that was not supported by previous versions of IOM Helm Charts.
+- *local* is equivalent to an old configuration where *persistence.hostPath* was set, but *persistence.pvc* was not.
 
-Each provisioning method can be configured in more detail. Therefore, separate parameter-groups were introduced, which mirror the names
-of the provisioning methods: *persistence.dynamic|static|local*.
+Each provisioning method can be configured in more detail. Therefore, separate parameter groups which mirror the names
+of the provisioning methods were introduced: *persistence.dynamic|static|local*.
 
 The old parameter *persistence.storageClass* belongs to *dynamic* provisioning. Therefore, it was renamed to *persistence.dynamic.storageClass*.
 The old parameter *persistence.hostPath* belongs to *local* provisioning and was therefore renamed to *persistence.local.hostPath*.
@@ -202,14 +201,14 @@ The former parameter *persistence.annotations* was split into three different pa
 for each provisioning method: *persistence.dynamic|static|local.annotations*. This
 way, it became possible to define different default annotations for the different provisioning methods.
 
-In the former version of IOM Helm charts, the following annotations for *persistent-volume-claim* were used in every case:
+In the former version of IOM Helm Charts, the following annotations for *persistent-volume-claim* were used in every case:
 
 .. code-block:: yaml
 
     "helm.sh/resource-policy": keep
     "helm.sh/hook": pre-install
 
-In the current version of IOM Helm charts, there are no default annotations at all for *persistence.static.annotations* and *persistence.local.annotations*.
+In the current version of IOM Helm Charts, there are no default annotations at all for *persistence.static.annotations* and *persistence.local.annotations*.
 Only in case of *dynamic* provisioning, there is a single default annotation:
 
 .. code-block:: yaml
@@ -220,7 +219,7 @@ Only in case of *dynamic* provisioning, there is a single default annotation:
 
 **Note**
 
-  Under some circumstances, ``helm upgrade`` is not able to proceed due to an *annotation validation error*, when using the
+  Under certain circumstances, ``helm upgrade`` is not able to proceed due to an *annotation validation error* when using the
   *dynamic* provisioning mode. To avoid this case, you need to manually add annotations to the existing *persistent-volume-claim*
   in advance.
 
@@ -308,21 +307,21 @@ Changed default value of *postgres.image.tag*
 
 The default value of PostgreSQL version (parameter *postgres.image.tag*) was changed from 12 to 15.
 
-Handling of persistent storage for PostgreSQL data was improved
-===============================================================
+Improved handling of persistent storage for PostgreSQL data
+===========================================================
 
 .. regular warnings are not rendered correctly in GitHub
 
 **Warning**
    
-   If persistent storage for PostgreSQL data was enabled, an upgrade of the Helm release is not supported!
+   If persistent storage for PostgreSQL data is enabled, an upgrade of the Helm release is not supported.
 
 -----------------
 Deprecation Notes
 -----------------
 
-Support for *Datadog APM* is deprecated
-=======================================
+Deprecated support for *Datadog APM*
+====================================
 
 The Usage of *Datadog APM* (Application Performance Monitoring) is deprecated. The according parameter group *datadogApm*
 will be removed in a future version of IOM Helm Charts.
@@ -331,24 +330,24 @@ will be removed in a future version of IOM Helm Charts.
 Removal Notes
 -------------
           
-IOM prior version 4 is not supported any longer
-===============================================
+IOM prior version 4 is no longer supported
+==========================================
 
-IOM Helm charts of version 3.0.0 are only supporting IOM 4 and newer.
+IOM Helm Charts of version 3.0.0 only support IOM 4 and later versions.
 
 Meta-Data were removed from *log*-Settings
 ==========================================
 
 Helm parameters *log.metaData.tenant* and *log.metaData.environment* were removed from settings.
 
-Passing a *persistent-volume-claim* to be used for the Shared File System is not supported any longer
-=====================================================================================================
+Passing a *persistent-volume-claim* to be used for the shared file system is no longer supported
+================================================================================================
 
-The current version of IOM Helm charts does not support any longer passing the name of an existing
-*persistent-volume-claim* to be used for the Shared File System.
+The current version of IOM Helm Charts no longer supports passing the name of an existing
+*persistent-volume-claim* to be used for the shared file system.
 
 ======================
 Previous Release Notes
 ======================
 
-When updating from a version of IOM Helm charts, older than 2.3.0, please consult the `List of older Release Notes <README_old.rst>`_.
+When updating from a version of IOM Helm Charts, older than 2.3.0, please consult the `List of older Release Notes <README_old.rst>`_.

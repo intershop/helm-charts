@@ -102,7 +102,7 @@ Parameters of Integrated PostgreSQL Server
 |                                         |- Ignored if *postgres.persistence.provisioning* is set to an other value than *static*.       |                                              |
 +-----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 |postgres.persistence.static.pv           |Name of *persistent-volume* to be used for static provisioning of PostgreSQLs data-storage. The|                                              |
-|                                         |*persistent-volume* has to be created by a cluster-admin in advance.                           |                                              |
+|                                         |*persistent-volume* has to be created by a cluster admin in advance.                           |                                              |
 |                                         |                                                                                               |                                              |
 |                                         |- Ignored if *postgres.persistence.provisioning* is set to an other value than *static*.       |                                              |
 +-----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+

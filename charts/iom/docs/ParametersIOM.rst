@@ -626,7 +626,7 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                                |                                                         |
 |                                        |Please note, that APM for logs is disabled by default values. Any change of                     |                                                         |
 |                                        |*newRelic.apm.config* will overwrite the default values. E.g. to undo the configuration, that no|                                                         |
-|                                        |logs are sent by APM (default behaviour), just define an empty *config* parameter.              |                                                         |
+|                                        |logs are sent by APM (default behavior), just define an empty *config* parameter.              |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |Examples:                                                                                       |                                                         |
 |                                        |                                                                                                |                                                         |
@@ -825,7 +825,7 @@ Parameters of IOM Helm Chart
 |                                        |- Ignored if *persistence.provisioning* is set to another value than *static*.                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |persistence.static.pv                   |Name of *persistent-volume* to be used for static provisioning of IOM's shared storage. The     |                                                         |
-|                                        |*persistent-volume* has to be created by a cluster-admin in advance.                            |                                                         |
+|                                        |*persistent-volume* has to be created by a cluster admin in advance.                            |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |- Ignored if *persistence.provisioning* is set to another value than *static*.                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
