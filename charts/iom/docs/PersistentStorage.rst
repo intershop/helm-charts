@@ -105,7 +105,7 @@ Recommended Configurations for the Shared File System
 Dynamic Provisioning
 --------------------
 
-Production-Systems
+Production Systems
 ^^^^^^^^^^^^^^^^^^
 
 Use *static provisioning* instead of *dynamic provisioning* for production systems. When using *static provisioning*, there are no problems to reuse
@@ -135,7 +135,7 @@ Example:
   *azurefile-iom* is a *storage-class*, that is provided by *Intershop* within the *Intershop Commerce Platform*,
   which uses *Retain* for *reclaim-policy*.
 
-Test- and Demo-System, without any critical Data
+Test and demo system, without any critical Data
 
 
 - Use a *storage-class* that uses *reclaim-policy* *Delete*. This allows for the automatic deletion of the *pv* when the IOM Helm 
@@ -155,7 +155,7 @@ Example:
 Static Provisioning
 -------------------
 
-Production-Systems
+Production Systems
 ^^^^^^^^^^^^^^^^^^
 
 *Static provisioning* is the best choice for production systems. If configured properly, which means that the cluster 
@@ -176,7 +176,7 @@ Example:
       pv: pv-for-iom-xyz
       storageClass: azurefile-iom
 
-Test- and Demo-System, without any critical data:
+Test and demo system, without any critical data:
 
 *Static provisioning* of persistent storage is not recommended for this type of systems. If IOM is running in a *real*
 Kubernetes cluster, the best choice for this type of system is *dynamic provisioning* of persistent storage.
@@ -184,14 +184,14 @@ Kubernetes cluster, the best choice for this type of system is *dynamic provisio
 Local Storage
 -------------
 
-Production-Systems
+Production Systems
 ^^^^^^^^^^^^^^^^^^
 
 NEVER use *Local Storage* for any IOM that is running in a *real* Kubernetes cluster.
 
 
-Test- and Demo-System, Without Any Critical Data
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Test and Demo System, Without Any Critical Data
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 *Local storage* must be used only in simple, single node implementations of Kubernetes, like *Minikube* or *Docker-Desktop*.
 Intershop recommends to set *persistence.local.hostPath* only.
