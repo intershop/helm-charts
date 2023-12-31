@@ -12,12 +12,9 @@ tests:
     template: templates/as-deployment.yaml
     asserts:
       #spec.template.spec.containers[0].livenessProbe
-      - equal:
-          path: spec.template.spec.containers[0].livenessProbe.httpGet.path
-          value: /status/LivenessProbe
-      - equal:
-          path: spec.template.spec.containers[0].livenessProbe.httpGet.port
-          value: mgnt
+      - lengthEqual:
+          path: spec.template.spec.containers[0].livenessProbe.exec.command
+          count: 3
       - equal:
           path: spec.template.spec.containers[0].livenessProbe.failureThreshold
           value: 3
@@ -42,12 +39,9 @@ tests:
     template: templates/as-deployment.yaml
     asserts:
       #spec.template.spec.containers[0].livenessProbe
-      - equal:
-          path: spec.template.spec.containers[0].livenessProbe.httpGet.path
-          value: /status/LivenessProbe
-      - equal:
-          path: spec.template.spec.containers[0].livenessProbe.httpGet.port
-          value: mgnt
+      - lengthEqual:
+          path: spec.template.spec.containers[0].livenessProbe.exec.command
+          count: 3
       - equal:
           path: spec.template.spec.containers[0].livenessProbe.failureThreshold
           value: 6
