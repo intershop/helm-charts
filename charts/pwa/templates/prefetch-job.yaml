@@ -21,11 +21,11 @@ spec:
           restartPolicy: Never
           containers:
           - name: prefetch
-            image: 31099/wget:alpine-3.16
+            image: 31099/wget:alpine-3.18
             imagePullPolicy: Always
             env:
             - name: SECS
-              value: {{ default 3600 .stop | quote}}
+              value: {{ default 3600 .stop | quote }}
             args: [
               "--timeout=15",
               "--spider",
@@ -35,5 +35,7 @@ spec:
               "--execute=robots=off",
               "--recursive",
               "--level=0",
-              {{ include "pwa-prefetch.url" . | quote }} ]
+              "--no-verbose",
+              {{ include "pwa-prefetch.url" . | quote }}
+            ]
 {{- end }}

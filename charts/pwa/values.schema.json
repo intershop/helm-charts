@@ -6,11 +6,20 @@
     "description": "The Helm Values Schema to define values necessary to deploy Intershops PWA.",
     "required": [
         "upstream",
-        "hybrid",
         "environment",
         "cache"
     ],
     "properties": {
+        "updateStrategy": {
+          "type": "string",
+          "title": "Update strategy",
+          "description": "Kubernetes update strategy",
+          "default": "RollingUpdate",
+          "enum": [
+            "RollingUpdate",
+            "Recreate"
+          ]
+        },
         "upstream": {
             "$id": "#/properties/upstream",
             "type": "object",
@@ -102,6 +111,67 @@
             }
           }
         },
+        "monitoring": {
+          "type": "object",
+          "title": "Configure Monitoring",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Enable or disable monitoring",
+              "description": "Enable or disable monitoring",
+              "additionalProperties": false,
+              "default": false
+            },
+            "prometheus": {
+              "type": "object",
+              "title": "Prometheus configuration",
+              "description": "Prometheus configuration",
+              "additionalProperties": false,
+              "properties": {
+                "host": {
+                  "type": "string",
+                  "title": "Prometheus host",
+                  "description": "Host to expose Prometheus"
+                },
+                "annotations": {
+                  "type": "object",
+                  "title": "Prometheus ingress annotations",
+                  "description": "Prometheus ingress annotations",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "grafana": {
+              "type": "object",
+              "title": "Grafana configuration",
+              "description": "Grafana configuration",
+              "additionalProperties": false,
+              "properties": {
+                "host": {
+                  "type": "string",
+                  "title": "Grafana host",
+                  "description": "Host to expose Grafana"
+                },
+                "annotations": {
+                  "type": "object",
+                  "title": "Grafana ingress annotations",
+                  "description": "Grafana ingress annotations",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "password": {
+                  "type": "string",
+                  "title": "Grafana admin password",
+                  "description": "Grafana admin password"
+                }
+              }
+            }
+          }
+        },
         "cache": {
             "$id": "#/properties/cache",
             "type": "object",
@@ -124,6 +194,13 @@
                     "description": "Multi channel/site configuration object",
                     "additionalProperties": true
                 },
+                "additionalHeaders": {
+                  "$id": "#/properties/cache/properties/additionalHeaders",
+                  "type": "string",
+                  "title": "Configure additional headers",
+                  "description": "NGinx adds specified header for every page response",
+                  "additionalProperties": true
+              },
                 "extraEnvVars": {
                     "$id": "#/properties/cache/properties/extraEnvVars",
                     "type": "array",
@@ -187,6 +264,98 @@
                   }
                 }
               }
+          }
+        },
+        "redis": {
+          "type": "object",
+          "title": "Redis cache details",
+          "required": ["uri"],
+          "additionalProperties": false,
+          "properties": {
+            "uri": {
+              "type": "string",
+              "title": "Redis URI",
+              "description": "Redis URI"
+            },
+            "keepCache": {
+              "type": "boolean",
+              "title": "Don't flush Redis cache on deployment",
+              "description": "Don't flush Redis cache on deployment",
+              "default": false
+            }
+          }
+        },
+        "ingress": {
+          "additionalProperties": false,
+          "type": "object",
+          "title": "Ingress configuration",
+          "description": "Configure the ingress for the PWA",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Enable ingress",
+              "description": "Enable ingress",
+              "default": false
+            },
+            "className": {
+              "type": "string",
+              "title": "Ingress class name",
+              "description": "Ingress class name",
+              "default": "nginx"
+            },
+            "instances": {
+              "type": "object",
+              "title": "Ingress instances",
+              "description": "Configure different ingress instances",
+              "additionalProperties": {
+                "type": "object",
+                "title": "Ingress instance",
+                "description": "Ingress instance",
+                "additionalProperties": false,
+                "properties": {
+                  "tlsSecretName": {
+                    "type": "string",
+                    "title": "TLS secret name",
+                    "description": "TLS secret name"
+                  },
+                  "annotations": {
+                    "type": "object",
+                    "title": "Ingress Annotations",
+                    "description": "Ingress Annotations",
+                    "default": {},
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "hosts": {
+                    "type": "array",
+                    "title": "Ingress hosts",
+                    "description": "Ingress hosts",
+                    "default": [],
+                    "items": {
+                      "type": "object",
+                      "title": "Ingress host",
+                      "description": "Ingress host",
+                      "additionalProperties": false,
+                      "required": ["host"],
+                      "properties": {
+                        "host": {
+                          "type": "string",
+                          "title": "Host name",
+                          "description": "Host name",
+                          "default": ""
+                        },
+                        "tlsSecretName": {
+                          "type": "string",
+                          "title": "TLS secret name override",
+                          "description": "TLS secret name override for this host"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
     }
