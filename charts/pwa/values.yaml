@@ -1,6 +1,13 @@
+# install VSCode plugin redhat.vscode-yaml
+# yaml-language-server: $schema=./values.schema.json
+
 # Default values for pwa-main.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+
+updateStrategy: RollingUpdate
+# updateStrategy: Recreate
+
 replicaCount: 1
 
 image:
@@ -114,6 +121,16 @@ cache:
   multiChannel: ""
 
   ####
+  ## @param additional headers configuration object
+  ## additionalHeaders: |
+  ##   headers:
+  ##     - X-Frame-Options: 'SAMEORIGIN'
+  #### no additional headers example
+  ##   additionalHeaders: |
+  ##     headers: []
+  additionalHeaders: ""
+
+  ####
   ## @param extraEnvVars Extra environment variables to be set on NGINX containers
   ## E.g:
   ##  extraEnvVars:
@@ -181,29 +198,12 @@ cache:
   readinessProbe: {}
 
 ingress:
-  enabled: true
-  className: nginx
-  annotations: {}
-  hosts:
-    - host: pwa.example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
-ingresssplit:
   enabled: false
   className: nginx
-  annotations: {}
-  hosts:
-    - host: pwa1.example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+
+# Calculated values
+# use with `{{ tpl $.Values.calculated.X.Y $ }}`
+calculated:
+  metrics:
+    pwa: '{{ if or (.Values.metrics).enabled (.Values.monitoring).enabled }}on{{ end }}'
+    nginx: '{{ if or (.Values.cache.metrics).enabled (.Values.monitoring).enabled }}on{{ end }}'
