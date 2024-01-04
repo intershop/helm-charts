@@ -1,9 +1,9 @@
 [tool.bumpversion]
 current_version = "0.7.0"
-commit = true
+commit = false
 tag = false
-message = "Bump pwa chart version: {current_version} → {new_version}"
-parse = " (?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)(\-(?P<release>.*))?"
+message = "Bump pwa chart version: {current_version} to {new_version}"
+parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)(\\-(?P<release>.*))?"
 serialize = [
     "{major}.{minor}.{patch}-{release}",
     "{major}.{minor}.{patch}"
