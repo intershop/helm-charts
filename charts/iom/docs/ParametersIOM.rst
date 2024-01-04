@@ -626,7 +626,7 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                                |                                                         |
 |                                        |Please note, that APM for logs is disabled by default values. Any change of                     |                                                         |
 |                                        |*newRelic.apm.config* will overwrite the default values. E.g. to undo the configuration, that no|                                                         |
-|                                        |logs are sent by APM (default behavior), just define an empty *config* parameter.              |                                                         |
+|                                        |logs are sent by APM (default behavior), just define an empty *config* parameter.               |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |Examples:                                                                                       |                                                         |
 |                                        |                                                                                                |                                                         |

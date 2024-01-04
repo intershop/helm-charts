@@ -11,7 +11,7 @@ This is the ICM Replication helm chart
 
 This chart will do the following:
 
-* Deploys two ICM [intershop/icm](../icm) charts, one as edit system and one as live system
+* Deploys two ICM [intershop/icm](../icm) charts, one as Edit- and one as Live-System
 
 ## Installing the Chart
 
