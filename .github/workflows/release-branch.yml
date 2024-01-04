@@ -17,7 +17,7 @@ jobs:
       id: matrix
       run: |
         set -x
-        changed_directories=$(echo $(git diff --name-only main) | grep -o 'charts/[^/]*' | cut -d '/' -f 2)
+        changed_directories=$(echo $(git diff --name-only origin/main) | grep -o 'charts/[^/]*' | cut -d '/' -f 2)
         
         if [[ -z "$changed_directories" ]]; then
           echo "No chart changes detected. Chore changes need to be released manually." 1>&2
