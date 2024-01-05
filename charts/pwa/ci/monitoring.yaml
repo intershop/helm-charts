@@ -1,15 +1,13 @@
 # yaml-language-server: $schema=../values.schema.json
-replicaCount: 5
+replicaCount: 3
 image:
   repository: intershophub/intershop-pwa-ssr
   tag: latest
 upstream:
   icmBaseURL: https://pwa-ish-demo.test.intershop.com
 environment:
-  - name: SSR_MAX_MEM
-    value: "800M"
-  - name: MAX_MEMORY_READY
-    value: "400M"
+  - name: CACHE
+    value: "true"
 readinessProbe:
   exec:
     command:
@@ -21,24 +19,21 @@ readinessProbe:
   timeoutSeconds: 10
 
 cache:
-  replicaCount: 1
+  replicaCount: 2
   image:
     repository: intershophub/intershop-pwa-nginx
     tag: latest
-  multiChannel: |
-    .+:
-      - baseHref: /en
-        channel: default
-        lang: en_US
-      - baseHref: /de
-        channel: default
-        lang: de_DE
-      - baseHref: /fr
-        channel: default
-        lang: fr_FR
-      - baseHref: /b2c
-        channel: default
-        theme: b2c
+
+monitoring:
+  enabled: true
+  prometheus:
+    host: prometheus.pwa.example.local
+    annotations:
+      nginx.ingress.kubernetes.io/auth-type: basic
+      nginx.ingress.kubernetes.io/auth-secret: prometheus-basic-auth
+  grafana:
+    host: grafana.pwa.example.local
+    password: admin
 
 ingress:
   enabled: true

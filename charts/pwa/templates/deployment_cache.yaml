@@ -1,3 +1,4 @@
+{{- $nginxMetricsEnabled := tpl $.Values.calculated.metrics.nginx $ -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -11,6 +12,8 @@ metadata:
     {{- toYaml .Values.cache.podLabels | nindent 4 }}
     {{- end }}
 spec:
+  strategy:
+    type: {{ default "RollingUpdate" .Values.updateStrategy }}
   replicas: {{ .Values.cache.replicaCount }}
   selector:
     matchLabels:
@@ -56,9 +59,17 @@ spec:
           - name: CACHING_IGNORE_PARAMS_SOURCE
             value: "/config/caching-ignore-params.yaml"
         {{- end }}
-        {{- if .Values.cache.metrics.enabled }}
+        {{- if .Values.cache.additionalHeaders }}
+          - name: ADDITIONAL_HEADERS_SOURCE
+            value: "/config/additional-headers.yaml"
+        {{- end }}
+        {{- if $nginxMetricsEnabled }}
           - name: PROMETHEUS
             value: "true"
+        {{- end }}
+        {{- if (.Values.redis).uri }}
+          - name: REDIS_URI
+            value: "{{ (.Values.redis).uri }}"
         {{- end }}
         {{- range $key, $obj := .Values.cache.extraEnvVars }}
           - name: {{ $obj.name }}
@@ -68,7 +79,7 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
-          {{- if .Values.cache.metrics.enabled }}
+          {{- if $nginxMetricsEnabled }}
             - name: metrics
               containerPort: 9113
               protocol: TCP
@@ -89,6 +100,18 @@ spec:
             {{- end }}
           resources:
             {{- toYaml .Values.cache.resources | nindent 12 }}
+      initContainers:
+        - name: init-pwa
+          image: busybox:1.28
+          command:
+            - sh
+            - -c
+            - >-
+              until nc -zvw1 {{ include "pwa-main.fullname" . }} {{ .Values.service.port }};
+              do
+                echo "waiting for {{ include "pwa-main.fullname" . }}:{{ .Values.service.port }}";
+                sleep 2;
+              done
       volumes:
       - name: multi-channel-config
         configMap:
