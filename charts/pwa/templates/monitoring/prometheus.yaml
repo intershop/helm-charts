@@ -1,0 +1,151 @@
+{{- if (.Values.monitoring).enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "pwa-prometheus.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "pwa-prometheus.name" . }}
+    helm.sh/chart: {{ include "pwa-main.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  strategy:
+    type: "Recreate"
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "pwa-prometheus.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "pwa-prometheus.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - args:
+            - --config.file=/etc/prometheus/prometheus.yml
+            - --storage.tsdb.path=/prometheus
+            - --web.console.libraries=/etc/prometheus/console_libraries
+            - --web.console.templates=/etc/prometheus/consoles
+            - --web.enable-lifecycle
+          image: prom/prometheus:latest
+          name: {{ .Chart.Name }}
+          ports:
+            - containerPort: 9090
+              hostPort: 9090
+              protocol: TCP
+          volumeMounts:
+            - name: {{ include "pwa-prometheus.config" . }}
+              mountPath: /etc/prometheus/prometheus.yml
+              subPath: prometheus.yml
+            - name: {{ include "pwa-prometheus.data" . }}
+              mountPath: /prometheus
+      restartPolicy: Always
+      volumes:
+        - name: {{ include "pwa-prometheus.config" . }}
+          configMap:
+            name: {{ include "pwa-prometheus.config" . }}
+            items:
+              - key: prometheus.yml
+                path: prometheus.yml
+        - name: {{ include "pwa-prometheus.data" . }}
+          persistentVolumeClaim:
+            claimName: {{ include "pwa-prometheus.data" . }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "pwa-prometheus.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "pwa-prometheus.name" . }}
+    helm.sh/chart: {{ include "pwa-main.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  ports:
+    - name: prometheus
+      port: 9090
+      targetPort: 9090
+  selector:
+    app.kubernetes.io/name: {{ include "pwa-prometheus.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+
+---
+{{ if ((.Values.monitoring).prometheus).host }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "pwa-prometheus.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "pwa-prometheus.name" . }}
+    helm.sh/chart: {{ include "pwa-main.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- with ((.Values.monitoring).prometheus).annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  rules:
+    - host: {{ .Values.monitoring.prometheus.host }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ include "pwa-prometheus.fullname" . }}
+                port:
+                  number: 9090
+            path: /
+            pathType: Prefix
+{{ end }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "pwa-prometheus.config" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "pwa-prometheus.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+data:
+  prometheus.yml: |
+    scrape_configs:
+      - job_name: 'pwa-nginx'
+        scrape_interval: 5s
+        metrics_path: /metrics
+        relabel_configs: &relabel
+          - source_labels: [__address__]
+            target_label: address
+          - source_labels: [__address__]
+            regex: '(.*?)\..*'
+            replacement: '${1}'
+            target_label: instance
+        dns_sd_configs:
+          - names:
+              - _metrics._tcp.{{ include "pwa-cache-metrics.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+      - job_name: 'pwa-ssr'
+        scrape_interval: 5s
+        metrics_path: /metrics
+        relabel_configs: *relabel
+        dns_sd_configs:
+          - names:
+              - _metrics._tcp.{{ include "pwa-main-metrics.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "pwa-prometheus.data" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "pwa-prometheus.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+{{- end -}}
