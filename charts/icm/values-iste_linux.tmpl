@@ -79,8 +79,8 @@ icm-as:
     hosts:
     - host: "${HELM_JOB_NAME}.test.intershop.com"
       paths:
-        - path: /
-          pathType: Prefix
+      - path: /
+        pathType: Prefix
     tls:
     - secretName: ingress-tls-csi
       hosts:
