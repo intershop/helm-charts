@@ -83,14 +83,14 @@ icm-edit:
       annotations:
         nginx.ingress.kubernetes.io/proxy-body-size: "600m"
       hosts:
-      - host: "${HELM_JOB_NAME}.test.intershop.com"
+      - host: "${HELM_JOB_NAME}-edit.test.intershop.com"
         paths:
         - path: /
           pathType: Prefix
       tls:
       - secretName: ingress-tls-csi
         hosts:
-        - "${HELM_JOB_NAME}.test.intershop.com"
+        - "${HELM_JOB_NAME}-edit.test.intershop.com"
 
   icm-web:
     enabled: false
@@ -172,7 +172,20 @@ icm-live:
       license_key: "${NEWRELIC_LICENSE_KEY}"
     webLayer:
       enabled: true
-
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        nginx.ingress.kubernetes.io/proxy-body-size: "600m"
+      hosts:
+      - host: "${HELM_JOB_NAME}-live.test.intershop.com"
+        paths:
+        - path: /
+          pathType: Prefix
+      tls:
+      - secretName: ingress-tls-csi
+        hosts:
+        - "${HELM_JOB_NAME}-live.test.intershop.com"
   icm-web:
     enabled: false
 
@@ -255,13 +268,13 @@ icm-live:
       RESULT_DIRECTORY: "${RESULT_DIRECTORY}"
 
       TESTSUITE: "${TESTSUITE}"
-      LIVE_HOST: "${HELM_JOB_NAME}-icm-as-live"
-      EDIT_HOST: "${HELM_JOB_NAME}.test.intershop.com"
+      LIVE_HOST: "${HELM_JOB_NAME}-live.test.intershop.com"
+      EDIT_HOST: "${HELM_JOB_NAME}-edit.test.intershop.com"
       HOST: "${HELM_JOB_NAME}.test.intershop.com"
-      LIVE_PORT_HTTPS: 7743
-      LIVE_PORT_HTTPS: 7743
-      EDIT_PORT_HTTPS: 7743
-      EDIT_PORT_HTTPS: 7743
+      LIVE_PORT_HTTP: 80
+      LIVE_PORT_HTTPS: 443
+      EDIT_PORT_HTTP: 80
+      EDIT_PORT_HTTPS: 443
 
       APPSERVERNAME: "${HELM_JOB_NAME}-icm-as"
       LIVE_APPSERVERNAME: "${HELM_JOB_NAME}-icm-as-live"
