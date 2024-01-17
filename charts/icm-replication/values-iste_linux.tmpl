@@ -83,7 +83,7 @@ icm-edit:
       annotations:
         nginx.ingress.kubernetes.io/proxy-body-size: "600m"
       hosts:
-      - host: "${HELM_JOB_NAME}-edit.test.intershop.com"
+      - host: "${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}"
         paths:
         - path: /
           pathType: Prefix
@@ -178,7 +178,7 @@ icm-live:
       annotations:
         nginx.ingress.kubernetes.io/proxy-body-size: "600m"
       hosts:
-      - host: "${HELM_JOB_NAME}-live.test.intershop.com"
+      - host: "${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}"
         paths:
         - path: /
           pathType: Prefix

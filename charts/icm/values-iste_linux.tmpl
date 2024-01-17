@@ -77,7 +77,7 @@ icm-as:
     annotations:
       nginx.ingress.kubernetes.io/proxy-body-size: "600m"
     hosts:
-    - host: "${HELM_JOB_NAME}.test.intershop.com"
+    - host: "${HELM_JOB_NAME}.${DNS_ZONE_NAME}"
       paths:
       - path: /
         pathType: Prefix
