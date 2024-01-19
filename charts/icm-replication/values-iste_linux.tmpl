@@ -90,7 +90,7 @@ icm-edit:
       tls:
       - secretName: ingress-tls-csi
         hosts:
-        - "${HELM_JOB_NAME}-edit.test.intershop.com"
+        - "${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}"
 
   icm-web:
     enabled: false
@@ -185,7 +185,7 @@ icm-live:
       tls:
       - secretName: ingress-tls-csi
         hosts:
-        - "${HELM_JOB_NAME}-live.test.intershop.com"
+        - "${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}"
   icm-web:
     enabled: false
 

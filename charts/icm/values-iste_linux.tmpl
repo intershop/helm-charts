@@ -84,7 +84,7 @@ icm-as:
     tls:
     - secretName: ingress-tls-csi
       hosts:
-      - "${HELM_JOB_NAME}.test.intershop.com"
+      - "${HELM_JOB_NAME}.${DNS_ZONE_NAME}"
 
 icm-web:
   enabled: false
