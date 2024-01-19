@@ -165,7 +165,7 @@ testrunner:
     RESULT_DIRECTORY: "${RESULT_DIRECTORY}"
 
     TESTSUITE: "${TESTSUITE}"
-    HOST: "${HELM_JOB_NAME}.test.intershop.com"
+    HOST: "${HELM_JOB_NAME}.${DNS_ZONE_NAME}"
 
     APPSERVERNAME: "${HELM_JOB_NAME}-icm-as"
 

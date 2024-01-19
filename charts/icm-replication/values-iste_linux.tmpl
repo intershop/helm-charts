@@ -268,8 +268,8 @@ icm-live:
       RESULT_DIRECTORY: "${RESULT_DIRECTORY}"
 
       TESTSUITE: "${TESTSUITE}"
-      LIVE_HOST: "${HELM_JOB_NAME}-live.test.intershop.com"
-      EDIT_HOST: "${HELM_JOB_NAME}-edit.test.intershop.com"
+      LIVE_HOST: "${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}"
+      EDIT_HOST: "${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}"
       LIVE_PORT_HTTP: 80
       LIVE_PORT_HTTPS: 443
       EDIT_PORT_HTTP: 80
