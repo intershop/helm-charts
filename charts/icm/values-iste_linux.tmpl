@@ -16,6 +16,7 @@ icm-as:
       # workaround to keep java in the path
       export ROOTPATH=$PATH
 
+      mkdir -p $HELM_DIRECTORY/server-logs
       su ${SERVER_DIRECTORY_USER} <<'EOF'
         export PATH=$ROOTPATH
         timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
