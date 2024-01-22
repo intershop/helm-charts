@@ -17,6 +17,7 @@ icm-as:
       export ROOTPATH=$PATH
 
       mkdir -p $HELM_DIRECTORY/server-logs
+      chown ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_USER} $HELM_DIRECTORY/server-logs
       su ${SERVER_DIRECTORY_USER} <<'EOF'
         export PATH=$ROOTPATH
         timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
