@@ -58,21 +58,38 @@ service:
 
 persistence:
   # postgres data are written to memory only
-  enabled: false
-  # ignored, if hostPath is set.
-  accessMode: ReadWriteOnce
-  # ignored, if hostPath is set.
-  # If defined, storageClass: <storageClass>
-  # If set to "-", storageClass: "", which disables dynamic provisioning
-  # If undefined (the default) or set to null, no storageClass spec is
-  #   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  #   GKE, AWS & OpenStack)
-  storageClass:
-  # ignored, if hostPath is set.
-  annotations:
+  enabled: true
+  # Type of provisioning.
+  # Allowed values are: dynamic | static | local
+  # Selects the subset of configuration parameters to be used.
+  provisioning: dynamic
   storageSize: 20Gi
-  # To be used in simple environments (e.g. demos) to persist data on local host.
-  hostPath:
+  dynamic:
+    storageClass: default
+    # Annotations of persistent-volums-claim.
+    # Default values are:
+    #   "helm.sh/resource-policy": keep
+    # Use an empty "annotations" parameter to set no annotations at all.
+    # Default values are applied only, if NO "annotations" parameter is set at all.
+    #annotations:
+    
+  # If an already existing persistent-volume should be used, this can be done by
+  # selecting static provisioning.
+  static:
+    # Name of persistent-volume to be used.
+    pv:
+    # Name of storageClass to be used. Has to match the storageClass of pv.
+    storageClass:
+    # Annotations of persistent-volums-claim.
+    annotations:
+    
+  # To be used in simple, single node environments (e.g. demos) to persist data on local host.
+  local:
+    # Path in local filesystem to be used for persistent storage.
+    hostPath:
+    reclaimPolicy: Delete
+    # Annotations of persistent-volums-claim.
+    annotations:
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

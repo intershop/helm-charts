@@ -626,7 +626,7 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                                |                                                         |
 |                                        |Please note, that APM for logs is disabled by default values. Any change of                     |                                                         |
 |                                        |*newRelic.apm.config* will overwrite the default values. E.g. to undo the configuration, that no|                                                         |
-|                                        |logs are sent by APM (default behaviour), just define an empty *config* parameter.              |                                                         |
+|                                        |logs are sent by APM (default behavior), just define an empty *config* parameter.               |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |Examples:                                                                                       |                                                         |
 |                                        |                                                                                                |                                                         |
@@ -787,6 +787,8 @@ Parameters of IOM Helm Chart
 |                                        |according amount of seconds has passed, the container will end with an error.                   |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |persistence                             |Parameters of group *persistence* control how IOM's shared data is persisted.                   |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |Please see documentation about usage of `Persistent Storage <PersistentStorage.rst>`_.          |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |persistence.storageSize                 |Requested storage size. For more information, see the `official Kubernetes documentation on     |1Gi                                                      |
 |                                        |storage <https://kubernetes.io/docs/concepts/storage/persistent-volumes/>`_.                    |                                                         |
@@ -823,7 +825,7 @@ Parameters of IOM Helm Chart
 |                                        |- Ignored if *persistence.provisioning* is set to another value than *static*.                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |persistence.static.pv                   |Name of *persistent-volume* to be used for static provisioning of IOM's shared storage. The     |                                                         |
-|                                        |*persistent-volume* has to be created by a cluster-admin in advance.                            |                                                         |
+|                                        |*persistent-volume* has to be created by a cluster admin in advance.                            |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |- Ignored if *persistence.provisioning* is set to another value than *static*.                  |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
@@ -836,6 +838,9 @@ Parameters of IOM Helm Chart
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |persistence.local.hostPath              |For very simple installations, persistent data can be stored directly on a local disk. In this  |                                                         |
 |                                        |case, the path on the local host has to be stored at this parameter.                            |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |When using *Windows*, please check documentation about `Persistent Storage                      |                                                         |
+|                                        |<PersistentStorage.rst>`_ to get information on how to configure *persistence.local.hostPath*.  |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |- Ignored if *persistence.provisioning* is set to another value than *local*.                   |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
