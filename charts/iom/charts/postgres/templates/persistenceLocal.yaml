@@ -1,10 +1,18 @@
 {{- if hasKey .Values "persistence" }}
+<<<<<<< HEAD
   {{- if .Values.persistence.enabled }}
     {{- if hasKey .Values.persistence "provisioning" }}
       {{- if eq .Values.persistence.provisioning "local" }}
         {{- if hasKey .Values.persistence "local" }}
           {{- if hasKey .Values.persistence.local "hostPath" }}
             {{- if .Values.persistence.local.hostPath }}
+=======
+  {{- if hasKey .Values.persistence "provisioning" }}
+    {{- if eq .Values.persistence.provisioning "local" }}
+      {{- if hasKey .Values.persistence "local" }}
+        {{- if hasKey .Values.persistence.local "hostPath" }}
+          {{- if .Values.persistence.local.hostPath }}
+>>>>>>> 781318a (feat(iom)!: improve handling of postgres persistent data (#91000) (#505))
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
@@ -51,6 +59,7 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.storageSize }}
+<<<<<<< HEAD
             {{- else }}
               {{ fail "parameter persistence.local.hostPath is not defined" }}
             {{- end }}
@@ -64,5 +73,19 @@ spec:
     {{- else }}
       {{ fail "parameter persistence.provisioning is missing" }}
     {{- end }}
+=======
+          {{- else }}
+            {{ fail "parameter persistence.local.hostPath is not defined" }}
+          {{- end }}
+        {{- else }}
+          {{ fail "parameter persistence.local.hostPath is missing" }}
+        {{- end }}
+      {{- else }}
+        {{ fail "parameter persistence.local is missing" }}
+      {{- end }}
+    {{- end }}
+  {{- else }}
+    {{ fail "parameter persistence.provisioning is missing" }}
+>>>>>>> 781318a (feat(iom)!: improve handling of postgres persistent data (#91000) (#505))
   {{- end }}
 {{- end }}
