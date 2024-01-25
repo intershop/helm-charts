@@ -1,15 +1,16 @@
 {{- if hasKey .Values "persistence" }}
-  {{- if hasKey .Values.persistence "provisioning" }}
-    {{- if not .Values.persistence.provisioning }}
-      {{ fail "parameter persistence.provisioning is not defined" }}
-    {{- end }}
-    {{- if not (or (eq .Values.persistence.provisioning "dynamic") (eq .Values.persistence.provisioning "static") (eq .Values.persistence.provisioning "local")) }}
-      {{ fail "parameter persistence.provisioning contains value outside of allowed range of dynamic|static|local" }}
-    {{- end }}
-    {{- if eq .Values.persistence.provisioning "dynamic" }}
-      {{- if hasKey .Values.persistence "dynamic" }}
-        {{- if hasKey .Values.persistence.dynamic "storageClass" }}
-          {{- if .Values.persistence.dynamic.storageClass }}
+  {{- if .Values.persistence.enabled }}
+    {{- if hasKey .Values.persistence "provisioning" }}
+      {{- if not .Values.persistence.provisioning }}
+        {{ fail "parameter persistence.provisioning is not defined" }}
+      {{- end }}
+      {{- if not (or (eq .Values.persistence.provisioning "dynamic") (eq .Values.persistence.provisioning "static") (eq .Values.persistence.provisioning "local")) }}
+        {{ fail "parameter persistence.provisioning contains value outside of allowed range of dynamic|static|local" }}
+      {{- end }}
+      {{- if eq .Values.persistence.provisioning "dynamic" }}
+        {{- if hasKey .Values.persistence "dynamic" }}
+          {{- if hasKey .Values.persistence.dynamic "storageClass" }}
+            {{- if .Values.persistence.dynamic.storageClass }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -34,18 +35,19 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.storageSize }}
+            {{- else }}
+              {{ fail "parameter persistence.dynamic.storageClass is not defined" }}
+            {{- end }}
           {{- else }}
-            {{ fail "parameter persistence.dynamic.storageClass is not defined" }}
+            {{ fail "parameter persistence.dynamic.storageClass is missing" }}
           {{- end }}
         {{- else }}
-          {{ fail "parameter persistence.dynamic.storageClass is missing" }}
+          {{ fail "parameter persistence.dynamic is missing" }}
         {{- end }}
-      {{- else }}
-        {{ fail "parameter persistence.dynamic is missing" }}
       {{- end }}
+    {{- else }}
+      {{ fail "parameter persistence.provisioning is missing" }}
     {{- end }}
-  {{- else }}
-    {{ fail "parameter persistence.provisioning is missing" }}
   {{- end }}
 {{- else }}
   {{ fail "parameter persistence is missing" }}
