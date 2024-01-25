@@ -1,11 +1,12 @@
 {{- if hasKey .Values "persistence" }}
-  {{- if hasKey .Values.persistence "provisioning" }}
-    {{- if eq .Values.persistence.provisioning "static" }}
-      {{- if hasKey .Values.persistence "static" }}
-        {{- if hasKey .Values.persistence.static "pv" }}
-          {{- if .Values.persistence.static.pv }}
-            {{- if hasKey .Values.persistence.static "storageClass" }}
-              {{- if .Values.persistence.static.storageClass }}
+  {{- if .Values.persistence.enabled }}
+    {{- if hasKey .Values.persistence "provisioning" }}
+      {{- if eq .Values.persistence.provisioning "static" }}
+        {{- if hasKey .Values.persistence "static" }}
+          {{- if hasKey .Values.persistence.static "pv" }}
+            {{- if .Values.persistence.static.pv }}
+              {{- if hasKey .Values.persistence.static "storageClass" }}
+                {{- if .Values.persistence.static.storageClass }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -25,23 +26,24 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.storageSize }}
+                {{- else }}
+                  {{ fail "parameter persistence.static.storageClass is not defined" }}
+                {{- end }}
               {{- else }}
-                {{ fail "parameter persistence.static.storageClass is not defined" }}
+                {{ fail "parameter persistence.static.storageClass is missing" }}
               {{- end }}
             {{- else }}
-              {{ fail "parameter persistence.static.storageClass is missing" }}
+              {{ fail "parameter persistence.static.pv is not defined" }}
             {{- end }}
           {{- else }}
-            {{ fail "parameter persistence.static.pv is not defined" }}
+            {{ fail "parameter persistence.static.pv is missing" }}
           {{- end }}
         {{- else }}
-          {{ fail "parameter persistence.static.pv is missing" }}
+          {{ fail "parameter persistence.static is missing" }}
         {{- end }}
-      {{- else }}
-        {{ fail "parameter persistence.static is missing" }}
       {{- end }}
+    {{- else }}
+      {{ fail "parameter persistence.provisioning is missing" }}
     {{- end }}
-  {{- else }}
-    {{ fail "parameter persistence.provisioning is missing" }}
   {{- end }}
 {{- end }}
