@@ -6,7 +6,7 @@ icm-edit:
       # as long as there are no long running job pods we need this annotation for icm-as
       "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
     replication:
-      targetSystemUrl: http://${HELM_JOB_NAME}-icm-web-live-wa:8080
+      targetSystemUrl: http://${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}:80
       sourceDatabaseName: "${DATABASE_USER_EDIT}"
     image:
       repository: "${ICM_TEST_IMAGE}"
