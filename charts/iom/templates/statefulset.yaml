@@ -398,21 +398,21 @@ spec:
               value: '{{ .Values.oms.deleteShopCustomerMailMinAge }}'
               {{- end }}
             {{- end }}
-            {{- if .Values.mailhog.enabled }}
+            {{- if .Values.mailpit.enabled }}
             #
-            # SMTP settings, if sub-chart mailhog is enabled
+            # SMTP settings, if sub-chart mailpit is enabled
             #
             - name: OMS_SMTP_HOST
-              value: {{ .Release.Name }}-mailhog
+              value: {{ template "subchart.fullname" .Subcharts.mailpit }}-smtp
             - name: OMS_SMTP_PORT
-              value: '1025'
+              value: '25'
             - name: OMS_SMTP_USER
               value: ''
             - name: OMS_SMTP_PASS
               value: ''
             {{- else }}
             #
-            # SMTP settings, if sub-chart mailhog is disabled
+            # SMTP settings, if sub-chart mailpit is disabled
             #
               {{- if .Values.oms }}
                 {{- if .Values.oms.smtp }}

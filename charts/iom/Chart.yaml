@@ -24,11 +24,11 @@ appVersion: 5.0.0
 
 # after changing version of a sub-chart, "helm dependency update" has to be executed
 dependencies:
-  - name: mailhog
-    # https://github.com/codecentric/helm-charts
-    repository: https://codecentric.github.io/helm-charts
-    version: 5.2.3
-    condition: mailhog.enabled
+  - name: mailpit
+    # https://github.com/jouve/charts/tree/main/charts
+    repository: https://jouve.github.io/charts/
+    version: 0.13.0
+    condition: mailpit.enabled
   - name: iom-tests
     version: 1.0.0
     condition: iom-tests.enabled
