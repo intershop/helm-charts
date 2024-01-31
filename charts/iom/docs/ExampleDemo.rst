@@ -36,8 +36,8 @@ Requirements and characteristics are numbered. You can also find these numbers i
 1. Usage of integrated *PostgreSQL* database server.
 2. *PostgreSQL* data are stored persistently.
 3. No reset of database during the installation process.
-4. Usage of the integrated SMTP server (*MailHog*).
-5. Web access to the GUI of *MailHog*.
+4. Usage of the integrated SMTP server (*Mailpit*).
+5. Web access to the GUI of *Mailpit*.
 6. The shared file system of IOM has to be stored persistently.
 7. Local access to the shared file system of IOM.
 8. Due to limited resources, only one IOM application server should run.
@@ -118,18 +118,14 @@ The values file contains minimal settings only, except for *oms.db.resetData*, w
         hostPath: /Users/username/pgdata
 
   # Enable integrated SMTP server (requirement #4).
-  # Configure Ingress to forward requests for any host to MailHog GUI (requirements #5).
-  # Since ingress for IOM defined a more specific rule, MailHog GUI can be reached using any hostname except localhost.
-  mailhog:
+  # Configure Ingress to forward requests for any host to Mailpit GUI (requirements #5).
+  # Since ingress for IOM defined a more specific rule, Mailpit GUI can be reached using any hostname except localhost.
+  mailpit:
     enabled: true
     ingress:
-      enabled: true
-      hosts:
-        - host:
-          paths:
-            - path: "/"
-              pathType: Prefix
-
+      hostname:
+      # TODO test if this is working!
+      
 .. regualar notes are not rendered correctly in GitHub
               
 **Note**
@@ -199,7 +195,7 @@ Open a second terminal window and enter the following commands:
   kubectl get pods -n iom
   NAME                                                  READY   STATUS              RESTARTS   AGE
   demo-iom-0                                            0/1     Pending             0          2s
-  demo-mailhog-5dd4565b98-jphkm                         0/1     ContainerCreating   0          2s
+  demo-mailpit-5dd4565b98-jphkm                         0/1     ContainerCreating   0          2s
   demo-postgres-7b796887fb-j4hdr                        0/1     Init:0/1            0          2s
 
   # After some seconds all pods except IOM are "Running" and READY (integrated PostgreSQL server, integrated 
@@ -207,7 +203,7 @@ Open a second terminal window and enter the following commands:
   kubectl get pods -n iom
   NAME                                                  READY   STATUS     RESTARTS   AGE
   demo-iom-0                                            0/1     Init:1/2   0          38s
-  demo-mailhog-5dd4565b98-jphkm                         1/1     Running    0          38s
+  demo-mailpit-5dd4565b98-jphkm                         1/1     Running    0          38s
   demo-postgres-7b796887fb-j4hdr                        1/1     Running    0          38s
 
   # The init-container executed in iom-pod is dbaccount. Log messages can be seen
@@ -222,21 +218,21 @@ Open a second terminal window and enter the following commands:
   kubectl get pods -n iom
   NAME                                                  READY   STATUS    RESTARTS   AGE
   demo-iom-0                                            0/1     Running   0          1m50s
-  demo-mailhog-5dd4565b98-jphkm                         1/1     Running   0          1m50s
+  demo-mailpit-5dd4565b98-jphkm                         1/1     Running   0          1m50s
   demo-postgres-7b796887fb-j4hdr                        1/1     Running   0          1m50s
 
   # Once all pods are "Running" and "READY", the installation process of IOM is finished.
   kubectl get pods -n iom
   NAME                                                  READY   STATUS    RESTARTS   AGE
   demo-iom-0                                            1/1     Running   0          3m20s
-  demo-mailhog-5dd4565b98-jphkm                         1/1     Running   0          3m20s
+  demo-mailpit-5dd4565b98-jphkm                         1/1     Running   0          3m20s
   demo-postgres-7b796887fb-j4hdr                        1/1     Running   0          3m20s
 
 When all pods are *Running* and *Ready*, the installation process is finished. You should check the first terminal window, where the installation process was running.
 
-Now the web GUI of the new IOM installation can be accessed. In fact, there are two Web GUIs, one for IOM and one for MailHog. According to the configuration, all requests dedicated to *localhost* will be forwarded to the IOM application server, any other requests are meant for an integrated SMTP server (*MailHog*). Open the URL https://localhost/omt in a web browser on your Mac. After accepting the self-signed certificate (the configuration did not include a valid certificate), you will see the login page of IOM. Login as *admin/!InterShop00!* to proceed.
+Now the web GUI of the new IOM installation can be accessed. In fact, there are two Web GUIs, one for IOM and one for Mailpit. According to the configuration, all requests dedicated to *localhost* will be forwarded to the IOM application server, any other requests are meant for an integrated SMTP server (*Mailpit*). Open the URL https://localhost/omt in a web browser on your Mac. After accepting the self-signed certificate (the configuration did not include a valid certificate), you will see the login page of IOM. Login as *admin/!InterShop00!* to proceed.
 
-Any other request that is not dedicated to localhost will be forwarded to *Mailhog*. To access the web-GUI of *Mailhog*, open the URL https://127.0.0.1/ in your web browser. Once again you have to accept the self-signed certificate and after that, you will see the *Mailhog* GUI.
+Any other request that is not dedicated to localhost will be forwarded to *Mailpit*. To access the web-GUI of *Mailpit*, open the URL https://127.0.0.1/ in your web browser. Once again you have to accept the self-signed certificate and after that, you will see the *Mailpit* GUI.
 
 Upgrade IOM
 ===========
@@ -274,21 +270,21 @@ Before you begin, keep the `restrictions on upgrade <ToolsAndConcepts.rst#restri
      kubectl get pods -n iom
      NAME                                                  READY   STATUS        RESTARTS   AGE
      demo-iom-0                                            1/1     Terminating   0          40m
-     demo-mailhog-5dd4565b98-jphkm                         1/1     Running       0          40m
+     demo-mailpit-5dd4565b98-jphkm                         1/1     Running       0          40m
      demo-postgres-7b796887fb-j4hdr                        1/1     Running       0          40m
 
      # After the iom-pod is terminated, a new iom-pod is started with new configuration.
      kubectl get pods -n iom
      NAME                                                  READY   STATUS     RESTARTS   AGE
      demo-iom-0                                            0/1     Running    0          56s
-     demo-mailhog-5dd4565b98-jphkm                         1/1     Running    0          41m
+     demo-mailpit-5dd4565b98-jphkm                         1/1     Running    0          41m
      demo-postgres-7b796887fb-j4hdr                        1/1     Running    0          41m
 
      # Finally the pod is "Running" and "READY" again, which means, IOM is up again.
      kubectl get pods -n iom
      NAME                                                  READY   STATUS    RESTARTS   AGE
      demo-iom-0                                            1/1     Running   0          2m40s
-     demo-mailhog-5dd4565b98-jphkm                         1/1     Running   0          46m
+     demo-mailpit-5dd4565b98-jphkm                         1/1     Running   0          46m
      demo-postgres-7b796887fb-j4hdr                        1/1     Running   0          46m
 
 Uninstall NGINX Ingress Controller and IOM

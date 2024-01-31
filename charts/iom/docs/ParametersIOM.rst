@@ -1,6 +1,6 @@
 +-------------------+-----------------+-------------------------+
 |`< Back            |`^ Up            |`Next >                  |
-|<ExampleProd.rst>`_|<../README.rst>`_|<ParametersMailhog.rst>`_|
+|<ExampleProd.rst>`_|<../README.rst>`_|<ParametersMailpit.rst>`_|
 +-------------------+-----------------+-------------------------+
 
 ================================================
@@ -325,39 +325,39 @@ Parameters of IOM Helm Chart
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.smtp                                |Parameters in *oms.smtp* are bundling the information required to connect SMTP server.          |                                                         |
 |                                        |                                                                                                |                                                         |
-|                                        |If an integrated SMTP server is enabled (*mailhog.enabled* set to *true*), all parameters       |                                                         |
+|                                        |If an integrated SMTP server is enabled (*mailpit.enabled* set to *true*), all parameters       |                                                         |
 |                                        |defined by *oms.smtp* are ignored completely. In this case, IOM will be automatically configured|                                                         |
 |                                        |to use the integrated SMTP server.                                                              |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|oms.smtp.host                           |The hostname of the mail server IOM uses to send e-mails.                                       |mail-service                                             |
+|oms.smtp.host                           |The hostname of the mail server IOM uses to send e-mails.                                       |<fullname of mailpit-subchart>-smtp                      |
 |                                        |                                                                                                |                                                         |
-|                                        |- Ignored if *mailhog.enabled* is set to *true*.                                                |                                                         |
+|                                        |- Ignored if *mailpit.enabled* is set to *true*.                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.smtp.port                           |The port of the mail server IOM uses to send e-mails.                                           |"1025"                                                   |
 |                                        |                                                                                                |                                                         |
-|                                        |- Ignored if *mailhog.enabled* is set to *true*.                                                |                                                         |
+|                                        |- Ignored if *mailpit.enabled* is set to *true*.                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.smtp.user                           |The user name for mail server authentication.                                                   |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |- Only required if the SMTP server requires authentication.                                     |                                                         |
-|                                        |- Ignored if *mailhog.enabled* is set to *true*.                                                |                                                         |
+|                                        |- Ignored if *mailpit.enabled* is set to *true*.                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.smtp.userSecretKeyRef               |Instead of storing the user name as plain text in the values file, a reference to a key within a|                                                         |
 |                                        |secret can be used. For more information, see `References to entries of Kubernetes secrets`_.   |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |- Only required if *oms.smtp.user* is not set and the SMTP server requires authentication.      |                                                         |
-|                                        |- Ignored if *mailhog.enabled* is set to *true*.                                                |                                                         |
+|                                        |- Ignored if *mailpit.enabled* is set to *true*.                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.smtp.passwd                         |The password for mail server authentication.                                                    |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |- Only required if the SMTP server requires authentication.                                     |                                                         |
-|                                        |- Ignored if *mailhog.enabled* is set to *true*.                                                |                                                         |
+|                                        |- Ignored if *mailpit.enabled* is set to *true*.                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.smtp.passwdSecretKeyRef             |Instead of storing the password as plain text in the values file, a reference to a key within a |                                                         |
 |                                        |secret can be used. For more information, see `References to entries of Kubernetes secrets`_.   |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |- Only required if *oms.smtp.passwd* is not set and the SMTP server requires authentication.    |                                                         |
-|                                        |- Ignored if *mailhog.enabled* is set to *true*.                                                |                                                         |
+|                                        |- Ignored if *mailpit.enabled* is set to *true*.                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |startupProbe                            |Group of parameters to fine-tune the startup probe of Kubernetes. The basic kind of probe is    |                                                         |
 |                                        |fixed and cannot be changed. For an overview of probes and pod lifecycle, see the `official     |                                                         |
@@ -920,5 +920,5 @@ Parameters of IOM Helm Chart
 
 +-------------------+-----------------+-------------------------+
 |`< Back            |`^ Up            |`Next >                  |
-|<ExampleProd.rst>`_|<../README.rst>`_|<ParametersMailhog.rst>`_|
+|<ExampleProd.rst>`_|<../README.rst>`_|<ParametersMailpit.rst>`_|
 +-------------------+-----------------+-------------------------+

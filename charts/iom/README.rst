@@ -11,7 +11,7 @@ The following documents provide an extensive documentation on how to operate IOM
 #. `Example: local Demo running in Docker-Desktop <docs/ExampleDemo.rst>`_
 #. `Example: Production System in AKS <docs/ExampleProd.rst>`_
 #. `Helm parameters of IOM <docs/ParametersIOM.rst>`_
-#. `Helm parameters of Integrated SMTP server <docs/ParametersMailhog.rst>`_
+#. `Helm parameters of Integrated SMTP server <docs/ParametersMailpit.rst>`_
 #. `Helm parameters of Integrated PostgreSQL Server <docs/ParametersPosgres.rst>`_
 #. `Helm parameters of IOM-Tests <docs/ParametersTests.rst>`_
 #. `References to Kubernetes Secrets <docs/SecretKeyRef.rst>`_
@@ -69,10 +69,10 @@ Version 3.0.0
 New Features
 ------------
 
-Update of mailhog sub-chart
-===========================
+Mailhog sub-chart was replaced by Mailpit sub-chart
+===================================================
 
-Mailhog sub-chart was updated to version 5.2.3.
+_Mailhog_ and the according sub-chart were not maintained properly any longer. Therefore it was replaced by the more modern _Mailpit_ project.
 
 Added Support for *New Relic APM*
 =================================
@@ -136,11 +136,12 @@ before using IOM Helm Charts 3.0.0. Depending on the use case that is causing th
 2. Simple demo and test installations must now use a separately installed Ingress controller. Preferred is an NGINX
    Ingress controller, since the required configuration for session stickiness is already provided by IOM Helm Charts.
 
-Default value of *mailhog.probes.enabled* has changed
-=====================================================
+Mailhog sub-chart was replaced by Mailpit sub-chart
+===================================================
 
-The default value of *mailhog.probes.enabled* was changed from *true* to *false*, meaning that there are no probes executed
-unless requested. This new setting reduces the amount of log-messages of MailHog, even if the default values are used.
+The _Mailhog_ sub-chart was replaced by _Mailpit_. Please have a look at the *values.yaml* file to get information about basic configuration.
+
+See also `Helm parameters of Mailpit <docs/ParametersMailpit.rst>`_.
 
 *dbaccount.resetData* was replaced by *oms.db.resetData*
 ========================================================
