@@ -59,7 +59,7 @@ icm-as:
     MAIL_SMTP_MAILHOG_ENABLED: "true"
 
     # so http acceses are still allowed (necessary to make test and environment not to complicated)
-    SECUREACCESSONLY: "false"
+    SECUREACCESSONLY: "true"
   persistence:
     sites:
       size: 2Gi
@@ -80,6 +80,7 @@ icm-as:
     enabled: true
     className: nginx
     annotations:
+      nginx.ingress.kubernetes.io/keep-alive: "false"
       nginx.ingress.kubernetes.io/proxy-body-size: "600m"
     hosts:
     - host: "${HELM_JOB_NAME}.${DNS_ZONE_NAME}"
