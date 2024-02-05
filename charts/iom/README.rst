@@ -31,6 +31,9 @@ The current version of Helm Charts is backward compatible with all versions of I
 IOM version, which is 5.0.0 at the time of writing, supports all features that the Helm Charts offer. For more
 information, please consult the reference documentation of `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
+IOM Helm charts are requiring the usage of Helm 3.8 or newer. At the time of writing, functionality was tested
+up to version 3.14 of Helm.
+
 ..
    Table is commented out, it's used as an internal reference only.
 
@@ -118,7 +121,7 @@ Helm version 3.8 or newer is required
 =====================================
 
 IOM Helm charts of version 3.0.0 are requiring the usage of Helm 3.8 or newer. At the time of writing, functionality was tested
-up to version ... of Helm.
+up to version 3.14 of Helm.
 
 Removal of internal NGINX
 =========================
