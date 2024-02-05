@@ -22,7 +22,7 @@ Preconditions
   - >= 12 GB memory and >= 2 CPUs have to be assigned (Settings | Resources | Advanced)
   - Enable Kubernetes (Preferences | Kubernetes)
   - Directories used to hold persistent data have to be shared with Docker Desktop (Settings | Resources | File Sharing)
-- Installation of Helm: >= v3.6
+- Installation of Helm: >= v3.8
 
   - See: https://helm.sh/docs/intro/install/
 - Access to `IOM Docker images <ToolsAndConcepts.rst#iom-docker-images>`_
@@ -119,14 +119,16 @@ The values file contains minimal settings only, except for *oms.db.resetData*, w
 
   # Enable integrated SMTP server (requirement #4).
   # Configure Ingress to forward requests for any host to Mailpit GUI (requirements #5).
-  # Since ingress for IOM defined a more specific rule, Mailpit GUI can be reached using any hostname except localhost.
+  # Hostname 'localhost' is already used for OMT, mailpit GUI has therefore to be bound to another hostname. Usually
+  # any computer has a second hostname besides 'localhost', which can be determined by the command 'hostname'. In the
+  # current example it is assumed, that this second hostname is 'mymacpro'. If you want to comprehend this example,
+  # you have to use the hostname of your computer.
   mailpit:
     enabled: true
     ingress:
-      hostname:
-      # TODO test if this is working!
+      hostname: mymacpro
       
-.. regualar notes are not rendered correctly in GitHub
+.. regular notes are not rendered correctly in GitHub
               
 **Note**
    
@@ -171,7 +173,7 @@ The easiest way to install the *NGINX Ingress Controller* is by using the accord
 Installation of IOM
 ===================
 
-Create a file *values.yaml* and fill it with the content shown in section `values file`_. Adapt the settings of *persistence.local.hostPath* and *postgres.persistence.local.hostPath* to point to directories on your computer, which are shared with Docker Desktop. After that, the installation process of IOM can be started.
+Create a file *values.yaml* and fill it with the content shown in section `values file`_. Adapt the settings of *persistence.local.hostPath* and *postgres.persistence.local.hostPath* to point to directories on your computer, which are shared with Docker Desktop. Set the right hostname for *mailpit.ingress.hostname*. After that, the installation process of IOM can be started.
 
 .. code-block:: shell
 
@@ -230,9 +232,9 @@ Open a second terminal window and enter the following commands:
 
 When all pods are *Running* and *Ready*, the installation process is finished. You should check the first terminal window, where the installation process was running.
 
-Now the web GUI of the new IOM installation can be accessed. In fact, there are two Web GUIs, one for IOM and one for Mailpit. According to the configuration, all requests dedicated to *localhost* will be forwarded to the IOM application server, any other requests are meant for an integrated SMTP server (*Mailpit*). Open the URL https://localhost/omt in a web browser on your Mac. After accepting the self-signed certificate (the configuration did not include a valid certificate), you will see the login page of IOM. Login as *admin/!InterShop00!* to proceed.
+Now the web GUI of the new IOM installation can be accessed. In fact, there are two Web GUIs, one for IOM and one for Mailpit. According to the configuration, all requests dedicated to *localhost* will be forwarded to the IOM application server. Requests using the hostname, that is printed by command `hostname`, are meant for an integrated SMTP server (*Mailpit*). Open the URL https://localhost/omt in a web browser on your Mac. After accepting the self-signed certificate (the configuration did not include a valid certificate), you will see the login page of IOM. Login as *admin/!InterShop00!* to proceed.
 
-Any other request that is not dedicated to localhost will be forwarded to *Mailpit*. To access the web-GUI of *Mailpit*, open the URL https://127.0.0.1/ in your web browser. Once again you have to accept the self-signed certificate and after that, you will see the *Mailpit* GUI.
+To access the web-GUI of *Mailpit*, open the URL https://mymacpro/ (replace the hostname with the output of command `hostname`) in your web browser. Once again you have to accept the self-signed certificate and after that, you will see the *Mailpit* GUI.
 
 Upgrade IOM
 ===========

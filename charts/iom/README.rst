@@ -114,6 +114,12 @@ PostgreSQL data too, except for the *Recommendations*-section, which only applie
 Migration Notes
 ---------------
 
+Helm version 3.8 or newer is required
+=====================================
+
+IOM Helm charts of version 3.0.0 are requiring the usage of Helm 3.8 or newer. At the time of writing, functionality was tested
+up to version ... of Helm.
+
 Removal of internal NGINX
 =========================
 
