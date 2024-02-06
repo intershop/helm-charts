@@ -14,6 +14,10 @@ spec:
         app: {{ template "icm-chart.fullname" . }}-testrunner
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.testrunner.affinity}}
+      affinity:
+        {{- toYaml .Values.testrunner.affinity | trim | nindent 8 }}
+      {{- end }}
       {{- if .Values.testrunner.nodeSelector}}
       nodeSelector:
         {{- toYaml .Values.testrunner.nodeSelector | trim | nindent 8 }}
@@ -66,7 +70,7 @@ spec:
       # !) This is necessary for Windows users with Docker Desktop using WSL[2] backend because:
       #    Docker Desktop with WSL[2] creates folders for local volume mounts assigning the user root and permissions 700
       - name: testdata-volume-mount-hack
-        image: busybox:1.31
+        image: busybox:1.36.1
         command: ["sh", "-c", "chmod 777 /data && chown -R 150:150 /data"]
         volumeMounts:
         - name: testdata-volume
@@ -74,8 +78,8 @@ spec:
         securityContext:
           runAsUser: 0
       {{- end }}
-      - name: init-wait-for-webserver
-        image: busybox:1.31
+      - name: init-wait-for-as
+        image: busybox:1.36.1
         resources:
 {{ toYaml .Values.testrunner.initContainer.resources | indent 12 }}
 
@@ -84,9 +88,10 @@ spec:
         - -c
         - |
         {{- if index .Values "icm-as" "replication" "enabled" }}
-          until wget -qO- http://{{ .Release.Name }}-icm-as-live:7744/status/ReadinessProbe | grep -o "RUNNING" && wget -qO- http://{{ .Release.Name }}-icm-as-edit:7744/status/ReadinessProbe | grep -o "RUNNING"; do
+          until result=$(wget --server-response -qO- http://{{ .Values.testrunner.environment.LIVE_HOST }}/INTERSHOP/web/WFS/SLDSystem 2>&1 | grep "HTTP/.* 200" && \
+              wget --server-response -qO- http://{{ .Values.testrunner.environment.EDIT_HOST }}/INTERSHOP/web/WFS/SLDSystem 2>&1 | grep "HTTP/.* 200"); do
         {{- else }}
-          until result=$(wget -qO- http://{{ .Release.Name }}-icm-as:7744/status/ReadinessProbe | grep -o "RUNNING"); do
+          until result=$(wget --server-response -qO- http://{{ .Values.testrunner.environment.HOST }}/INTERSHOP/web/WFS/SLDSystem 2>&1 | grep "HTTP/.* 200"); do
         {{- end }}
             echo "Readiness probe of application server has failed"
             sleep 5

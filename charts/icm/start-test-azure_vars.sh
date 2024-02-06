@@ -2,10 +2,10 @@
 HELM_DRY_RUN=""
 
 SERVER_DIRECTORY="not_used"
-CONFIG_DIRECTORY="/data/iste-icm-11/config"
-RESULT_DIRECTORY="/data/iste-icm-11/result"
-HELM_DIRECTORY="/data/iste-icm-11"
-WORKSPACE_DIRECTORY="/data"
+CONFIG_DIRECTORY="/data/testplans/iste-icm-11/config"
+RESULT_DIRECTORY="/data/testplans/iste-icm-11/result"
+HELM_DIRECTORY="/data/testplans/iste-icm-11"
+WORKSPACE_DIRECTORY="/data/testplans"
 
 NODENAME="true"
 

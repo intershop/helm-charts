@@ -13,6 +13,7 @@ ICM_WEBSERVER_IMAGE="intershophub/icm-webadapter:2.4.6"
 ICM_WEBADAPTER_AGENT_IMAGE="intershophub/icm-webadapteragent:4.0.0"
 SERVER_DIRECTORY_GROUP="intershop"
 SERVER_DIRECTORY_USER="intershop"
+DNS_ZONE_NAME="test.intershop.com"
 
 DATABASE_TYPE="mssql"
 DATABASE_USER_EDIT="intershop_edit"

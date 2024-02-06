@@ -45,7 +45,7 @@ tests:
           path: spec.template.spec.containers[0].env
           content:
             name: HOST
-            value: "${HELM_JOB_NAME}-icm-web-wa"
+            value: "${HELM_JOB_NAME}-icm-proxy"
       - contains:
           path: spec.template.spec.containers[0].env
           content:

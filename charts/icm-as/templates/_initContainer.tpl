@@ -12,7 +12,7 @@ initContainers:
 # !) This is necessary for Windows users with Docker Desktop using WSL[2] backend because:
 #    Docker Desktop with WSL[2] creates folders for local volume mounts assigning the user root and permissions 700
 - name: sites-volume-mount-hack
-  image: busybox
+  image: busybox:1.36.1
   command:
   - "/bin/sh"
   - "-c"
