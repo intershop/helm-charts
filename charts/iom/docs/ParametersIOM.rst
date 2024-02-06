@@ -473,7 +473,7 @@ Parameters of IOM Helm Chart
 |                                        |   also possible to use different Helm deployment names in each cluster. At least one of these  |                                                         |
 |                                        |   two options **MUST** be used for a transregional installation.                               |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|jboss.metricsEndpoint                   |Endpoint where to send Wildfly- and custom-metrics. Wildfly is sending the metrics in           |                                                         |
+|jboss.metricsEndpoint                   |Endpoint to which Wildfly and custom metrics are sent. Wildfly sends the metrics in             |                                                         |
 |                                        |*OpenTelemetry* format.                                                                         |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |Example: "http://otel-collector:4318/v1/metrics"                                                |                                                         |

@@ -113,9 +113,9 @@ PostgreSQL data too, except for the *Recommendations*-section, which only applie
 Added configuration option to set metrics endpoint
 ==================================================
 
-Beginning with IOM 5.0.0, *Wildfly* application server has changed the handling of metrics data. Instead of providing them
-in *Prometheus*-format to be pulled, they are now pushed in *OpenTelemetry* format. The new configuration option
-*jboss.metricsEndpoint* allows now to define, where the metrics data have to be sent to.
+Starting with IOM 5.0.0, the *Wildfly* application server has changed the way it handles metrics data. Instead of providing data
+in *Prometheus* format to be pulled, the data is now pushed in *OpenTelemetry* format. The new configuration option
+*jboss.metricsEndpoint* allows you to specify where the metrics data should be sent.
 
 For more information, see `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
