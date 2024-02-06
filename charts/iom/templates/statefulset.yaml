@@ -545,6 +545,10 @@ spec:
             - name: JBOSS_NODE_PREFIX
               value: '{{ .Values.jboss.nodePrefix }}'
               {{- end }}
+              {{- if .Values.jboss.metricsEndpoint }}
+            - name: OMS_OTEL_COLLECTOR
+              value: '{{ .Values.jboss.metricsEndpoint }}'
+              {{- end }}
             {{- end }}
             {{- if .Values.log }}
             #

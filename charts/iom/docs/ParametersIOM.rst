@@ -473,6 +473,13 @@ Parameters of IOM Helm Chart
 |                                        |   also possible to use different Helm deployment names in each cluster. At least one of these  |                                                         |
 |                                        |   two options **MUST** be used for a transregional installation.                               |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|jboss.metricsEndpoint                   |Endpoint where to send Wildfly- and custom-metrics. Wildfly is sending the metrics in           |                                                         |
+|                                        |*OpenTelemetry* format.                                                                         |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |Example: "http://otel-collector:4318/v1/metrics"                                                |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |- Requires IOM 5.0.0 or newer.                                                                  |                                                         |
++----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |log                                     |Parameters of group log are all related to the configuration of the logging of IOM.             |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |log.access.enabled                      |Controls creation of access log messages.                                                       |true                                                     |
