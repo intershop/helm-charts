@@ -27,17 +27,12 @@ icm-as:
         local:
           path: ${LOCAL_MOUNT_BASE}/mssql/backup
 
-icm-web:
+ingress-nginx:
+  controller:
+    nodeSelector: null
+
+mailhog:
   nodeSelector: null
-  imagePullSecrets:
-  - "${ICM_WEB_PULL_SECRET}"
-  persistence:
-    pagecache:
-      type: emptyDir
-    customdata:
-      enabled: true
-      existingClaim: ${HELM_JOB_NAME}-local-testdata-pvc
-      mountPoint: /data
 
 ingress-nginx:
   controller:

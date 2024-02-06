@@ -33,10 +33,10 @@ icm-as:
         path: <local sites folder>
 
   testConnection:
-    protocol: https
-    port: 8443
+    protocol: http
+    port: 80
     url: /INTERSHOP/web/WFS/SMC
-    serviceSuffix: -icm-web-wa
+    serviceSuffix: -icm-as
 
   mssql:
     enabled: false
@@ -63,27 +63,14 @@ icm-as:
     # the name of the (source) database to be used at the target-system to read data from e.g. intershop_edit
     sourceDatabaseName: <databaseName>
 
-icm-web:
-  enabled: true
-  imagePullSecrets:
-  - "dockerhub"
-  webadapter:
-    replicaCount: 1
-    podAnnotations:
-      # as long as there is no new cache system we need this annotation for icm-web
-      "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
-    image:
-      repository: intershophub/icm-webadapter:2.4.6
-      secret: dockerhub
-  agent:
-    # in some REST-based environment the webadapteragent isn't mandatory
+  webLayer:
     enabled: true
-    replicaCount: 1
-    image:
-      repository: intershophub/icm-webadapteragent:4.0.0
-  persistence:
-    pagecache:
-      type: emptyDir
+
+ingress-nginx:
+  enabled: false
+
+icm-web:
+  enabled: false
 
 ingress-nginx:
   enabled: false
@@ -93,7 +80,6 @@ mailhog:
 
 test:
   enabled: false
-
 
 # For redis deployment using a single master (and possibly multiple read replicas). May use redis sentinel.
 # The whole dataset must fit into the single master node.

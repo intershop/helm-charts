@@ -22,15 +22,6 @@ icm-edit:
         local:
           path: <local sites edit folder>
 
-  icm-web:
-    nameOverride: icm-web-edit
-    appServerConnection:
-      serviceName: icm-as-edit
-    persistence:
-      pagecache:
-        size: 1Gi
-        type: emptyDir
-
 icm-live:
   icm-as:
     nameOverride: icm-as-live
@@ -52,23 +43,3 @@ icm-live:
         type: local
         local:
           path: <local sites live folder>
-
-  icm-web:
-    nameOverride: icm-web-live
-    imagePullSecrets:
-    - "dockerhub"
-    webadapter:
-      replicaCount: 1
-      image:
-        repository: intershophub/icm-webadapter:2.4.6
-        secret: dockerhub
-    agent:
-      replicaCount: 1
-      image:
-        repository: intershophub/icm-webadapteragent:4.0.0
-    appServerConnection:
-      serviceName: icm-as-live
-    persistence:
-      pagecache:
-        size: 1Gi
-        type: emptyDir
