@@ -42,6 +42,42 @@ entries:
       requestedMemoryQuota: 5900Mi
     apiVersion: v2
     appVersion: 11.2.1
+    created: "2024-02-06T14:47:48.020941488Z"
+    dependencies:
+    - name: icm-as
+      repository: file://../icm-as
+      version: 1.7.0
+    - condition: icm-web.enabled
+      name: icm-web
+      repository: file://../icm-web
+      version: 0.8.0
+    - condition: icm-proxy.enabled
+      name: icm-proxy
+      repository: file://../icm-proxy
+      version: 1.0.0
+    - condition: mailhog.enabled
+      name: mailhog
+      repository: https://codecentric.github.io/helm-charts
+      version: 5.2.0
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 17.15.2
+    - condition: redis-cluster.enabled
+      name: redis-cluster
+      repository: https://charts.bitnami.com/bitnami
+      version: 8.6.12
+    description: Intershop Commerce Management - ICM
+    digest: 7d25f5d0a65cceb2510ca5da961c24582b577a1f43b4751d25482b3e6c185e41
+    name: icm
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-1.9.0-alpha/icm-1.9.0-alpha.tgz
+    version: 1.9.0-alpha
+  - annotations:
+      requestedCpuQuotaInMinutes: "2500"
+      requestedMemoryQuota: 5900Mi
+    apiVersion: v2
+    appVersion: 11.2.1
     created: "2023-12-11T09:59:13.385005817Z"
     dependencies:
     - name: icm-as
@@ -4606,6 +4642,27 @@ entries:
       requestedMemoryQuota: 10Gi
     apiVersion: v2
     appVersion: 11.0.0
+    created: "2024-02-06T14:47:48.423787422Z"
+    dependencies:
+    - alias: icm-live
+      name: icm
+      repository: file://../icm
+      version: 1.9.0-alpha
+    - alias: icm-edit
+      name: icm
+      repository: file://../icm
+      version: 1.9.0-alpha
+    description: Intershop Commerce Management - ICM Replication
+    digest: e11bd8ac14688905606a5eedd8b57c847b83f1989c0e4fd37cb1e592434a0410
+    name: icm-replication
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-replication-1.6.0-alpha/icm-replication-1.6.0-alpha.tgz
+    version: 1.6.0-alpha
+  - annotations:
+      requestedCpuQuotaInMinutes: "2200"
+      requestedMemoryQuota: 10Gi
+    apiVersion: v2
+    appVersion: 11.0.0
     created: "2023-12-11T09:59:13.767408113Z"
     dependencies:
     - alias: icm-live
@@ -6957,4 +7014,4 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.2.3/pwa-main-0.2.3.tgz
     version: 0.2.3
-generated: "2024-02-06T10:39:33.40617079Z"
+generated: "2024-02-06T14:47:48.424848989Z"
