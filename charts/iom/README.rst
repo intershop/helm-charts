@@ -117,6 +117,17 @@ to the configuration of persistent storage for the shared file system.
 The new documentation page "`Persistent Storage <docs/PersistentStorage.rst>`_" applies to persistent storage for
 PostgreSQL data too, except for the *Recommendations*-section, which only applies to the shared file system.
 
+Added configuration option to set metrics endpoint
+==================================================
+
+Starting with IOM 5.0.0, the *Wildfly* application server has changed the way it handles metrics data. Instead of providing data
+in *Prometheus* format to be pulled, the data is now pushed in *OpenTelemetry* format. The new configuration option
+*jboss.metricsEndpoint* allows you to specify where the metrics data should be sent.
+
+For more information, see `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
+
+Requires IOM version 5.0.0 or later.
+
 ---------------
 Migration Notes
 ---------------
