@@ -171,7 +171,7 @@ jboss:
   # of the pod within the stateful set.
   # If left empty, current hostname is used.
   nodePrefix:
-  # Endpoint where to send Wildfly- and custom-metrics. Wildfly is sending the metrics in
+  # Endpoint to which Wildfly and custom metrics are sent. Wildfly sends the metrics in
   # OpenTelemetry format.
   # Example: http://otel-collector:4318/v1/metrics
   metricsEndpoint:
