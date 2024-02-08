@@ -25,7 +25,7 @@ When using the Intershop Commerce Platform, these preconditions are all covered 
 - Installation of kubectl on the machine that is used for installation, >=v.1.25
 
   - see: https://kubernetes.io/docs/tasks/tools/
-- Installation of Helm on the machine that is used for installation, >= v.3.6
+- Installation of Helm on the machine that is used for installation, >= v.3.8
 
   - see: https://helm.sh/docs/intro/install/
 - Access to AKS from the machine used for installation
