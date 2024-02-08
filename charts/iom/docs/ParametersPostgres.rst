@@ -1,6 +1,6 @@
 +-------------------------+-----------------+--------------------------+
 |`< Back                  |`^ Up            |`Next >                   |
-|<ParametersMailhog.rst>`_|<../README.rst>`_|<ParametersTests.rst>`_   |
+|<ParametersMailpit.rst>`_|<../README.rst>`_|<ParametersTests.rst>`_   |
 +-------------------------+-----------------+--------------------------+
 
 ================================================
@@ -144,5 +144,5 @@ Parameters of Integrated PostgreSQL Server
 
 +-------------------------+-----------------+--------------------------+
 |`< Back                  |`^ Up            |`Next >                   |
-|<ParametersMailhog.rst>`_|<../README.rst>`_|<ParametersTests.rst>`_   |
+|<ParametersMailpit.rst>`_|<../README.rst>`_|<ParametersTests.rst>`_   |
 +-------------------------+-----------------+--------------------------+

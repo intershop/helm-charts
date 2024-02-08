@@ -11,7 +11,7 @@ Helm Charts for Intershop Order Management (IOM)
 Parameters of Integrated SMTP Server
 ------------------------------------
 
-A complete list of parameters can be found here: https://github.com/codecentric/helm-charts/tree/master/charts/mailhog
+A complete list of parameters can be found here: https://github.com/jouve/charts/tree/main/charts/mailpit
 
 The table below only lists parameters that have to be changed for different operation options of IOM.
 
@@ -19,25 +19,24 @@ The table below only lists parameters that have to be changed for different oper
 |Parameter                               |Description                                                                                    |Default Value                                 |
 |                                        |                                                                                               |                                              |
 +========================================+===============================================================================================+==============================================+
-|mailhog.enabled                         |Controls whether an integrated SMTP server should be used or not. This SMTP server is not      |false                                         |
+|mailpit.enabled                         |Controls whether an integrated SMTP server should be used or not. This SMTP server is not      |false                                         |
 |                                        |intended to be used for any kind of serious IOM installation. It should only be used for demo-,|                                              |
 |                                        |CI- or similar types of setups.                                                                |                                              |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
-|mailhog.probes.enabled                  |This parameter allows to switch on/off liveness and readiness probes of Mailhog. These probes  |false                                         |
-|                                        |are producing a lot of messages, which can be avoided if the probes are disabled.              |                                              |
-+----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
-|mailhog.resources                       |Resource requests & limits.                                                                    |{}                                            |
-+----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
-|mailhog.ingress.hosts                   |A list of ingress hosts.                                                                       |.. code-block:: yaml                          |
+|mailpit.resources                       |Resource requests & limits.                                                                    |.. code-block:: yaml                          |
 |                                        |                                                                                               |                                              |
-|                                        |                                                                                               |  - host: mailhog-test.poc.intershop.de       |
-|                                        |                                                                                               |    paths:                                    |
-|                                        |                                                                                               |      - path: /                               |
-|                                        |                                                                                               |        pathType: Prefix                      |
+|                                        |                                                                                               |    limits:                                   |
+|                                        |                                                                                               |      cpu: 100m                               |
+|                                        |                                                                                               |      memory: 256Mi                           |
+|                                        |                                                                                               |    requests:                                 |
+|                                        |                                                                                               |      cpu: 100m                               |
+|                                        |                                                                                               |      memory: 256Mi                           |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
-|mailhog.ingress.tls                     |A list of IngressTLS items.                                                                    |[]                                            |
+|mailpit.ingress.ingressClassName        |Class of Ingress Controller to be used.                                                        |nginx                                         |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
-|mailhog.ingress.annotations             |Annotations for the ingress.                                                                   |{}                                            |
+|mailpit.ingress.hostname                |Hostname that provides Mailpit UI and API.                                                     |mail-test.poc.intershop.de                    |
++----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
+|mailpit.ingress.annotations             |Annotations for the ingress.                                                                   |{}                                            |
 +----------------------------------------+-----------------------------------------------------------------------------------------------+----------------------------------------------+
 
 +---------------------+-----------------+--------------------------+

@@ -87,7 +87,7 @@ IOM Helm-charts is a package containing the description of all Kubernetes object
   # It is shown here only for demonstration of how to reference the IOM Helm-chart after adding the according repository.
   helm install demo intershop/iom --values=values.yaml --namespace iom --timeout 20m0s --wait		
 
-The following illustration shows the most important components and personas when operating IOM with Helm. The project owner has to define a values file (available configuration parameters are explained in `Helm parameters of IOM <ParametersIOM.rst>`_, `Helm parameters of Integrated SMTP server <dParametersMailhog.rst>`_, `Helm parameters of Integrated PostgreSQL Server <ParametersPosgres.rst>`_ and `Helm parameters of IOM-Tests <ParametersTests.rst>`_), which can be used along with IOM Helm-charts to install, upgrade, rollback, and uninstall IOM within a Kubernetes runtime environment.
+The following illustration shows the most important components and personas when operating IOM with Helm. The project owner has to define a values file (available configuration parameters are explained in `Helm parameters of IOM <ParametersIOM.rst>`_, `Helm parameters of Integrated SMTP server <dParametersMailpit.rst>`_, `Helm parameters of Integrated PostgreSQL Server <ParametersPosgres.rst>`_ and `Helm parameters of IOM-Tests <ParametersTests.rst>`_), which can be used along with IOM Helm-charts to install, upgrade, rollback, and uninstall IOM within a Kubernetes runtime environment.
 
 This is a very generalized view which has some restrictions when used with IOM. The next section explains these restrictions in detail.
 
