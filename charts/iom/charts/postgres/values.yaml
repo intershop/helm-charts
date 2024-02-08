@@ -15,7 +15,7 @@ image:
   repository: postgres
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart version.
-  # tag: "12"
+  # tag: "15"
 
 imagePullSecrets: []
 nameOverride: ""
