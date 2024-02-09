@@ -7,15 +7,15 @@
 Helm Charts for Intershop Order Management (IOM)
 ================================================
 
------
-IOM 5
------
+----------------
+Metrics in IOM 5
+----------------
 
 In difference to IOM 4, IOM 5 does not have an HTTP endpoint that provides metrics in *Prometheus*. Instead of it, IOM 5 pushes the metrics data in `OpenTelemetry Format <https://opentelemetry.io>`_ to a configurable endpoint. The according Helm parameter is *jboss.metricsEndpoint*, see `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
------
-IOM 4
------
+----------------
+Metrics in IOM 4
+----------------
 
 IOM 4, starting with version 4.2.0, provides an HTTP endpoint */metrics* at port 9990 that delivers a huge amount of metrics. These metrics are
 provided in `Prometheus <https://prometheus.io>`_ format, which is a widely used format that can be understood by most
