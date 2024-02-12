@@ -170,6 +170,11 @@
                       "type": "integer",
                       "title": "The maximum duration (in seconds) of a running prefetch job",
                       "default": "3600"
+                    },
+                    "args": {
+                      "$id": "#/properties/cache/properties/prefetch/properties/args",
+                      "type": "string",
+                      "title": "The arguments for the wget job"
                     }
                   }
                 },
