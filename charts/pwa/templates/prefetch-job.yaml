@@ -27,15 +27,7 @@ spec:
             - name: SECS
               value: {{ default 3600 .stop | quote }}
             args: [
-              "--timeout=15",
-              "--spider",
-              "--no-check-certificate",
-              "--retry-connrefused",
-              "--tries=5",
-              "--execute=robots=off",
-              "--recursive",
-              "--level=0",
-              "--no-verbose",
+              {{ default "'--timeout=15', '--spider', '--no-check-certificate', '--retry-connrefused', '--tries=5', '--execute=robots=off', '--recursive', '--level=0', '--no-verbose'" .args }},
               {{ include "pwa-prefetch.url" . | quote }}
             ]
 {{- end }}

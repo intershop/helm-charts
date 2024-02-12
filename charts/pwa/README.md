@@ -94,16 +94,20 @@ The example above configures the prefetch to happen every day at 11:00 pm. It wi
 
 The only mandatory property is `host` – used to specify the fully qualified name for your site. This host must be contained in your Ingress configuration. All other properties have reasonable defaults.
 
-| Property | Default     |
-| -------- | ----------- |
-| path     | `/`         |
-| protocol | `https`     |
-| cron     | `0 0 * * *` |
-| stop     | `3600`      |
+| Property | Default                                                                                                                                                        |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| path     | `/`                                                                                                                                                            |
+| protocol | `https`                                                                                                                                                        |
+| cron     | `0 0 * * *`                                                                                                                                                    |
+| stop     | `3600`                                                                                                                                                         |
+| args     | `'--timeout=15', '--spider', '--no-check-certificate', '--retry-connrefused', '--tries=5', '--execute=robots=off', '--recursive', '--level=0', '--no-verbose'` |
 
 The value for `cron` determines the schedule of the prefetch job. You can search the internet for "cron tab syntax" or use [tooling](https://crontab.guru) to come up with a correct value.
 
 The value for `stop` determines the duration in seconds after the job is forcefully stopped. Forcefully stopping is still considered to be a successful run for container/job.
+
+The value for `args` provides a way to override the current default arguments of the `wget` configuration.
+When overriding the complete set of intended arguments needs to be provided.
 
 ## Multiple Ingress
 
