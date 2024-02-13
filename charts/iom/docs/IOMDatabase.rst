@@ -41,7 +41,7 @@ The following box shows how to do this after an initialization error if IOM is r
   NAME                                             READY   STATUS       RESTARTS   AGE
   demo-ingress-nginx-controller-6c6f5b88cc-6wsfh   1/1     Running      0          67s
   demo-iom-0                                       0/1     Init:Error   3          67s
-  demo-mailhog-5d7677c7c5-zl8gl                    1/1     Running      0          67s
+  demo-mailpit-5d7677c7c5-zl8gl                    1/1     Running      0          67s
   demo-postgres-96676f4b-mt8nl                     1/1     Running      0          67s
  
   # execute psql -U postgres -l within PostgreSQL pod
