@@ -578,6 +578,42 @@ entries:
     - https://github.com/intershop/helm-charts/releases/download/icm-1.9.0-alpha/icm-1.9.0-alpha.tgz
     version: 1.9.0-alpha
   - annotations:
+      requestedCpuQuotaInMinutes: "2000"
+      requestedMemoryQuota: 5300Mi
+    apiVersion: v2
+    appVersion: 11.2.1
+    created: "2024-02-13T16:19:44.601443029Z"
+    dependencies:
+    - name: icm-as
+      repository: file://../icm-as
+      version: 1.7.0
+    - condition: icm-web.enabled
+      name: icm-web
+      repository: file://../icm-web
+      version: 0.8.0
+    - condition: ingress-nginx.enabled
+      name: ingress-nginx
+      repository: https://kubernetes.github.io/ingress-nginx
+      version: 4.9.0
+    - condition: mailhog.enabled
+      name: mailhog
+      repository: https://codecentric.github.io/helm-charts
+      version: 5.2.0
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 17.15.2
+    - condition: redis-cluster.enabled
+      name: redis-cluster
+      repository: https://charts.bitnami.com/bitnami
+      version: 8.6.12
+    description: Intershop Commerce Management - ICM
+    digest: a8008b88fb1f998fbff4e5ad2b9f886a6072808f98fdfc78b87f2f86c60e0407
+    name: icm
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-1.9.0-alpha/icm-1.9.0-alpha.tgz
+    version: 1.9.0-alpha
+  - annotations:
       requestedCpuQuotaInMinutes: "2500"
       requestedMemoryQuota: 5900Mi
     apiVersion: v2
@@ -5457,6 +5493,27 @@ entries:
     - https://github.com/intershop/helm-charts/releases/download/icm-replication-1.6.0-alpha/icm-replication-1.6.0-alpha.tgz
     version: 1.6.0-alpha
   - annotations:
+      requestedCpuQuotaInMinutes: "3500"
+      requestedMemoryQuota: 9Gi
+    apiVersion: v2
+    appVersion: 11.0.0
+    created: "2024-02-13T16:19:44.744728412Z"
+    dependencies:
+    - alias: icm-live
+      name: icm
+      repository: file://../icm
+      version: 1.9.0-alpha
+    - alias: icm-edit
+      name: icm
+      repository: file://../icm
+      version: 1.9.0-alpha
+    description: Intershop Commerce Management - ICM Replication
+    digest: 69080ebca293f1a65151eb3cd765f7f50b5f55a070cbe5dba61ee3a2eea14292
+    name: icm-replication
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-replication-1.6.0-alpha/icm-replication-1.6.0-alpha.tgz
+    version: 1.6.0-alpha
+  - annotations:
       requestedCpuQuotaInMinutes: "2200"
       requestedMemoryQuota: 10Gi
     apiVersion: v2
@@ -7812,4 +7869,4 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.2.3/pwa-main-0.2.3.tgz
     version: 0.2.3
-generated: "2024-02-13T13:33:59.902317357Z"
+generated: "2024-02-13T16:19:44.745843537Z"
