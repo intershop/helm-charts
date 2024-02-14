@@ -1,15 +1,12 @@
 dependencies:
-- name: ingress-nginx
-  repository: https://kubernetes.github.io/ingress-nginx
-  version: 4.0.19
-- name: mailhog
-  repository: https://codecentric.github.io/helm-charts
-  version: 5.0.6
+- name: mailpit
+  repository: https://jouve.github.io/charts/
+  version: 0.13.0
 - name: iom-tests
   repository: ""
   version: 1.0.0
 - name: postgres
   repository: ""
-  version: 1.0.0
-digest: sha256:90ba05364578737dcd12946c363b61c1112e66716bd99406838815d63b4aefb1
-generated: "2022-04-12T14:25:41.878022+02:00"
+  version: 2.0.0
+digest: sha256:cb50d4d5e11508478389ace68d39f4d4aeed4f3cec96489fec389202f0255606
+generated: "2024-01-26T13:26:52.278957+01:00"

@@ -1,0 +1,23 @@
+{{- if .Values.newRelic.apm.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "iom.fullname" . }}-newrelic-config
+data:
+  newrelic.yml:  |-
+    common: &default_settings
+      {{- if empty .Values.newRelic.apm.appName }}
+      app_name: {{ include "iom.fullname" . }}-{{ .Release.Namespace }}
+      {{- else }}
+      app_name: {{ .Values.newRelic.apm.appName }}
+      {{- end }}
+      {{- if hasKey .Values.newRelic.apm "config" }}
+        {{- if .Values.newRelic.apm.config }}
+          {{- toYaml .Values.newRelic.apm.config | nindent 6 }}
+        {{- end }}
+      {{- else }}
+      # default configuration is preventing logs from being sent.
+      application_logging:
+        enabled: false
+      {{- end }}
+{{- end -}}

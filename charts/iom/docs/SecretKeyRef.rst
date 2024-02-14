@@ -1,6 +1,6 @@
 +--------------------------+-----------------+--------------------------+
-|`< Back                   |`^ Up            |`Next > <Metrics.rst>`_   |
-|<ParametersTests.rst>`_   |<../README.rst>`_|                          |
+|`< Back                   |`^ Up            |`Next >                   |
+|<ParametersTests.rst>`_   |<../README.rst>`_|<PersistentStorage.rst>`_ |
 +--------------------------+-----------------+--------------------------+
 
 ================================================
@@ -60,6 +60,6 @@ Example: values file
   ...
 
 +--------------------------+-----------------+--------------------------+
-|`< Back                   |`^ Up            |`Next > <Metrics.rst>`_   |
-|<ParametersTests.rst>`_   |<../README.rst>`_|                          |
+|`< Back                   |`^ Up            |`Next >                   |
+|<ParametersTests.rst>`_   |<../README.rst>`_|<PersistentStorage.rst>`_ |
 +--------------------------+-----------------+--------------------------+

@@ -1,0 +1,14 @@
+{{- if hasKey .Values "persistence" }}
+  {{- if hasKey .Values.persistence "storageClass" }}
+    {{ fail "parameter persistence.storageClass belongs to outdated configuration of persistent-storage. Please migrate your configuration." }}
+  {{- end }}
+  {{- if hasKey .Values.persistence "hostPath" }}
+    {{ fail "parameter persistence.hostPasth belongs to outdated configuration of persistent-storage. Please migrate your configuration." }}
+  {{- end }}
+  {{- if hasKey .Values.persistence "pvc" }}
+    {{ fail "parameter persistence.pvc belongs to outdated configuration of persistent-storage. Please migrate your configuration." }}
+  {{- end }}
+  {{- if hasKey .Values.persistence "annotations" }}
+    {{ fail "parameter persistence.annotations belongs to outdated configuration of persistent-storage. Please migrate your configuration." }}
+  {{- end }}
+{{- end }}

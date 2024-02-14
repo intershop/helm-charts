@@ -51,8 +51,6 @@ readinessProbe:
 dbaccount:
   # If enabled, dbaccount will be executed during the installation process only, not on upgrade!
   enabled: false
-  # Reinitialize database
-  resetData: false
   # Name of dedicated tablespace
   tablespace:
   # Options allows to set database options.
@@ -62,21 +60,9 @@ dbaccount:
   searchPath:
   image:
     repository: docker.tools.intershop.com/iom/intershophub/iom-dbaccount
-    tag:        1.6.0
+    tag:        2.0.0
     pullPolicy: IfNotPresent
   resources: {}
-
-config:
-  enabled: false
-  image:
-    repository:
-    tag:
-    pullPolicy: IfNotPresent
-  resources: {}
-  # Allow skipping of initialization steps
-  skipProcedures: false
-  skipMigration:  false
-  skipConfig:     false
 
 # General postgres settings, required to connect to postgres server
 # If postgres sub-chart is enabled, these settings are ignored by all other
@@ -105,7 +91,9 @@ oms:
   # Used internally by IOM for link generation.
   publicUrl:                       https://localhost
   # Shared secret for JWT creation / validation
-  jwtSecret:                       length_must_be_at_least_32_chars
+  # Has to be at least 32 characters long.
+  # If jwtSecret and jwtSecretKeyRef are left empty, a random secret is created automatically.
+  jwtSecret:                       ""
   jwtSecretKeyRef:                 {}
   archiveOrderMessageLogMinAge:    "90"
   deleteOrderMessageLogMinAge:     "180"
@@ -139,8 +127,8 @@ oms:
     userSecretKeyRef:   {}
     passwd:             OmsDB
     passwdSecretKeyRef: {}
-    # Defaults to a combination of pg.host and pg.port, which are used by the config-container.
-    # Can be overwritten to enable failover of the app-container
+    # hostlist defaults to a combination of pg.host and pg.port.
+    # Can be overwritten to enable failover.
     hostlist:
     connectionMonitor:
       enabled:          false
@@ -148,10 +136,14 @@ oms:
     # Connect timeout in seconds, a value of 0 indicates to wait indefinitely.
     # Timeout is passed to jdbc and psql connections
     connectTimeout:     "10"
+    # resetData cleans up an existing database during the installation process.
+    # ATTENTION! This process destroys the database without backup and further
+    # warning.
+    resetData: false
 
   # Mail-server related settings
-  # If the mailhog sub-chart is enabled, these settings are ignored.
-  # Instead, the values of the mailhog sub-chart will be used.
+  # If the mailpit sub-chart is enabled, these settings are ignored.
+  # Instead, the values of the mailpit sub-chart will be used.
   smtp:
     host:               mail-service
     port:               "1025"
@@ -163,7 +155,7 @@ oms:
 # Wildfly related settings
 jboss:
   # Set java options
-  javaOpts: "-XX:+UseContainerSupport -XX:MinRAMPercentage=85 -XX:MaxRAMPercentage=85"
+  javaOpts: "-XX:+UseContainerSupport -XX:MinRAMPercentage=80 -XX:MaxRAMPercentage=80"
   # Provide the possibility to append java options w/o the need to overwrite javaOpts
   javaOptsAppend:
   # Set options for wildfly application server, e.g.:
@@ -179,6 +171,10 @@ jboss:
   # of the pod within the stateful set.
   # If left empty, current hostname is used.
   nodePrefix:
+  # Endpoint to which Wildfly and custom metrics are sent. Wildfly sends the metrics in
+  # OpenTelemetry format.
+  # Example: http://otel-collector:4318/v1/metrics
+  metricsEndpoint:
 
 # IOM logging related settings
 log:
@@ -194,16 +190,35 @@ log:
     customization: WARN
   access:
     enabled:       true
-  # Deprecated since iom-helm-charts 1.3.0
-  metadata:
-    tenant:        company-name
-    environment:   system-name
   # List of operationIDs
   # If an entry matches the operationID of a REST interface, request and response
   # of according requests are logged at level DEBUG
   rest: []
 
+newRelic:
+  apm:
+    enabled: false
+    # license-key to enable ingesting the data, see
+    # https://docs.newrelic.com/docs/apis/intro-apis/new-relic-api-keys/#license-key
+    licenseKey:
+    licenseKeySecretKeyRef: {}
+    # set name of application in new relic. If left empyt, a combination of release-, chart- and namespace-name
+    # will be used.
+    appName:
+    # enable APM on backend-server only, which is the server with hostname ending with -0.
+    backendOnly: true
+    # Configuration of New Relic APM besides app_name.
+    # For a full list of available settings, see
+    # https://docs.newrelic.com/docs/apm/agents/java-agent/configuration/java-agent-config-file-template/
+    # Default values are:
+    #   application_logging:
+    #     enabled: false
+    # Use an empty "config" parameter to set no configuration at all.
+    # Default values are applied only, if NO "config" parameter is defined.
+    #config:
+      
 # Datadog APM related settings
+# Datadog APM is deprecated and will be removed in a future version of IOM Helm Charts.
 datadogApm:
   # APM library is installed only on host, with name ending on -0.
   backendOnly: true
@@ -256,14 +271,38 @@ project:
   importTestDataTimeout: 300
 
 persistence:
-  storageClass: azurefile
+  # Type of provisioning.
+  # Allowed values are: dynamic | static | local
+  # Selects the subset of configuration parameters to be used.
+  provisioning: dynamic
   storageSize: 1Gi
-  # To be used in simple environments (e.g. demos) to persist data on local host.
-  # If set, storageClass will be ignored.
-  hostPath:
-  # To be used in multi-regional installations to persist data in different clusters.
-  # If set, storageClass and hostPath are ignored.
-  pvc:
+    
+  dynamic:
+    storageClass: azurefile
+    # Annotations of persistent-volums-claim.
+    # Default values are:
+    #   "helm.sh/resource-policy": keep
+    # Use an empty "annotations" parameter to set no annotations at all.
+    # Default values are applied only, if NO "annotations" parameter is set at all.
+    #annotations:
+
+  # If an already existing persistent-volume should be used, this can be done by
+  # selecting static provisioning.
+  static:
+    # Name of persistent-volume to be used.
+    pv:
+    # Name of storageClass to be used. Has to match the storageClass of pv.
+    storageClass:
+    # Annotations of persistent-volums-claim.
+    annotations:
+      
+  # To be used in simple, single node environments (e.g. demos) to persist data on local host.
+  local:
+    # Path in local filesystem to be used for persistent storage.
+    hostPath:
+    reclaimPolicy: Delete
+    # Annotations of persistent-volums-claim.
+    annotations:
 
 ingress:
   enabled: true
@@ -295,7 +334,11 @@ resources:
     cpu: 1000m
     memory: 2000Mi
 
+# List all pull-secrets.
 imagePullSecrets: []
+# - name: <pull-secret-1>
+# - name: <pull-secret-2>
+
 nameOverride:
 fullnameOverride:
 
@@ -358,72 +401,66 @@ tolerations: []
 postgres:
   enabled: false
   persistence:
+    # postgres data are written to memory only
     enabled: true
-    accessMode: ReadWriteOnce
-    storageSize: 2Gi
-    forceReset: false
+    # Type of provisioning.
+    # Allowed values are: dynamic | static | local
+    # Selects the subset of configuration parameters to be used.
+    provisioning: dynamic
+    storageSize: 20Gi
+    dynamic:
+      storageClass: default
+      # Annotations of persistent-volums-claim.
+      # Default values are:
+      #   "helm.sh/resource-policy": keep
+      # Use an empty "annotations" parameter to set no annotations at all.
+      # Default values are applied only, if NO "annotations" parameter is set at all.
+      #annotations:
+    
+    # If an already existing persistent-volume should be used, this can be done by
+    # selecting static provisioning.
+    static:
+      # Name of persistent-volume to be used.
+      pv:
+      # Name of storageClass to be used. Has to match the storageClass of pv.
+      storageClass:
+      # Annotations of persistent-volums-claim.
+      annotations:
+    
+    # To be used in simple, single node environments (e.g. demos) to persist data on local host.
+    local:
+      # Path in local filesystem to be used for persistent storage.
+      hostPath:
+      reclaimPolicy: Delete
+      # Annotations of persistent-volums-claim.
+      annotations:
 
-mailhog:
+mailpit:
   enabled: false
-  probes:
+  readinessProbe:
     enabled: true
+  livenessProbe:
+    enabled: true
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  service:
+    smtp:
+      type: ClusterIP
+    http:
+      type: ClusterIP
   ingress:
     enabled: true
     ingressClassName: nginx
     annotations: {}
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
-    hosts:
-      - host: mailhog-test.poc.intershop.de
-        paths:
-          - path: /
-            pathType: Prefix
-
-    tls: []
-    #  - secretName: wildcard-poc-tls
-    #    hosts:
-    #      - chart-example.local
+    hostname: mail-test.poc.intershop.de
+    pathType: Prefix
 
 iom-tests:
   enabled: false
-
-# Internal ingress-nginx controller
-# This ingress-nginx controller cannot be globally used, it is restricted to the namespace.
-# There is also a major problem with the name "ingress-nginx". It contains a '-', which is
-# invalid for names of variables, hence these variables cannot be accessed within templates!
-# As a workaround "nginx" was added. Therefore ingress-nginx is only used to configure the
-# nginx-controller statically.
-ingress-nginx:
-  rbac:
-    create: true
-    scope: true
-  controller:
-    admissionWebhooks:
-      enabled: false
-    config:
-      use-forwarded-headers: "true"
-      proxy-add-original-uri-header: "true"
-    ingressClass: nginx-iom
-    ingressClassResource:
-      name: nginx-iom
-    extraArgs:
-      # increase verbosity
-      # v: 3
-    replicaCount: 2
-    # Watch only for ingress in current namespace
-    scope:
-      enabled: true
-    service:
-      # Internal ingress-nginx controller must never be accessed from public network
-      type: "ClusterIP"
-
-# Workaround to overcome the problem with '-' in names of variables.
-# The following variables do not have any impact on the configuration of ingress-nginx (except the enabled flag).
-# They are provided to be used in templates.
-nginx:
-  enabled: false
-  # For very simple (demo-)installations, the internal nginx-controller can be used as public
-  # ingress too, if proxy.enabled is set to false.
-  proxy:
-    enabled: true
-    annotations: {}
