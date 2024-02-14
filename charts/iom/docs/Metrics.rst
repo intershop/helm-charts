@@ -1,24 +1,39 @@
 +--------------------------+-----------------+--------------------------+
 |`< Back                   |`^ Up            |`Next > <Postgresql.rst>`_|
-|<SecretKeyRef.rst>`_      |<../README.rst>`_|                          |
+|<PersistentStorage.rst>`_ |<../README.rst>`_|                          |
 +--------------------------+-----------------+--------------------------+
 
 ================================================
 Helm Charts for Intershop Order Management (IOM)
 ================================================
 
-------------------
-Prometheus Metrics
-------------------
+----------------
+Metrics in IOM 5
+----------------
 
-IOM version 4.2.0 and later provides an HTTP endpoint */metrics* at port 9990 that delivers a huge amount of metrics. These metrics are
+In difference to IOM 4, IOM 5 does not have an HTTP endpoint that provides metrics in *Prometheus*. Instead of it, IOM 5 pushes the metrics data in `OpenTelemetry Format <https://opentelemetry.io>`_ to a configurable endpoint. The according Helm parameter is *jboss.metricsEndpoint*, see `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
+
+----------------
+Metrics in IOM 4
+----------------
+
+IOM 4, starting with version 4.2.0, provides an HTTP endpoint */metrics* at port 9990 that delivers a huge amount of metrics. These metrics are
 provided in `Prometheus <https://prometheus.io>`_ format, which is a widely used format that can be understood by most
 monitoring systems.
 
-The metrics are provided by the *Wildfly* sub-system *microprofile-metrics-smallrye*. The according
-`Quickstart guide <https://github.com/wildfly/quickstart/blob/main/microprofile-metrics/README.adoc>`_
-provides more information.
+Example of Integration with *New Relic / OpenTelemetry*
+=======================================================
 
+The combination of `New Relic <https://newrelic.com>`_ and `OpenTelemetry Collector <https://opentelemetry.io>`_ is used by *Intershop Commerce Platform* to collect and report *Prometheus metrics*. The following example shows how to configure Helm parameters to integrate IOM metrics with *New Relic / OpenTelemetry*.
+
+*OpenTelemetry Collector* gets the information about the endpoint, providing the metrics, from annotations made to the pods. The according Helm parameters have to look like this, to enable the *OpenTelemetry Collector* to receive data from IOM:
+
+.. code-block:: yaml
+
+  podAnnotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/path: '/metrics'
+    prometheus.io/port: '9990'  
 
 Example of Integration with *Datadog*
 =====================================
@@ -88,5 +103,5 @@ further usage of this piece of yaml-code, the values of *namespace* and *metrics
 
 +--------------------------+-----------------+--------------------------+
 |`< Back                   |`^ Up            |`Next > <Postgresql.rst>`_|
-|<SecretKeyRef.rst>`_      |<../README.rst>`_|                          |
+|<PersistentStorage.rst>`_ |<../README.rst>`_|                          |
 +--------------------------+-----------------+--------------------------+

@@ -1,0 +1,54 @@
+{{- if hasKey .Values "persistence" }}
+  {{- if .Values.persistence.enabled }}
+    {{- if hasKey .Values.persistence "provisioning" }}
+      {{- if not .Values.persistence.provisioning }}
+        {{ fail "parameter persistence.provisioning is not defined" }}
+      {{- end }}
+      {{- if not (or (eq .Values.persistence.provisioning "dynamic") (eq .Values.persistence.provisioning "static") (eq .Values.persistence.provisioning "local")) }}
+        {{ fail "parameter persistence.provisioning contains value outside of allowed range of dynamic|static|local" }}
+      {{- end }}
+      {{- if eq .Values.persistence.provisioning "dynamic" }}
+        {{- if hasKey .Values.persistence "dynamic" }}
+          {{- if hasKey .Values.persistence.dynamic "storageClass" }}
+            {{- if .Values.persistence.dynamic.storageClass }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "postgres.fullname" . }}
+  labels:
+    {{- include "postgres.labels" . | nindent 4 }}    
+  annotations:
+    {{- if hasKey .Values.persistence.dynamic "annotations" }}
+      {{- if .Values.persistence.dynamic.annotations }}
+        {{- toYaml .Values.persistence.dynamic.annotations | nindent 4 }}
+      {{- end }}
+    {{- else }}
+    # default annotations are guaranteeing, that pvc is not deleted
+    # by running helm delete
+    "helm.sh/resource-policy": keep
+    {{- end }}
+    {{- include "meta.helm.annotations" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.persistence.dynamic.storageClass }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.storageSize }}
+            {{- else }}
+              {{ fail "parameter persistence.dynamic.storageClass is not defined" }}
+            {{- end }}
+          {{- else }}
+            {{ fail "parameter persistence.dynamic.storageClass is missing" }}
+          {{- end }}
+        {{- else }}
+          {{ fail "parameter persistence.dynamic is missing" }}
+        {{- end }}
+      {{- end }}
+    {{- else }}
+      {{ fail "parameter persistence.provisioning is missing" }}
+    {{- end }}
+  {{- end }}
+{{- else }}
+  {{ fail "parameter persistence is missing" }}
+{{- end }}
