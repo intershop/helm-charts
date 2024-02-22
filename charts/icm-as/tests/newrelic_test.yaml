@@ -71,7 +71,7 @@ tests:
             prometheus.io/path: /metrics
             prometheus.io/port: "7744"
             prometheus.io/scrape: "false"
-  - it: newrelic license
+  - it: newrelic license key
     release:
       name: icm-as
     chart:
@@ -81,14 +81,61 @@ tests:
     set:
       newrelic.enabled: true
       newrelic.license_key: "secret-license-test"
-    template: templates/config-newrelic-yaml-cm.yaml
+    template: templates/as-deployment.yaml
     asserts:
-      - isKind:
-          of: ConfigMap
-      - matchRegex:
-          path: data["newrelic.yml"]
-          pattern: .*(secret-license-test).*
-
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: NEW_RELIC_LICENSE_KEY
+            value: "secret-license-test"
+  - it: newrelic license key secret key ref
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      newrelic.enabled: true
+      newrelic.licenseKeySecretKeyRef.name: "your-company-prd-secrets"
+      newrelic.licenseKeySecretKeyRef.key: "secret-license-test"
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: NEW_RELIC_LICENSE_KEY
+            valueFrom:
+              secretKeyRef:
+                key: secret-license-test
+                name: your-company-prd-secrets
+  - it: should take newrelic license key secret key ref precedence over plain text license key
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      newrelic.enabled: true
+      newrelic.license_key: "should-not-appear"
+      newrelic.licenseKeySecretKeyRef.name: "your-company-prd-secrets"
+      newrelic.licenseKeySecretKeyRef.key: "secret-license-test"
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: NEW_RELIC_LICENSE_KEY
+            valueFrom:
+              secretKeyRef:
+                key: secret-license-test
+                name: your-company-prd-secrets
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: NEW_RELIC_LICENSE_KEY
+            value: "should-not-appear"
   - it: newrelic app_name from operationalContext (default values)
     release:
       name: icm-as
@@ -106,8 +153,7 @@ tests:
       - matchRegex:
           path: data["newrelic.yml"]
           pattern: ".*(app_name : \"n_a-int_01-icm-standalone\").*"
-
-  - it: newrelic custom app_name 
+  - it: newrelic custom app_name
     release:
       name: icm-as
     chart:
