@@ -158,7 +158,7 @@ database:
   # provide pwd as plain text
   jdbcPassword: "intershop"
   # instead use secret key reference (recommended) - takes precedence over jdbcPassword
-  #jdbcPasswordSecretKeyRef:
+  # jdbcPasswordSecretKeyRef:
   #  name: <your-company-prd-secrets>
   #  key: <jdbcpasswd>
 
@@ -256,7 +256,7 @@ mssql:
   # provide pwd as plain text
   password: "icmdbpassword"
   # instead use secret key reference (recommended) - takes precedence over password
-  #passwordSecretKeyRef:
+  # passwordSecretKeyRef:
   #  name: <your-company-prd-secrets>
   #  key: <passwd>
   persistence:
