@@ -155,7 +155,12 @@ database:
   # or for oracle "jdbc:oracle:thin:@<ipaddress or hostname>:1521:intershop"
   jdbcURL: "jdbc:sqlserver://<ipaddress or hostname>:1433;databaseName=intershop"
   jdbcUser: "intershop"
+  # provide pwd as plain text
   jdbcPassword: "intershop"
+  # instead use secret key reference (recommended) - takes precedence over jdbcPassword
+  #jdbcPasswordSecretKeyRef:
+  #  name: <your-company-prd-secrets>
+  #  key: <jdbcpasswd>
 
 # environment variables to be propagated to the icm-as-container
 environment:
@@ -248,7 +253,12 @@ mssql:
   saPassword: "1nstershop5A"
   databaseName: "icmdb"
   user: "icmdbuser"
+  # provide pwd as plain text
   password: "icmdbpassword"
+  # instead use secret key reference (recommended) - takes precedence over password
+  #passwordSecretKeyRef:
+  #  name: <your-company-prd-secrets>
+  #  key: <passwd>
   persistence:
     data:
       size: 5Gi
