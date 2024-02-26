@@ -429,3 +429,5 @@ jgroups:
   clusterLabel:
   # adaption of ports in case a different range is needed
   portRange:
+# tolerations for icm-as pods
+tolerations: null
