@@ -42,6 +42,15 @@ env:
 {{- else }}
   value: "false"
 {{- end }}
+- name: NEW_RELIC_LICENSE_KEY
+{{- /* licenseKeySecretKeyRef has precedence over license_key */ -}}
+{{- if .Values.newrelic.licenseKeySecretKeyRef }}
+  valueFrom:
+    secretKeyRef:
+{{- toYaml .Values.newrelic.licenseKeySecretKeyRef | nindent 6 }}
+{{- else }}
+  value: "{{ .Values.newrelic.license_key }}"
+{{- end }}
 {{- end }}
 {{- if .Values.mssql.enabled }}
 - name: INTERSHOP_DATABASETYPE

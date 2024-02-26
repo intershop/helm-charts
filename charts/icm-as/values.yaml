@@ -80,7 +80,12 @@ newrelic:
   enabled: false
   #   application name (~= environment name): calculated from operationalContext section, set to override
   # app_name: "icm"
+  # provide license key as plain text
   license_key: "secret"
+  # instead use secret key reference (recommended) - takes precedence over license_key
+  # licenseKeySecretKeyRef:
+  #  name: <your-company-prd-secrets>
+  #  key: <licenseKey>
   metrics:
     # fine grade possibility to disable metrics for cost reduction
     enabled: true
