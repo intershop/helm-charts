@@ -42,6 +42,15 @@ env:
 {{- else }}
   value: "false"
 {{- end }}
+- name: NEW_RELIC_LICENSE_KEY
+{{- /* licenseKeySecretKeyRef has precedence over license_key */ -}}
+{{- if .Values.newrelic.licenseKeySecretKeyRef }}
+  valueFrom:
+    secretKeyRef:
+{{- toYaml .Values.newrelic.licenseKeySecretKeyRef | nindent 6 }}
+{{- else }}
+  value: "{{ .Values.newrelic.license_key }}"
+{{- end }}
 {{- end }}
 {{- if .Values.mssql.enabled }}
 - name: INTERSHOP_DATABASETYPE
@@ -51,7 +60,14 @@ env:
 - name: INTERSHOP_JDBC_USER
   value: "{{ .Values.mssql.user }}"
 - name: INTERSHOP_JDBC_PASSWORD
+{{- /* passwordSecretKeyRef has precedence over password */ -}}
+{{- if .Values.mssql.passwordSecretKeyRef }}
+  valueFrom:
+    secretKeyRef:
+{{- toYaml .Values.mssql.passwordSecretKeyRef | nindent 6 }}
+{{- else }}
   value: "{{ .Values.mssql.password }}"
+{{- end }}
 {{- else }}
 - name: INTERSHOP_DATABASETYPE
   value: "{{ .Values.database.type }}"
@@ -60,7 +76,14 @@ env:
 - name: INTERSHOP_JDBC_USER
   value: "{{ .Values.database.jdbcUser }}"
 - name: INTERSHOP_JDBC_PASSWORD
+{{- /* jdbcPasswordSecretKeyRef has precedence over jdbcPassword */ -}}
+{{- if .Values.database.jdbcPasswordSecretKeyRef }}
+  valueFrom:
+    secretKeyRef:
+{{- toYaml .Values.database.jdbcPasswordSecretKeyRef | nindent 6 }}
+{{- else }}
   value: "{{ .Values.database.jdbcPassword }}"
+{{- end }}
 {{- end }}
 {{- if .Values.replication.enabled }}
 - name: STAGING_SYSTEM_TYPE
