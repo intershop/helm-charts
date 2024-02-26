@@ -105,6 +105,72 @@ tests:
             name: INTERSHOP_JDBC_USER
             value: "databaseguy"
 
+  - it: should fallback to JDBC plain text password if no password secret key ref is provided
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      database.jdbcPasswordSecretKeyRef: null
+      database.jdbcPassword: "thisisverysecret"
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_JDBC_PASSWORD
+            value: "thisisverysecret"
+
+  - it: should use JDBC password secret key ref if provided
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      database.jdbcPasswordSecretKeyRef.name: "your-company-prd-secrets"
+      database.jdbcPasswordSecretKeyRef.key: "thisisverysecret"
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_JDBC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: thisisverysecret
+                name: your-company-prd-secrets
+
+  - it: should take JDBC password secret key ref precedence over plain text password
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      database.jdbcPassword: "should-not-appear"
+      database.jdbcPasswordSecretKeyRef.name: "your-company-prd-secrets"
+      database.jdbcPasswordSecretKeyRef.key: "thisisverysecret"
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_JDBC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: thisisverysecret
+                name: your-company-prd-secrets
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_JDBC_PASSWORD
+            value: "should-not-appear"
+
   - it: two additional values
     release:
       name: icm-as
