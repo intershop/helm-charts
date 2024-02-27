@@ -162,6 +162,25 @@ tests:
       - equal:
           path: spec.template.spec.nodeSelector.agentpool2
           value: one
+  - it: tolerations not empty
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      tolerations:
+      - key: "special"
+        value: "true"
+        effect: "NoSchedule"
+    template: templates/as-deployment.yaml
+    asserts:
+    - contains:
+        path: spec.template.spec.tolerations
+        content:
+          key: "special"
+          value: "true"
+          effect: "NoSchedule"
 
-# TODO tolerations
 # TODO affinity
