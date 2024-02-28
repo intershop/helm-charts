@@ -173,6 +173,12 @@ database:
 environment:
   CARTRIDGE_LIST: "ft_icm_as"
 
+# environment variable secrets to be propagated to the icm-as-container
+secrets:
+  # - env: <YOUR_MAIL_PASSWORD> # environment variable key
+  #  name: <emailSecrets> # name of the secret, containing the referenced key
+  #  key: <smtpPassword> # key within the secret
+
 persistence:
   sites:
     size: 1Gi
