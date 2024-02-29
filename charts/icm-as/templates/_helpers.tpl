@@ -141,6 +141,16 @@ nodeSelector:
 {{- end -}}
 
 {{/*
+Node-tolerations
+*/}}
+{{- define "icm-as.tolerations" -}}
+{{- if .Values.tolerations -}}
+tolerations:
+  {{- toYaml .Values.tolerations | nindent 2 }}
+{{- end }}
+{{- end -}}
+
+{{/*
 Image spec
 */}}
 {{- define "icm-as.image" -}}

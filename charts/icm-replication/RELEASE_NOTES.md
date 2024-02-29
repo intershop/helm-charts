@@ -1,6 +1,6 @@
 
-<a name="icm-1.10.0"></a>
-## [icm-1.10.0](https://github.com/intershop/helm-charts/compare/icm-1.9.0...icm-1.10.0)
+<a name="icm-replication-1.7.0"></a>
+## [icm-replication-1.7.0](https://github.com/intershop/helm-charts/compare/icm-replication-1.6.0...icm-replication-1.7.0)
 
 > 2024-02-29
 
