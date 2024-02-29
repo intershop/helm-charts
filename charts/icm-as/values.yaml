@@ -79,7 +79,8 @@ newrelic:
   # https://docs.newrelic.com/docs/kubernetes-pixie/kubernetes-integration/advanced-configuration/link-apm-applications-kubernetes/
   enabled: false
   #   application name (~= environment name): calculated from operationalContext section, set to override
-  # app_name: "icm"
+  # "app_name" deprecated since ICM-AS Helm Charts 1.9.0, will be removed in a future version. Use appName instead.
+  # appName: "icm"
   # provide license key as plain text
   # "license_key" deprecated since ICM-AS Helm Charts 1.8.0, will be removed in a future version.
   # Use licenseKeySecretKeyRef instead.
@@ -172,6 +173,12 @@ database:
 # environment variables to be propagated to the icm-as-container
 environment:
   CARTRIDGE_LIST: "ft_icm_as"
+
+# environment variable secrets to be propagated to the icm-as-container
+secrets:
+  # - env: <YOUR_MAIL_PASSWORD> # environment variable key
+  #  name: <emailSecrets> # name of the secret, containing the referenced key
+  #  key: <smtpPassword> # key within the secret
 
 persistence:
   sites:
@@ -429,3 +436,5 @@ jgroups:
   clusterLabel:
   # adaption of ports in case a different range is needed
   portRange:
+# tolerations for icm-as pods
+tolerations: null

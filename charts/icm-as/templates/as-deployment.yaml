@@ -45,6 +45,9 @@ spec:
       {{- if include "icm-as.nodeSelector" . }}
         {{- include "icm-as.nodeSelector" . | nindent 6 }}
       {{- end }}
+      {{- if include "icm-as.tolerations" . }}
+        {{- include "icm-as.tolerations" . | nindent 6 }}
+      {{- end }}
       {{- if include "icm-as.imagePullSecrets" . }}
         {{- include "icm-as.imagePullSecrets" . | nindent 6 }}
       {{- end }}
