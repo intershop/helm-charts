@@ -10,7 +10,7 @@ jobs:
       matrix: ${{ steps.matrix.outputs.matrix }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v4.1.1
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Determine changed charts
@@ -19,31 +19,32 @@ jobs:
         set -x
         git rev-list --count origin/main..$(git branch --show-current)
         changed_directories=$(echo $(git diff --name-only origin/main) | grep -o 'charts/[^/]*' | cut -d '/' -f 2)
-        
+
         if [[ -z "$changed_directories" ]]; then
           echo "No chart changes detected. Chore changes need to be released manually." 1>&2
           exit 1
         fi
-        
+
         # Entferne Duplikate mit tr und sort
         unique_changed_directories=$(echo "$changed_directories" | tr ' ' '\n' | sort -u | tr '\n' ' ')
         echo "unique_changed_directories: ${unique_changed_directories}"
-        
+
         arr=($unique_changed_directories)
         for element in "${arr[@]}"; do
           formatted_output+=" \"$element\","
         done
         formatted_output=${formatted_output%,} # Entferne das letzte Komma
-        
+
         echo "matrix=[ $formatted_output ]" >> $GITHUB_OUTPUT
-        
+
         # to be able to exchange the version information in the next jobs
         touch release-input-parameter.txt
     - name: Create artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: release-input-parameter
         path: release-input-parameter.txt
+        overwrite: true
 
   determine-semantic-version:
     needs:
@@ -55,13 +56,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v4.1.1
+      uses: actions/checkout@v4
       with: #fetch all commits, not just the last one
         fetch-depth: 0
 
     - name: Determine semantic version in loop
       id: version
-      uses: paulhatch/semantic-version@v5.3.0
+      uses: paulhatch/semantic-version@v5.4.0
       with:
         tag_prefix: "${{ matrix.value }}-"
         change_path: "charts/${{ matrix.value }}"
@@ -70,7 +71,7 @@ jobs:
         search_commit_body: true
         debug: true
 
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: release-input-parameter
 
@@ -86,10 +87,11 @@ jobs:
         #echo "previous_version   : ${{ steps.version.outputs.previous_version }}"
         echo -n " ${{ matrix.value }}:${{ steps.version.outputs.version_type }}" >> release-input-parameter.txt
     - name: Update artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: release-input-parameter
         path: release-input-parameter.txt
+        overwrite: true
 
   release:
     needs:
@@ -100,10 +102,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with: #fetch all commits, not just the last one
         fetch-depth: 0
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: release-input-parameter
     - name: Read release input parameter
@@ -127,7 +129,7 @@ jobs:
       run: |
         mkdir git-chglog
         wget -q -O - https://github.com/git-chglog/git-chglog/releases/download/v0.15.4/git-chglog_0.15.4_linux_amd64.tar.gz | tar xzf - -C git-chglog
-        
+
         all=("${{ steps.read-release-input-parameter.outputs.release-input-parameter }}")
         for i in $all; do
           IFS=':' read -ra my_array <<< "$i"
@@ -136,13 +138,13 @@ jobs:
             --tag-filter-pattern "^${my_array[0]}-\d+.\d+.\d+$" \
             --next-tag ${my_array[0]}-$(grep -A0 '^version:' ./charts/${my_array[0]}/Chart.yaml | awk '{print $2}' | sed 's/\"//g') \
             -o ./charts/${my_array[0]}/CHANGELOG.md
-            
+
           ./git-chglog/git-chglog \
             --path ./charts/${my_array[0]} \
             --tag-filter-pattern "^${my_array[0]}-\d+.\d+.\d+$" \
             --next-tag ${my_array[0]}-$(grep -A0 '^version:' ./charts/${my_array[0]}/Chart.yaml | awk '{print $2}' | sed 's/\"//g') \
             -o ./charts/${my_array[0]}/RELEASE_NOTES.md \
-            ${my_array[0]}-$(grep -A0 '^version:' ./charts/${my_array[0]}/Chart.yaml | awk '{print $2}' | sed 's/\"//g') 
+            ${my_array[0]}-$(grep -A0 '^version:' ./charts/${my_array[0]}/Chart.yaml | awk '{print $2}' | sed 's/\"//g')
         done
 
         rm -Rf git-chglog
@@ -157,7 +159,7 @@ jobs:
         git reset --hard ${{ github.ref_name }}
     - name: Create Release Branch & PR
       id: pr
-      uses: peter-evans/create-pull-request@v5
+      uses: peter-evans/create-pull-request@v6
       with: # commits all changes and creates the release branch and PR. If one already exists, it is updated.
         token: ${{ secrets.PR_CREATOR_TOKEN }}
         branch: release/${{ github.ref_name }}
