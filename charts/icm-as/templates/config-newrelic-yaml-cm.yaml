@@ -9,5 +9,5 @@ metadata:
 data:
   newrelic.yml:  |-
     common: &default_settings
-      app_name : "{{ .Values.newrelic.app_name | default (include "icm-as.operationalContextName" .) }}"
+      app_name : "{{ .Values.newrelic.appName | default (.Values.newrelic.app_name | default (include "icm-as.operationalContextName" .)) }}"
 {{- end -}}

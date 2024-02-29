@@ -96,8 +96,21 @@ env:
 {{ include "icm-as.featuredJVMArguments" . }}
 {{ include "icm-as.additionalJVMArguments" . }}
 {{- range $key, $value := .Values.environment }}
+{{ $environmentContainsSecret := false -}}
+{{- /*
+Nested loop on "secrets" values list necessary due to limited functions on type lists.
+No other reasonable possibility to get each dict within list "secrets" values.
+Purpose is to filter out any duplicated environment assignment when set both on "secrets" and "environment".
+*/}}
+{{- range $secret := $.Values.secrets }}
+{{- if eq $secret.env $key }}
+{{ $environmentContainsSecret = true -}}
+{{- end -}}
+{{- end -}}
+{{- if not $environmentContainsSecret }}
 - name: {{ $key }}
   value: {{ $value | quote }}
+{{- end -}}
 {{- end -}}
 {{- if .Values.webLayer.enabled }}
 - name: INTERSHOP_WEBADAPTER_ENABLED
@@ -107,6 +120,19 @@ env:
 - name: INTERSHOP_PAGECACHE_REDIS_ENABLED
   value: "true"
 {{- end }}
+{{- end -}}
+
+{{/*
+Creates the environment secrets section
+*/}}
+{{- define "icm-as.envSecrets" -}}
+{{- range $secret := .Values.secrets }}
+- name: {{ $secret.env }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ $secret.name | quote }}
+      key: {{ $secret.key | quote }}
+{{- end -}}
 {{- end -}}
 
 {{/*
@@ -120,6 +146,7 @@ Job-specific-environment
   value: "true"
 - name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
   value: {{ .jobServerGroup }}
+{{- include "icm-as.envSecrets" . }}
 {{- end -}}
 
 {{/*
@@ -131,4 +158,5 @@ AppServer-specific-environment
 - name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
   value: "BOS,WSF"
 {{- end }}
+{{- include "icm-as.envSecrets" . }}
 {{- end -}}

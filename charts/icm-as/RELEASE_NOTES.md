@@ -1,19 +1,19 @@
 
-<a name="icm-as-1.8.0"></a>
-## [icm-as-1.8.0](https://github.com/intershop/helm-charts/compare/icm-as-1.7.0...icm-as-1.8.0)
+<a name="icm-as-1.9.0"></a>
+## [icm-as-1.9.0](https://github.com/intershop/helm-charts/compare/icm-as-1.8.0...icm-as-1.9.0)
 
-> 2024-02-26
+> 2024-02-29
 
 ### Chore
 
-* bump versions of icm-as:minor
+* bump versions of icm:patch icm-as:minor icm-replication:patch
 
 ### Feat
 
-* **icm:** New Relic license via secretKeyRef ([#540](https://github.com/intershop/helm-charts/issues/540))
-* **icm:** Database password via secretKeyRef ([#143](https://github.com/intershop/helm-charts/issues/143))
+* **icm:** Environments via secretKeyRef ([#550](https://github.com/intershop/helm-charts/issues/550))
+* **icm:** icm-as tolerations ([#548](https://github.com/intershop/helm-charts/issues/548),[#547](https://github.com/intershop/helm-charts/issues/547))
 
 ### Fix
 
-* **icm:** Deprecate icm-as.newrelic.license_key ([#543](https://github.com/intershop/helm-charts/issues/543))
+* **icm:** Deprecate icm-as.newrelic.app_name and provide appName instead ([#552](https://github.com/intershop/helm-charts/issues/552))
 
