@@ -4,14 +4,14 @@ runs:
   using: "composite"
   steps:
   - name: Install Helm
-    uses: azure/setup-helm@v3
+    uses: azure/setup-helm@v4.0.0
     with:
       version: v3.11.3
 
   # Python is required because `ct lint` runs Yamale (https://github.com/23andMe/Yamale) and
   # yamllint (https://github.com/adrienverge/yamllint) which require Python
   - name: Set up Python
-    uses: actions/setup-python@v3
+    uses: actions/setup-python@v5
     with:
       python-version: 3.7
 
