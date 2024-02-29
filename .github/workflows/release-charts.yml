@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -25,7 +25,7 @@ jobs:
           git pull
 
       - name: Install Helm
-        uses: azure/setup-helm@v3
+        uses: azure/setup-helm@v4.0.0
         with:
           version: v3.8.1
 
@@ -39,6 +39,7 @@ jobs:
           helm repo add kubernetes-ingress-nginx https://kubernetes.github.io/ingress-nginx
           helm repo add codecentric https://codecentric.github.io/helm-charts
           helm repo add intershop https://intershop.github.io/helm-charts
+          helm repo add mailpit https://jouve.github.io/charts/
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0

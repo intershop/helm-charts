@@ -11,8 +11,10 @@ Helm Charts for Intershop Order Management (IOM)
 PostgreSQL Server Configuration
 -------------------------------
 
-.. note::
+.. regular notes are not rendered correctly in GitHub
 
+**Note**   
+   
   The ideal configuration mainly depends on the server resources and on the activity. Therefore, we can only provide a general guideline. The configuration ranges indicated below may not be applicable in all cases, especially on small systems. These values are intended for a mid-size system with about 32 GB RAM and 24 cores.
 
   If *PostgreSQL* is used as a service (e.g. Azure Database for *PostgreSQL* servers), not all *PostgreSQL* server parameters can be set. When using a service, the method of how to change *PostgreSQL* server parameters might be different, too.
@@ -36,7 +38,9 @@ Some aspects of data reliability are discussed in `PostgreSQL 12 | Chapter 29. R
 |                                        |pool, mainly for job tasks like import/export. Make sure that *max_connection* is set higher   |
 |                                        |here than the according IOM parameters.                                                        |
 |                                        |                                                                                               |
-|                                        |.. note::                                                                                      |
+|                                        |.. regular notes are not rendered correctly in GitHub                                          |
+|                                        |                                                                                               |
+|                                        |**Note**                                                                                       |
 |                                        |                                                                                               |
 |                                        |  Highly concurrent connections have a negative impact on performance. It is more              |
 |                                        |  efficient to queue the requests than to process them all in parallel.                        |
