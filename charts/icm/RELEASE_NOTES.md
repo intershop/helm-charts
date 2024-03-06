@@ -1,14 +1,10 @@
 
-<a name="icm-1.10.0"></a>
-## [icm-1.10.0](https://github.com/intershop/helm-charts/compare/icm-1.9.0...icm-1.10.0)
+<a name="icm-1.10.1"></a>
+## [icm-1.10.1](https://github.com/intershop/helm-charts/compare/icm-1.11.0...icm-1.10.1)
 
-> 2024-02-29
+> 2024-03-06
 
 ### Chore
 
-* bump versions of icm:patch icm-as:minor icm-replication:patch
-
-### Fix
-
-* **icm:** Deprecate icm-as.newrelic.app_name and provide appName instead ([#552](https://github.com/intershop/helm-charts/issues/552))
+* bump versions of icm:patch icm-replication:patch
 
