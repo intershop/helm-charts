@@ -1,9 +1,9 @@
 apiVersion: v2
-appVersion: "11.2.1"
+appVersion: "11.9.0"
 description: Intershop Commerce Management - ICM
 # name and version must be in this exact order, otherwise bump2version won't work
 name: icm
-version: 1.10.0
+version: 1.10.1
 # test related annotations
 annotations:
   requestedMemoryQuota: 5900Mi
