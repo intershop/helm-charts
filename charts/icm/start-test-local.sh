@@ -9,7 +9,7 @@ if [ -z "$TESTSUITE" ]; then
   read -e -p 'Testsuite: ' -i 'tests.remote.com.intershop.cms.suite.PageListingTestSuite' TESTSUITE
 fi
 if [ -z "$ICM_TEST_IMAGE" ]; then
-  read -e -p 'Test image: ' -i 'intershophub/icm-as-test:11.7.0' ICM_TEST_IMAGE
+  read -e -p 'Test image: ' -i 'intershophub/icm-as-test:11.9.0' ICM_TEST_IMAGE
 fi
 read -e -p 'Base path of your local folder mount: ' -i '/run/desktop/mnt/host/d/tmp/pv' LOCAL_MOUNT_BASE
 read -e -p 'The pull secret for the icm-as+testrunner image (e.g. dockerhub or icmbuildsnapshot): ' -i 'icmbuildsnapshot' ICM_AS_PULL_SECRET
@@ -23,5 +23,8 @@ env_list=$(env | cut -d '=' -f 1 | sed 's/^PATH$//' | sed 's/^/\$/;s/$/,/' | tr 
 envsubst "${env_list}" < ./values-iste_linux.tmpl | tee values-iste_linux.yaml
 
 envsubst "${env_list}" < ./values-test-local.tmpl | tee values-test-local.yaml
+
+# create needed folders
+source start-test-local_dir-create.sh
 
 helm upgrade --install ${HELM_DRY_RUN}${HELM_JOB_NAME} . -f ./values-iste_linux.yaml -f ./values-test-local.yaml
