@@ -90,7 +90,7 @@ This helm chart also allows you to execute intershop htmlunit tests via a testru
 For the local test execution there are already preconfigured values-files orchestrated by a bash script.
 Follow these steps to execute a test:
 
-1. Be sure that each included chart is up to date:
+1. Be sure that each included chart is up-to-date:
 ```bash
 helm dependency update ../icm-as
 helm dependency update .

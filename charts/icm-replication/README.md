@@ -40,3 +40,20 @@ helm dependency update icm
 helm dependency update icm-replication
 helm install my-release ./icm-replication --values=values.yaml --namespace icm-replication
 ```
+
+## Testing ICM-Replication
+
+This helm chart also allows you to execute intershop htmlunit tests via a testrunner.
+
+### Execute locally
+For the local test execution there are already preconfigured values-files orchestrated by a bash script.
+Follow these steps to execute a test:
+
+1. Be sure that each included chart is up-to-date:
+```bash
+helm dependency update ../icm-as
+helm dependency update ../icm
+helm dependency update .
+```
+2. Create needed k8s secrets for icm-web and icm-as (e.g. `kubectl create secret docker-registry dockerhub --docker-username=<your username> --docker-password=<your password> --docker-email=<your email>`)
+3. run: `./start-test-local.sh` and follow the instructions
