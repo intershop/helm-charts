@@ -1,8 +1,8 @@
 
-<a name="icm-replication-1.7.1"></a>
-## [icm-replication-1.7.1](https://github.com/intershop/helm-charts/compare/icm-replication-1.8.0...icm-replication-1.7.1)
+<a name="icm-replication-1.7.2"></a>
+## [icm-replication-1.7.2](https://github.com/intershop/helm-charts/compare/icm-replication-1.7.1...icm-replication-1.7.2)
 
-> 2024-03-06
+> 2024-03-13
 
 ### Chore
 
