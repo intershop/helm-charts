@@ -5,8 +5,15 @@ set -eu pipefail
 set -o allexport
 source start-test-local_vars.sh
 read -e -p 'Helm chart name: ' -i 'icm-11-replication-test' HELM_JOB_NAME
-read -e -p 'Testsuite: ' -i 'tests.remote.com.intershop.product.suite.ProductMassDataReplicationTestSuite' TESTSUITE
-read -e -p 'Test image: ' -i 'intershophub/icm-as-test:11.9.0' ICM_TEST_IMAGE
+
+DEFAULT_TESTSUITE='tests.remote.com.intershop.product.suite.ProductMassDataReplicationTestSuite'
+TESTSUITE="${TESTSUITE:-$DEFAULT_TESTSUITE}"
+read -e -p 'Testsuite: ' -i "$DEFAULT_TESTSUITE" TESTSUITE || { echo "Error reading input"; exit 1; }
+
+DEFAULT_ICM_TEST_IMAGE='intershophub/icm-as-test:11.9.0'
+ICM_TEST_IMAGE="${ICM_TEST_IMAGE:-$DEFAULT_ICM_TEST_IMAGE}"
+read -e -p 'Test image: ' -i "$DEFAULT_ICM_TEST_IMAGE" ICM_TEST_IMAGE || { echo "Error reading input"; exit 1; }
+
 read -e -p 'Base path of your local folder mount: ' -i '/run/desktop/mnt/host/d/tmp/pv' LOCAL_MOUNT_BASE
 read -e -p 'The pull secret for the icm-as+testrunner image (e.g. dockerhub or icmbuildsnapshot): ' -i 'icmbuildsnapshot' ICM_AS_PULL_SECRET
 read -e -p 'The pull secret for the icm-wa+waa image: ' -i 'dockerhub' ICM_WEB_PULL_SECRET
