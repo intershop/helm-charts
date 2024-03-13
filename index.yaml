@@ -38,6 +38,38 @@ entries:
       requestedMemoryQuota: 5900Mi
     apiVersion: v2
     appVersion: 11.9.0
+    created: "2024-03-13T07:26:00.067798823Z"
+    dependencies:
+    - name: icm-as
+      repository: file://../icm-as
+      version: 1.9.0
+    - condition: icm-web.enabled
+      name: icm-web
+      repository: file://../icm-web
+      version: 0.8.0
+    - condition: mailhog.enabled
+      name: mailhog
+      repository: https://codecentric.github.io/helm-charts
+      version: 5.2.0
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 17.15.2
+    - condition: redis-cluster.enabled
+      name: redis-cluster
+      repository: https://charts.bitnami.com/bitnami
+      version: 8.6.12
+    description: Intershop Commerce Management - ICM
+    digest: dc91b9577ebe12209127f557fdd72e364c89fdcfba0a547725990fcf1ea45b63
+    name: icm
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-1.10.2/icm-1.10.2.tgz
+    version: 1.10.2
+  - annotations:
+      requestedCpuQuotaInMinutes: "2500"
+      requestedMemoryQuota: 5900Mi
+    apiVersion: v2
+    appVersion: 11.9.0
     created: "2024-03-06T13:32:34.022123555Z"
     dependencies:
     - name: icm-as
@@ -6078,6 +6110,27 @@ entries:
       requestedMemoryQuota: 10Gi
     apiVersion: v2
     appVersion: 11.9.0
+    created: "2024-03-13T07:26:00.206376175Z"
+    dependencies:
+    - alias: icm-live
+      name: icm
+      repository: file://../icm
+      version: 1.10.2
+    - alias: icm-edit
+      name: icm
+      repository: file://../icm
+      version: 1.10.2
+    description: Intershop Commerce Management - ICM Replication
+    digest: 776019db6fa1fa8210676adf4135afe406be398ebb823b80ecb9cdb99fae22e0
+    name: icm-replication
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-replication-1.7.2/icm-replication-1.7.2.tgz
+    version: 1.7.2
+  - annotations:
+      requestedCpuQuotaInMinutes: "2200"
+      requestedMemoryQuota: 10Gi
+    apiVersion: v2
+    appVersion: 11.9.0
     created: "2024-03-06T13:32:34.209571063Z"
     dependencies:
     - alias: icm-live
@@ -9222,4 +9275,4 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.2.3/pwa-main-0.2.3.tgz
     version: 0.2.3
-generated: "2024-03-06T13:32:34.210743145Z"
+generated: "2024-03-13T07:26:00.207514508Z"
