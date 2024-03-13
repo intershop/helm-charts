@@ -1,28 +1,23 @@
 
-<a name="icm-replication-1.7.1"></a>
-## [icm-replication-1.7.1](https://github.com/intershop/helm-charts/compare/icm-replication-1.8.0...icm-replication-1.7.1)
+<a name="icm-replication-1.7.2"></a>
+## [icm-replication-1.7.2](https://github.com/intershop/helm-charts/compare/icm-replication-1.7.1...icm-replication-1.7.2)
 
-> 2024-03-06
+> 2024-03-13
 
 ### Chore
 
 * bump versions of icm:patch icm-replication:patch
 
 
-<a name="icm-replication-1.8.0"></a>
-## [icm-replication-1.8.0](https://github.com/intershop/helm-charts/compare/icm-replication-1.7.0...icm-replication-1.8.0)
+<a name="icm-replication-1.7.1"></a>
+## [icm-replication-1.7.1](https://github.com/intershop/helm-charts/compare/icm-replication-1.7.0...icm-replication-1.7.1)
 
 > 2024-03-06
 
 ### Chore
 
-* generated changelog+release notes for icm:minor icm-replication:minor
-* bump versions of icm:minor icm-replication:minor
-
-### Feat
-
-* **icm:** enable external automated test execution ([#563](https://github.com/intershop/helm-charts/issues/563))
-* **icm:** enable external automated test execution ([#563](https://github.com/intershop/helm-charts/issues/563))
+* generated changelog+release notes for icm:patch icm-replication:patch
+* bump versions of icm:patch icm-replication:patch
 
 
 <a name="icm-replication-1.7.0"></a>
