@@ -28,7 +28,7 @@ For the best compatibility between IOM Helm Charts and IOM, always use the lates
 regardless of which IOM version you are currently using. Therefore, update IOM Helm Charts as often as possible.
 
 The current version of Helm Charts is backward compatible with all versions of IOM since 4.0. But only the latest
-IOM version, which is 5.0.0 at the time of writing, supports all features that the Helm Charts offer. For more
+IOM version, which is 5.1.0 at the time of writing, supports all features that the Helm Charts offer. For more
 information, please consult the reference documentation of `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
 IOM Helm charts are requiring the usage of Helm 3.8 or newer. At the time of writing, functionality was tested
@@ -37,32 +37,54 @@ up to version 3.14 of Helm.
 ..
    Table is commented out, it's used as an internal reference only.
 
-   +-------------+-----+-----+-----+-----+-----+-----+-------+-------+
-   |Helm / IOM   |3.5  |3.6  |3.7  |4.0  |4.1  |4.2  |4.3-4.7|5.0    |
-   |             |     |     |     |     |     |     |       |       |
-   +=============+=====+=====+=====+=====+=====+=====+=======+=======+
-   |**3.0**      |x    |x    |x    |[3]_ |[3]_ |[3]_ |[4]_   |       |
-   |             |     |     |     |[4]_ |[4]_ |[4]_ |       |       |
-   +-------------+-----+-----+-----+-----+-----+-----+-------+-------+
-   |**2.3**      |[1]_ |[2]_ |[3]_ |[3]_ |[3]_ |[3]_ |       |       |
-   |             |[3]_ |[3]_ |     |     |     |     |       |       |
-   +-------------+-----+-----+-----+-----+-----+-----+-------+-------+
-   |**2.2**      |[1]_ |[2]_ |     |     |     |     |       |       |
-   |             |     |     |     |     |     |     |       |       |
-   +-------------+-----+-----+-----+-----+-----+-----+-------+-------+
-   |**2.1**      |[1]_ |[2]_ |     |     |     |     |       |       |
-   |             |     |     |     |     |     |     |       |       |
-   +-------------+-----+-----+-----+-----+-----+-----+-------+-------+
-   |**2.0**      |[1]_ |[2]_ |     |     |x    |x    |x      |x      |
-   |             |     |     |     |     |     |     |       |       |
-   +-------------+-----+-----+-----+-----+-----+-----+-------+-------+
+   +-------------+-----+-----+-----+-----+-----+-----+-------+-------+-------+
+   |Helm / IOM   |3.5  |3.6  |3.7  |4.0  |4.1  |4.2  |4.3-4.7|5.0    |5.1    |
+   |             |     |     |     |     |     |     |       |       |       |
+   +=============+=====+=====+=====+=====+=====+=====+=======+=======+=======+
+   |**3.1**      |x    |x    |x    |[3]_ |[3]_ |[3]_ |[4]_   |[5]_   |       |
+   |             |     |     |     |[4]_ |[4]_ |[4]_ |       |       |       |
+   +-------------+-----+-----+-----+-----+-----+-----+-------+-------+-------+
+   |**3.0**      |x    |x    |x    |[3]_ |[3]_ |[3]_ |[4]_   |       |       |
+   |             |     |     |     |[4]_ |[4]_ |[4]_ |       |       |       |
+   +-------------+-----+-----+-----+-----+-----+-----+-------+-------+-------+
+   |**2.3**      |[1]_ |[2]_ |[3]_ |[3]_ |[3]_ |[3]_ |       |       |       |
+   |             |[3]_ |[3]_ |     |     |     |     |       |       |       |
+   +-------------+-----+-----+-----+-----+-----+-----+-------+-------+-------+
+   |**2.2**      |[1]_ |[2]_ |     |     |     |     |       |       |       |
+   |             |     |     |     |     |     |     |       |       |       |
+   +-------------+-----+-----+-----+-----+-----+-----+-------+-------+-------+
+   |**2.1**      |[1]_ |[2]_ |     |     |     |     |       |       |       |
+   |             |     |     |     |     |     |     |       |       |       |
+   +-------------+-----+-----+-----+-----+-----+-----+-------+-------+-------+
+   |**2.0**      |[1]_ |[2]_ |     |     |x    |x    |x      |x      |x      |
+   |             |     |     |     |     |     |     |       |       |       |
+   +-------------+-----+-----+-----+-----+-----+-----+-------+-------+-------+
 
    x: not supported
 
    .. [1] Helm parameters *log.rest*, *config.skip*, *oms.db.connectionMonitor.*, *oms.db.connectTimeout* do not work in this combination.
    .. [2] Helm parameter *jboss.activemqClientPoolSizeMax* does not work in this combination.
    .. [3] Helm parameters *oms.sso.\** do not work in this combination.
-   .. [4] Helm parameters *newRelic.\** do not work in this combination 
+   .. [4] Helm parameters *newRelic.\** do not work in this combination.
+   .. [5] Helm parameter *oms.smtp.encryption* does not work in this combination.
+
+=============
+Version 3.1.0
+=============
+
+------------
+New Features
+------------
+
+Added Configuration Option for Encryption of Communication with Mail Server
+===========================================================================
+
+Starting with IOM 5.1.0, there is the ability to explicitly define the type of encryption to be used for communication with the mail server.
+The new configuration option *oms.smtp.encryption* was added. Allowed values are *auto* (default), *ssl* and *startTls*.
+
+For more information, see `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
+
+Requires IOM version 5.1.0 or later.
 
 =============
 Version 3.0.0
@@ -75,7 +97,7 @@ New Features
 Mailhog sub-chart was replaced by Mailpit sub-chart
 ===================================================
 
-_Mailhog_ and the according sub-chart were not maintained properly any longer. Therefore it was replaced by the more modern _Mailpit_ project.
+*Mailhog* and the according sub-chart were not maintained properly any longer. Therefore it was replaced by the more modern *Mailpit* project.
 
 Added Support for *New Relic APM*
 =================================
@@ -159,7 +181,7 @@ before using IOM Helm Charts 3.0.0. Depending on the use case that is causing th
 Mailhog sub-chart was replaced by Mailpit sub-chart
 ===================================================
 
-The _Mailhog_ sub-chart was replaced by _Mailpit_. Please have a look at the *values.yaml* file to get information about basic configuration.
+The *Mailhog* sub-chart was replaced by *Mailpit*. Please have a look at the *values.yaml* file to get information about basic configuration.
 
 See also `Helm parameters of Mailpit <docs/ParametersMailpit.rst>`_.
 
