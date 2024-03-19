@@ -337,6 +337,12 @@ Parameters of IOM Helm Chart
 |                                        |                                                                                                |                                                         |
 |                                        |- Ignored if *mailpit.enabled* is set to *true*.                                                |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|oms.smtp.encryption                     |Allows you to explicitly define the type of encryption to be used for communication with the    |auto                                                     |
+|                                        |mail server. Allowed values are: *auto*, *ssl*, *startTls*.                                     |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |- Ignored if *mailpit.enabled* is set to *true*.                                                |                                                         |
+|                                        |- Requires IOM 5.1.0 or newer.                                                                  |                                                         |
++----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.smtp.user                           |The user name for mail server authentication.                                                   |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |- Only required if the SMTP server requires authentication.                                     |                                                         |
