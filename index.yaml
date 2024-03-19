@@ -8978,6 +8978,29 @@ entries:
     version: 0.1.30
   iom:
   - apiVersion: v2
+    appVersion: 5.1.0
+    created: "2024-03-19T13:30:56.296449823Z"
+    dependencies:
+    - condition: mailpit.enabled
+      name: mailpit
+      repository: https://jouve.github.io/charts/
+      version: 0.13.0
+    - condition: iom-tests.enabled
+      name: iom-tests
+      repository: ""
+      version: 1.0.0
+    - condition: postgres.enabled
+      name: postgres
+      repository: ""
+      version: 2.0.0
+    description: A Helm chart for operation of Intershop Order Management
+    digest: 4f1af5f72e76dde27b9f97208bb275fa27815ba8de5def27d12e4e2351364179
+    name: iom
+    type: application
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/iom-3.1.0/iom-3.1.0.tgz
+    version: 3.1.0
+  - apiVersion: v2
     appVersion: 5.0.0
     created: "2024-02-13T16:21:59.602663108Z"
     dependencies:
@@ -9328,4 +9351,4 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.2.3/pwa-main-0.2.3.tgz
     version: 0.2.3
-generated: "2024-03-19T10:23:49.296860055Z"
+generated: "2024-03-19T13:30:56.297297018Z"
