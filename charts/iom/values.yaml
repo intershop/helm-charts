@@ -147,6 +147,7 @@ oms:
   smtp:
     host:               mail-service
     port:               "1025"
+    encryption:         auto
     user:
     userSecretKeyRef:   {}
     passwd:
