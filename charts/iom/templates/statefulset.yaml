@@ -424,6 +424,10 @@ spec:
             - name: OMS_SMTP_PORT
               value: '{{ .Values.oms.smtp.port }}'
                   {{- end }}
+                  {{- if .Values.oms.smtp.encryption }}
+            - name: OMS_SMTP_ENCRYPTION
+              value: {{ .Values.oms.smtp.encryption }}
+                  {{- end }}
                   {{- /* userSecretKeyRef has precedence over user */ -}}
                   {{- if .Values.oms.smtp.userSecretKeyRef }}
             - name: OMS_SMTP_USER
