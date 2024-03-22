@@ -1,4 +1,28 @@
 
+<a name="icm-replication-1.8.0"></a>
+## [icm-replication-1.8.0](https://github.com/intershop/helm-charts/compare/icm-replication-1.7.3...icm-replication-1.8.0)
+
+> 2024-03-22
+
+### Chore
+
+* bump versions of icm:minor icm-replication:minor
+
+### Feat
+
+* **icm:** enable ingress-nginx for domain usage during testing ([#591](https://github.com/intershop/helm-charts/issues/591))
+
+
+<a name="icm-replication-1.7.3"></a>
+## [icm-replication-1.7.3](https://github.com/intershop/helm-charts/compare/icm-replication-1.7.2...icm-replication-1.7.3)
+
+> 2024-03-19
+
+### Fix
+
+* **icm:** use the right variables ([#584](https://github.com/intershop/helm-charts/issues/584))
+
+
 <a name="icm-replication-1.7.2"></a>
 ## [icm-replication-1.7.2](https://github.com/intershop/helm-charts/compare/icm-replication-1.7.1...icm-replication-1.7.2)
 
@@ -6,6 +30,7 @@
 
 ### Chore
 
+* generated changelog+release notes for icm:patch icm-replication:patch
 * bump versions of icm:patch icm-replication:patch
 
 

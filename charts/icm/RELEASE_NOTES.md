@@ -1,14 +1,14 @@
 
-<a name="icm-1.10.3"></a>
-## [icm-1.10.3](https://github.com/intershop/helm-charts/compare/icm-1.10.2...icm-1.10.3)
+<a name="icm-1.11.0"></a>
+## [icm-1.11.0](https://github.com/intershop/helm-charts/compare/icm-1.10.3...icm-1.11.0)
 
-> 2024-03-19
+> 2024-03-22
 
 ### Chore
 
-* bump versions of icm:patch
+* bump versions of icm:minor icm-replication:minor
 
-### Fix
+### Feat
 
-* **icm:** use the right variables ([#584](https://github.com/intershop/helm-charts/issues/584))
+* **icm:** enable ingress-nginx for domain usage during testing ([#591](https://github.com/intershop/helm-charts/issues/591))
 
