@@ -4,15 +4,15 @@ icm-edit:
     replication:
       enabled: true
       role: source
-      targetSystemUrl: http://icm-replication-icm-web-live-wa:8080
+      targetSystemUrl: https://<domain for icm-replication-ingress-nginx-live>:443
       sourceDatabaseName: intershop_edit
     database:
       jdbcURL: "jdbc:sqlserver://<ipaddress or hostname>:1433;databaseName=intershop_edit"
       jdbcUser: "intershop_edit"
       jdbcPassword: "intershop_edit"
     environment:
-      INTERSHOP_WEBSERVERURL: http://icm-replication-icm-web-edit-wa:8080
-      INTERSHOP_WEBSERVERSECUREURL: https://icm-replication-icm-web-edit-wa:8443
+      INTERSHOP_WEBSERVERURL: http://<domain for icm-replication-ingress-nginx-edit>:80
+      INTERSHOP_WEBSERVERSECUREURL: https://<domain for icm-replication-ingress-nginx-edit>:443
 
     ## @param persistence - Either choose local (default), cluster, azurefiles or nfs persitence layer
     persistence:
@@ -42,8 +42,8 @@ icm-live:
       jdbcUser: "intershop_live"
       jdbcPassword: "intershop_live"
     environment:
-      INTERSHOP_WEBSERVERURL: http://icm-replication-icm-web-live-wa:8080
-      INTERSHOP_WEBSERVERSECUREURL: https://icm-replication-icm-web-live-wa:8443
+      INTERSHOP_WEBSERVERURL: http://<domain for icm-replication-ingress-nginx-live>:80
+      INTERSHOP_WEBSERVERSECUREURL: https://<domain for icm-replication-ingress-nginx-live>:443
 
     ## @param persistence - Either choose local (default), cluster, azurefiles or nfs persitence layer
     persistence:

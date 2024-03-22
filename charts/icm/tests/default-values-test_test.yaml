@@ -45,7 +45,7 @@ tests:
           path: spec.template.spec.containers[0].env
           content:
             name: HOST
-            value: "${HELM_JOB_NAME}-icm-web-wa"
+            value: "${HELM_JOB_NAME}.${DNS_ZONE_NAME}"
       - contains:
           path: spec.template.spec.containers[0].env
           content:
@@ -70,12 +70,12 @@ tests:
           path: spec.template.spec.containers[0].env
           content:
             name: PORT_HTTP
-            value: "8080"
+            value: "80"
       - contains:
           path: spec.template.spec.containers[0].env
           content:
             name: PORT_HTTPS
-            value: "8443"
+            value: "443"
       - contains:
           path: spec.template.spec.containers[0].env
           content:
