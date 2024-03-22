@@ -85,6 +85,9 @@ icm-web:
     pagecache:
       type: emptyDir
 
+ingress-nginx:
+  enabled: false
+
 mailhog:
   enabled: false
 
