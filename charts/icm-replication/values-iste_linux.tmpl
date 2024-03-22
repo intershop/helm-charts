@@ -121,7 +121,7 @@ icm-edit:
         existingClaim: icm-nfs
     ingress:
       enabled: true
-      className: "ingress-class-${HELM_JOB_NAME}-edit"
+      className: "ingress-class-${HELM_JOB_NAME}"
       annotations:
         nginx.ingress.kubernetes.io/proxy-body-size: "600m"
         service.beta.kubernetes.io/azure-load-balancer-internal: "true"
@@ -134,50 +134,6 @@ icm-edit:
       - secretName: ingress-tls-csi
         hosts:
         - "${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}"
-
-  ingress-nginx:
-    enabled: true
-    nameOverride: ingress-nginx-edit
-    controller:
-      kind: Deployment
-      ingressClassByName: "true"
-      ingressClassResource:
-        name: "ingress-class-${HELM_JOB_NAME}-edit"
-        controllerValue: "k8s.io/ingress-${HELM_JOB_NAME}-edit"
-      ingressClass: "ingress-class-${HELM_JOB_NAME}-edit"
-      admissionWebhooks:
-        enabled: false
-      nodeSelector:
-        agentpool: agentpool2
-      affinity:
-        podAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: release
-                operator: In
-                values:
-                - ${HELM_JOB_NAME}-icm-web-edit
-            topologyKey: kubernetes.io/hostname
-      service:
-        external:
-          enabled: "false"
-        internal:
-          enabled: "true"
-          annotations:
-            service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-        externalTrafficPolicy: Local
-      publishService:
-        enabled: "true"
-      config:
-        proxy-read-timeout: "360"
-        proxy-send-timeout: "360"
-        proxy-connect-timeout: "360"
-        disable-access-log: "true"
-      resources:
-        requests:
-          cpu: 200m
-          memory: 300Mi
 
 icm-live:
   icm-as:
@@ -300,7 +256,7 @@ icm-live:
         existingClaim: icm-nfs
     ingress:
       enabled: true
-      className: "ingress-class-${HELM_JOB_NAME}-live"
+      className: "ingress-class-${HELM_JOB_NAME}"
       annotations:
         nginx.ingress.kubernetes.io/proxy-body-size: "600m"
         service.beta.kubernetes.io/azure-load-balancer-internal: "true"
@@ -321,9 +277,9 @@ icm-live:
       kind: Deployment
       ingressClassByName: "true"
       ingressClassResource:
-        name: "ingress-class-${HELM_JOB_NAME}-live"
-        controllerValue: "k8s.io/ingress-${HELM_JOB_NAME}-live"
-      ingressClass: "ingress-class-${HELM_JOB_NAME}-live"
+        name: "ingress-class-${HELM_JOB_NAME}"
+        controllerValue: "k8s.io/ingress-${HELM_JOB_NAME}"
+      ingressClass: "ingress-class-${HELM_JOB_NAME}"
       admissionWebhooks:
         enabled: false
       nodeSelector:
