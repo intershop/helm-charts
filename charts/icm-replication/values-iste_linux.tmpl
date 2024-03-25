@@ -123,8 +123,11 @@ icm-edit:
       enabled: true
       className: "ingress-class-${HELM_JOB_NAME}"
       annotations:
-        nginx.ingress.kubernetes.io/proxy-body-size: "600m"
         service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+        nginx.ingress.kubernetes.io/proxy-body-size: "600m"
+        nginx.ingress.kubernetes.io/affinity: cookie
+        nginx.ingress.kubernetes.io/affinity-mode: persistent
+        nginx.ingress.kubernetes.io/session-cookie-name: stid
       hosts:
       - host: "${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}"
         paths:
@@ -258,8 +261,11 @@ icm-live:
       enabled: true
       className: "ingress-class-${HELM_JOB_NAME}"
       annotations:
-        nginx.ingress.kubernetes.io/proxy-body-size: "600m"
         service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+        nginx.ingress.kubernetes.io/proxy-body-size: "600m"
+        nginx.ingress.kubernetes.io/affinity: cookie
+        nginx.ingress.kubernetes.io/affinity-mode: persistent
+        nginx.ingress.kubernetes.io/session-cookie-name: stid
       hosts:
       - host: "${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}"
         paths:
@@ -272,7 +278,6 @@ icm-live:
 
   ingress-nginx:
     enabled: true
-    nameOverride: ingress-nginx-live
     controller:
       kind: Deployment
       ingressClassByName: "true"
