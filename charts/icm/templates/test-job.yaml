@@ -89,7 +89,7 @@ spec:
                 wget -qO- http://{{ .Release.Name }}-icm-as-edit:7744/status/ReadinessProbe | grep -o "RUNNING"; do
         {{- else }}
           until wget --server-response --spider http://{{ .Release.Name }}-ingress-nginx-controller/healthz 2>&1 | grep "HTTP/" | awk '{print $2}' | grep -q "200" &&
-                result=$(wget -qO- http://{{ .Release.Name }}-icm-as:7744/status/ReadinessProbe | grep -o "RUNNING"); do
+                wget -qO- http://{{ .Release.Name }}-icm-as:7744/status/ReadinessProbe | grep -o "RUNNING"; do
         {{- end }}
             echo "Readiness probe of application server has failed"
             sleep 5
