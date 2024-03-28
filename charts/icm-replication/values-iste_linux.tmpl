@@ -124,10 +124,12 @@ icm-edit:
       className: "ingress-class-${HELM_JOB_NAME}"
       annotations:
         service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-        nginx.ingress.kubernetes.io/proxy-body-size: "600m"
         nginx.ingress.kubernetes.io/affinity: cookie
         nginx.ingress.kubernetes.io/affinity-mode: persistent
         nginx.ingress.kubernetes.io/session-cookie-name: stid
+        nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+        nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+        nginx.ingress.kubernetes.io/client-max-body-size: "0"
       hosts:
       - host: "${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}"
         paths:
@@ -262,10 +264,12 @@ icm-live:
       className: "ingress-class-${HELM_JOB_NAME}"
       annotations:
         service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-        nginx.ingress.kubernetes.io/proxy-body-size: "600m"
         nginx.ingress.kubernetes.io/affinity: cookie
         nginx.ingress.kubernetes.io/affinity-mode: persistent
         nginx.ingress.kubernetes.io/session-cookie-name: stid
+        nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+        nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+        nginx.ingress.kubernetes.io/client-max-body-size: "0"
       hosts:
       - host: "${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}"
         paths:
@@ -309,6 +313,11 @@ icm-live:
         externalTrafficPolicy: Local
       publishService:
         enabled: "true"
+      config:
+        proxy-read-timeout: "360"
+        proxy-send-timeout: "360"
+        proxy-connect-timeout: "360"
+        disable-access-log: "true"
       resources:
         requests:
           cpu: 200m
