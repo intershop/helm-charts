@@ -126,7 +126,7 @@ icm-web:
       nginx.ingress.kubernetes.io/session-cookie-name: stid
       nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
       nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
-      nginx.ingress.kubernetes.io/client-max-body-size: "0"
+      nginx.ingress.kubernetes.io/proxy-body-size: "0"
     hosts:
     - host: "${HELM_JOB_NAME}.${DNS_ZONE_NAME}"
       paths:
