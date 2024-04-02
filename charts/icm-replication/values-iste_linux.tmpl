@@ -313,6 +313,11 @@ icm-live:
         externalTrafficPolicy: Local
       publishService:
         enabled: "true"
+      config:
+        proxy-read-timeout: "360"
+        proxy-send-timeout: "360"
+        proxy-connect-timeout: "360"
+        disable-access-log: "true"
       resources:
         requests:
           cpu: 200m
