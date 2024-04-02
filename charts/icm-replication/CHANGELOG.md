@@ -1,16 +1,37 @@
 
-<a name="icm-replication-1.8.0"></a>
-## [icm-replication-1.8.0](https://github.com/intershop/helm-charts/compare/icm-replication-1.7.3...icm-replication-1.8.0)
+<a name="icm-replication-1.8.1"></a>
+## [icm-replication-1.8.1](https://github.com/intershop/helm-charts/compare/icm-replication-1.8.0...icm-replication-1.8.1)
 
-> 2024-03-22
+> 2024-04-02
 
 ### Chore
 
+* bump versions of icm:patch icm-replication:patch
+
+### Fix
+
+* **icm:** change to correct parameter ([#615](https://github.com/intershop/helm-charts/issues/615))
+
+
+<a name="icm-replication-1.8.0"></a>
+## [icm-replication-1.8.0](https://github.com/intershop/helm-charts/compare/icm-replication-1.7.3...icm-replication-1.8.0)
+
+> 2024-03-28
+
+### Chore
+
+* generated changelog+release notes for icm:minor icm-replication:minor
 * bump versions of icm:minor icm-replication:minor
 
 ### Feat
 
 * **icm:** enable ingress-nginx for domain usage during testing ([#591](https://github.com/intershop/helm-charts/issues/591))
+* **icm:** enable ingress-nginx for domain usage during testing ([#591](https://github.com/intershop/helm-charts/issues/591))
+
+### Fix
+
+* **icm:** do not buffer request ([#602](https://github.com/intershop/helm-charts/issues/602))
+* **icm:** name was to long ([#601](https://github.com/intershop/helm-charts/issues/601))
 
 
 <a name="icm-replication-1.7.3"></a>
