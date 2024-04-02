@@ -129,7 +129,7 @@ icm-edit:
         nginx.ingress.kubernetes.io/session-cookie-name: stid
         nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
         nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
-        nginx.ingress.kubernetes.io/proxy-body-size: "0"
+        nginx.ingress.kubernetes.io/proxy-body-size: "100M"
       hosts:
       - host: "${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}"
         paths:
@@ -269,7 +269,7 @@ icm-live:
         nginx.ingress.kubernetes.io/session-cookie-name: stid
         nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
         nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
-        nginx.ingress.kubernetes.io/proxy-body-size: "0"
+        nginx.ingress.kubernetes.io/proxy-body-size: "100M"
       hosts:
       - host: "${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}"
         paths:
