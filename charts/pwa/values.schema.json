@@ -175,6 +175,16 @@
                       "$id": "#/properties/cache/properties/prefetch/properties/args",
                       "type": "string",
                       "title": "The arguments for the wget job"
+                    },
+                    "successfulJobsHistoryLimit": {
+                      "type": "integer",
+                      "title": "The number of successful jobs to keep",
+                      "default": "0"
+                    },
+                    "failedJobsHistoryLimit": {
+                      "type": "integer",
+                      "title": "The number of failed jobs to keep",
+                      "default": "1"
                     }
                   }
                 },

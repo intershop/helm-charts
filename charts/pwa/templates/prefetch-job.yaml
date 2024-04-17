@@ -19,6 +19,8 @@ spec:
       template:
         spec:
           restartPolicy: Never
+          successfulJobsHistoryLimit: {{ default 0 .successfulJobsHistoryLimit }}
+          failedJobsHistoryLimit: {{ default 1 .failedJobsHistoryLimit }}
           containers:
           - name: prefetch
             image: 31099/wget:alpine-3.18

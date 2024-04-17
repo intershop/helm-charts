@@ -164,16 +164,20 @@ The example above configures the prefetch to happen every day at 11:00 pm. It wi
 
 The only mandatory property is `host` – used to specify the fully qualified name for your site. This host must be contained in your Ingress configuration. All other properties have reasonable defaults.
 
-| Property | Default     |
-| -------- | ----------- |
-| path     | `/`         |
-| protocol | `https`     |
-| cron     | `0 0 * * *` |
-| stop     | `3600`      |
+| Property                   | Default     |
+| -------------------------- | ----------- |
+| path                       | `/`         |
+| protocol                   | `https`     |
+| cron                       | `0 0 * * *` |
+| stop                       | `3600`      |
+| successfulJobsHistoryLimit | `0`         |
+| failedJobsHistoryLimit     | `1`         |
 
 The value for `cron` determines the schedule of the prefetch job. You can search the internet for "cron tab syntax" or use [tooling](https://crontab.guru) to come up with a correct value.
 
 The value for `stop` determines the duration in seconds after the job is forcefully stopped. Forcefully stopping is still considered to be a successful run for container/job.
+
+The Kubernetes [Jobs history limits](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#jobs-history-limits) can be set individually for each prefetch job configuration via `successfulJobsHistoryLimit` and `failedJobsHistoryLimit`.
 
 ## Split Ingress
 
