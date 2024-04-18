@@ -1,4 +1,3 @@
-# install VSCode plugin redhat.vscode-yaml
 # yaml-language-server: $schema=./values.schema.json
 
 # Default values for pwa-main.
@@ -25,6 +24,7 @@ upstream:
   ## E.g:
   ## cdnPrefixURL: "https://www.example.com"
   cdnPrefixURL: ""
+
 service:
   type: ClusterIP
   port: 4200
@@ -58,7 +58,7 @@ podLabels: {}
 ## E.g:
 ## environment:
 ##   - name: FOO
-##     value: "BAR"
+##     value: BAR
 ##   - name: FEATURES
 ##     value: |
 ##       - punchout
@@ -144,7 +144,7 @@ cache:
   ##            channel: default
   ##            lang: de_DE
   ##    - name: FOO
-  ##      value: "BAR"
+  ##      value: BAR
   extraEnvVars: []
 
   ####
@@ -217,5 +217,5 @@ ingress:
 # use with `{{ tpl $.Values.calculated.X.Y $ }}`
 calculated:
   metrics:
-    pwa: '{{ if or (.Values.metrics).enabled (.Values.monitoring).enabled }}on{{ end }}'
-    nginx: '{{ if or (.Values.cache.metrics).enabled (.Values.monitoring).enabled }}on{{ end }}'
+    pwa: "{{ if or (.Values.metrics).enabled (.Values.monitoring).enabled }}on{{ end }}"
+    nginx: "{{ if or (.Values.cache.metrics).enabled (.Values.monitoring).enabled }}on{{ end }}"
