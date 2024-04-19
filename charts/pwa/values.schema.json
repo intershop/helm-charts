@@ -176,6 +176,11 @@
                       "type": "string",
                       "title": "The arguments for the wget job"
                     },
+                    "image": {
+                      "type": "string",
+                      "title": "The special wget image to use for this prefetch job",
+                      "default": "31099/wget:alpine-3.19"
+                    },
                     "successfulJobsHistoryLimit": {
                       "type": "integer",
                       "title": "The number of successful jobs to keep",
