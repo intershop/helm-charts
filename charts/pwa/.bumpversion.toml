@@ -26,3 +26,13 @@ replace = "name: pwa-main\nversion: {new_version}"
 filename = "README.md"
 search = "version: {current_version}"
 replace = "version: {new_version}"
+
+[[tool.bumpversion.files]]
+filename = "README.md"
+search = "/helm-charts/pwa-main-{current_version}/charts/"
+replace = "/helm-charts/pwa-main-{new_version}/charts/"
+
+[[tool.bumpversion.files]]
+filename = "values-flux.schema.json"
+search = "/helm-charts/pwa-main-{current_version}/charts/"
+replace = "/helm-charts/pwa-main-{new_version}/charts/"
