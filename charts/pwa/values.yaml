@@ -153,8 +153,6 @@ cache:
   ## prefetch:
   ##   - host: customer-int.pwa.intershop.de
   ##     path: /
-  ##     protocol: https
-  ##     stop: 3600
   ##     cron: "0 0 * * *"
   prefetch: []
 

@@ -1,5 +1,4 @@
 {{ range .Values.cache.prefetch }}
----
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -21,7 +20,7 @@ spec:
           restartPolicy: Never
           containers:
           - name: prefetch
-            image: 31099/wget:alpine-3.18
+            image: {{ default "31099/wget:alpine-3.19" .image }}
             imagePullPolicy: Always
             env:
             - name: SECS

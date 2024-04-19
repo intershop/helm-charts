@@ -217,6 +217,11 @@
                 "type": "string",
                 "title": "The arguments for the wget job",
                 "default": "'--timeout=15', '--spider', '--no-check-certificate', '--retry-connrefused', '--tries=5', '--execute=robots=off', '--recursive', '--level=0', '--no-verbose'"
+              },
+              "image": {
+                "type": "string",
+                "title": "The special wget image to use for this prefetch job",
+                "default": "31099/wget:alpine-3.19"
               }
             }
           },
