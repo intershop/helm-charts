@@ -147,6 +147,33 @@ spec:
             value: {{ $value | quote }}
             {{- end }}
           {{- end }}
+          startupProbe:
+            tcpSocket:
+              port: {{ .Values.service.httpPort }}
+            # Check every 5s up to a total timeout of 30s
+            initialDelaySeconds: {{ .Values.webadapter.probes.startup.initialDelaySeconds | default 0 }}
+            periodSeconds: {{ .Values.webadapter.probes.startup.periodSeconds | default 5 }}
+            failureThreshold: {{ .Values.webadapter.probes.startup.failureThreshold | default 6 }}
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.service.httpPort }}
+            # Check every 10s up to a total timeout of 30s
+            initialDelaySeconds: {{ .Values.webadapter.probes.liveness.initialDelaySeconds | default 0 }}
+            periodSeconds: {{ .Values.webadapter.probes.liveness.periodSeconds | default 10 }}
+            failureThreshold: {{ .Values.webadapter.probes.liveness.failureThreshold | default 3 }}
+          readinessProbe:
+            httpGet:
+              # /INTERSHOP/wastatus response code is directly linked to configuration servlet availability/validity and
+              # therefore ultimately linked to ICM-AS readiness
+              path: /INTERSHOP/wastatus
+              port: {{ .Values.service.httpPort }}
+              httpHeaders:
+                - name: X-HEALTHCHECK
+                  value: INTERSHOPAGENT
+            # Check every 10s up to a total timeout of 30s
+            initialDelaySeconds: {{ .Values.webadapter.probes.readiness.initialDelaySeconds | default 0 }}
+            periodSeconds: {{ .Values.webadapter.probes.readiness.periodSeconds | default 10 }}
+            failureThreshold: {{ .Values.webadapter.probes.readiness.failureThreshold | default 3 }}
           volumeMounts:
           {{- if .Values.webadapter.customHttpdConfig }}
           - name: httpd-config-volume
