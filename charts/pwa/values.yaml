@@ -20,7 +20,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 upstream:
-  icmBaseURL: https://pwa-ish-demo.test.intershop.com
+  icmBaseURL: https://develop.icm.intershop.de
   ## @param cdnPrefixURL The base URL of your CDN
   ## E.g:
   ## cdnPrefixURL: "https://www.example.com"
@@ -200,6 +200,18 @@ cache:
 ingress:
   enabled: false
   className: nginx
+
+## example for enabled and configured ingress
+# ingress:
+#   enabled: true
+#   className: nginx
+#   instances:
+#     ingress:
+#       annotations:
+#         kubernetes.io/tls-acme: "false"
+#       tlsSecretName: tls-star-pwa-intershop-de
+#       hosts:
+#         - host: pwa.example.local
 
 # Calculated values
 # use with `{{ tpl $.Values.calculated.X.Y $ }}`
