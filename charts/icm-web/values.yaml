@@ -35,6 +35,20 @@ webadapter:
   replicaCount: 1
   # define the update strategy (possible values: Recreate, RollingUpdate; default=RollingUpdate)
   updateStrategy: RollingUpdate
+  # Probes, all values are optional, below are the defaults
+  probes:
+    startup: {}
+    #  initialDelaySeconds: 0
+    #  periodSeconds: 5
+    #  failureThreshold: 6
+    liveness: {}
+    #  initialDelaySeconds: 0
+    #  periodSeconds: 10
+    #  failureThreshold: 3
+    readiness: {}
+    #  initialDelaySeconds: 0
+    #  periodSeconds: 10
+    #  failureThreshold: 3
   sslCertificateRetrieval:
     enabled: false
     supportV1: false
@@ -178,7 +192,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   # Paths are treated as list of prefixes. Any URL matching one of the prefixes will
-  # be forwared to ICM.
+  # be forwarded to ICM.
   hosts:
     - host: <dns-name-of-service>
       paths:
