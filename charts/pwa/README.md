@@ -19,8 +19,9 @@ In addition, the version changes and necessary migration information is provided
 
 | Chart | PWA    | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                 | Migration Information                                                                                                                                                                                                                                                                           |
 | ----- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0.9.0 | 1.0.0  | <ul><li>Options to configure `successfulJobsHistoryLimit` and `failedJobsHistoryLimit` for the prefetch job</li><li>Make prefetch job `args` and `image` configurable</li><li>Provide validation support for Flux configurations</li></ul>                                                                                                                                                                                              |                                                                                                                                                                                                                                                                                                 |
 | 0.8.0 | 1.0.0  | <ul><li>New format of declaring (multiple) Ingresses (Split Ingress)</li><li>Shared Redis cache for the nginx containers (requires PWA 5.0.0)</li><li>Additional result headers configuration (requires PWA 5.0.0)</li><li>Monitoring support with Prometheus and Grafana (for development and testing)</li><li>Delay NGINX until PWA SSR is listening</li><li>Configurable update strategy</li><li>Less verbose prefetch job</li></ul> | See [Migration to 0.8.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.8.0.md) in regards to the new format of configuring Ingress and the dropped support of older kubernetes clusters<br/>Configurable `updateStrategy` stays at `RollingUpdate` by default |
-| 0.7.0 | 1.0.0  | <ul><li>Re-enabled support for `multi-channel.yaml` and `caching-ignore-params.yaml` source code fallbacks</li><li>Added additional Ingress for domain whitelisting</li><li>Added labels on deployment and pod levels</li>                                                                                                                                                                                                              | Removed deprecated configuration options:<ul><li>`upstream.icm`</li><li>`cache.enabled` - was not optional</li><li>`cache.channels`</li></ul>See [Migration to 0.7.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.7.0.md)                                   |
+| 0.7.0 | 1.0.0  | <ul><li>Re-enabled support for `multi-channel.yaml` and `caching-ignore-params.yaml` source code fallbacks</li><li>Added additional Ingress for domain whitelisting</li><li>Added labels on deployment and pod levels</li></ul>                                                                                                                                                                                                         | Removed deprecated configuration options:<ul><li>`upstream.icm`</li><li>`cache.enabled` - was not optional</li><li>`cache.channels`</li></ul>See [Migration to 0.7.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.7.0.md)                                   |
 | 0.6.0 | 1.0.0  | Support for Prometheus metrics                                                                                                                                                                                                                                                                                                                                                                                                          |                                                                                                                                                                                                                                                                                                 |
 | 0.5.0 | 1.0.0  | Added prefetch job that can heat up caches                                                                                                                                                                                                                                                                                                                                                                                              |                                                                                                                                                                                                                                                                                                 |
 | 0.4.0 | 1.0.0  | Support for PWA Hybrid Approach deployment (with ICM 11)                                                                                                                                                                                                                                                                                                                                                                                | Requires PWA 3.2.0 for Hybrid Approach support                                                                                                                                                                                                                                                  |
@@ -85,7 +86,6 @@ Example:
 prefetch:
   - host: customer-int.pwa.intershop.de
     path: /b2c/home
-    protocol: https
     cron: "0 23 * * *"
 ```
 
@@ -93,16 +93,27 @@ The example above configures the prefetch to happen every day at 11:00 pm. It wi
 
 The only mandatory property is `host` – used to specify the fully qualified name for your site. This host must be contained in your Ingress configuration. All other properties have reasonable defaults.
 
-| Property | Default     |
-| -------- | ----------- |
-| path     | `/`         |
-| protocol | `https`     |
-| cron     | `0 0 * * *` |
-| stop     | `3600`      |
+| Property                   | Default                                                                                                                                                        |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| path                       | `/`                                                                                                                                                            |
+| protocol                   | `https`                                                                                                                                                        |
+| cron                       | `0 0 * * *`                                                                                                                                                    |
+| stop                       | `3600`                                                                                                                                                         |
+| args                       | `'--timeout=15', '--spider', '--no-check-certificate', '--retry-connrefused', '--tries=5', '--execute=robots=off', '--recursive', '--level=0', '--no-verbose'` |
+| image                      | `31099/wget:alpine-3.19`                                                                                                                                       |
+| successfulJobsHistoryLimit | `0`                                                                                                                                                            |
+| failedJobsHistoryLimit     | `1`                                                                                                                                                            |
 
 The value for `cron` determines the schedule of the prefetch job. You can search the internet for "cron tab syntax" or use [tooling](https://crontab.guru) to come up with a correct value.
 
 The value for `stop` determines the duration in seconds after the job is forcefully stopped. Forcefully stopping is still considered to be a successful run for container/job.
+
+The value for `args` provides a way to override the current default arguments of the `wget` configuration.
+When overriding the complete set of intended arguments needs to be provided.
+
+The value for `image` can be used to override the default [adapted `wget` image](https://github.com/jometzner/wget) or to update to a different version via the PWA deployment configuration.
+
+The Kubernetes [Jobs history limits](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#jobs-history-limits) can be set individually for each prefetch job configuration via `successfulJobsHistoryLimit` and `failedJobsHistoryLimit`.
 
 ## Multiple Ingress
 
@@ -216,7 +227,7 @@ spec:
   chart:
     repository: https://intershop.github.io/helm-charts
     name: pwa-main
-    version: 0.8.0
+    version: 0.9.0
   values:
 ```
 
@@ -247,7 +258,7 @@ spec:
     spec:
       # pwa helm chart, version from https://github.com/intershop/helm-charts
       chart: pwa-main
-      version: 0.8.0
+      version: 0.9.0
       # Source reference to the HelmChart Repo
       sourceRef:
         kind: HelmRepository
@@ -288,6 +299,23 @@ monitoring:
 ```
 
 The grafana access password can be configured via the `monitoring.grafana.password` value. If not set, a default password will be used.
+
+## Validation
+
+The Intershop PWA Helm Chart provides a `values.schema.json` for validation support of the according `values.yaml` configurations.
+
+For Visual Studio Code the plugin `redhat.vscode-yaml` needs to be installed to make use of the already configured validation link in the [`values.yaml`](./values.yaml).
+
+```yaml
+# yaml-language-server: $schema=./values.schema.json
+```
+
+For the more common Intershop PWA deployments via Flux the repository also provides validation support for such scenarios through the `values-flux.schema.json`.
+This file needs to be referenced in the PWA Flux deployment configuration files with a reference to the fitting version in the following way.
+
+```yaml
+# yaml-language-server: $schema=https://raw.githubusercontent.com/intershop/helm-charts/pwa-main-0.9.0/charts/pwa/values-flux.schema.json
+```
 
 ## Development
 

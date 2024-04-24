@@ -1,356 +1,339 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "IntershopPWAHelmValuesSchema",
-    "type": "object",
-    "title": "The Helm Values Schema",
-    "description": "The Helm Values Schema to define values necessary to deploy Intershops PWA.",
-    "required": [
-        "upstream",
-        "environment",
-        "cache"
-    ],
-    "properties": {
-        "updateStrategy": {
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "IntershopPWAHelmValuesSchema",
+  "type": "object",
+  "title": "The Intershop PWA Helm Values Schema",
+  "description": "The Helm Values Schema to define values necessary to deploy Intershops PWA.",
+  "required": ["upstream", "cache"],
+  "properties": {
+    "updateStrategy": {
+      "type": "string",
+      "title": "Update strategy",
+      "description": "Kubernetes update strategy",
+      "default": "RollingUpdate",
+      "enum": ["RollingUpdate", "Recreate"]
+    },
+    "upstream": {
+      "type": "object",
+      "title": "The upstream schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": {},
+      "required": ["icmBaseURL"],
+      "properties": {
+        "icmBaseURL": {
           "type": "string",
-          "title": "Update strategy",
-          "description": "Kubernetes update strategy",
-          "default": "RollingUpdate",
-          "enum": [
-            "RollingUpdate",
-            "Recreate"
-          ]
+          "title": "The base URL of ICM",
+          "description": "The base URL of your Intershop Commerce Management installation",
+          "examples": ["https://develop.icm.intershop.de"]
         },
-        "upstream": {
-            "$id": "#/properties/upstream",
-            "type": "object",
-            "title": "The upstream schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": {},
-            "required": [
-                "icmBaseURL"
-            ],
-            "properties": {
-                "icmBaseURL": {
-                    "$id": "#/properties/upstream/properties/icmBaseURL",
-                    "type": "string",
-                    "title": "The base URL of ICM",
-                    "description": "The base URL of your Intershop Commerce Management installation",
-                    "examples": [
-                        "https://pwa-ish-demo.test.intershop.com"
-                    ]
-                },
-                "cdnPrefixURL": {
-                    "$id": "#/properties/upstream/properties/cdnPrefixURL",
-                    "type": "string",
-                    "title": "The base URL of your CDN",
-                    "description": "The base URL of your used Content Delivery Network service.",
-                    "examples": [
-                        "https://www.example.com"
-                    ]
-                }
-            },
-            "additionalProperties": false
+        "cdnPrefixURL": {
+          "type": "string",
+          "title": "The base URL of your CDN",
+          "description": "The base URL of your used Content Delivery Network service.",
+          "examples": ["https://www.example.com"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "hybrid": {
+      "type": "object",
+      "title": "The hybrid schema",
+      "description": "Activate the so called Hybrid Approach of PWA (needs ICM deployed in the same namespace)",
+      "required": ["enabled", "backend"],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable or disable Hybrid Approach deployment",
+          "description": "Enable or disable Hybrid Approach deployment",
+          "default": false
         },
-        "hybrid": {
-          "$id": "#/properties/hybrid",
+        "backend": {
           "type": "object",
-          "title": "The hybrid schema",
-          "description": "Activate the so called Hybrid Approach of PWA (needs ICM deployed in the same namespace)",
-          "required": [ "enabled", "backend" ],
+          "title": "ICM Web Adapter service connection reference",
+          "required": [],
           "properties": {
-              "enabled": {
-                  "$id": "#/properties/hybrid/properties/enabled",
-                  "type": "boolean",
-                  "title": "Enable or disable Hybrid Approach deployment",
-                  "description": "Enable or disable Hybrid Approach deployment",
-                  "default": false
-              },
-              "backend": {
-                "$id": "#/properties/hybrid/properties/backend",
-                "type": "object",
-                "title": "ICM Web Adapter service connection reference",
-                "required": [ ],
-                "properties": {
-                  "service": {
-                    "$id": "#/properties/hybrid/properties/backend/properties/service",
-                    "type": "string",
-                    "title": "ICM Web Adapter service name",
-                    "default": "icm-web"
-                  },
-                  "port": {
-                    "$id": "#/properties/hybrid/properties/backend/properties/port",
-                    "type": "integer",
-                    "title": "ICM Web Adapter service port",
-                    "default": "443"
-                  }
-                }
-              }
-            }
-        },
-        "environment": {
-            "$id": "#/properties/environment",
-            "type": "array",
-            "title": "Additional SSR process environment variables",
-            "description": "Additional SSR process environment variables to set.",
-            "default": [],
-            "additionalItems": true,
-            "items": {
-                "$id": "#/properties/environment/items"
-            }
-        },
-        "metrics": {
-          "type": "object",
-          "form": true,
-          "title": "Prometheus metrics details",
-          "properties": {
-            "enabled": {
-              "type": "boolean",
-              "title": "Create Prometheus metrics exporter",
-              "description": "Create Prometheus metrics exporter",
-              "form": true
-            }
-          }
-        },
-        "monitoring": {
-          "type": "object",
-          "title": "Configure Monitoring",
-          "additionalProperties": false,
-          "properties": {
-            "enabled": {
-              "type": "boolean",
-              "title": "Enable or disable monitoring",
-              "description": "Enable or disable monitoring",
-              "additionalProperties": false,
-              "default": false
-            },
-            "prometheus": {
-              "type": "object",
-              "title": "Prometheus configuration",
-              "description": "Prometheus configuration",
-              "additionalProperties": false,
-              "properties": {
-                "host": {
-                  "type": "string",
-                  "title": "Prometheus host",
-                  "description": "Host to expose Prometheus"
-                },
-                "annotations": {
-                  "type": "object",
-                  "title": "Prometheus ingress annotations",
-                  "description": "Prometheus ingress annotations",
-                  "additionalProperties": {
-                    "type": "string"
-                  }
-                }
-              }
-            },
-            "grafana": {
-              "type": "object",
-              "title": "Grafana configuration",
-              "description": "Grafana configuration",
-              "additionalProperties": false,
-              "properties": {
-                "host": {
-                  "type": "string",
-                  "title": "Grafana host",
-                  "description": "Host to expose Grafana"
-                },
-                "annotations": {
-                  "type": "object",
-                  "title": "Grafana ingress annotations",
-                  "description": "Grafana ingress annotations",
-                  "additionalProperties": {
-                    "type": "string"
-                  }
-                },
-                "password": {
-                  "type": "string",
-                  "title": "Grafana admin password",
-                  "description": "Grafana admin password"
-                }
-              }
-            }
-          }
-        },
-        "cache": {
-            "$id": "#/properties/cache",
-            "type": "object",
-            "title": "The cache schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": {},
-            "required": [ ],
-            "properties": {
-                "cacheIgnoreParams": {
-                    "$id": "#/properties/cache/properties/cacheIgnoreParams",
-                    "type": "string",
-                    "title": "Configure NGinx caching behavior",
-                    "description": "NGinx ignore query parameters during caching",
-                    "additionalProperties": true
-                },
-                "multiChannel": {
-                    "$id": "#/properties/cache/properties/multiChannel",
-                    "type": "string",
-                    "title": "Configure top-level URL to appserver URL mapping",
-                    "description": "Multi channel/site configuration object",
-                    "additionalProperties": true
-                },
-                "additionalHeaders": {
-                  "$id": "#/properties/cache/properties/additionalHeaders",
-                  "type": "string",
-                  "title": "Configure additional headers",
-                  "description": "NGinx adds specified header for every page response",
-                  "additionalProperties": true
-              },
-                "extraEnvVars": {
-                    "$id": "#/properties/cache/properties/extraEnvVars",
-                    "type": "array",
-                    "title": "Extra environment variables to be set on NGINX containers",
-                    "description": "Extra environment variables to be set on NGINX containers",
-                    "additionalProperties": true
-                },
-                "prefetch": {
-                  "$id": "#/properties/cache/properties/prefetch",
-                  "type": "array",
-                  "title": "Prefetch job settings",
-                  "description": "Specify settings for the prefetch job that heats up caches",
-                  "additionalProperties": true,
-                  "default": [],
-                  "items": {
-                    "type": "object",
-                    "required": ["host"],
-                    "properties": {
-                    "host": {
-                      "$id": "#/properties/cache/properties/prefetch/properties/host",
-                      "type": "string",
-                      "title": "The fully qualified hostname of the site"
-                    },
-                    "protocol": {
-                      "$id": "#/properties/cache/properties/prefetch/properties/protocol",
-                      "type": "string",
-                      "title": "The protocol under which to access the site",
-                      "default": "https"
-                    },
-                    "path": {
-                      "$id": "#/properties/cache/properties/prefetch/properties/path",
-                      "type": "string",
-                      "title": "The path to the first page that is going to be crawled",
-                      "default": "/"
-                    },
-                    "cron": {
-                      "$id": "#/properties/cache/properties/prefetch/properties/cron",
-                      "type": "string",
-                      "title": "The cron job schedule",
-                      "default": "0 0 * * *"
-                    },
-                    "stop": {
-                      "$id": "#/properties/cache/properties/prefetch/properties/stop",
-                      "type": "integer",
-                      "title": "The maximum duration (in seconds) of a running prefetch job",
-                      "default": "3600"
-                    }
-                  }
-                },
-                "metrics": {
-                  "type": "object",
-                  "form": true,
-                  "title": "Prometheus metrics details",
-                  "properties": {
-                    "enabled": {
-                      "type": "boolean",
-                      "title": "Create Prometheus metrics exporter",
-                      "description": "Create Prometheus metrics exporter",
-                      "form": true
-                    }
-                  }
-                }
-              }
-          }
-        },
-        "redis": {
-          "type": "object",
-          "title": "Redis cache details",
-          "required": ["uri"],
-          "additionalProperties": false,
-          "properties": {
-            "uri": {
+            "service": {
               "type": "string",
-              "title": "Redis URI",
-              "description": "Redis URI"
+              "title": "ICM Web Adapter service name",
+              "default": "icm-web"
             },
-            "keepCache": {
-              "type": "boolean",
-              "title": "Don't flush Redis cache on deployment",
-              "description": "Don't flush Redis cache on deployment",
-              "default": false
+            "port": {
+              "type": "integer",
+              "title": "ICM Web Adapter service port",
+              "default": "443"
             }
           }
-        },
-        "ingress": {
+        }
+      }
+    },
+    "environment": {
+      "type": "array",
+      "title": "Additional SSR process environment variables",
+      "description": "Additional SSR process environment variables to set.",
+      "default": [],
+      "items": {
+        "$ref": "#/definitions/environmentItem"
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "form": true,
+      "title": "Prometheus metrics details",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Create Prometheus metrics exporter",
+          "description": "Create Prometheus metrics exporter",
+          "form": true
+        }
+      }
+    },
+    "monitoring": {
+      "type": "object",
+      "title": "Configure Monitoring",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable or disable monitoring",
+          "description": "Enable or disable monitoring",
           "additionalProperties": false,
+          "default": false
+        },
+        "prometheus": {
           "type": "object",
-          "title": "Ingress configuration",
-          "description": "Configure the ingress for the PWA",
+          "title": "Prometheus configuration",
+          "description": "Prometheus configuration",
+          "additionalProperties": false,
           "properties": {
-            "enabled": {
-              "type": "boolean",
-              "title": "Enable ingress",
-              "description": "Enable ingress",
-              "default": false
-            },
-            "className": {
+            "host": {
               "type": "string",
-              "title": "Ingress class name",
-              "description": "Ingress class name",
-              "default": "nginx"
+              "title": "Prometheus host",
+              "description": "Host to expose Prometheus"
             },
-            "instances": {
+            "annotations": {
               "type": "object",
-              "title": "Ingress instances",
-              "description": "Configure different ingress instances",
+              "title": "Prometheus ingress annotations",
+              "description": "Prometheus ingress annotations",
               "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "grafana": {
+          "type": "object",
+          "title": "Grafana configuration",
+          "description": "Grafana configuration",
+          "additionalProperties": false,
+          "properties": {
+            "host": {
+              "type": "string",
+              "title": "Grafana host",
+              "description": "Host to expose Grafana"
+            },
+            "annotations": {
+              "type": "object",
+              "title": "Grafana ingress annotations",
+              "description": "Grafana ingress annotations",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "password": {
+              "type": "string",
+              "title": "Grafana admin password",
+              "description": "Grafana admin password"
+            }
+          }
+        }
+      }
+    },
+    "cache": {
+      "type": "object",
+      "title": "The cache schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": {},
+      "required": [],
+      "properties": {
+        "cacheIgnoreParams": {
+          "type": "string",
+          "title": "Configure NGinx caching behavior",
+          "description": "NGinx ignore query parameters during caching",
+          "additionalProperties": true
+        },
+        "multiChannel": {
+          "type": "string",
+          "title": "Configure top-level URL to appserver URL mapping",
+          "description": "Multi channel/site configuration object"
+        },
+        "additionalHeaders": {
+          "type": "string",
+          "title": "Configure additional headers",
+          "description": "NGinx adds specified header for every page response"
+        },
+        "extraEnvVars": {
+          "type": "array",
+          "title": "Extra environment variables to be set on NGINX containers",
+          "description": "Extra environment variables to be set on NGINX containers",
+          "items": {
+            "$ref": "#/definitions/environmentItem"
+          }
+        },
+        "prefetch": {
+          "type": "array",
+          "title": "Prefetch job settings",
+          "description": "Specify settings for the prefetch job that heats up caches",
+          "default": [],
+          "items": {
+            "type": "object",
+            "required": ["host"],
+            "properties": {
+              "host": {
+                "type": "string",
+                "title": "The fully qualified hostname of the site"
+              },
+              "protocol": {
+                "type": "string",
+                "title": "The protocol under which to access the site",
+                "default": "https"
+              },
+              "path": {
+                "type": "string",
+                "title": "The path to the first page that is going to be crawled",
+                "default": "/"
+              },
+              "cron": {
+                "type": "string",
+                "title": "The cron job schedule",
+                "default": "0 0 * * *"
+              },
+              "stop": {
+                "type": "integer",
+                "title": "The maximum duration (in seconds) of a running prefetch job",
+                "default": "3600"
+              },
+              "args": {
+                "type": "string",
+                "title": "The arguments for the wget job",
+                "default": "'--timeout=15', '--spider', '--no-check-certificate', '--retry-connrefused', '--tries=5', '--execute=robots=off', '--recursive', '--level=0', '--no-verbose'"
+              },
+              "image": {
+                "type": "string",
+                "title": "The special wget image to use for this prefetch job",
+                "default": "31099/wget:alpine-3.19"
+              },
+              "successfulJobsHistoryLimit": {
+                "type": "integer",
+                "title": "The number of successful jobs to keep",
+                "default": "0"
+              },
+              "failedJobsHistoryLimit": {
+                "type": "integer",
+                "title": "The number of failed jobs to keep",
+                "default": "1"
+              }
+            }
+          },
+          "metrics": {
+            "type": "object",
+            "form": true,
+            "title": "Prometheus metrics details",
+            "properties": {
+              "enabled": {
+                "type": "boolean",
+                "title": "Create Prometheus metrics exporter",
+                "description": "Create Prometheus metrics exporter",
+                "form": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "redis": {
+      "type": "object",
+      "title": "Redis cache details",
+      "required": ["uri"],
+      "additionalProperties": false,
+      "properties": {
+        "uri": {
+          "type": "string",
+          "title": "Redis URI",
+          "description": "Redis URI"
+        },
+        "keepCache": {
+          "type": "boolean",
+          "title": "Don't flush Redis cache on deployment",
+          "description": "Don't flush Redis cache on deployment",
+          "default": false
+        }
+      }
+    },
+    "ingress": {
+      "additionalProperties": false,
+      "type": "object",
+      "title": "Ingress configuration",
+      "description": "Configure the ingress for the PWA",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable ingress",
+          "description": "Enable ingress",
+          "default": false
+        },
+        "className": {
+          "type": "string",
+          "title": "Ingress class name",
+          "description": "Ingress class name",
+          "default": "nginx"
+        },
+        "instances": {
+          "type": "object",
+          "title": "Ingress instances",
+          "description": "Configure different ingress instances",
+          "additionalProperties": {
+            "type": "object",
+            "title": "Ingress instance",
+            "description": "Ingress instance",
+            "additionalProperties": false,
+            "properties": {
+              "tlsSecretName": {
+                "type": "string",
+                "title": "TLS secret name",
+                "description": "TLS secret name"
+              },
+              "annotations": {
                 "type": "object",
-                "title": "Ingress instance",
-                "description": "Ingress instance",
-                "additionalProperties": false,
-                "properties": {
-                  "tlsSecretName": {
-                    "type": "string",
-                    "title": "TLS secret name",
-                    "description": "TLS secret name"
-                  },
-                  "annotations": {
-                    "type": "object",
-                    "title": "Ingress Annotations",
-                    "description": "Ingress Annotations",
-                    "default": {},
-                    "additionalProperties": {
-                      "type": "string"
-                    }
-                  },
-                  "hosts": {
-                    "type": "array",
-                    "title": "Ingress hosts",
-                    "description": "Ingress hosts",
-                    "default": [],
-                    "items": {
-                      "type": "object",
-                      "title": "Ingress host",
-                      "description": "Ingress host",
-                      "additionalProperties": false,
-                      "required": ["host"],
-                      "properties": {
-                        "host": {
-                          "type": "string",
-                          "title": "Host name",
-                          "description": "Host name",
-                          "default": ""
-                        },
-                        "tlsSecretName": {
-                          "type": "string",
-                          "title": "TLS secret name override",
-                          "description": "TLS secret name override for this host"
-                        }
-                      }
+                "title": "Ingress Annotations",
+                "description": "Ingress Annotations",
+                "default": {},
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "hosts": {
+                "type": "array",
+                "title": "Ingress hosts",
+                "description": "Ingress hosts",
+                "default": [],
+                "items": {
+                  "type": "object",
+                  "title": "Ingress host",
+                  "description": "Ingress host",
+                  "additionalProperties": false,
+                  "required": ["host"],
+                  "properties": {
+                    "host": {
+                      "type": "string",
+                      "title": "Host name",
+                      "description": "Host name",
+                      "default": ""
+                    },
+                    "tlsSecretName": {
+                      "type": "string",
+                      "title": "TLS secret name override",
+                      "description": "TLS secret name override for this host"
                     }
                   }
                 }
@@ -358,5 +341,28 @@
             }
           }
         }
+      }
     }
+  },
+  "definitions": {
+    "environmentItem": {
+      "type": "object",
+      "title": "Environment variable",
+      "description": "Environment variable to set.",
+      "required": ["name", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "Name",
+          "description": "Name of the environment variable"
+        },
+        "value": {
+          "type": "string",
+          "title": "Value",
+          "description": "Value of the environment variable"
+        }
+      }
+    }
+  }
 }
