@@ -1,5 +1,4 @@
 {{ range .Values.cache.prefetch }}
----
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -19,23 +18,17 @@ spec:
       template:
         spec:
           restartPolicy: Never
+          successfulJobsHistoryLimit: {{ default 0 .successfulJobsHistoryLimit }}
+          failedJobsHistoryLimit: {{ default 1 .failedJobsHistoryLimit }}
           containers:
           - name: prefetch
-            image: 31099/wget:alpine-3.18
+            image: {{ default "31099/wget:alpine-3.19" .image }}
             imagePullPolicy: Always
             env:
             - name: SECS
               value: {{ default 3600 .stop | quote }}
             args: [
-              "--timeout=15",
-              "--spider",
-              "--no-check-certificate",
-              "--retry-connrefused",
-              "--tries=5",
-              "--execute=robots=off",
-              "--recursive",
-              "--level=0",
-              "--no-verbose",
+              {{ default "'--timeout=15', '--spider', '--no-check-certificate', '--retry-connrefused', '--tries=5', '--execute=robots=off', '--recursive', '--level=0', '--no-verbose'" .args }},
               {{ include "pwa-prefetch.url" . | quote }}
             ]
 {{- end }}
