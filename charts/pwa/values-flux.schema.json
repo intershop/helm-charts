@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "IntershopPWAFluxHelmValuesSchema",
+  "title": "The Intershop PWA Helm Values Schema for Flux",
+  "description": "Integrate the Helm Values Schema to define values necessary to deploy Intershops PWA with Flux environments.",
+  "type": "object",
+  "properties": {
+    "spec": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "$ref": "https://raw.githubusercontent.com/intershop/helm-charts/pwa-main-0.9.0/charts/pwa/values.schema.json"
+        }
+      }
+    }
+  }
+}
