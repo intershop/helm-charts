@@ -1,4 +1,3 @@
-# install VSCode plugin redhat.vscode-yaml
 # yaml-language-server: $schema=./values.schema.json
 
 # Default values for pwa-main.
@@ -20,11 +19,12 @@ nameOverride: ""
 fullnameOverride: ""
 
 upstream:
-  icmBaseURL: https://pwa-ish-demo.test.intershop.com
+  icmBaseURL: https://develop.icm.intershop.de
   ## @param cdnPrefixURL The base URL of your CDN
   ## E.g:
   ## cdnPrefixURL: "https://www.example.com"
   cdnPrefixURL: ""
+
 service:
   type: ClusterIP
   port: 4200
@@ -58,7 +58,7 @@ podLabels: {}
 ## E.g:
 ## environment:
 ##   - name: FOO
-##     value: "BAR"
+##     value: BAR
 ##   - name: FEATURES
 ##     value: |
 ##       - punchout
@@ -144,19 +144,18 @@ cache:
   ##            channel: default
   ##            lang: de_DE
   ##    - name: FOO
-  ##      value: "BAR"
+  ##      value: BAR
   extraEnvVars: []
 
   ####
   ## @param prefetch Specify settings for the prefetch job that heats up caches.
   ## E.g:
-  ##  prefetch:
-  ##  - host: customer-int.pwa.intershop.de
-  ##    path: /
-  ##    protocol: https
-  ##    stop: 3600
-  ##    cron: "0 0 * * *"
+  ## prefetch:
+  ##   - host: customer-int.pwa.intershop.de
+  ##     path: /
+  ##     cron: "0 0 * * *"
   prefetch: []
+
   ## Prometheus Exporter / Metrics
   ##
   metrics:
@@ -201,9 +200,21 @@ ingress:
   enabled: false
   className: nginx
 
+## example for enabled and configured ingress
+# ingress:
+#   enabled: true
+#   className: nginx
+#   instances:
+#     ingress:
+#       annotations:
+#         kubernetes.io/tls-acme: "false"
+#       tlsSecretName: tls-star-pwa-intershop-de
+#       hosts:
+#         - host: pwa.example.local
+
 # Calculated values
 # use with `{{ tpl $.Values.calculated.X.Y $ }}`
 calculated:
   metrics:
-    pwa: '{{ if or (.Values.metrics).enabled (.Values.monitoring).enabled }}on{{ end }}'
-    nginx: '{{ if or (.Values.cache.metrics).enabled (.Values.monitoring).enabled }}on{{ end }}'
+    pwa: "{{ if or (.Values.metrics).enabled (.Values.monitoring).enabled }}on{{ end }}"
+    nginx: "{{ if or (.Values.cache.metrics).enabled (.Values.monitoring).enabled }}on{{ end }}"
