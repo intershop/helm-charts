@@ -67,11 +67,20 @@ icm-as:
     customdata:
       enabled: true
       existingClaim: icm-nfs
+  # TODO: move this to values.yaml after weblayer gets standard
+  testConnection:
+    protocol: http
+    port: 80
+    url: /INTERSHOP/web/WFS/SMC
+    serviceSuffix: -icm-as
   newrelic:
     enabled: true
     appName: "${HELM_JOB_NAME}-icm-as"
     license_key: "${NEWRELIC_LICENSE_KEY}"
 
+  # TODO: move this to values.yaml after weblayer gets standard
+  webLayer:
+    enabled: true
   ingress:
     enabled: true
     className: "ingress-class-${HELM_JOB_NAME}"
@@ -87,6 +96,10 @@ icm-as:
     - secretName: ingress-tls-csi
       hosts:
       - "${HELM_JOB_NAME}.${DNS_ZONE_NAME}"
+
+# TODO: move this to values.yaml after weblayer gets standard
+icm-web:
+  enabled: false
 
 ingress-nginx:
   enabled: true

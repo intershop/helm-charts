@@ -88,6 +88,10 @@ icm-edit:
         hosts:
         - "${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}"
 
+  # TODO: move this to values.yaml after weblayer gets standard
+  icm-web:
+    enabled: false
+
   ingress-nginx:
     enabled: true
     nameOverride: ingress-nginx-edit
@@ -219,6 +223,10 @@ icm-live:
       - secretName: ingress-tls-csi
         hosts:
         - "${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}"
+
+  # TODO: move this to values.yaml after weblayer gets standard
+  icm-web:
+    enabled: false
 
   ingress-nginx:
     enabled: true

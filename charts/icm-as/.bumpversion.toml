@@ -1,9 +1,5 @@
 [tool.bumpversion]
-<<<<<<< HEAD
-current_version = "1.9.0"
-=======
-current_version = "1.8.0-alpha"
->>>>>>> 957e807 (feat(icm): use ingress controller per testsuite (#454))
+current_version = "1.10.0-alpha"
 
 [[tool.bumpversion.files]]
 filename = "Chart.yaml"
