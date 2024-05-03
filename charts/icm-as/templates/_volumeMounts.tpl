@@ -29,10 +29,8 @@ volumeMounts:
   readOnly: true
   subPath: replication-clusters.xml
 {{- end }}
-- mountPath: /intershop/jgroups-conf/jgroups-config.xml
+- mountPath: /intershop/jgroups-conf
   name: jgroups-config-volume
-  readOnly: true
-  subPath: jgroups-config.xml
 {{- if .Values.webLayer.redis.enabled }}
 - mountPath: /intershop/redis-conf/redis-client-config.yaml
   name: redis-client-config-volume

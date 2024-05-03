@@ -37,8 +37,10 @@ volumes:
     name: {{ template "icm-as.fullname" . }}-jgroups-config-xml
 {{- if .Values.persistence.customdata.enabled }}
 - name: custom-data-volume
-  persistentVolumeClaim:
-    claimName: "{{ .Values.persistence.customdata.existingClaim }}"
+  azureFile:
+    secretName: azure-secret
+    shareName: iste-nfs
+    readOnly: false
 {{- end }}
 - name: customizations-volume
   emptyDir: {}
@@ -62,13 +64,10 @@ Creates a volume named {$name}-volume
 {{- $podSecurityValues := index . 3 }}
 - name: {{ $volumeName }}-volume
 {{- if eq $volumeValues.type "azurefiles" }}
-  csi:
-    driver: file.csi.azure.com
+  azureFile:
+    secretName: {{ $volumeValues.azurefiles.secretName }}
+    shareName: {{ $volumeValues.azurefiles.shareName }}
     readOnly: false
-    volumeAttributes:
-      secretName: {{ $volumeValues.azurefiles.secretName }}
-      shareName: {{ $volumeValues.azurefiles.shareName }}
-      mountOptions: "uid={{ $podSecurityValues.runAsUser }},gid={{ $podSecurityValues.runAsGroup }}"
 {{- else if eq $volumeValues.type "emptyDir" }}
   emptyDir: {}
 {{- else if eq $volumeValues.type "existingClaim" }}

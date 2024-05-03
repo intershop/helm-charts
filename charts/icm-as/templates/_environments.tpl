@@ -27,10 +27,11 @@ env:
   valueFrom:
     fieldRef:
       fieldPath: metadata.name
-- name: INTERSHOP_SERVER_PODIP
-  valueFrom:
-    fieldRef:
-      fieldPath: status.podIP
+#TODO: should only be unset for job server
+#- name: INTERSHOP_SERVER_PODIP
+#  valueFrom:
+#    fieldRef:
+#      fieldPath: status.podIP
 {{- if .Values.jvm.debug.enabled }}
 - name: DEBUG_ICM
   value: "true"
@@ -147,6 +148,14 @@ Job-specific-environment
 - name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
   value: {{ .jobServerGroup }}
 {{- include "icm-as.envSecrets" . }}
+- name: INTERSHOP_DATABASETYPE
+  value: mssql
+- name: INTERSHOP_JDBC_URL
+  value: {{ printf "jdbc:sqlserver://%s-mssql-service:1433;database=%s" (include "icm-as.fullname" .) .Values.mssql.databaseName }}
+- name: INTERSHOP_JDBC_USER
+  value: "{{ .Values.mssql.user }}"
+- name: INTERSHOP_JDBC_PASSWORD
+  value: "{{ .Values.mssql.password }}"
 {{- end -}}
 
 {{/*

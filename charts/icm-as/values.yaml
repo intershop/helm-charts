@@ -30,7 +30,7 @@ podLabels: {}
 image:
   pullPolicy: IfNotPresent
   # 'appServer' container provides the application / service endpoint
-  repository: "intershophub/icm-as"
+  repository: "icmbuild.azurecr.io/intershop/icm-as-test:version-id126491-SNAPSHOT"
   # tag: "11.1.3"
 
 ## define a secret for a container registry
@@ -45,6 +45,7 @@ dockerSecret:
 ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
 ## Intershop: These secrets also last for customization images
 imagePullSecrets:
+  - "icmbuildsnapshot"
   - "dockerhub"
 
 # list of customization images each following the structure:
@@ -184,26 +185,11 @@ persistence:
   sites:
     size: 1Gi
     # type cluster | nfs | azurefiles | existingClaim | local
-    type: local
+    type: azurefiles
     existingClaim: <claim name>
-    cluster:
-      storageClass:
-        create: false
-        # if create == false an exiting class could be set
-        # if empty value is set the default storage class is used
-        existingClass: ""
-        # skuName: Standard_LRS
-        # mountOptions:
-        # - uid=150
-        # - gid=150
-        # - dir_mode=0777
-        # - file_mode=0777
-        # - mfsymlinks
-        # - cache=strict
-        # - actimeo=30
     azurefiles:
-      shareName: icm-as-share
-      secretName: icm-as-share-secret
+      shareName: icm-sites
+      secretName: azure-secret
     nfs:
       server: <ipaddress or hostname>
       path: <server folder>
@@ -250,13 +236,13 @@ probes:
 # ICM will use jdbc:sqlserver://<release>-mssql:1433;database=<mssql.name>;
 # see values of persistence.mssql-data and persistence.mssql-backup
 mssql:
-  enabled: false
+  enabled: true
   # recreate database on restart
   recreation: false
   resources:
     limits:
       cpu: 1000m
-      memory: 2Gi
+      memory: 3Gi
     requests:
       cpu: 1000m
       memory: 2Gi
@@ -377,7 +363,7 @@ sslCertificateRetrieval:
 # configure different cpu or memory limits.
 job:
   # if enabled=true the job controller must be deployed at cluster separately. see icm-job chart.
-  enabled: false
+  enabled: true
 
   # If true, job-server-support will be available but no jobs will be created
   # suspend: false

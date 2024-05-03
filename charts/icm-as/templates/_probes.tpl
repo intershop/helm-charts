@@ -3,14 +3,6 @@
 Creates the probes
 */}}
 {{- define "icm-as.probes" -}}
-startupProbe:
-  httpGet:
-    path: /status/LivenessProbe
-    port: mgnt
-  # wait 60s then poll every 10s up to a total timeout of 120s
-  failureThreshold: {{ .Values.probes.startup.failureThreshold | default 6 }}
-  initialDelaySeconds: {{ .Values.probes.startup.initialDelaySeconds | default 60 }}
-  periodSeconds: {{ .Values.probes.startup.periodSeconds | default 10 }}
 livenessProbe:
   exec:
     command:
@@ -22,8 +14,8 @@ livenessProbe:
         # https://github.com/kubernetes/kubernetes/issues/57187.
         [ -f "/tmp/liveness-status" ] || curl -f http://localhost:7744/status/LivenessProbe >/dev/null 2>&1
   #after startup: poll every 10s up to a total timeout of 30s
-  failureThreshold: {{ .Values.probes.liveness.failureThreshold | default 3 }}
-  initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds | default 0 }}
+  failureThreshold: {{ .Values.probes.liveness.failureThreshold | default 6 }}
+  initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds | default 120 }}
   periodSeconds: {{ .Values.probes.liveness.periodSeconds | default 10 }}
 readinessProbe:
   httpGet:

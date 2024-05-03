@@ -44,6 +44,15 @@ spec:
     spec:
       template:
         spec:
+          nodeSelector:
+            kubernetes.io/role: agent
+            beta.kubernetes.io/os: linux
+            type: virtual-kubelet
+          tolerations:
+          - key: virtual-kubelet.io/provider
+            operator: Exists
+          - key: azure.com/aci
+            effect: NoSchedule
           {{- if eq (include "icm-as.jgroups.discovery" .) "kube_ping" }}
           serviceAccountName: {{ include "icm-as.serviceAccountName" . }}
           {{- end }}
@@ -61,7 +70,6 @@ spec:
             {{- include "icm-as.resources" $jobValues | nindent 12 }}
             {{- include "icm-as.volumeMounts" . | nindent 12 }}
             {{- include "icm-as.probes" . | nindent 12 }}
-            {{- include "icm-as.lifecycle" $jobValues | nindent 12 }}
           {{- include "icm-as.initContainers" . | nindent 10 }}
           restartPolicy: OnFailure
           {{- if include "icm-as.podSecurityContext" $jobValues }}

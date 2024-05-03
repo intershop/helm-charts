@@ -156,9 +156,6 @@ Image spec
 {{- define "icm-as.image" -}}
 image: "{{ .Values.image.repository }}{{ if not (contains ":" .Values.image.repository) }}:{{ .Values.image.tag | default .Chart.AppVersion }}{{ end }}"
 imagePullPolicy: "{{ .Values.image.pullPolicy }}"
-{{- if .Values.customCommand }}
-command: {{- toYaml .Values.customCommand | nindent 2 }}
-{{- end }}
 {{- end -}}
 
 {{/*

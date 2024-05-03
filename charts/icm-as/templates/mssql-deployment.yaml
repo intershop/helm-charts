@@ -20,6 +20,7 @@ spec:
     spec:
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
+      - name: dockerhub
       {{- range .Values.imagePullSecrets }}
       - name: {{ . | quote }}
       {{- end }}
