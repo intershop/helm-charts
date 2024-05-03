@@ -30,4 +30,4 @@ envsubst "${env_list}" < ./values-test-local.tmpl | tee values-test-local.yaml
 # create needed folders
 source start-test-local_dir-create.sh
 
-helm upgrade --install ${HELM_DRY_RUN}${HELM_JOB_NAME} . -f ./values-iste_linux.yaml -f ./values-test-local.yaml
+helm upgrade --install ${HELM_DRY_RUN} ${HELM_JOB_NAME} . -f ./values-iste_linux.yaml -f ./values-test-local.yaml

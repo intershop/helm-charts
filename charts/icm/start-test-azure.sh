@@ -29,4 +29,4 @@ envsubst "${env_list}" < ./values-test-azure.tmpl | tee values-test-azure.yaml
 # start test
 helm dependency update ../icm-as # wait for https://github.com/helm/helm/issues/2247
 helm dependency update .
-helm upgrade --install ${HELM_DRY_RUN}${HELM_JOB_NAME} . -f ./values-iste_linux.yaml -f ./values-test-azure.yaml
+helm upgrade --install ${HELM_DRY_RUN} ${HELM_JOB_NAME} . -f ./values-iste_linux.yaml -f ./values-test-azure.yaml
