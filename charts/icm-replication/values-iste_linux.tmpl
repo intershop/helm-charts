@@ -74,7 +74,7 @@ icm-edit:
       license_key: "${NEWRELIC_LICENSE_KEY}"
     ingress:
       enabled: true
-      className: "ingress-class-${HELM_JOB_NAME}-edit"
+      className: "ingress-class-${HELM_JOB_NAME}"
       annotations:
         nginx.ingress.kubernetes.io/proxy-body-size: "600m"
         service.beta.kubernetes.io/azure-load-balancer-internal: "true"
@@ -94,14 +94,14 @@ icm-edit:
 
   ingress-nginx:
     enabled: true
-    nameOverride: ingress-nginx-edit
+    nameOverride: ingress-nginx
     controller:
       kind: Deployment
       ingressClassByName: "true"
       ingressClassResource:
-        name: "ingress-class-${HELM_JOB_NAME}-edit"
-        controllerValue: "k8s.io/ingress-${HELM_JOB_NAME}-edit"
-      ingressClass: "ingress-class-${HELM_JOB_NAME}-edit"
+        name: "ingress-class-${HELM_JOB_NAME}"
+        controllerValue: "k8s.io/ingress-${HELM_JOB_NAME}"
+      ingressClass: "ingress-class-${HELM_JOB_NAME}"
       admissionWebhooks:
         enabled: false
       nodeSelector:
@@ -210,7 +210,7 @@ icm-live:
       license_key: "${NEWRELIC_LICENSE_KEY}"
     ingress:
       enabled: true
-      className: "ingress-class-${HELM_JOB_NAME}-live"
+      className: "ingress-class-${HELM_JOB_NAME}"
       annotations:
         nginx.ingress.kubernetes.io/proxy-body-size: "600m"
         service.beta.kubernetes.io/azure-load-balancer-internal: "true"
@@ -227,45 +227,6 @@ icm-live:
   # TODO: move this to values.yaml after weblayer gets standard
   icm-web:
     enabled: false
-
-  ingress-nginx:
-    enabled: true
-    nameOverride: ingress-nginx-live
-    controller:
-      kind: Deployment
-      ingressClassByName: "true"
-      ingressClassResource:
-        name: "ingress-class-${HELM_JOB_NAME}-live"
-        controllerValue: "k8s.io/ingress-${HELM_JOB_NAME}-live"
-      ingressClass: "ingress-class-${HELM_JOB_NAME}-live"
-      admissionWebhooks:
-        enabled: false
-      nodeSelector:
-        agentpool: agentpool2
-      affinity:
-        podAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: release
-                operator: In
-                values:
-                - ${HELM_JOB_NAME}-icm-as-live
-            topologyKey: kubernetes.io/hostname
-      service:
-        external:
-          enabled: "false"
-        internal:
-          enabled: "true"
-          annotations:
-            service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-        externalTrafficPolicy: Local
-      publishService:
-        enabled: "true"
-      resources:
-        requests:
-          cpu: 200m
-          memory: 300Mi
 
   test:
     enabled: true

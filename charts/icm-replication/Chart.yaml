@@ -6,7 +6,7 @@ name: icm-replication
 version: 1.10.0-alpha
 annotations:
   requestedMemoryQuota: 9Gi
-  requestedCpuQuotaInMinutes: 3500
+  requestedCpuQuotaInMinutes: 3000
 dependencies:
   - name: icm
     version: 1.13.0-alpha
