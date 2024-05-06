@@ -49,8 +49,8 @@ icm-edit:
       SERVER_DIRECTORY_GROUP: "${SERVER_DIRECTORY_GROUP}"
       SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
 
-      INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}:80"
-      INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}:443"
+      INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}:80/"
+      INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}:443/"
 
       SMTPMAILSERVICE_DEFAULTSMTPMAILSERVICE_MAIL_SMTP_HOSTNAMES: "${HELM_JOB_NAME}-mailhog"
       SMTPMAILSERVICE_DEFAULTSMTPMAILSERVICE_MAIL_SMTP_PORT: "1025"
@@ -72,6 +72,11 @@ icm-edit:
       enabled: true
       appName: "${HELM_JOB_NAME}-icm-as"
       license_key: "${NEWRELIC_LICENSE_KEY}"
+
+    # TODO: move this to values.yaml after weblayer gets standard
+    webLayer:
+      enabled: true
+
     ingress:
       enabled: true
       className: "ingress-class-${HELM_JOB_NAME}"
@@ -184,8 +189,8 @@ icm-live:
       SERVER_DIRECTORY_GROUP: "${SERVER_DIRECTORY_GROUP}"
       SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
 
-      INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}:80"
-      INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}:443"
+      INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}:80/"
+      INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}:443/"
 
       SMTPMAILSERVICE_DEFAULTSMTPMAILSERVICE_MAIL_SMTP_HOSTNAMES: "${HELM_JOB_NAME}-mailhog"
       SMTPMAILSERVICE_DEFAULTSMTPMAILSERVICE_MAIL_SMTP_PORT: "1025"
@@ -208,6 +213,11 @@ icm-live:
       enabled: true
       appName: "${HELM_JOB_NAME}-icm-as"
       license_key: "${NEWRELIC_LICENSE_KEY}"
+
+    # TODO: move this to values.yaml after weblayer gets standard
+    webLayer:
+      enabled: true
+
     ingress:
       enabled: true
       className: "ingress-class-${HELM_JOB_NAME}"
