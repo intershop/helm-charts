@@ -3,14 +3,14 @@ appVersion: "11.9.0"
 description: Intershop Commerce Management - ICM
 # name and version must be in this exact order, otherwise bump2version won't work
 name: icm
-version: 1.12.0
+version: 1.13.0
 # test related annotations
 annotations:
-  requestedMemoryQuota: 5900Mi
-  requestedCpuQuotaInMinutes: "2500"
+  requestedMemoryQuota: 5300Mi
+  requestedCpuQuotaInMinutes: "2000"
 dependencies:
   - name: icm-as
-    version: 1.9.0
+    version: 1.10.0
     repository: file://../icm-as
   - name: icm-web
     version: 0.9.0
