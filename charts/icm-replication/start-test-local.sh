@@ -10,7 +10,7 @@ DEFAULT_TESTSUITE='tests.remote.com.intershop.product.suite.ProductMassDataRepli
 TESTSUITE="${TESTSUITE:-$DEFAULT_TESTSUITE}"
 read -e -p 'Testsuite: ' -i "$TESTSUITE" TESTSUITE || { echo "Error reading input"; exit 1; }
 
-DEFAULT_ICM_TEST_IMAGE='intershophub/icm-as-test:11.9.0'
+DEFAULT_ICM_TEST_IMAGE='intershophub/icm-as-test:11.10.2'
 ICM_TEST_IMAGE="${ICM_TEST_IMAGE:-$DEFAULT_ICM_TEST_IMAGE}"
 read -e -p 'Test image: ' -i "$ICM_TEST_IMAGE" ICM_TEST_IMAGE || { echo "Error reading input"; exit 1; }
 
@@ -30,4 +30,4 @@ envsubst "${env_list}" < ./values-test-local.tmpl | tee values-test-local.yaml
 # create needed folders
 source start-test-local_dir-create.sh
 
-helm upgrade --install ${HELM_DRY_RUN}${HELM_JOB_NAME} . -f ./values-iste_linux.yaml -f ./values-test-local.yaml
+helm upgrade --install ${HELM_DRY_RUN} ${HELM_JOB_NAME} . -f ./values-iste_linux.yaml -f ./values-test-local.yaml
