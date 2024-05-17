@@ -13,6 +13,8 @@ volumeMounts:
 {{- end }}
 - mountPath: /intershop/sites
   name: sites-volume
+- mountPath: /intershop/system-conf/cluster/encryption
+  name: encryption-volume
 {{- if .Values.persistence.customdata.enabled }}
 - mountPath: {{ .Values.persistence.customdata.mountPoint }}
   name: custom-data-volume
