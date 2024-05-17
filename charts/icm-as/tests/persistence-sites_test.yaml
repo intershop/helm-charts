@@ -7,6 +7,7 @@ templates:
   - templates/cluster-sites-sc.yaml
   - templates/nfs-sites-pv.yaml
   - templates/nfs-sites-pvc.yaml
+  - templates/static-sites-pvc.yaml
 tests:
   - it: type=local in as-deployment
     release:
@@ -318,3 +319,58 @@ tests:
       - equal:
           path: spec.selector.matchLabels.type
           value: nfs
+
+  - it: type=static in as-deployment
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.sites.type: static
+      persistence.sites.size: 1.5Gi
+      persistence.sites.static.name: sites-pv
+      persistence.sites.static.storageClass: azurefile-icm
+    template: templates/as-deployment.yaml
+    asserts:
+      #spec.template.spec.volumes
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: sites-volume
+            persistentVolumeClaim:
+              claimName: "icm-as-static-sites-pvc"
+
+  - it: type=static in static-sites-pvc
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.sites.type: static
+      persistence.sites.size: 1.5Gi
+      persistence.sites.static.name: sites-pv
+      persistence.sites.static.storageClass: azurefile-icm
+    template: templates/static-sites-pvc.yaml
+    asserts:
+      - isKind:
+          of: PersistentVolumeClaim
+      - equal:
+          path: metadata.name
+          value: icm-as-static-sites-pvc
+      #spec
+      - equal:
+          path: spec.storageClassName
+          value: azurefile-icm
+      - equal:
+          path: spec.volumeName
+          value: sites-pv
+      - equal:
+          path: spec.accessModes[0]
+          value: ReadWriteMany
+      - equal:
+          path: spec.resources.requests.storage
+          value: 1.5Gi

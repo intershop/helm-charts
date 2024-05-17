@@ -24,9 +24,14 @@ icm-as:
   ## @param environment - extra environment variables to be set on containers
   environment:
 
-  ## @param persistence - Either choose local (default), cluster, azurefiles or nfs persitence layer
+  ## @param persistence - Either choose local (default), cluster, azurefiles, static or nfs persitence layer
   persistence:
     sites:
+      size: 1Gi
+      type: local
+      local:
+        path: <local sites folder>
+    encryption:
       size: 1Gi
       type: local
       local:
