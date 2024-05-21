@@ -21,6 +21,11 @@ icm-edit:
         type: local
         local:
           path: <local sites edit folder>
+      encryption:
+        size: 1Gi
+        type: local
+        local:
+          path: <local encryption edit folder>
 
   icm-web:
     nameOverride: icm-web-edit
@@ -52,6 +57,11 @@ icm-live:
         type: local
         local:
           path: <local sites live folder>
+      encryption:
+        size: 1Gi
+        type: local
+        local:
+          path: <local encryption live folder>
 
   icm-web:
     nameOverride: icm-web-live

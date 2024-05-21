@@ -25,4 +25,4 @@ options:
       - Subject
   notes:
     keywords:
-      - BREAKING CHANGE
+      - BREAKING_CHANGE

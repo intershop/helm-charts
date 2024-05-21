@@ -1,0 +1,17 @@
+{{- if eq .Values.persistence.encryption.type "local" -}}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ template "icm-as.fullname" . }}-local-encryption-pv
+  labels:
+    type: local
+spec:
+  storageClassName: standard
+  capacity:
+    storage: {{ .Values.persistence.encryption.size }}
+  accessModes:
+  - ReadOnlyMany
+  persistentVolumeReclaimPolicy: Delete
+  hostPath:
+    path: "{{ .Values.persistence.encryption.local.path }}"
+{{- end -}}
