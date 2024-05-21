@@ -1,0 +1,14 @@
+{{- if eq .Values.persistence.encryption.type "local" -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "icm-as.fullname" . }}-local-encryption-pvc
+spec:
+  storageClassName: standard
+  accessModes:
+  - ReadOnlyMany
+  resources:
+    requests:
+      storage: {{ .Values.persistence.encryption.size }}
+  volumeName: {{ template "icm-as.fullname" . }}-local-encryption-pv
+{{- end -}}
