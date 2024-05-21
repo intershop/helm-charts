@@ -213,7 +213,7 @@ persistence:
       server: <ipaddress or hostname>
       path: <server folder>
     local:
-      path: <local folder>
+      path: <local sites folder>
   encryption:
     size: 1Gi
     # type cluster | nfs | azurefiles | static | existingClaim | local
@@ -246,7 +246,7 @@ persistence:
       server: <ipaddress or hostname>
       path: <server folder>
     local:
-      path: <local folder>
+      path: <local encryption folder>
   jgroups:
     size: 1Gi
     # type emptyDir | existingClaim | cluster | local | azurefiles
