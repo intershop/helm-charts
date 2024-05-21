@@ -35,7 +35,7 @@ icm-as:
       size: 1Gi
       type: local
       local:
-        path: <local sites folder>
+        path: <local encryption folder>
 
   testConnection:
     protocol: https
