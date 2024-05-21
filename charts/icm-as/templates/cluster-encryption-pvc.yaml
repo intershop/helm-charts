@@ -1,0 +1,18 @@
+{{- if eq .Values.persistence.encryption.type "cluster"  -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "icm-as.fullname" . }}-cluster-encryption-pvc
+spec:
+  accessModes:
+    - ReadOnlyMany
+  # use the storage class defined by cluster-sc.yaml
+  {{- if .Values.persistence.encryption.cluster.storageClass.create }}
+  storageClassName: "{{ template "icm-as.fullname" . }}-cluster-encryptions-sc"
+  {{- else if gt (len .Values.persistence.encryption.cluster.storageClass.existingClass) 0 }}
+  storageClassName: {{ .Values.persistence.encryption.cluster.storageClass.existingClass | quote }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.encryption.size }}
+{{- end -}}

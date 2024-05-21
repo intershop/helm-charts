@@ -4,4 +4,4 @@ name: icm-as
 version: 1.10.0
 description: Intershop Commerce Management - AppServer
 type: application
-appVersion: 11.2.1
+appVersion: 12.0.0
