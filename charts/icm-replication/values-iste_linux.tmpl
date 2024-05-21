@@ -49,8 +49,8 @@ icm-edit:
       SERVER_DIRECTORY_GROUP: "${SERVER_DIRECTORY_GROUP}"
       SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
 
-      INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}:80/"
-      INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}:443/"
+      INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}:80"
+      INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}:443"
 
       INTERSHOP_ENCRYPTION_STRICTMODE_ENABLED: "false"
 
@@ -75,16 +75,63 @@ icm-edit:
       appName: "${HELM_JOB_NAME}-icm-as"
       license_key: "${NEWRELIC_LICENSE_KEY}"
 
-    # TODO: move this to values.yaml after weblayer gets standard
-    webLayer:
-      enabled: true
-
+  icm-web:
+    nodeSelector:
+      agentpool: agentpool2
+    resources:
+      agent:
+        limits:
+          memory: 200Mi
+        requests:
+          memory: 200Mi
+    webadapter:
+      podAnnotations:
+        # as long as there is no new cache system we need this annotation for icm-web
+        "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
+      image:
+        repository: "${ICM_WEBSERVER_IMAGE}"
+        command: |
+          mkdir -p $HELM_DIRECTORY/server-logs-edit
+          chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs-edit
+          timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
+          su ${SERVER_DIRECTORY_USER} -c "/intershop/bin/intershop.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs-edit/wa${timestamp}.log"
+    agent:
+      image:
+        repository: "${ICM_WEBADAPTER_AGENT_IMAGE}"
+        command: |
+          mkdir -p $HELM_DIRECTORY/server-logs-edit
+          chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs-edit
+          timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
+          su ${SERVER_DIRECTORY_USER} -c "/intershop/bin/start-waa.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs-edit/waa${timestamp}.log"
+    podSecurityContext:
+      runAsUser: 0
+      runAsGroup: 0
+      fsGroup: 0
+      runAsNonRoot: false
+    environment:
+      HELM_DIRECTORY: "${HELM_DIRECTORY}"
+      SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
+      SERVER_DIRECTORY_GROUP: "${SERVER_DIRECTORY_GROUP}"
+    service:
+      httpPort: 8080
+      httpsPort: 8443
+    persistence:
+      pagecache:
+        type: emptyDir
+      customdata:
+        enabled: true
+        existingClaim: icm-nfs
     ingress:
       enabled: true
       className: "ingress-class-${HELM_JOB_NAME}"
       annotations:
-        nginx.ingress.kubernetes.io/proxy-body-size: "600m"
         service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+        nginx.ingress.kubernetes.io/affinity: cookie
+        nginx.ingress.kubernetes.io/affinity-mode: persistent
+        nginx.ingress.kubernetes.io/session-cookie-name: stid
+        nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+        nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+        nginx.ingress.kubernetes.io/proxy-body-size: "100M"
       hosts:
       - host: "${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}"
         paths:
@@ -94,54 +141,6 @@ icm-edit:
       - secretName: ingress-tls-csi
         hosts:
         - "${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}"
-
-  # TODO: move this to values.yaml after weblayer gets standard
-  icm-web:
-    enabled: false
-
-  ingress-nginx:
-    enabled: true
-    nameOverride: ingress-nginx
-    controller:
-      kind: Deployment
-      ingressClassByName: "true"
-      ingressClassResource:
-        name: "ingress-class-${HELM_JOB_NAME}"
-        controllerValue: "k8s.io/ingress-${HELM_JOB_NAME}"
-      ingressClass: "ingress-class-${HELM_JOB_NAME}"
-      admissionWebhooks:
-        enabled: false
-      nodeSelector:
-        agentpool: agentpool2
-      affinity:
-        podAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: release
-                operator: In
-                values:
-                - ${HELM_JOB_NAME}-icm-as-edit
-            topologyKey: kubernetes.io/hostname
-      service:
-        external:
-          enabled: "false"
-        internal:
-          enabled: "true"
-          annotations:
-            service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-        externalTrafficPolicy: Local
-      publishService:
-        enabled: "true"
-      config:
-        proxy-read-timeout: "360"
-        proxy-send-timeout: "360"
-        proxy-connect-timeout: "360"
-        disable-access-log: "true"
-      resources:
-        requests:
-          cpu: 200m
-          memory: 300Mi
 
 icm-live:
   icm-as:
@@ -191,8 +190,8 @@ icm-live:
       SERVER_DIRECTORY_GROUP: "${SERVER_DIRECTORY_GROUP}"
       SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
 
-      INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}:80/"
-      INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}:443/"
+      INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}:80"
+      INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}:443"
 
       INTERSHOP_ENCRYPTION_STRICTMODE_ENABLED: "false"
 
@@ -218,16 +217,63 @@ icm-live:
       appName: "${HELM_JOB_NAME}-icm-as"
       license_key: "${NEWRELIC_LICENSE_KEY}"
 
-    # TODO: move this to values.yaml after weblayer gets standard
-    webLayer:
-      enabled: true
-
+  icm-web:
+    nodeSelector:
+      agentpool: agentpool2
+    resources:
+      agent:
+        limits:
+          memory: 200Mi
+        requests:
+          memory: 200Mi
+    webadapter:
+      podAnnotations:
+        # as long as there is no new cache system we need this annotation for icm-web
+        "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
+      image:
+        repository: "${ICM_WEBSERVER_IMAGE}"
+        command: |
+          mkdir -p $HELM_DIRECTORY/server-logs-live
+          chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs-live
+          timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
+          su ${SERVER_DIRECTORY_USER} -c "/intershop/bin/intershop.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs-live/wa${timestamp}.log"
+    agent:
+      image:
+        repository: "${ICM_WEBADAPTER_AGENT_IMAGE}"
+        command: |
+          mkdir -p $HELM_DIRECTORY/server-logs-live
+          chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs-live
+          timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
+          su ${SERVER_DIRECTORY_USER} -c "/intershop/bin/start-waa.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs-live/waa${timestamp}.log"
+    podSecurityContext:
+      runAsUser: 0
+      runAsGroup: 0
+      fsGroup: 0
+      runAsNonRoot: false
+    environment:
+      HELM_DIRECTORY: "${HELM_DIRECTORY}"
+      SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
+      SERVER_DIRECTORY_GROUP: "${SERVER_DIRECTORY_GROUP}"
+    service:
+      httpPort: 8080
+      httpsPort: 8443
+    persistence:
+      pagecache:
+        type: emptyDir
+      customdata:
+        enabled: true
+        existingClaim: icm-nfs
     ingress:
       enabled: true
       className: "ingress-class-${HELM_JOB_NAME}"
       annotations:
-        nginx.ingress.kubernetes.io/proxy-body-size: "600m"
         service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+        nginx.ingress.kubernetes.io/affinity: cookie
+        nginx.ingress.kubernetes.io/affinity-mode: persistent
+        nginx.ingress.kubernetes.io/session-cookie-name: stid
+        nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+        nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+        nginx.ingress.kubernetes.io/proxy-body-size: "100M"
       hosts:
       - host: "${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}"
         paths:
@@ -238,9 +284,48 @@ icm-live:
         hosts:
         - "${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}"
 
-  # TODO: move this to values.yaml after weblayer gets standard
-  icm-web:
-    enabled: false
+  ingress-nginx:
+    enabled: true
+    controller:
+      kind: Deployment
+      ingressClassByName: "true"
+      ingressClassResource:
+        name: "ingress-class-${HELM_JOB_NAME}"
+        controllerValue: "k8s.io/ingress-${HELM_JOB_NAME}"
+      ingressClass: "ingress-class-${HELM_JOB_NAME}"
+      admissionWebhooks:
+        enabled: false
+      nodeSelector:
+        agentpool: agentpool2
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: release
+                operator: In
+                values:
+                - ${HELM_JOB_NAME}-icm-web-live
+            topologyKey: kubernetes.io/hostname
+      service:
+        external:
+          enabled: "false"
+        internal:
+          enabled: "true"
+          annotations:
+            service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+        externalTrafficPolicy: Local
+      publishService:
+        enabled: "true"
+      config:
+        proxy-read-timeout: "360"
+        proxy-send-timeout: "360"
+        proxy-connect-timeout: "360"
+        disable-access-log: "true"
+      resources:
+        requests:
+          cpu: 200m
+          memory: 300Mi
 
   test:
     enabled: true
