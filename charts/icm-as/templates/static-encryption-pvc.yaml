@@ -1,0 +1,14 @@
+{{- if eq .Values.persistence.encryption.type "static" -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "icm-as.fullname" . }}-static-encryption-pvc
+spec:
+  storageClassName: {{ .Values.persistence.encryption.static.storageClass | quote }}
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.persistence.encryption.size }}
+  volumeName: {{ .Values.persistence.encryption.static.name | quote }}
+{{- end -}}

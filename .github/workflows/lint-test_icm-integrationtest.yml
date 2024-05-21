@@ -57,6 +57,9 @@ jobs:
         sudo mkdir -p /data/icm/sites
         sed -i 's/<local sites folder>/\/data\/icm\/sites/' charts/icm/values.yaml
 
+        sudo mkdir -p /data/icm/encryption
+        sed -i 's/<local encryption folder>/\/data\/icm\/encryption/' charts/icm/values.yaml
+
         sudo mkdir -p /data/icm/mssql/data
         sudo mkdir -p /data/icm/mssql/backup
         sed -i 's/<local mssql data folder>/\/data\/icm\/mssql\/data/' charts/icm/values.yaml
