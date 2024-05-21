@@ -1,15 +1,14 @@
 
-<a name="icm-1.13.0"></a>
-## [icm-1.13.0](https://github.com/intershop/helm-charts/compare/icm-1.12.0...icm-1.13.0)
+<a name="icm-2.0.0"></a>
+## [icm-2.0.0](https://github.com/intershop/helm-charts/compare/icm-1.13.0...icm-2.0.0)
 
-> 2024-05-06
+> 2024-05-21
 
 ### Chore
 
-* bump versions of icm:minor icm-as:minor icm-replication:minor
+* bump versions of icm:major icm-as:major icm-replication:major
 
 ### Feat
 
-* add scripts for azure test execution ([#642](https://github.com/intershop/helm-charts/issues/642))
-* **icm:** use weblayer configuration during end2end tests ([#454](https://github.com/intershop/helm-charts/issues/454))
+* **icm:** enable encryption volume ([#653](https://github.com/intershop/helm-charts/issues/653)) BREAKING_CHANGE
 
