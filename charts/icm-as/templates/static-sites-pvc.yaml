@@ -1,0 +1,14 @@
+{{- if eq .Values.persistence.sites.type "static" -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "icm-as.fullname" . }}-static-sites-pvc
+spec:
+  storageClassName: {{ .Values.persistence.sites.static.storageClass | quote }}
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.persistence.sites.size }}
+  volumeName: {{ .Values.persistence.sites.static.name | quote }}
+{{- end -}}

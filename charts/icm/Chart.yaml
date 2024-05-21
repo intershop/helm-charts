@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: "11.9.0"
+appVersion: "12.0.0"
 description: Intershop Commerce Management - ICM
 # name and version must be in this exact order, otherwise bump2version won't work
 name: icm
