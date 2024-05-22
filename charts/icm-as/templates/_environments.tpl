@@ -156,7 +156,7 @@ AppServer-specific-environment
 {{- include "icm-as.env" . }}
 {{- if .Values.job.enabled }}
 - name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
-  value: "BOS,WSF"
+  value: "BOS,WFS"
 {{- end }}
 {{- include "icm-as.envSecrets" . }}
 {{- end -}}
