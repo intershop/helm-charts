@@ -183,9 +183,14 @@ secrets:
 persistence:
   sites:
     size: 1Gi
-    # type cluster | nfs | azurefiles | existingClaim | local
+    # type cluster | nfs | azurefiles | static | existingClaim | local
     type: local
     existingClaim: <claim name>
+    static:
+      # name of persistent volume to be used
+      name: <volume name>
+      # storage class of the persistent volume to be used
+      storageClass: <storage class>
     cluster:
       storageClass:
         create: false
@@ -208,7 +213,40 @@ persistence:
       server: <ipaddress or hostname>
       path: <server folder>
     local:
-      path: <local folder>
+      path: <local sites folder>
+  encryption:
+    size: 1Gi
+    # type cluster | nfs | azurefiles | static | existingClaim | local
+    type: local
+    existingClaim: <claim name>
+    static:
+      # name of persistent volume to be used
+      name: <volume name>
+      # storage class of the persistent volume to be used
+      storageClass: <storage class>
+    cluster:
+      storageClass:
+        create: false
+        # if create == false an exiting class could be set
+        # if empty value is set the default storage class is used
+        existingClass: ""
+        # skuName: Standard_LRS
+        # mountOptions:
+        # - uid=150
+        # - gid=150
+        # - dir_mode=0777
+        # - file_mode=0777
+        # - mfsymlinks
+        # - cache=strict
+        # - actimeo=30
+    azurefiles:
+      shareName: icm-as-share
+      secretName: icm-as-share-secret
+    nfs:
+      server: <ipaddress or hostname>
+      path: <server folder>
+    local:
+      path: <local encryption folder>
   jgroups:
     size: 1Gi
     # type emptyDir | existingClaim | cluster | local | azurefiles

@@ -1,0 +1,22 @@
+{{- if eq .Values.persistence.encryption.type "nfs" -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "icm-as.fullname" . }}-nfs-encryption-pvc
+  annotations:
+    # avoid deleting with helm update
+    "helm.sh/resource-policy": keep
+  labels:
+{{ include "icm-as.labels" . | indent 4 }}
+spec:
+  accessModes:
+  - ReadOnlyMany
+  storageClassName: ""
+  volumeName: {{ template "icm-as.fullname" . }}-nfs-encryption-pv
+  resources:
+    requests:
+      storage: {{ .Values.persistence.encryption.size }}
+  selector:
+    matchLabels:
+      type: nfs
+{{- end -}}
