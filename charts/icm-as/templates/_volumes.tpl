@@ -22,6 +22,7 @@ volumes:
 {{- include "icm-as.volume" (list . "jgroups" .Values.persistence.jgroups .Values.podSecurityContext) }}
 {{- end }}
 {{- include "icm-as.volume" (list . "sites" .Values.persistence.sites .Values.podSecurityContext) }}
+{{- include "icm-as.volume" (list . "encryption" .Values.persistence.encryption .Values.podSecurityContext) }}
 {{- if and (.Values.replication.enabled) (eq .Values.replication.role "source")}}
 - name: replication-volume
   configMap:
