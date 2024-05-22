@@ -1,4 +1,18 @@
 
+<a name="icm-replication-2.0.0"></a>
+## [icm-replication-2.0.0](https://github.com/intershop/helm-charts/compare/icm-replication-1.10.0...icm-replication-2.0.0)
+
+> 2024-05-22
+
+### Chore
+
+* bump versions of icm:major icm-as:major icm-replication:major
+
+### Feat
+
+* **icm:** enable encryption volume ([#653](https://github.com/intershop/helm-charts/issues/653)) BREAKING_CHANGE
+
+
 <a name="icm-replication-1.10.0"></a>
 ## [icm-replication-1.10.0](https://github.com/intershop/helm-charts/compare/icm-replication-1.9.0...icm-replication-1.10.0)
 
@@ -6,6 +20,7 @@
 
 ### Chore
 
+* generated changelog+release notes for icm:minor icm-as:minor icm-replication:minor
 * bump versions of icm:minor icm-as:minor icm-replication:minor
 
 ### Feat
