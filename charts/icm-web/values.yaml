@@ -23,8 +23,9 @@ webadapter:
   image:
     repository: intershophub/icm-webadapter:2.5.0
     pullPolicy: IfNotPresent
-    command: |
-      /intershop/bin/intershop.sh
+    # Using exec to replace subshell (/bin/sh -c "...") with the shell script command
+    # Signals will be sent directly to the WA process of the shell script command, not an intermediate shell process
+    command: exec /intershop/bin/intershop.sh
   # disable HTTP/2 protocol support if required
   disableHTTP2: false
   customHttpdConfig: false
