@@ -21,7 +21,7 @@ operationalContext:
 
 webadapter:
   image:
-    repository: intershophub/icm-webadapter:2.4.6
+    repository: intershophub/icm-webadapter:2.5.0
     pullPolicy: IfNotPresent
     command: |
       /intershop/bin/intershop.sh
