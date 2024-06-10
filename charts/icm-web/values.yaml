@@ -79,7 +79,7 @@ agent:
   # in some REST-based environment the webadapteragent isn't mandatory
   enabled: true
   image:
-    repository: intershophub/icm-webadapteragent:4.0.0
+    repository: intershophub/icm-webadapteragent:4.0.1
     pullPolicy: IfNotPresent
     command: |
       /intershop/bin/start-waa.sh

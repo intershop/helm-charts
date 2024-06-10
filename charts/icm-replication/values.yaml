@@ -75,7 +75,7 @@ icm-live:
     agent:
       replicaCount: 1
       image:
-        repository: intershophub/icm-webadapteragent:4.0.0
+        repository: intershophub/icm-webadapteragent:4.0.1
     appServerConnection:
       serviceName: icm-as-live
     persistence:
