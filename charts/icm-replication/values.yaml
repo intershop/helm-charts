@@ -70,12 +70,12 @@ icm-live:
     webadapter:
       replicaCount: 1
       image:
-        repository: intershophub/icm-webadapter:2.4.6
+        repository: intershophub/icm-webadapter:2.5.0
         secret: dockerhub
     agent:
       replicaCount: 1
       image:
-        repository: intershophub/icm-webadapteragent:4.0.0
+        repository: intershophub/icm-webadapteragent:4.0.1
     appServerConnection:
       serviceName: icm-as-live
     persistence:
