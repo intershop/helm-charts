@@ -1,14 +1,14 @@
 
-<a name="icm-as-2.0.0"></a>
-## [icm-as-2.0.0](https://github.com/intershop/helm-charts/compare/icm-as-1.10.0...icm-as-2.0.0)
+<a name="icm-as-2.0.1"></a>
+## [icm-as-2.0.1](https://github.com/intershop/helm-charts/compare/icm-as-2.0.0...icm-as-2.0.1)
 
-> 2024-05-22
+> 2024-06-10
 
 ### Chore
 
-* bump versions of icm:major icm-as:major icm-replication:major
+* bump versions of icm:patch icm-as:patch icm-replication:patch icm-web:patch
 
-### Feat
+### Fix
 
-* **icm:** enable encryption volume ([#653](https://github.com/intershop/helm-charts/issues/653)) BREAKING_CHANGE
+* server group assignment in case job server is enabled ([#651](https://github.com/intershop/helm-charts/issues/651)) ([#652](https://github.com/intershop/helm-charts/issues/652))
 

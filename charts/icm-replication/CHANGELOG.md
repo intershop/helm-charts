@@ -1,4 +1,16 @@
 
+<a name="icm-replication-2.0.1"></a>
+## [icm-replication-2.0.1](https://github.com/intershop/helm-charts/compare/icm-replication-2.0.0...icm-replication-2.0.1)
+
+> 2024-06-10
+
+### Chore
+
+* bump versions of icm:patch icm-as:patch icm-replication:patch icm-web:patch
+* Consume WebAdapterAgent 4.0.1
+* Consume WebAdapter 2.5.0
+
+
 <a name="icm-replication-2.0.0"></a>
 ## [icm-replication-2.0.0](https://github.com/intershop/helm-charts/compare/icm-replication-1.10.0...icm-replication-2.0.0)
 
@@ -6,6 +18,7 @@
 
 ### Chore
 
+* generated changelog+release notes for icm:major icm-as:major icm-replication:major
 * bump versions of icm:major icm-as:major icm-replication:major
 
 ### Feat
