@@ -3,7 +3,7 @@
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
-  name: {{ include "icm-as.fullname" . }}-cluster-encryption-sc
+  name: {{ include "icm-as.fullname" . }}-cluster-encryptions-sc
 provisioner: kubernetes.io/azure-file
 allowVolumeExpansion: true
 mountOptions:
