@@ -1,4 +1,24 @@
 
+<a name="icm-replication-2.0.3"></a>
+## [icm-replication-2.0.3](https://github.com/intershop/helm-charts/compare/icm-replication-2.0.2...icm-replication-2.0.3)
+
+> 2024-06-18
+
+### Chore
+
+* bump versions of icm:patch icm-replication:patch
+
+### Fix
+
+* **icm:** fix local repl. exec and enable CSI secret creation ([#677](https://github.com/intershop/helm-charts/issues/677))
+
+
+<a name="icm-replication-2.0.2"></a>
+## [icm-replication-2.0.2](https://github.com/intershop/helm-charts/compare/icm-replication-2.0.1...icm-replication-2.0.2)
+
+> 2024-06-14
+
+
 <a name="icm-replication-2.0.1"></a>
 ## [icm-replication-2.0.1](https://github.com/intershop/helm-charts/compare/icm-replication-2.0.0...icm-replication-2.0.1)
 
@@ -6,6 +26,7 @@
 
 ### Chore
 
+* generated changelog+release notes for icm:patch icm-as:patch icm-replication:patch icm-web:patch
 * bump versions of icm:patch icm-as:patch icm-replication:patch icm-web:patch
 * Consume WebAdapterAgent 4.0.1
 * Consume WebAdapter 2.5.0
