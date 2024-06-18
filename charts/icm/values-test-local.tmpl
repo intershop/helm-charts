@@ -26,6 +26,13 @@ icm-as:
         type: local
         local:
           path: ${LOCAL_MOUNT_BASE}/mssql/backup
+icm-web:
+  nodeSelector: null
+  persistence:
+    customdata:
+      enabled: true
+      existingClaim: ${HELM_JOB_NAME}-local-testdata-pvc
+
 
 ingress-nginx:
   controller:
