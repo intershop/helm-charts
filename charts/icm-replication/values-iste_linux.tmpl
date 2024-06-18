@@ -330,6 +330,17 @@ icm-live:
         requests:
           cpu: 200m
           memory: 300Mi
+      extraVolumes:
+      - name: secrets-store-inline
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: "azure-tls"
+      extraVolumeMounts:
+      - name: secrets-store-inline
+        mountPath: "/mnt/secrets-store"
+        readOnly: true
 
   test:
     enabled: true
