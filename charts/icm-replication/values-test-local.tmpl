@@ -13,12 +13,6 @@ icm-edit:
         enabled: true
         existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
         mountPoint: /data
-  icm-web:
-    nodeSelector: null
-    persistence:
-      customdata:
-        enabled: true
-        existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
 
 icm-live:
   icm-as:
@@ -35,16 +29,12 @@ icm-live:
         enabled: true
         existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
         mountPoint: /data
-  icm-web:
-    nodeSelector: null
-    persistence:
-      customdata:
-        enabled: true
-        existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
 
   ingress-nginx:
     controller:
       nodeSelector: null
+      extraVolumes: null
+      extraVolumeMounts: null
 
   mailhog:
     nodeSelector: null
