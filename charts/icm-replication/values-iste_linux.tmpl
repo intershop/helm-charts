@@ -49,8 +49,8 @@ icm-edit:
       SERVER_DIRECTORY_GROUP: "${SERVER_DIRECTORY_GROUP}"
       SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
 
-      INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}:80/"
-      INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}:443/"
+      INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}:80"
+      INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}:443"
 
       INTERSHOP_ENCRYPTION_STRICTMODE_ENABLED: "false"
 
@@ -149,8 +149,8 @@ icm-live:
       SERVER_DIRECTORY_GROUP: "${SERVER_DIRECTORY_GROUP}"
       SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
 
-      INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}:80/"
-      INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}:443/"
+      INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}:80"
+      INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}:443"
 
       INTERSHOP_ENCRYPTION_STRICTMODE_ENABLED: "false"
 
@@ -171,7 +171,6 @@ icm-live:
         type: emptyDir
       customdata:
         enabled: true
-        existingClaim: icm-nfs
         existingClaim: icm-nfs
     newrelic:
       enabled: true
