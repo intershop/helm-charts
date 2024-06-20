@@ -1,8 +1,8 @@
 
-<a name="icm-replication-2.1.1"></a>
-## [icm-replication-2.1.1](https://github.com/intershop/helm-charts/compare/icm-replication-2.1.0...icm-replication-2.1.1)
+<a name="icm-replication-2.1.2"></a>
+## [icm-replication-2.1.2](https://github.com/intershop/helm-charts/compare/icm-replication-2.1.1...icm-replication-2.1.2)
 
-> 2024-06-19
+> 2024-06-20
 
 ### Chore
 
@@ -10,5 +10,5 @@
 
 ### Fix
 
-* **icm:** replication ingress controller only needed or live during end2end test ([#691](https://github.com/intershop/helm-charts/issues/691))
+* **icm:** replication url without slash ([#691](https://github.com/intershop/helm-charts/issues/691))
 
