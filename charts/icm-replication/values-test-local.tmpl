@@ -30,12 +30,6 @@ icm-live:
         existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
         mountPoint: /data
 
-  ingress-nginx:
-    controller:
-      nodeSelector: null
-      extraVolumes: null
-      extraVolumeMounts: null
-
   mailhog:
     nodeSelector: null
 
