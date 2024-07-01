@@ -243,8 +243,26 @@ testrunner:
       su ${SERVER_DIRECTORY_USER} <<'EOF'
         set -x
         export PATH=$ROOTPATH
-        sh /intershop/bin/testrunner.sh -s=${TESTSUITE} -o=${RESULT_DIRECTORY} 2>&1 | tee -a ${RESULT_DIRECTORY}/istestrunner_log.txt
+        logfile=${RESULT_DIRECTORY}/istestrunner_log.txt
+        sh /intershop/bin/testrunner.sh -s=${TESTSUITE} -o=${RESULT_DIRECTORY} 2>&1 | tee outfile $logfile &
+        main_pid=$!
+
+        prev_size=0
+        update_modified_date() {
+          while kill -0 $main_pid 2>/dev/null; do
+            sleep 10
+            curr_size=$(stat -c%s "$logfile")
+            if [ "$curr_size" -ne "$prev_size" ]; then
+              touch $logfile
+              sync
+              prev_size=$curr_size
+            fi
+          done
+        }
+        update_modified_date &
+        wait $main_pid
         PROCESS_ERROR_LEVEL=$?
+
         TEST_EXECUTION_RESULT_STATUS="failed"
         if [ "${PROCESS_ERROR_LEVEL}" -eq 0 ];
         then

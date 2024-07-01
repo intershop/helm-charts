@@ -384,24 +384,42 @@ icm-live:
         export ROOTPATH=$PATH
 
         # startup
-        su ${SERVER_DIRECTORY_USER} <<'EOF'
-          set -x
-          export PATH=$ROOTPATH
-          sh /intershop/bin/testrunner.sh -s=${TESTSUITE} -o=${RESULT_DIRECTORY} 2>&1 | tee -a ${RESULT_DIRECTORY}/istestrunner_log.txt
-          PROCESS_ERROR_LEVEL=$?
-          TEST_EXECUTION_RESULT_STATUS="failed"
-          if [ "${PROCESS_ERROR_LEVEL}" -eq 0 ];
-          then
-            zip -qr ${RESULT_DIRECTORY}/pagedumps.zip ${HELM_DIRECTORY}/pagedumps
-            rm -Rf ${HELM_DIRECTORY}/pagedumps
-            TEST_EXECUTION_RESULT_STATUS="success"
-          else
-            top -b -n 1 > ${RESULT_DIRECTORY}/top.txt
-          fi
-          echo "result: ${TEST_EXECUTION_RESULT_STATUS}" > ${RESULT_DIRECTORY}/finished.yml
-          echo "result-datetime: $(date)" >> ${RESULT_DIRECTORY}/finished.yml
-          exit $PROCESS_ERROR_LEVEL
-        EOF
+      su ${SERVER_DIRECTORY_USER} <<'EOF'
+        set -x
+        export PATH=$ROOTPATH
+        logfile=${RESULT_DIRECTORY}/istestrunner_log.txt
+        sh /intershop/bin/testrunner.sh -s=${TESTSUITE} -o=${RESULT_DIRECTORY} 2>&1 | tee outfile $logfile &
+        main_pid=$!
+
+        prev_size=0
+        update_modified_date() {
+          while kill -0 $main_pid 2>/dev/null; do
+            sleep 10
+            curr_size=$(stat -c%s "$logfile")
+            if [ "$curr_size" -ne "$prev_size" ]; then
+              touch $logfile
+              sync
+              prev_size=$curr_size
+            fi
+          done
+        }
+        update_modified_date &
+        wait $main_pid
+        PROCESS_ERROR_LEVEL=$?
+
+        TEST_EXECUTION_RESULT_STATUS="failed"
+        if [ "${PROCESS_ERROR_LEVEL}" -eq 0 ];
+        then
+          zip -qr ${RESULT_DIRECTORY}/pagedumps.zip ${HELM_DIRECTORY}/pagedumps
+          rm -Rf ${HELM_DIRECTORY}/pagedumps
+          TEST_EXECUTION_RESULT_STATUS="success"
+        else
+          top -b -n 1 > ${RESULT_DIRECTORY}/top.txt
+        fi
+        echo "result: ${TEST_EXECUTION_RESULT_STATUS}" > ${RESULT_DIRECTORY}/finished.yml
+        echo "result-datetime: $(date)" >> ${RESULT_DIRECTORY}/finished.yml
+        exit $PROCESS_ERROR_LEVEL
+      EOF
     podSecurityContext:
       runAsUser: 0
     environment:
