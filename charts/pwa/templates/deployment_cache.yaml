@@ -102,7 +102,7 @@ spec:
             {{- toYaml .Values.cache.resources | nindent 12 }}
       initContainers:
         - name: init-pwa
-          image: busybox:1.28
+          image: "{{ .Values.cache.init.image.repository }}:{{ .Values.cache.init.image.tag }}"
           command:
             - sh
             - -c
