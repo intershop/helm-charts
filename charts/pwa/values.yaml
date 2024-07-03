@@ -98,6 +98,12 @@ readinessProbe:
   # periodSeconds: 30
 
 cache:
+
+  init:
+    image:
+      repository: busybox
+      tag: 1.36.1
+
   ####
   ## @param NGinx ignore query parameters during caching
   ##   cacheIgnoreParams: |
