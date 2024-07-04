@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "memcached:1.6.21"
+          image: "ishpwa.azurecr.io/memcached:1.6.21"
           imagePullPolicy: IfNotPresent
           command: ["memcached"]
           # add "-vv" for verbose logging
