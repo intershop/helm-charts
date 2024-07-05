@@ -1,4 +1,18 @@
 
+<a name="icm-2.1.2"></a>
+## [icm-2.1.2](https://github.com/intershop/helm-charts/compare/icm-2.1.1...icm-2.1.2)
+
+> 2024-07-05
+
+### Chore
+
+* bump versions of icm:patch
+
+### Fix
+
+* **icm:** check wa instead of as ([#286](https://github.com/intershop/helm-charts/issues/286)) ([#730](https://github.com/intershop/helm-charts/issues/730))
+
+
 <a name="icm-2.1.1"></a>
 ## [icm-2.1.1](https://github.com/intershop/helm-charts/compare/icm-2.1.0...icm-2.1.1)
 
@@ -6,6 +20,7 @@
 
 ### Chore
 
+* generated changelog+release notes for icm:patch icm-replication:patch
 * bump versions of icm:patch icm-replication:patch
 
 ### Fix
