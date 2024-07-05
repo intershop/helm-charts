@@ -45,7 +45,7 @@ spec:
       {{- if and (not .Values.nodeSelector) (.Values.webadapter.schedulePodsPreferredEvenlyAcrossNodes) }}
       affinity:
         podAntiAffinity:
-          # Chose schedulability over pod anti-affinity preference satisfaction
+          # Choose schedulability over pod anti-affinity preference satisfaction
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100
             podAffinityTerm:
