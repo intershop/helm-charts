@@ -72,6 +72,9 @@ webadapter:
     enabled: false
     binding: <name-of-the-binding>
 
+  # define if the scheduler should try to place the replica set of WA pods evenly over different nodes
+  schedulePodsPreferredEvenlyAcrossNodes: true
+
   # define custom labels for deployment and pods:
   deploymentLabels: {}
   podLabels: {}
