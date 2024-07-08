@@ -88,10 +88,10 @@ spec:
         - -c
         - |
         {{- if index .Values "icm-as" "replication" "enabled" }}
-          until wget --server-response --spider http://{{ .Values.testrunner.initContainerDomainNameLive }}/INTERSHOP/web/WFS/SLDSystem 2>&1 | grep -q "HTTP/1.1 200 OK" &&
-              wget --server-response --spider http://{{ .Values.testrunner.initContainerDomainNameEdit }}/INTERSHOP/web/WFS/SLDSystem 2>&1 | grep -q "HTTP/1.1 200 OK"; do
+          until wget --server-response --header "X-HEALTHCHECK: INTERSHOPAGENT" https://{{ .Values.testrunner.initContainerDomainNameLive }}/INTERSHOP/wastatus 2>&1 | grep -q "HTTP/1.1 200 OK" &&
+              wget --server-response --header "X-HEALTHCHECK: INTERSHOPAGENT" https://{{ .Values.testrunner.initContainerDomainNameEdit }}/INTERSHOP/wastatus 2>&1 | grep -q "HTTP/1.1 200 OK"; do
         {{- else }}
-          until wget --server-response --spider http://{{ .Values.testrunner.initContainerDomainName }}/INTERSHOP/web/WFS/SLDSystem 2>&1 | grep -q "HTTP/1.1 200 OK"; do
+          until wget --server-response --header "X-HEALTHCHECK: INTERSHOPAGENT" https://{{ .Values.testrunner.initContainerDomainName }}/INTERSHOP/wastatus 2>&1 | grep -q "HTTP/1.1 200 OK"; do
         {{- end }}
             echo "Readiness probe of application server has failed"
             sleep 5
