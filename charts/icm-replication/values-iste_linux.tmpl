@@ -358,6 +358,8 @@ icm-live:
                 port: 1025
 
   testrunner:
+    initContainerDomainNameLive: "${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}"
+    initContainerDomainNameEdit: "${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}"
     nodeSelector:
       agentpool: agentpool2
     image:
