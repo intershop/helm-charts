@@ -42,6 +42,24 @@ spec:
       nodeSelector:
         {{- toYaml .Values.nodeSelector | trim | nindent 8 }}
       {{- end }}
+      {{- if and (not .Values.nodeSelector) (.Values.webadapter.schedulePodsPreferredEvenlyAcrossNodes) }}
+      affinity:
+        podAntiAffinity:
+          # Choose schedulability over pod anti-affinity preference satisfaction
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              # Spread WA pods evenly over nodes
+              # See ticket #95582 regarding the simultaneous kill at nearly the exact same moment,
+              # likely same node was affected by memory pressure
+              topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - {{ include "icm-web.fullname" . }}-wa
+      {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- range .Values.imagePullSecrets }}
