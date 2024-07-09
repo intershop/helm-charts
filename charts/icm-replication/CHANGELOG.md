@@ -1,4 +1,28 @@
 
+<a name="icm-replication-2.1.5"></a>
+## [icm-replication-2.1.5](https://github.com/intershop/helm-charts/compare/icm-replication-2.1.4...icm-replication-2.1.5)
+
+> 2024-07-08
+
+### Chore
+
+* bump versions of icm:patch icm-replication:patch
+
+### Fix
+
+* **icm:** use domain to check system status ([#736](https://github.com/intershop/helm-charts/issues/736))
+
+
+<a name="icm-replication-2.1.4"></a>
+## [icm-replication-2.1.4](https://github.com/intershop/helm-charts/compare/icm-replication-2.1.3...icm-replication-2.1.4)
+
+> 2024-07-05
+
+### Chore
+
+* bump versions of icm:patch
+
+
 <a name="icm-replication-2.1.3"></a>
 ## [icm-replication-2.1.3](https://github.com/intershop/helm-charts/compare/icm-replication-2.1.2...icm-replication-2.1.3)
 
@@ -6,6 +30,7 @@
 
 ### Chore
 
+* generated changelog+release notes for icm:patch icm-replication:patch
 * bump versions of icm:patch icm-replication:patch
 
 ### Fix

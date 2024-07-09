@@ -1,8 +1,8 @@
 
-<a name="icm-replication-2.1.3"></a>
-## [icm-replication-2.1.3](https://github.com/intershop/helm-charts/compare/icm-replication-2.1.2...icm-replication-2.1.3)
+<a name="icm-replication-2.1.5"></a>
+## [icm-replication-2.1.5](https://github.com/intershop/helm-charts/compare/icm-replication-2.1.4...icm-replication-2.1.5)
 
-> 2024-06-26
+> 2024-07-08
 
 ### Chore
 
@@ -10,5 +10,5 @@
 
 ### Fix
 
-* remove csi volume mount ([#709](https://github.com/intershop/helm-charts/issues/709))
+* **icm:** use domain to check system status ([#736](https://github.com/intershop/helm-charts/issues/736))
 
