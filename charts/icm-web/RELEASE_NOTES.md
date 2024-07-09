@@ -1,17 +1,14 @@
 
-<a name="icm-web-0.9.1"></a>
-## [icm-web-0.9.1](https://github.com/intershop/helm-charts/compare/icm-web-0.9.0...icm-web-0.9.1)
+<a name="icm-web-0.9.2"></a>
+## [icm-web-0.9.2](https://github.com/intershop/helm-charts/compare/icm-web-0.9.1...icm-web-0.9.2)
 
-> 2024-06-10
+> 2024-07-09
 
 ### Chore
 
-* bump versions of icm:patch icm-as:patch icm-replication:patch icm-web:patch
-* Consume WebAdapterAgent 4.0.1
-* Consume WebAdapter 2.5.0
+* bump versions of icm-web:patch
 
-### Fix
+### Feat
 
-* Support graceful container shutdown of WebAdapterAgent
-* Support graceful container shutdown of WebAdapter
+* **icm-web:** Try to schedule WA pods evenly over different nodes ([#729](https://github.com/intershop/helm-charts/issues/729))
 
