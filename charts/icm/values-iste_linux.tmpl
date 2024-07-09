@@ -214,6 +214,7 @@ mailhog:
               port: 1025
 
 testrunner:
+  initContainerDomainName: "${HELM_JOB_NAME}.${DNS_ZONE_NAME}"
   nodeSelector:
     agentpool: agentpool2
   image:
