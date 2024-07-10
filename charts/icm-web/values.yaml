@@ -32,7 +32,7 @@ webadapter:
   # provides custom certificates for webadapter
   customSSLCertificates: false
   overrideSSL: false
-  # define the number of replicas beeing deployed (int, > 0, default=1)
+  # define the number of replicas being deployed (int, > 0, default=1)
   replicaCount: 1
   # define the update strategy (possible values: Recreate, RollingUpdate; default=RollingUpdate)
   updateStrategy: RollingUpdate
@@ -61,6 +61,10 @@ webadapter:
       keyvaultName: <name-of-the-KeyVault>
       certificateName: <name-of-the-certificate>
 
+  # define comma-separated list of IPs which are allowed to access internal pages of the webadapter (like wastatistics)
+  # Local network addresses (e.g. from within the K8s cluster) are already permitted by default
+  # accessInternalPagesAllowIPs: "68.0.0.0/8, 10.20.30.40"
+
   # define custom annotations for deployment and pods:
   deploymentAnnotations: {}
   #  myAnnotation: true
@@ -88,7 +92,7 @@ agent:
     # Using exec to replace subshell (/bin/sh -c "...") with the shell script command
     # Signals will be sent directly to the WAA process of the shell script command, not an intermediate shell process
     command: exec /intershop/bin/start-waa.sh
-  # define the number of replicas beeing deployed (int, > 0, default=1)
+  # define the number of replicas being deployed (int, > 0, default=1)
   replicaCount: 1
   # define update the strategy (possible values: Recreate, RollingUpdate; default=RollingUpdate)
   updateStrategy: RollingUpdate

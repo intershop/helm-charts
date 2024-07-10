@@ -153,8 +153,17 @@ spec:
           - "-c"
           - {{- toYaml .Values.webadapter.image.command | nindent 12 }}
           env:
+          - name: ENVIRONMENT
+            value: "{{ include "icm-as.environmentName" . }}"
           - name: ICM_ICMSERVLETURLS
             value: "cs.url.0=http://{{ .Release.Name }}-{{ .Values.appServerConnection.serviceName }}:{{ .Values.appServerConnection.port }}/servlet/ConfigurationServlet"
+          # Allow access to internal pages from private address blocks (e.g. within the K8s cluster) according to IANA
+          # or from loopback addresses of the local host container
+          # Can be extended by additional IPs
+          {{- $defaultAllowedIPs := list "10.0.0.0/8" "172.16.0.0/12" "192.168.0.0/16" "127.0.0.0/8" }}
+          {{- $additionalAllowedIPs := compact (regexSplit ",\\s*" (.Values.webadapter.accessInternalPagesAllowIPs | default "") -1) }}
+          - name: ICM_WA_ACCESS_INTERNAL_PAGES_ALLOW_IPS
+            value: {{ join "," (concat $defaultAllowedIPs $additionalAllowedIPs) | quote }}
           {{- if .Values.webadapter.disableHTTP2 }}
           - name: ICM_WEBSERVER_DISABLE_HTTP2
             value: "true"
