@@ -1,8 +1,8 @@
 
-<a name="icm-replication-2.1.5"></a>
-## [icm-replication-2.1.5](https://github.com/intershop/helm-charts/compare/icm-replication-2.1.4...icm-replication-2.1.5)
+<a name="icm-replication-2.2.1"></a>
+## [icm-replication-2.2.1](https://github.com/intershop/helm-charts/compare/icm-replication-2.2.0...icm-replication-2.2.1)
 
-> 2024-07-08
+> 2024-07-17
 
 ### Chore
 
@@ -10,5 +10,5 @@
 
 ### Fix
 
-* **icm:** use domain to check system status ([#736](https://github.com/intershop/helm-charts/issues/736))
+* **icm:** use logger instead of tee ([#716](https://github.com/intershop/helm-charts/issues/716))
 
