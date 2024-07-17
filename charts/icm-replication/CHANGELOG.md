@@ -1,4 +1,30 @@
 
+<a name="icm-replication-2.3.0"></a>
+## [icm-replication-2.3.0](https://github.com/intershop/helm-charts/compare/icm-replication-2.2.0...icm-replication-2.3.0)
+
+> 2024-07-17
+
+### Chore
+
+* bump versions of icm:minor icm-replication:minor
+
+### Feat
+
+* **icm:** use logger instead of tee ([#716](https://github.com/intershop/helm-charts/issues/716))
+
+
+<a name="icm-replication-2.2.0"></a>
+## [icm-replication-2.2.0](https://github.com/intershop/helm-charts/compare/icm-replication-2.1.5...icm-replication-2.2.0)
+
+> 2024-07-09
+
+### Chore
+
+* bump versions of icm-web:minor
+* generated changelog+release notes for icm:patch icm-replication:patch
+* bump versions of icm:patch icm-replication:patch
+
+
 <a name="icm-replication-2.1.5"></a>
 ## [icm-replication-2.1.5](https://github.com/intershop/helm-charts/compare/icm-replication-2.1.4...icm-replication-2.1.5)
 
@@ -6,6 +32,7 @@
 
 ### Chore
 
+* generated changelog+release notes for icm:patch icm-replication:patch
 * bump versions of icm:patch icm-replication:patch
 
 ### Fix

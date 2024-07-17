@@ -1,14 +1,14 @@
 
-<a name="icm-2.1.3"></a>
-## [icm-2.1.3](https://github.com/intershop/helm-charts/compare/icm-2.1.2...icm-2.1.3)
+<a name="icm-2.3.0"></a>
+## [icm-2.3.0](https://github.com/intershop/helm-charts/compare/icm-2.2.0...icm-2.3.0)
 
-> 2024-07-08
+> 2024-07-17
 
 ### Chore
 
-* bump versions of icm:patch icm-replication:patch
+* bump versions of icm:minor icm-replication:minor
 
-### Fix
+### Feat
 
-* **icm:** use domain to check system status ([#736](https://github.com/intershop/helm-charts/issues/736))
+* **icm:** use logger instead of tee ([#716](https://github.com/intershop/helm-charts/issues/716))
 
