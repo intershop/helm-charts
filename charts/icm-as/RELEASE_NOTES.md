@@ -1,8 +1,8 @@
 
-<a name="icm-as-2.0.2"></a>
-## [icm-as-2.0.2](https://github.com/intershop/helm-charts/compare/icm-as-2.0.1...icm-as-2.0.2)
+<a name="icm-as-2.0.3"></a>
+## [icm-as-2.0.3](https://github.com/intershop/helm-charts/compare/icm-as-2.0.2...icm-as-2.0.3)
 
-> 2024-06-14
+> 2024-07-17
 
 ### Chore
 
@@ -10,5 +10,5 @@
 
 ### Fix
 
-* **icm:** fix typo ([#678](https://github.com/intershop/helm-charts/issues/678))
+* **icm:** the jgroups now has its own sc ([#751](https://github.com/intershop/helm-charts/issues/751)) ([#758](https://github.com/intershop/helm-charts/issues/758))
 
