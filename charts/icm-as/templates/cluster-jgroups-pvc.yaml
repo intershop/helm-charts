@@ -9,7 +9,7 @@ spec:
     - ReadWriteMany
   # use the storage class defined by cluster-sc.yaml
   {{- if .Values.persistence.jgroups.cluster.storageClass.create }}
-  storageClassName: "{{ template "icm-as.fullname" . }}-cluster-sites-sc"
+  storageClassName: "{{ template "icm-as.fullname" . }}-cluster-jgroups-sc"
   {{- else if gt (len .Values.persistence.jgroups.cluster.storageClass.existingClass) 0 }}
   storageClassName: {{ .Values.persistence.jgroups.cluster.storageClass.existingClass | quote }}
   {{- end }}
