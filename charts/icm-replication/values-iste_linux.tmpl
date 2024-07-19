@@ -396,7 +396,7 @@ icm-live:
           prev_size=0
           update_modified_date() {
             while kill -0 $main_pid 2>/dev/null; do
-              sleep 10
+              sleep 120
               curr_size=$(stat -c%s "$logfile")
               if [ "$curr_size" -ne "$prev_size" ]; then
                 touch $logfile
