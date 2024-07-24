@@ -3,4 +3,4 @@ appVersion: "11.0.13"
 description: Intershop Commerce Management - Web Adapter and Web Adapter Agent
 # name and version must be in this exact order, otherwise bump2version won't work
 name: icm-web
-version: 0.10.0
+version: 0.11.0
