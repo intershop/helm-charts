@@ -3,7 +3,7 @@ appVersion: "12.0.0"
 description: Intershop Commerce Management - ICM
 # name and version must be in this exact order, otherwise bump2version won't work
 name: icm
-version: 2.2.2
+version: 2.3.0
 # test related annotations
 annotations:
   requestedMemoryQuota: 5300Mi
@@ -13,7 +13,7 @@ dependencies:
     version: 2.0.3
     repository: file://../icm-as
   - name: icm-web
-    version: 0.10.0
+    version: 0.11.0
     repository: file://../icm-web
     condition: icm-web.enabled
   - name: ingress-nginx

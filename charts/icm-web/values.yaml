@@ -32,7 +32,7 @@ webadapter:
   # provides custom certificates for webadapter
   customSSLCertificates: false
   overrideSSL: false
-  # define the number of replicas beeing deployed (int, > 0, default=1)
+  # define the number of replicas being deployed (int, > 0, default=1)
   replicaCount: 1
   # define the update strategy (possible values: Recreate, RollingUpdate; default=RollingUpdate)
   updateStrategy: RollingUpdate
@@ -88,7 +88,7 @@ agent:
     # Using exec to replace subshell (/bin/sh -c "...") with the shell script command
     # Signals will be sent directly to the WAA process of the shell script command, not an intermediate shell process
     command: exec /intershop/bin/start-waa.sh
-  # define the number of replicas beeing deployed (int, > 0, default=1)
+  # define the number of replicas being deployed (int, > 0, default=1)
   replicaCount: 1
   # define update the strategy (possible values: Recreate, RollingUpdate; default=RollingUpdate)
   updateStrategy: RollingUpdate
@@ -207,6 +207,10 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+  # define list of IPs which are allowed to access internal pages of the webadapter service (e.g. "wastatistics")
+  # Intershop network addresses and loopback addresses of the local host container are already permitted by default
+  # accessInternalWebAdapterPagesAllowIPs:
+  # - 10.0.0.0/8
 
 nameOverride: ""
 fullnameOverride: ""
