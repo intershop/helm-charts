@@ -1,8 +1,8 @@
 
-<a name="icm-web-0.10.0"></a>
-## [icm-web-0.10.0](https://github.com/intershop/helm-charts/compare/icm-web-0.9.1...icm-web-0.10.0)
+<a name="icm-web-0.11.0"></a>
+## [icm-web-0.11.0](https://github.com/intershop/helm-charts/compare/icm-web-0.10.0...icm-web-0.11.0)
 
-> 2024-07-09
+> 2024-07-24
 
 ### Chore
 
@@ -10,5 +10,5 @@
 
 ### Feat
 
-* **icm:** Try to schedule WA pods evenly over different nodes ([#729](https://github.com/intershop/helm-charts/issues/729))
+* **icm:** Configurable access to internal WA endpoints
 
