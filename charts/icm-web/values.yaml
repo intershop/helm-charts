@@ -207,6 +207,10 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+  # define list of IPs which are allowed to access internal pages of the webadapter service (e.g. "wastatistics")
+  # Intershop network addresses and loopback addresses of the local host container are already permitted by default
+  # accessInternalWebAdapterPagesAllowIPs:
+  # - 10.0.0.0/8
 
 nameOverride: ""
 fullnameOverride: ""
