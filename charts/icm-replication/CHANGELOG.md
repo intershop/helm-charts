@@ -1,4 +1,42 @@
 
+<a name="icm-replication-2.4.0"></a>
+## [icm-replication-2.4.0](https://github.com/intershop/helm-charts/compare/icm-replication-2.3.0...icm-replication-2.4.0)
+
+> 2024-08-05
+
+### Chore
+
+* bump versions of icm:minor icm-replication:minor
+
+### Feat
+
+* **icm:** prevent test abortions ([#775](https://github.com/intershop/helm-charts/issues/775))
+
+
+<a name="icm-replication-2.3.0"></a>
+## [icm-replication-2.3.0](https://github.com/intershop/helm-charts/compare/icm-replication-2.2.2...icm-replication-2.3.0)
+
+> 2024-07-24
+
+### Chore
+
+* bump versions of icm-web:minor
+
+
+<a name="icm-replication-2.2.2"></a>
+## [icm-replication-2.2.2](https://github.com/intershop/helm-charts/compare/icm-replication-2.2.1...icm-replication-2.2.2)
+
+> 2024-07-19
+
+### Chore
+
+* bump versions of icm-as:patch
+
+### Fix
+
+* **icm:** test performance optimized ([#764](https://github.com/intershop/helm-charts/issues/764))
+
+
 <a name="icm-replication-2.2.1"></a>
 ## [icm-replication-2.2.1](https://github.com/intershop/helm-charts/compare/icm-replication-2.2.0...icm-replication-2.2.1)
 
@@ -6,6 +44,7 @@
 
 ### Chore
 
+* generated changelog+release notes for icm:patch icm-replication:patch
 * bump versions of icm:patch icm-replication:patch
 
 ### Fix
