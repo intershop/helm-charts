@@ -327,6 +327,9 @@ icm-live:
         disable-access-log: "true"
       resources:
         requests:
+          cpu: 100m
+          memory: 90Mi
+        limits:
           cpu: 200m
           memory: 300Mi
 
