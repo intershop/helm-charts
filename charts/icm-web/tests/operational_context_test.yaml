@@ -1,0 +1,62 @@
+suite: test correctness of operational context
+templates:
+  - templates/waa-deployment.yaml
+  - templates/config-newrelic-yaml-cm.yaml
+tests:
+  - it: standard operational context
+    release:
+      name: release-name
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: templates/waa-deployment.yaml
+    asserts:
+      - equal:
+          path: metadata.labels.operational-context
+          value: "n_a-prd-standalone"
+      - equal:
+          path: metadata.labels.environment-type
+          value: "prd"
+  - it: predefined values in operational context
+    release:
+      name: release-name
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      operationalContext.customerId: "helmtest"
+      operationalContext.environmentType: "uat"
+      operationalContext.environmentName: "uat2"
+      operationalContext.stagingType: "edit"
+    template: templates/waa-deployment.yaml
+    asserts:
+      - equal:
+          path: metadata.labels.operational-context
+          value: "helmtest-uat2-edit"
+      - equal:
+          path: metadata.labels.environment-type
+          value: "uat"
+  - it: predefined values in newrelic configuration
+    release:
+      name: release-name
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      operationalContext.customerId: "helmtest"
+      operationalContext.environmentName: "uat2"
+      operationalContext.stagingType: "edit"
+      agent.newrelic.enabled: true
+    template: templates/config-newrelic-yaml-cm.yaml
+    asserts:
+      - isKind:
+          of: ConfigMap
+      - matchRegex:
+          path: data["newrelic.yml"]
+          pattern: '.*"helmtest-uat2-edit-waa".*'
+      #- equal:
+      #    path: data
+      #    value: '.*(app_name : "helmtest-uat2-edit-icm-waa").*'

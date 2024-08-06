@@ -9,7 +9,8 @@ metadata:
   labels:
     app: {{ include "icm-web.fullname" . }}-wa
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    environment-name: "{{ include "icm-as.environmentName" . }}"
+    environment-name: "{{ include "icm-web.environmentName" . }}"
+    environment-type: "{{ include "icm-web.environmentType" . }}"
     operational-context: "{{ include "icm-web.operationalContextName" . }}"
     {{- if .Values.webadapter.deploymentLabels }}
       {{- toYaml .Values.webadapter.deploymentLabels | trim | nindent 4 }}
