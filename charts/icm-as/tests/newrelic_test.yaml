@@ -152,7 +152,7 @@ tests:
           of: ConfigMap
       - matchRegex:
           path: data["newrelic.yml"]
-          pattern: ".*(app_name : \"n_a-int_01-icm-standalone\").*"
+          pattern: '.*(app_name : "n_a-int_01-standalone-icm-as").*'
   - it: newrelic custom appName
     release:
       name: icm-as
@@ -169,7 +169,7 @@ tests:
           of: ConfigMap
       - matchRegex:
           path: data["newrelic.yml"]
-          pattern: ".*(app_name : \"icm\").*"
+          pattern: '.*(app_name : "icm").*'
   - it: newrelic custom deprecated app_name
     release:
       name: icm-as
@@ -186,7 +186,7 @@ tests:
           of: ConfigMap
       - matchRegex:
           path: data["newrelic.yml"]
-          pattern: ".*(app_name : \"icm\").*"
+          pattern: '.*(app_name : "icm").*'
   - it: newrelic custom appName with precedence over deprecated app_name
     release:
       name: icm-as
@@ -204,4 +204,4 @@ tests:
           of: ConfigMap
       - matchRegex:
           path: data["newrelic.yml"]
-          pattern: ".*(app_name : \"icm\").*"
+          pattern: '.*(app_name : "icm").*'

@@ -34,6 +34,9 @@ spec:
       labels:
         app: icm-as
         release: {{ include "icm-as.fullname" . }}
+        environment-name: "{{ include "icm-as.environmentName" . }}"
+        environment-type: "{{ include "icm-as.environmentType" . }}"
+        operational-context: "{{ include "icm-as.operationalContextName" . }}"
         {{- include "icm-as.podLabels" . | nindent 8 }}
         {{- if include "icm-as.podBinding" . }}
           {{- include "icm-as.podBinding" . | nindent 8 }}
