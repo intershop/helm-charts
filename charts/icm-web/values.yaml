@@ -83,9 +83,6 @@ agent:
   image:
     repository: intershophub/icm-webadapteragent:4.0.1
     pullPolicy: IfNotPresent
-    # Using exec to replace subshell (/bin/sh -c "...") with the shell script command
-    # Signals will be sent directly to the WAA process of the shell script command, not an intermediate shell process
-    command: exec /intershop/bin/start-waa.sh
   # define the number of replicas being deployed (int, > 0, default=1)
   replicaCount: 1
   # define update the strategy (possible values: Recreate, RollingUpdate; default=RollingUpdate)

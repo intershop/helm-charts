@@ -101,10 +101,6 @@ spec:
           image: "{{ .Values.agent.image.repository }}"
           {{- end }}
           imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
-          command:
-          - "/bin/sh"
-          - "-c"
-          - {{- toYaml .Values.agent.image.command | nindent 12 }}
           env:
           - name: ICM_ICMSERVLETURLS
             value: "cs.url.0=http://{{ .Release.Name }}-{{ .Values.appServerConnection.serviceName }}:{{ .Values.appServerConnection.port }}/servlet/ConfigurationServlet"
