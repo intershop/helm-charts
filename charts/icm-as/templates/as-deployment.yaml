@@ -23,7 +23,7 @@ spec:
     matchLabels:
       app: icm-as
       release: {{ include "icm-as.fullname" . }}
-  {{- if (ne (.Values.replicaCount | default 0) 0) }}
+  {{- if (ne (int .Values.replicaCount) 0) }}
   strategy:
     type: {{ .Values.updateStrategy | default "RollingUpdate" }}
     rollingUpdate:

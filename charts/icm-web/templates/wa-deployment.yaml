@@ -16,7 +16,7 @@ metadata:
     {{- end }}
 spec:
   replicas: {{ .Values.webadapter.replicaCount | default 0 }}
-  {{- if (ne (.Values.webadapter.replicaCount | default 0) 0) }}
+  {{- if (ne (int .Values.webadapter.replicaCount) 0) }}
   strategy:
     type: {{ .Values.webadapter.updateStrategy | default "RollingUpdate" }}
     rollingUpdate:
