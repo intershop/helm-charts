@@ -9,7 +9,7 @@ nodeSelector: {}
 # operational context (~= environment) this icm is running in
 operationalContext:
   #   id of the customer e.g. xxxxx
-  # customerId: <customerId>
+  customerId: "n_a"
   # type of the environment (one of {int,uat,prd}, default=prd)
   environmentType: prd
   # name of the environment (environment-type + some sort of id, e.g. int-01, default=<environmentType>)
@@ -19,11 +19,8 @@ operationalContext:
 
 webadapter:
   image:
-    repository: intershophub/icm-webadapter:2.5.0
+    repository: intershophub/icm-webadapter:2.6.0
     pullPolicy: IfNotPresent
-    # Using exec to replace subshell (/bin/sh -c "...") with the shell script command
-    # Signals will be sent directly to the WA process of the shell script command, not an intermediate shell process
-    command: exec /intershop/bin/intershop.sh
   # disable HTTP/2 protocol support if required
   disableHTTP2: false
   customHttpdConfig: false
@@ -81,7 +78,7 @@ agent:
   # in some REST-based environment the webadapteragent isn't mandatory
   enabled: true
   image:
-    repository: intershophub/icm-webadapteragent:4.0.1
+    repository: intershophub/icm-webadapteragent:4.5.1
     pullPolicy: IfNotPresent
   # define the number of replicas being deployed (int, > 0, default=1)
   replicaCount: 1
@@ -190,15 +187,6 @@ persistence:
     enabled: false
     existingClaim: icm-as-cluster-customData-pvc
     mountPoint: /data
-
-# operational context (~= environment) this icm is running in
-operationalContext:
-  #   id of the customer e.g. xxxxx
-  customerId: "n_a"
-  # type of the environment (one of {int,uat,prd}, default=prd)
-  environmentType: prd
-  # name of the environment (environment-type + some sort of id, e.g. int-01, default=<environmentType>)
-  environmentName: prd
 
 resources:
   webadapter:

@@ -26,6 +26,7 @@ tests:
     values:
       - ../values.yaml
     set:
+      persistence.pagecache.type: existingClaim
       operationalContext.customerId: "helmtest"
       operationalContext.environmentType: "uat"
       operationalContext.environmentName: "uat2"

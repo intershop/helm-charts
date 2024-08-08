@@ -12,6 +12,7 @@ tests:
       - ../values.yaml
     set:
       agent.newrelic.enabled: true
+      persistence.pagecache.type: existingClaim
     template: templates/waa-deployment.yaml
     asserts:
       - contains:
