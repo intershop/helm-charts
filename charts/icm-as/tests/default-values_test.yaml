@@ -27,7 +27,7 @@ tests:
           value: prd
       - equal:
           path: metadata.labels.operational-context
-          value: n_a-prd-icm-standalone
+          value: n_a-prd-standalone
       - equal:
           path: metadata.labels["app.kubernetes.io/name"]
           value: icm-as
