@@ -10,6 +10,8 @@ tests:
       version: 0.8.15
     values:
       - ../values.yaml
+    set:
+      persistence.pagecache.type: existingClaim
     template: templates/waa-deployment.yaml
     asserts:
       - equal:
@@ -57,7 +59,4 @@ tests:
           of: ConfigMap
       - matchRegex:
           path: data["newrelic.yml"]
-          pattern: '.*"helmtest-uat2-edit-waa".*'
-      #- equal:
-      #    path: data
-      #    value: '.*(app_name : "helmtest-uat2-edit-icm-waa").*'
+          pattern: '.*"helmtest-uat2-edit-icm-waa".*'
