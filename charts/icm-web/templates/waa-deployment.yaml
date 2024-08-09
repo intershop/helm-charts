@@ -1,4 +1,4 @@
-{{- if .Values.agent.enabled }}
+{{- if (and .Values.agent.enabled (ne .Values.persistence.pagecache.type "emptyDir"))}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -10,7 +10,8 @@ metadata:
   labels:
     app: {{ include "icm-web.fullname" . }}-waa
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    environment-name: "{{ include "icm-as.environmentName" . }}"
+    environment-name: "{{ include "icm-web.environmentName" . }}"
+    environment-type: "{{ include "icm-web.environmentType" . }}"
     operational-context: "{{ include "icm-web.operationalContextName" . }}"
     {{- if .Values.agent.deploymentLabels }}
       {{- toYaml .Values.agent.deploymentLabels | trim | nindent 4 }}
@@ -85,35 +86,14 @@ spec:
       - name: custom-data-volume
         persistentVolumeClaim:
           claimName: "{{ .Values.persistence.customdata.existingClaim }}"
-        {{- end }}
+      {{- end }}
+      {{- if .Values.agent.newrelic.enabled }}
+      - name: waa-newrelic-config-volume
+        configMap:
+          defaultMode: 420
+          name: {{ template "icm-web.fullname" . }}-newrelic-yml
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}-agent
-          {{- if .Values.agent.image.tag }}
-          image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
-          {{- else }}
-          image: "{{ .Values.agent.image.repository }}"
-          {{- end }}
-          imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
-          command:
-          - "/bin/sh"
-          - "-c"
-          - {{- toYaml .Values.agent.image.command | nindent 12 }}
-          env:
-          - name: ICM_ICMSERVLETURLS
-            value: "cs.url.0=http://{{ .Release.Name }}-{{ .Values.appServerConnection.serviceName }}:{{ .Values.appServerConnection.port }}/servlet/ConfigurationServlet"
-          {{- if .Values.environment }}
-            {{- range $key, $value := .Values.environment }}
-          - name: {{ $key }}
-            value: {{ $value | quote }}
-            {{- end }}
-          {{- end }}
-          volumeMounts:
-          - name: pagecache-volume
-            mountPath: /intershop/pagecache
-          {{- if .Values.persistence.customdata.enabled }}
-          - name: custom-data-volume
-            mountPath: {{ .Values.persistence.customdata.mountPoint }}
-          {{- end }}
-          resources:
-            {{- toYaml .Values.resources.agent | nindent 12 }}
+          {{- include "icm-waa.container" . | nindent 10 }}
 {{- end -}}
