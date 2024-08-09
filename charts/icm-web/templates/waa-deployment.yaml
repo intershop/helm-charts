@@ -16,9 +16,14 @@ metadata:
       {{- toYaml .Values.agent.deploymentLabels | trim | nindent 4 }}
     {{- end }}
 spec:
-  replicas: {{ .Values.agent.replicaCount | default 1 }}
+  replicas: {{ .Values.agent.replicaCount | default 0 }}
+  {{- if (ne (int .Values.agent.replicaCount) 0) }}
   strategy:
     type: {{ .Values.agent.updateStrategy | default "RollingUpdate" }}
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  {{- end }}
   selector:
     matchLabels:
       app: icm-waa
