@@ -1,0 +1,35 @@
+suite: test correctness of environment
+templates:
+  - templates/waa-deployment.yaml
+  - templates/wa-deployment.yaml
+tests:
+  - it: empty dir creates side car on wa deployment
+    release:
+      name: release-name
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: templates/wa-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: ICM_AS_SERVICE
+            value: "http://release-name-icm-as:7744/servlet/ConfigurationServlet"
+  - it: existing claim creates deployment for WAA separately
+    release:
+      name: release-name
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.pagecache.type: existingClaim
+    template: templates/waa-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ICM_AS_SERVICE
+            value: "http://release-name-icm-as:7744/servlet/ConfigurationServlet"

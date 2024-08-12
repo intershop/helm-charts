@@ -17,23 +17,28 @@ metadata:
     app: {{ include "icm-as.fullname" .}}
 spec:
   progressDeadlineSeconds: 600
-  replicas: {{ .Values.replicaCount | default 1 }}
+  replicas: {{ .Values.replicaCount | default 0 }}
   revisionHistoryLimit: 10
   selector:
     matchLabels:
       app: icm-as
       release: {{ include "icm-as.fullname" . }}
+  {{- if (ne (int .Values.replicaCount) 0) }}
   strategy:
     type: {{ .Values.updateStrategy | default "RollingUpdate" }}
     rollingUpdate:
       maxUnavailable: 0
       maxSurge: 1
+  {{- end }}
   template:
     metadata:
       {{- include "icm-as.podData" . | nindent 6 }}
       labels:
         app: icm-as
         release: {{ include "icm-as.fullname" . }}
+        environment-name: "{{ include "icm-as.environmentName" . }}"
+        environment-type: "{{ include "icm-as.environmentType" . }}"
+        operational-context: "{{ include "icm-as.operationalContextName" . }}"
         {{- include "icm-as.podLabels" . | nindent 8 }}
         {{- if include "icm-as.podBinding" . }}
           {{- include "icm-as.podBinding" . | nindent 8 }}
