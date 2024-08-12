@@ -1,0 +1,50 @@
+suite: test correctness of environment
+templates:
+  - templates/waa-deployment.yaml
+  - templates/config-newrelic-yaml-cm.yaml
+tests:
+  - it: enable new relic - deployment changes
+    release:
+      name: release-name
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      agent.newrelic.enabled: true
+      persistence.pagecache.type: existingClaim
+    template: templates/waa-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: waa-newrelic-config-volume
+            configMap:
+              name: release-name-icm-web-newrelic-yml
+              defaultMode: 420
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ENABLE_NEWRELIC
+            value: "true"
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            mountPath: /intershop/newrelic/newrelic.yml
+            name: waa-newrelic-config-volume
+            readOnly: true
+            subPath: newrelic.yml
+  - it: enable new relic - config map created
+    release:
+      name: release-name
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      agent.newrelic.enabled: true
+    template: templates/config-newrelic-yaml-cm.yaml
+    asserts:
+      - equal:
+          path: metadata.name
+          value: release-name-icm-web-newrelic-yml
