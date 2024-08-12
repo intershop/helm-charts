@@ -9,23 +9,18 @@ nodeSelector: {}
 # operational context (~= environment) this icm is running in
 operationalContext:
   #   id of the customer e.g. xxxxx
-  # customerId: <customerId>
+  customerId: "n_a"
   # type of the environment (one of {int,uat,prd}, default=prd)
   environmentType: prd
   # name of the environment (environment-type + some sort of id, e.g. int-01, default=<environmentType>)
   environmentName: prd
-  # type of the application (default=icm)
-  applicationType: icm
   # if this is a staging environment define the system type (one of {standalone,live,edit}, default=standalone)
   stagingType: standalone
 
 webadapter:
   image:
-    repository: intershophub/icm-webadapter:2.5.0
+    repository: intershophub/icm-webadapter:2.6.0
     pullPolicy: IfNotPresent
-    # Using exec to replace subshell (/bin/sh -c "...") with the shell script command
-    # Signals will be sent directly to the WA process of the shell script command, not an intermediate shell process
-    command: exec /intershop/bin/intershop.sh
   # disable HTTP/2 protocol support if required
   disableHTTP2: false
   customHttpdConfig: false
@@ -83,11 +78,8 @@ agent:
   # in some REST-based environment the webadapteragent isn't mandatory
   enabled: true
   image:
-    repository: intershophub/icm-webadapteragent:4.0.1
+    repository: intershophub/icm-webadapteragent:4.5.1
     pullPolicy: IfNotPresent
-    # Using exec to replace subshell (/bin/sh -c "...") with the shell script command
-    # Signals will be sent directly to the WAA process of the shell script command, not an intermediate shell process
-    command: exec /intershop/bin/start-waa.sh
   # define the number of replicas being deployed (int, > 0, default=1)
   replicaCount: 1
   # define update the strategy (possible values: Recreate, RollingUpdate; default=RollingUpdate)
@@ -107,10 +99,32 @@ agent:
   deploymentLabels: {}
   podLabels: {}
 
+  # configuration related to New Relic for WAA (same structure as for AS)
+  newrelic:
+    # enable or disable the New Relic Java agent to monitor the icm-as JVM
+    # https://docs.newrelic.com/docs/kubernetes-pixie/kubernetes-integration/advanced-configuration/link-apm-applications-kubernetes/
+    enabled: false
+    #   application name (~= environment name): calculated from operationalContext section, set to override
+    # appName: "icm-waa"
+    # provide license key as plain text
+    # "license_key" deprecated since ICM-AS Helm Charts 1.8.0, will be removed in a future version.
+    # Use licenseKeySecretKeyRef instead.
+    license_key: "secret"
+    # instead use secret key reference (recommended) - takes precedence over license_key
+    # licenseKeySecretKeyRef:
+    #  name: <your-company-prd-secrets>
+    #  key: <licenseKey>
+    metrics:
+      # fine grade possibility to disable metrics for cost reduction
+      enabled: true
+    apm:
+      # fine grade possibility to disable apm for cost reduction
+      enabled: true
+
 ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
 ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
 imagePullSecrets:
-- "dockerhub"
+  - "dockerhub"
 
 persistence:
   pagecache:
@@ -126,13 +140,13 @@ persistence:
         # existingClass: ""
         skuName: Standard_LRS
         mountOptions:
-        - uid=150
-        - gid=150
-        - dir_mode=0777
-        - file_mode=0777
-        - mfsymlinks
-        - cache=strict
-        - actimeo=30
+          - uid=150
+          - gid=150
+          - dir_mode=0777
+          - file_mode=0777
+          - mfsymlinks
+          - cache=strict
+          - actimeo=30
     azurefiles:
       shareName: icm-web-pc-share
       secretName: icm-web-pc-secret
@@ -154,13 +168,13 @@ persistence:
         # existingClass: ""
         skuName: Standard_LRS
         mountOptions:
-        - uid=150
-        - gid=150
-        - dir_mode=0777
-        - file_mode=0777
-        - mfsymlinks
-        - cache=strict
-        - actimeo=30
+          - uid=150
+          - gid=150
+          - dir_mode=0777
+          - file_mode=0777
+          - mfsymlinks
+          - cache=strict
+          - actimeo=30
     azurefiles:
       shareName: icm-web-logs-share
       secretName: icm-web-logs-secret
@@ -193,7 +207,8 @@ resources:
 ingress:
   enabled: false
   className: nginx
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   # Paths are treated as list of prefixes. Any URL matching one of the prefixes will
