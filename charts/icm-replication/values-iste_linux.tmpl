@@ -92,19 +92,9 @@ icm-edit:
         "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
       image:
         repository: "${ICM_WEBSERVER_IMAGE}"
-        command: |
-          mkdir -p $HELM_DIRECTORY/server-logs-edit
-          chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs-edit
-          timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
-          su ${SERVER_DIRECTORY_USER} -c "/intershop/bin/intershop.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs-edit/wa${timestamp}.log"
     agent:
       image:
         repository: "${ICM_WEBADAPTER_AGENT_IMAGE}"
-        command: |
-          mkdir -p $HELM_DIRECTORY/server-logs-edit
-          chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs-edit
-          timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
-          su ${SERVER_DIRECTORY_USER} -c "/intershop/bin/start-waa.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs-edit/waa${timestamp}.log"
     podSecurityContext:
       runAsUser: 0
       runAsGroup: 0
@@ -235,19 +225,9 @@ icm-live:
         "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
       image:
         repository: "${ICM_WEBSERVER_IMAGE}"
-        command: |
-          mkdir -p $HELM_DIRECTORY/server-logs-live
-          chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs-live
-          timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
-          su ${SERVER_DIRECTORY_USER} -c "/intershop/bin/intershop.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs-live/wa${timestamp}.log"
     agent:
       image:
         repository: "${ICM_WEBADAPTER_AGENT_IMAGE}"
-        command: |
-          mkdir -p $HELM_DIRECTORY/server-logs-live
-          chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs-live
-          timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
-          su ${SERVER_DIRECTORY_USER} -c "/intershop/bin/start-waa.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs-live/waa${timestamp}.log"
     podSecurityContext:
       runAsUser: 0
       runAsGroup: 0
