@@ -91,19 +91,9 @@ icm-web:
       "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
     image:
       repository: "${ICM_WEBSERVER_IMAGE}"
-      command: |
-        mkdir -p $HELM_DIRECTORY/server-logs
-        chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs
-        timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
-        su ${SERVER_DIRECTORY_USER} -c "/intershop/bin/intershop.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs/wa${timestamp}.log"
   agent:
     image:
       repository: "${ICM_WEBADAPTER_AGENT_IMAGE}"
-      command: |
-        mkdir -p $HELM_DIRECTORY/server-logs
-        chown -R ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_GROUP} ${HELM_DIRECTORY}/server-logs
-        timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
-        su ${SERVER_DIRECTORY_USER} -c "/intershop/bin/start-waa.sh 2>&1 | tee outfile $HELM_DIRECTORY/server-logs/waa${timestamp}.log"
   podSecurityContext:
     runAsUser: 0
     runAsGroup: 0
