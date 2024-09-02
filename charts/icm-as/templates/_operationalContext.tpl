@@ -28,6 +28,7 @@ Renders values from the operational context
     {{- else -}}
       {{- $_ := set .Values.operationalContext "stagingType" "live" -}}
     {{- end -}}
+    {{- .Values.operationalContext.stagingType -}}
   {{- else -}}
     {{- .Values.operationalContext.stagingType | default "standalone" -}}
   {{- end -}}
