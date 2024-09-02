@@ -440,12 +440,41 @@ replication:
   # defines the type of this replication system (source | target)
   role: <source|target>
 
+  # "targetSystemUrl" deprecated since ICM-AS Helm Charts 2.2.0, will be removed in a future version.
+  # Configure the source and targets within replication instead.
   # if role=source the following properties are mandatory (otherwise they are ignored)
   # the external URL of the webServer/proxy/ingress e.g. https://icm-web-live-wa:443
   targetSystemUrl: <externalUrl>
 
+  # "sourceDatabaseName" deprecated since ICM-AS Helm Charts 2.2.0, will be removed in a future version.
+  # Configure the source and targets within replication instead.
   # the name of the (source) database to be used at the target-system to read data from e.g. intershop_edit
   sourceDatabaseName: <databaseName>
+
+  # The following "source" and "targets" configuration blocks take precedence over
+  # the deprecated "targetSystemUrl" / "sourceDatabaseName" configurations
+  # Configuration for source system that participates in replication
+  # source:
+    # the external URL of the webServer/proxy/ingress e.g. https://icm-web-edit-wa:443
+    # webserverUrl: <sourceExternalUrl>
+    # either mutual exclusive databaseUser or databaseLink have to be configured
+    # databaseLink: <sourceDatabaseLink>
+    # databaseUser: <sourceDatabaseUser>
+    # databaseName: <sourceDatabaseName>
+
+  # Configuration for all target systems that participates in replication
+  # targets:
+    # create multiple target systems - please avoid characters like '.', '-' or '_' in the chosen name/key
+    # live1:
+      # the external URL of the webServer/proxy/ingress e.g. https://icm-web-live-wa:443
+      # webserverUrl: <targetExternalUrl>
+      # this database user will be granted access to the database schema of the source replication system
+      # databaseUser: <targetDatabaseUser>
+    # live2:
+      # the external URL of the webServer/proxy/ingress e.g. https://icm-web-live-wa:443
+      # webserverUrl: <targetExternalUrl>
+      # this database user will be granted access to the database schema of the source replication system
+      # databaseUser: <targetDatabaseUser>
 
 # Configuration of messaging via jgroups
 jgroups:
@@ -459,7 +488,7 @@ jgroups:
   discovery: file_ping
 
   # extra attributes to be added at the ping-section in xml,
-  # e.g. "readTimeout=\"1000\" operationAttempts=\"5\""
+  # e.g. 'readTimeout="1000" operationAttempts="5"'
   # discoveryExtraAttributes: <extra-attributes>
 
   # the DNS-query. Used with discovery type dns_ping
