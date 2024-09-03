@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "memcached:1.6.21"
+          image: {{ default "memcached:1.6.21" .Values.cache.memcached.image }}
           imagePullPolicy: IfNotPresent
           command: ["memcached"]
           # add "-vv" for verbose logging
