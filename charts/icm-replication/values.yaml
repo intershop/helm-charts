@@ -4,8 +4,24 @@ icm-edit:
     replication:
       enabled: true
       role: source
+      # "targetSystemUrl" deprecated since ICM-Replication Helm Charts 2.6.0, will be removed in a future version.
+      # Configure the source and targets within replication instead.
       targetSystemUrl: https://<domain for icm-replication-ingress-nginx-live>:443
+      # "sourceDatabaseName" deprecated since ICM-Replication Helm Charts 2.6.0, will be removed in a future version.
+      # Configure the source and targets within replication instead.
       sourceDatabaseName: intershop_edit
+      # source:
+        # webserverUrl: <sourceExternalUrl>
+        # databaseLink: <sourceDatabaseLink>
+        # databaseUser: <sourceDatabaseUser>
+        # databaseName: <sourceDatabaseName>
+      # targets:
+        # live1:
+          # webserverUrl: <targetExternalUrl>
+          # databaseUser: <targetDatabaseUser>
+        # live2:
+          # webserverUrl: <targetExternalUrl>
+          # databaseUser: <targetDatabaseUser>
     database:
       jdbcURL: "jdbc:sqlserver://<ipaddress or hostname>:1433;databaseName=intershop_edit"
       jdbcUser: "intershop_edit"
@@ -42,6 +58,18 @@ icm-live:
     replication:
       enabled: true
       role: target
+      # source:
+        # webserverUrl: <sourceExternalUrl>
+        # databaseLink: <sourceDatabaseLink>
+        # databaseUser: <sourceDatabaseUser>
+        # databaseName: <sourceDatabaseName>
+      # targets:
+        # live1:
+          # webserverUrl: <targetExternalUrl>
+          # databaseUser: <targetDatabaseUser>
+        # live2:
+          # webserverUrl: <targetExternalUrl>
+          # databaseUser: <targetDatabaseUser>
     database:
       jdbcURL: "jdbc:sqlserver://<ipaddress or hostname>:1433;databaseName=intershop_live"
       jdbcUser: "intershop_live"
