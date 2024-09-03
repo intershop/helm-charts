@@ -5,6 +5,7 @@ environment/tmp_repo/**
 build/**
 .idea/
 .project
+.debug
 **/tests/__snapshot__
 **/tests/__results__
 values-*.yaml

@@ -1,4 +1,18 @@
 
+<a name="icm-as-2.2.0"></a>
+## [icm-as-2.2.0](https://github.com/intershop/helm-charts/compare/icm-as-2.1.1...icm-as-2.2.0)
+
+> 2024-09-03
+
+### Chore
+
+* bump versions of icm:minor icm-as:minor icm-replication:minor
+
+### Feat
+
+* **icm:** New replication environment configuration ([#803](https://github.com/intershop/helm-charts/issues/803))
+
+
 <a name="icm-as-2.1.1"></a>
 ## [icm-as-2.1.1](https://github.com/intershop/helm-charts/compare/icm-as-2.1.0...icm-as-2.1.1)
 
@@ -6,6 +20,7 @@
 
 ### Chore
 
+* generated changelog+release notes for icm-as:patch
 * bump versions of icm-as:patch
 
 ### Fix

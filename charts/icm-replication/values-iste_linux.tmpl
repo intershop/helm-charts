@@ -6,8 +6,14 @@ icm-edit:
       # as long as there are no long running job pods we need this annotation for icm-as
       "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
     replication:
-      targetSystemUrl: https://${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}:443
-      sourceDatabaseName: "${DATABASE_USER_EDIT}"
+      source:
+        webserverUrl: "https://${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}:443"
+        databaseUser: "${DATABASE_USER_EDIT}"
+        databaseName: "${DATABASE_USER_EDIT}"
+      targets:
+        live1:
+          webserverUrl: "https://${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}:443"
+          databaseUser: "${DATABASE_USER_LIVE}"
     image:
       repository: "${ICM_TEST_IMAGE}"
     customCommand:
@@ -141,6 +147,15 @@ icm-live:
     podAnnotations:
       # as long as there are no long running job pods we need this annotation for icm-as
       "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
+    replication:
+      source:
+        webserverUrl: "https://${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}:443"
+        databaseUser: "${DATABASE_USER_EDIT}"
+        databaseName: "${DATABASE_USER_EDIT}"
+      targets:
+        live1:
+          webserverUrl: "https://${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}:443"
+          databaseUser: "${DATABASE_USER_LIVE}"
     image:
       repository: "${ICM_TEST_IMAGE}"
     customCommand:

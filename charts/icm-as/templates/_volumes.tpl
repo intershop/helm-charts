@@ -23,7 +23,8 @@ volumes:
 {{- end }}
 {{- include "icm-as.volume" (list . "sites" .Values.persistence.sites .Values.podSecurityContext) }}
 {{- include "icm-as.volume" (list . "encryption" .Values.persistence.encryption .Values.podSecurityContext) }}
-{{- if and (.Values.replication.enabled) (eq .Values.replication.role "source")}}
+{{- $replicationUsesReplicationClustersXmlConfiguration := include "icm-as.replicationUsesReplicationClustersXmlConfiguration" . | eq "true" }}
+{{- if $replicationUsesReplicationClustersXmlConfiguration }}
 - name: replication-volume
   configMap:
     name: {{ template "icm-as.fullname" . }}-replication-clusters-xml

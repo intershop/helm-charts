@@ -85,14 +85,7 @@ env:
   value: "{{ .Values.database.jdbcPassword }}"
 {{- end }}
 {{- end }}
-{{- if .Values.replication.enabled }}
-- name: STAGING_SYSTEM_TYPE
-  {{- if eq .Values.replication.role "source" }}
-  value: editing
-  {{- else }}
-  value: live
-  {{- end }}
-{{- end }}
+{{ include "icm-as.envReplication" . }}
 {{ include "icm-as.featuredJVMArguments" . }}
 {{ include "icm-as.additionalJVMArguments" . }}
 {{- range $key, $value := .Values.environment }}
@@ -132,6 +125,74 @@ Creates the environment secrets section
     secretKeyRef:
       name: {{ $secret.name | quote }}
       key: {{ $secret.key | quote }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Creates the environment replication section
+*/}}
+{{- define "icm-as.envReplication" -}}
+{{- if .Values.replication.enabled }}
+- name: STAGING_SYSTEM_TYPE
+  {{- if eq .Values.replication.role "source" }}
+  value: editing
+  {{- else }}
+  value: live
+  {{- end }}
+{{/*
+ICM-AS >= 12.2.0 supports new replication configuration via environments instead of replication-clusters.xml
+ICM-AS >= 13.0.0 requires new replication configuration
+*/}}
+{{- $icmApplicationServerImageSemanticVersion := include "icm-as.imageSemanticVersion" . -}}
+{{- $hasIcmApplicationServerImageSemanticVersion := regexMatch "([0-9]+)\\.([0-9]+)\\.([0-9]+)" $icmApplicationServerImageSemanticVersion -}}
+{{- $hasNewReplicationConfigurationRequirement := and ($hasIcmApplicationServerImageSemanticVersion) (semverCompare ">= 13.0.0" $icmApplicationServerImageSemanticVersion) -}}
+{{- $hasNewReplicationConfigurationSupport := and ($hasIcmApplicationServerImageSemanticVersion) (semverCompare ">= 12.2.0" $icmApplicationServerImageSemanticVersion) -}}
+{{- $hasNewReplicationConfiguration := or (hasKey .Values.replication "source") (hasKey .Values.replication "targets") -}}
+{{- if and ($hasNewReplicationConfigurationRequirement) (not $hasNewReplicationConfiguration) -}}
+  {{- fail (printf "Error: Since ICM-AS 13.0.0 you need to use the new 'replication.source'/'replication.targets' configuration for replication, currently used '%s'." $icmApplicationServerImageSemanticVersion) -}}
+{{- end -}}
+{{- if and ($hasIcmApplicationServerImageSemanticVersion) (not $hasNewReplicationConfigurationSupport) ($hasNewReplicationConfiguration) -}}
+  {{- fail (printf "Error: The new replication configuration 'replication.source'/'replication.targets' can be only used with ICM-AS 12.2.0 and newer, currently used '%s'." $icmApplicationServerImageSemanticVersion) -}}
+{{- end -}}
+{{- if and ($hasNewReplicationConfiguration) (hasKey .Values.replication.source "databaseLink") (hasKey .Values.replication.source "databaseName") -}}
+  {{- fail "Error: Either mutual exclusive 'replication.source.databaseUser' or 'replication.source.databaseLink' have to be configured, but not both." -}}
+{{- end -}}
+{{- if and (or (not $hasIcmApplicationServerImageSemanticVersion) $hasNewReplicationConfigurationSupport) $hasNewReplicationConfiguration }}
+{{- $replicationSystemIDs := keys .Values.replication.targets | sortAlpha -}}
+- name: STAGING_SYSTEMS_IDS
+  value: {{ join "," $replicationSystemIDs | quote }}
+{{- range $index, $replicationSystemID := $replicationSystemIDs }}
+{{- if regexMatch ".*[._-].*" $replicationSystemID -}}
+  {{- fail (printf "Error: The key '%s' in 'replication.targets' violates the constraint that it cannot contain any of these characters: '.', '-', '_'." $replicationSystemID) }}
+{{- end -}}
+{{- $replicationTarget := get $.Values.replication.targets $replicationSystemID -}}
+{{- $replicationSystemIDEnvironmentKeyPrefix := printf "STAGING_SYSTEMS_%s" ($replicationSystemID | upper) }}
+{{- if $.Values.replication.source.webserverUrl }}
+- name: {{ $replicationSystemIDEnvironmentKeyPrefix }}_SOURCE_BASEURL
+  value: {{ $.Values.replication.source.webserverUrl | quote }}
+{{- end }}
+{{- if $.Values.replication.source.databaseUser }}
+- name: {{ $replicationSystemIDEnvironmentKeyPrefix }}_SOURCE_DATABASEUSER
+  value: {{ $.Values.replication.source.databaseUser | quote }}
+{{- end }}
+{{- if $.Values.replication.source.databaseLink }}
+- name: {{ $replicationSystemIDEnvironmentKeyPrefix }}_SOURCE_DATABASELINK
+  value: {{ $.Values.replication.source.databaseLink | quote }}
+{{- end }}
+{{- if $.Values.replication.source.databaseName }}
+- name: {{ $replicationSystemIDEnvironmentKeyPrefix }}_SOURCE_DATABASENAME
+  value: {{ $.Values.replication.source.databaseName | quote }}
+{{- end }}
+{{- if $replicationTarget.webserverUrl }}
+- name: {{ $replicationSystemIDEnvironmentKeyPrefix }}_TARGET_BASEURL
+  value: {{ $replicationTarget.webserverUrl | quote }}
+{{- end }}
+{{- if $replicationTarget.databaseUser }}
+- name: {{ $replicationSystemIDEnvironmentKeyPrefix }}_TARGET_DATABASEUSER
+  value: {{ $replicationTarget.databaseUser | quote }}
+{{- end }}
+{{- end -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 
