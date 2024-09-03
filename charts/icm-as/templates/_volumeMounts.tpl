@@ -25,7 +25,8 @@ volumeMounts:
 - mountPath: /intershop/jgroups-share
   name: jgroups-volume
 {{- end }}
-{{- if and (.Values.replication.enabled) (eq .Values.replication.role "source")}}
+{{- $replicationUsesReplicationClustersXmlConfiguration := include "icm-as.replicationUsesReplicationClustersXmlConfiguration" . | eq "true" }}
+{{- if $replicationUsesReplicationClustersXmlConfiguration }}
 - mountPath: /intershop/replication-conf/replication-clusters.xml
   name: replication-volume
   readOnly: true
