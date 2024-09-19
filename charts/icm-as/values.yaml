@@ -108,7 +108,7 @@ infrastructureMonitoring:
     # enabled/disabled
     enabled: true
     # how often to gather a sample for the metrics (pattern compatible to java.time.Duration#parse)
-    interval: 5S
+    interval: 60S
 
 nameOverride: ""
 
