@@ -41,6 +41,7 @@ jobs:
     - name: Run chart-testing (install)
       if: steps.list-changed.outputs.changed == 'true'
       run: |
+        uname -a
         set -x
         random_value=`tr -dc 'a-z0-9' < /dev/urandom | head -c10`
         export NAMESPACE=ct-icm-as-$random_value
@@ -56,7 +57,7 @@ jobs:
 
         sudo mkdir -p /data/icm/sites
         sed -i 's/<local sites folder>/\/data\/icm\/sites/' charts/icm-as/values.yaml
-        
+
         sudo mkdir -p /data/icm/encryption
         sed -i 's/<local encryption folder>/\/data\/icm\/encryption/' charts/icm-as/values.yaml
 
