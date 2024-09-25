@@ -41,7 +41,6 @@ jobs:
     - name: Run chart-testing (install)
       if: steps.list-changed.outputs.changed == 'true'
       run: |
-        uname -a
         set -x
         random_value=`tr -dc 'a-z0-9' < /dev/urandom | head -c10`
         export NAMESPACE=ct-icm-as-$random_value

@@ -96,7 +96,7 @@ newrelic:
 # configuration for metrics about infrastructure components
 infrastructureMonitoring:
   # enable or disable the whole feature
-  enabled: false
+  enabled: true
   # the metrics agent requires a docker image to run
   image:
     # pull policy
