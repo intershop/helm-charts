@@ -26,6 +26,7 @@ tests:
     values:
       - ../values.yaml
     set:
+      infrastructureMonitoring.enabled: true
       infrastructureMonitoring.image.repository: "intershop/infrastructure-probing:0.8.15"
       infrastructureMonitoring.image.pullPolicy: "Always"
     asserts:
@@ -46,6 +47,7 @@ tests:
     values:
       - ../values.yaml
     set:
+      infrastructureMonitoring.enabled: true
       infrastructureMonitoring.databaseLatency.enabled: true
       infrastructureMonitoring.databaseLatency.interval: 10S
     asserts:
@@ -65,6 +67,7 @@ tests:
     values:
       - ../values.yaml
     set:
+      infrastructureMonitoring.enabled: true
       infrastructureMonitoring.databaseLatency.enabled: false
     asserts:
       #spec.template.spec.containers[1].env
@@ -83,6 +86,7 @@ tests:
     values:
       - ../values.yaml
     set:
+      infrastructureMonitoring.enabled: true
       infrastructureMonitoring.databaseLatency.enabled: false
     asserts:
       - isKind:

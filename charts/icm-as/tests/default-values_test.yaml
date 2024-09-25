@@ -11,6 +11,8 @@ tests:
       appVersion: 11.0.1
     values:
       - ../values.yaml
+    set:
+      infrastructureMonitoring.enabled: true
     template: templates/as-deployment.yaml
     asserts:
       - isKind:
