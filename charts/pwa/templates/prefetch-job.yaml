@@ -10,6 +10,8 @@ metadata:
     app.kubernetes.io/managed-by: {{ $.Release.Service }}
 spec:
   schedule: {{ default "0 0 * * *" .cron | quote}}
+  successfulJobsHistoryLimit: {{ default 0 .successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ default 1 .failedJobsHistoryLimit }}
   jobTemplate:
     spec:
       parallelism: 1
@@ -18,8 +20,6 @@ spec:
       template:
         spec:
           restartPolicy: Never
-          successfulJobsHistoryLimit: {{ default 0 .successfulJobsHistoryLimit }}
-          failedJobsHistoryLimit: {{ default 1 .failedJobsHistoryLimit }}
           containers:
           - name: prefetch
             image: {{ default "31099/wget:alpine-3.19" .image }}
