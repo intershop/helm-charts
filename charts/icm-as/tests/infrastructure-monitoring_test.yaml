@@ -1,0 +1,117 @@
+suite: tests the infrastructure monitoring section values
+templates:
+  - templates/as-deployment.yaml
+  - templates/infrastructure-monitoring-service.yaml
+tests:
+  - it: should not render if disabled
+    template: templates/as-deployment.yaml
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      infrastructureMonitoring.enabled: false
+    asserts:
+      - isNull:
+          path: spec.template.spec.containers[1]
+
+  - it: image is customizable
+    template: templates/as-deployment.yaml
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      infrastructureMonitoring.enabled: true
+      infrastructureMonitoring.image.repository: "intershop/infrastructure-probing:0.8.15"
+      infrastructureMonitoring.image.pullPolicy: "Always"
+    asserts:
+      #spec.template.spec.containers[1]
+      - equal:
+          path: spec.template.spec.containers[1].image
+          value: intershop/infrastructure-probing:0.8.15
+      - equal:
+          path: spec.template.spec.containers[1].imagePullPolicy
+          value: Always
+
+  - it: probe databaseLatency is customizable
+    template: templates/as-deployment.yaml
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      infrastructureMonitoring.enabled: true
+      infrastructureMonitoring.databaseLatency.enabled: true
+      infrastructureMonitoring.databaseLatency.interval: 10S
+    asserts:
+      #spec.template.spec.containers[1].env
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: JAVA_OPTS_APPEND
+            value: "-Dprobes.databaseLatency.enabled=true -Dprobes.databaseLatency.interval=10S"
+
+  - it: probe databaseLatency can be disabled
+    template: templates/as-deployment.yaml
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      infrastructureMonitoring.enabled: true
+      infrastructureMonitoring.databaseLatency.enabled: false
+    asserts:
+      #spec.template.spec.containers[1].env
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: JAVA_OPTS_APPEND
+            value: "-Dprobes.databaseLatency.enabled=false -Dprobes.databaseLatency.interval=60S"
+
+  - it: service is properly configured
+    template: templates/infrastructure-monitoring-service.yaml
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      infrastructureMonitoring.enabled: true
+      infrastructureMonitoring.databaseLatency.enabled: false
+    asserts:
+      - isKind:
+          of: Service
+      - equal:
+          path: metadata.name
+          value: icm-as-inframonitoring
+      #metadata.labels
+      - equal:
+          path: metadata.labels.app
+          value: icm-as
+      - equal:
+          path: metadata.labels.chart
+          value: icm-as-0.8.15
+      #spec.ports
+      - contains:
+          path: spec.ports
+          content:
+            name: inframonitoring
+            port: 8080
+            targetPort: inframonitoring
+      #spec.selector
+      - equal:
+          path: spec.selector.app
+          value: icm-as
+      #status
+      - isEmpty:
+          path: status.loadBalancer

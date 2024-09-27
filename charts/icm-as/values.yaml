@@ -93,6 +93,23 @@ newrelic:
     # fine grade possibility to disable apm for cost reduction
     enabled: true
 
+# configuration for metrics about infrastructure components
+infrastructureMonitoring:
+  # enable or disable the whole feature
+  enabled: true
+  # the metrics agent requires a docker image to run
+  image:
+    # pull policy
+    pullPolicy: IfNotPresent
+    # repository (incl. tag)
+    repository: "intershophub/infrastructure-probing:1.0.0"
+  # section for database latency metrics
+  databaseLatency:
+    # enabled/disabled
+    enabled: true
+    # how often to gather a sample for the metrics (pattern compatible to java.time.Duration#parse)
+    interval: 60S
+
 nameOverride: ""
 
 fullnameOverride: ""
