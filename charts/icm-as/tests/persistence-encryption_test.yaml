@@ -1,0 +1,376 @@
+suite: tests correctness of persistence.encryption section
+templates:
+  - templates/as-deployment.yaml
+  - templates/local-encryption-pv.yaml
+  - templates/local-encryption-pvc.yaml
+  - templates/cluster-encryption-pvc.yaml
+  - templates/cluster-encryption-sc.yaml
+  - templates/nfs-encryption-pv.yaml
+  - templates/nfs-encryption-pvc.yaml
+  - templates/static-encryption-pvc.yaml
+tests:
+  - it: type=local in as-deployment
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.encryption.type: local
+    template: templates/as-deployment.yaml
+    asserts:
+      #spec.template.spec.volumes
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: encryption-volume
+            persistentVolumeClaim:
+              claimName: "icm-as-local-encryption-pvc"
+
+  - it: type=local in local-encryption-pv
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.encryption.type: local
+      persistence.encryption.size: 1.5Gi
+      persistence.encryption.local.path: /mnt/intershop/encryption
+    template: templates/local-encryption-pv.yaml
+    asserts:
+      - isKind:
+          of: PersistentVolume
+      - equal:
+          path: metadata.name
+          value: icm-as-local-encryption-pv
+      #metadata.labels
+      - equal:
+          path: metadata.labels.type
+          value: local
+      #spec
+      - equal:
+          path: spec.storageClassName
+          value: standard
+      - equal:
+          path: spec.capacity.storage
+          value: 1.5Gi
+      - equal:
+          path: spec.accessModes[0]
+          value: ReadOnlyMany
+      - equal:
+          path: spec.persistentVolumeReclaimPolicy
+          value: Delete
+      - equal:
+          path: spec.hostPath.path
+          value: "/mnt/intershop/encryption"
+
+  - it: type=local in local-encryption-pvc
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.encryption.type: local
+      persistence.encryption.size: 1.5Gi
+      persistence.encryption.local.path: /mnt/intershop/encryption
+    template: templates/local-encryption-pvc.yaml
+    asserts:
+      - isKind:
+          of: PersistentVolumeClaim
+      - equal:
+          path: metadata.name
+          value: icm-as-local-encryption-pvc
+      #spec
+      - equal:
+          path: spec.storageClassName
+          value: standard
+      - equal:
+          path: spec.volumeName
+          value: icm-as-local-encryption-pv
+      - equal:
+          path: spec.accessModes[0]
+          value: ReadOnlyMany
+      - equal:
+          path: spec.resources.requests.storage
+          value: 1.5Gi
+
+  - it: type=cluster in as-deployment
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.encryption.type: cluster
+    template: templates/as-deployment.yaml
+    asserts:
+      #spec.template.spec.volumes
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: encryption-volume
+            persistentVolumeClaim:
+              claimName: "icm-as-cluster-encryption-pvc"
+
+  - it: type=use existing sc in cluster-encryption-pvc
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.encryption.type: cluster
+      persistence.encryption.cluster.storageClass.create: false
+      persistence.encryption.cluster.storageClass.existingClass: "custom-storage-class-name"
+    template: templates/cluster-encryption-pvc.yaml
+    asserts:
+      - isKind:
+          of: PersistentVolumeClaim
+      - equal:
+          path: metadata.name
+          value: "icm-as-cluster-encryption-pvc"
+      - equal:
+          path: spec.storageClassName
+          value: "custom-storage-class-name"
+
+  - it: type=create cluster-encryption-sc
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.encryption.type: cluster
+      persistence.encryption.cluster.storageClass.create: true
+      persistence.encryption.cluster.storageClass.existingClass: ""
+      persistence.encryption.cluster.storageClass.skuName: Standard_LRS
+      persistence.encryption.cluster.storageClass.mountOptions:
+      - uid=150
+      - gid=150
+      - dir_mode=0777
+      - file_mode=0777
+      - mfsymlinks
+      - cache=strict
+      - actimeo=30
+    template: templates/cluster-encryption-sc.yaml
+    asserts:
+      - isKind:
+          of: StorageClass
+      - equal:
+          path: metadata.name
+          value: "icm-as-cluster-encryption-sc"
+      - equal:
+          path: provisioner
+          value: kubernetes.io/azure-file
+      - equal:
+          path: allowVolumeExpansion
+          value: true
+      - equal:
+          path: mountOptions[0]
+          value: uid=150
+      - equal:
+          path: mountOptions[1]
+          value: gid=150
+      - equal:
+          path: mountOptions[2]
+          value: dir_mode=0777
+      - equal:
+          path: mountOptions[3]
+          value: file_mode=0777
+      - equal:
+          path: mountOptions[4]
+          value: mfsymlinks
+      - equal:
+          path: mountOptions[5]
+          value: cache=strict
+      - equal:
+          path: mountOptions[6]
+          value: actimeo=30
+      - equal:
+          path: parameters.skuName
+          value: Standard_LRS
+
+  - it: type=azurefiles in as-deployment
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.encryption.type: azurefiles
+      persistence.encryption.azurefiles.shareName: custom-share
+      persistence.encryption.azurefiles.secretName: custom-secret
+    template: templates/as-deployment.yaml
+    asserts:
+      #spec.template.spec.volumes
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            csi:
+              driver: file.csi.azure.com
+              readOnly: false
+              volumeAttributes:
+                mountOptions: uid=150,gid=150
+                secretName: custom-secret
+                shareName: custom-share
+            name: encryption-volume
+
+  - it: type=nfs in as-deployment
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.encryption.type: nfs
+      persistence.encryption.nfs.server: custom-host
+      persistence.encryption.nfs.path: custom-path
+    template: templates/as-deployment.yaml
+    asserts:
+      #spec.template.spec.volumes
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: encryption-volume
+            persistentVolumeClaim:
+              claimName: icm-as-nfs-encryption-pvc
+
+  - it: type=nfs in nfs-encryption-pv
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.encryption.type: nfs
+      persistence.encryption.size: 1.5Gi
+      persistence.encryption.nfs.server: custom-host
+      persistence.encryption.nfs.path: custom-path
+    template: templates/nfs-encryption-pv.yaml
+    asserts:
+      - isKind:
+          of: PersistentVolume
+      - equal:
+          path: metadata.name
+          value: icm-as-nfs-encryption-pv
+      #metadata.labels
+      - equal:
+          path: metadata.labels.type
+          value: nfs
+      #spec
+      - equal:
+          path: spec.capacity.storage
+          value: 1.5Gi
+      - equal:
+          path: spec.nfs.server
+          value: custom-host
+      - equal:
+          path: spec.nfs.path
+          value: custom-path
+
+  - it: type=nfs in nfs-encryption-pvc
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.encryption.type: nfs
+      persistence.encryption.size: 1.5Gi
+      persistence.encryption.nfs.server: custom-host
+      persistence.encryption.nfs.path: custom-path
+    template: templates/nfs-encryption-pvc.yaml
+    asserts:
+      - isKind:
+          of: PersistentVolumeClaim
+      - equal:
+          path: metadata.name
+          value: icm-as-nfs-encryption-pvc
+      #metadata.annotations
+      - equal:
+          path: metadata.annotations
+          value:
+            helm.sh/resource-policy: keep
+      #spec
+      - equal:
+          path: spec.accessModes[0]
+          value: ReadOnlyMany
+      - equal:
+          path: spec.storageClassName
+          value: ""
+      - equal:
+          path: spec.volumeName
+          value: icm-as-nfs-encryption-pv
+      - equal:
+          path: spec.resources.requests.storage
+          value: 1.5Gi
+      - equal:
+          path: spec.selector.matchLabels.type
+          value: nfs
+
+  - it: type=static in as-deployment
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.encryption.type: static
+      persistence.encryption.size: 1.5Gi
+      persistence.encryption.static.name: encryption-pv
+      persistence.encryption.static.storageClass: azurefile-icm
+    template: templates/as-deployment.yaml
+    asserts:
+      #spec.template.spec.volumes
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: encryption-volume
+            persistentVolumeClaim:
+              claimName: "icm-as-static-encryption-pvc"
+
+  - it: type=static in static-encryption-pvc
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.encryption.type: static
+      persistence.encryption.size: 1.5Gi
+      persistence.encryption.static.name: encryption-pv
+      persistence.encryption.static.storageClass: azurefile-icm
+    template: templates/static-encryption-pvc.yaml
+    asserts:
+      - isKind:
+          of: PersistentVolumeClaim
+      - equal:
+          path: metadata.name
+          value: icm-as-static-encryption-pvc
+      #spec
+      - equal:
+          path: spec.storageClassName
+          value: azurefile-icm
+      - equal:
+          path: spec.volumeName
+          value: encryption-pv
+      - equal:
+          path: spec.accessModes[0]
+          value: ReadWriteMany
+      - equal:
+          path: spec.resources.requests.storage
+          value: 1.5Gi
