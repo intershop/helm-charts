@@ -156,7 +156,7 @@ tests:
           value: infrastructure-monitoring
       - equal:
           path: spec.template.spec.containers[1].image
-          value: intershophub/infrastructure-probing:1.0.0
+          value: intershophub/infrastructure-probing:2.0.0
       - equal:
           path: spec.template.spec.containers[1].imagePullPolicy
           value: IfNotPresent
@@ -180,7 +180,7 @@ tests:
           path: spec.template.spec.containers[1].env
           content:
             name: JAVA_OPTS_APPEND
-            value: "-Dprobes.databaseLatency.enabled=true -Dprobes.databaseLatency.interval=60S"
+            value: '-Dprobes.databaseLatency.enabled=true -Dprobes.databaseLatency.type="JDBC_LATENCY" -Dprobes.databaseLatency.interval="60S" -Dprobes.sitesLatency.enabled=true -Dprobes.sitesLatency.type="FILE_SYSTEM_LATENCY" -Dprobes.sitesLatency.interval="60S" -Dprobes.sitesLatency.path="/intershop/sites/root" -Dprobes.sitesReadThroughput.enabled=false -Dprobes.sitesWriteThroughput.enabled=false'
       #spec.template.spec.containers[1].ports
       - contains:
           path: spec.template.spec.containers[1].ports

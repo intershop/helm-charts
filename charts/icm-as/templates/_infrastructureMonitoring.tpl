@@ -6,7 +6,7 @@ Creates init-containers
 {{- if .Values.infrastructureMonitoring.enabled }}
 - name: infrastructure-monitoring
   image: {{ .Values.infrastructureMonitoring.image.repository }}
-  imagePullPolicy: {{ .Values.infrastructureMonitoring.image.pullPolicy | default "IfNotPresent" }}
+  imagePullPolicy: {{ .Values.infrastructureMonitoring.imagePullPolicy | default "IfNotPresent" }}
   env:
   {{- if .Values.mssql.enabled }}
   - name: QUARKUS_DATASOURCE_JDBC_URL
@@ -26,7 +26,7 @@ Creates init-containers
 {{ include "icm-as.envDatabasePassword" (list "QUARKUS_DATASOURCE_PASSWORD" .Values.database.jdbcPasswordSecretKeyRef .Values.database.jdbcPassword) | indent 2 }}
   {{- end }}
   - name: JAVA_OPTS_APPEND
-    value: "{{- include "icm-as.infrastructureMonitoringContainer.probeOpts" (set .Values.infrastructureMonitoring.databaseLatency "probeName" "databaseLatency") }}"
+    value: '{{ include "icm-as.infrastructureMonitoringContainer.commonProbeOpts" (list .Values.infrastructureMonitoring.databaseLatency (dict "name" "databaseLatency" "type" "JDBC_LATENCY")) }} {{ include "icm-as.infrastructureMonitoringContainer.fsProbeOpts" (list .Values.infrastructureMonitoring.sitesLatency (dict "name" "sitesLatency" "type" "FILE_SYSTEM_LATENCY")) }} {{ include "icm-as.infrastructureMonitoringContainer.fsTpProbeOpts" (list .Values.infrastructureMonitoring.sitesReadThroughput (dict "name" "sitesReadThroughput" "type" "FILE_SYSTEM_READ_THROUGHPUT")) }} {{ include "icm-as.infrastructureMonitoringContainer.fsTpProbeOpts" (list .Values.infrastructureMonitoring.sitesWriteThroughput (dict "name" "sitesWriteThroughput" "type" "FILE_SYSTEM_WRITE_THROUGHPUT")) }}'
   ports:
   - name: inframonitoring
     containerPort: 8080
@@ -38,9 +38,10 @@ Creates init-containers
     requests:
       cpu: 100m
       memory: 200Mi
-{{ include "icm-as.infrastructureMonitoringContainer.k8sProbe" (list "started" 3 30 5) }}
-{{ include "icm-as.infrastructureMonitoringContainer.k8sProbe" (list "live" 3 10 5) }}
-{{ include "icm-as.infrastructureMonitoringContainer.k8sProbe" (list "ready" 3 10 5) }}
+{{ include "icm-as.volumeMounts" . | indent 2 }}
+{{ include "icm-as.infrastructureMonitoringContainer.k8sProbe" (list "started" 3 60 10) }}
+{{ include "icm-as.infrastructureMonitoringContainer.k8sProbe" (list "live" 3 30 10) }}
+{{ include "icm-as.infrastructureMonitoringContainer.k8sProbe" (list "ready" 3 30 10) }}
 {{- end }}
 {{- end -}}
 
@@ -75,13 +76,59 @@ with
 {{- end -}}
 
 {{/*
-creates an infrastructure probe configuration
+creates an infrastructure probe configuration (common options)
 expecting to get called like:
   - name: JAVA_OPTS_APPEND
-    value: {{- include "icm-as.infrastructureMonitoringContainer.probeOpts" (set .Values.infrastructureMonitoring.databaseLatency "probeName" "databaseLatency") | indent 1 }}
+    value: '{{ include "icm-as.infrastructureMonitoringContainer.commonProbeOpts" (list .Values.infrastructureMonitoring.databaseLatency (dict "name" "databaseLatency" "type" "JDBC_LATENCY")) }}'
 replace:  '.Values.infrastructureMonitoring.databaseLatency' by the probe's values
           "databaseLatency" by the probe's name
+          "JDBC_LATENCY" by the probe's type
 */}}
-{{- define "icm-as.infrastructureMonitoringContainer.probeOpts" -}}
-{{- printf "-Dprobes.%s.enabled=%t -Dprobes.%s.interval=%s" .probeName .enabled .probeName .interval -}}
+{{- define "icm-as.infrastructureMonitoringContainer.commonProbeOpts" -}}
+{{- $probeValues := index . 0 }}
+{{- $probeOpts := index . 1 }}
+{{- $probeName := $probeOpts.name }}
+{{- $isEnabled := default false $probeValues.enabled }}
+{{- $probeType := $probeOpts.type }}
+{{- if $isEnabled -}}
+{{- printf "-Dprobes.%s.enabled=%t -Dprobes.%s.type=%s -Dprobes.%s.interval=%s" $probeName $isEnabled $probeName (quote $probeType) $probeName (quote (default "60S" $probeValues.interval)) -}}
+{{- else -}}
+{{- printf "-Dprobes.%s.enabled=%t" $probeName $isEnabled -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+creates an infrastructure probe configuration (file system related options)
+expecting to get called like:
+  - name: JAVA_OPTS_APPEND
+    value: '{{ include "icm-as.infrastructureMonitoringContainer.fsProbeOpts" (list .Values.infrastructureMonitoring.sitesLatency (dict "name" "sitesLatency" "type" "FILE_SYSTEM_LATENCY")) }}'
+replace:  '.Values.infrastructureMonitoring.sitesLatency' by the probe's values
+          "sitesLatency" by the probe's name
+          "FILE_SYSTEM_LATENCY" by the probe's type
+*/}}
+{{- define "icm-as.infrastructureMonitoringContainer.fsProbeOpts" -}}
+{{- $probeValues := index . 0 }}
+{{- $probeOpts := index . 1 }}
+{{- $probeName := $probeOpts.name }}
+{{- $isEnabled := default false $probeValues.enabled }}
+{{- $path := $probeValues.path }}
+{{- include "icm-as.infrastructureMonitoringContainer.commonProbeOpts" (list $probeValues $probeOpts) }}{{- if $isEnabled }} {{ printf "-Dprobes.%s.path=%s" $probeName (quote $path) -}}{{- end -}}
+{{- end -}}
+
+{{/*
+creates an infrastructure probe configuration (file system throughput related options)
+expecting to get called like:
+  - name: JAVA_OPTS_APPEND
+    value: '{{ include "icm-as.infrastructureMonitoringContainer.fsThroughputProbeOpts" (list .Values.infrastructureMonitoring.sitesReadThroughput (dict "name" "sitesReadThroughput" "type" "FILE_SYSTEM_READ_THROUGHPUT")) }}'
+replace:  '.Values.infrastructureMonitoring.sitesReadThroughput' by the probe's values
+          "sitesReadThroughput" by the probe's name
+          "FILE_SYSTEM_READ_THROUGHPUT" by the probe's type
+*/}}
+{{- define "icm-as.infrastructureMonitoringContainer.fsTpProbeOpts" -}}
+{{- $probeValues := index . 0 }}
+{{- $probeOpts := index . 1 }}
+{{- $probeName := $probeOpts.name }}
+{{- $isEnabled := default false $probeValues.enabled }}
+{{- $fileSize := $probeValues.fileSize }}
+{{- include "icm-as.infrastructureMonitoringContainer.fsProbeOpts" (list $probeValues $probeOpts) }}{{- if $isEnabled }} {{ printf "-Dprobes.%s.fileSize=%s" $probeName (quote (default "5 Mi" $fileSize)) -}}{{- end -}}
 {{- end -}}
