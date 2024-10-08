@@ -67,7 +67,7 @@ tests:
           path: spec.template.spec.containers[1].env
           content:
             name: JAVA_OPTS_APPEND
-            value: '-Dprobes.databaseLatency.enabled=true -Dprobes.databaseLatency.type="JDBC_LATENCY" -Dprobes.databaseLatency.interval="11S" -Dprobes.sitesLatency.enabled=true -Dprobes.sitesLatency.type="FILE_SYSTEM_LATENCY" -Dprobes.sitesLatency.interval="12S"-Dprobes.sitesLatency.path="/intershop/sites/not-root" -Dprobes.sitesReadThroughput.enabled=true -Dprobes.sitesReadThroughput.type="FILE_SYSTEM_READ_THROUGHPUT" -Dprobes.sitesReadThroughput.interval="13S"-Dprobes.sitesReadThroughput.path="/intershop/sites/.readThroughputProbingCustom"-Dprobes.sitesReadThroughput.fileSize="11 Mi" -Dprobes.sitesWriteThroughput.enabled=true -Dprobes.sitesWriteThroughput.type="FILE_SYSTEM_WRITE_THROUGHPUT" -Dprobes.sitesWriteThroughput.interval="14S"-Dprobes.sitesWriteThroughput.path="/intershop/sites/.writeThroughputProbingCustom"-Dprobes.sitesWriteThroughput.fileSize="12 Mi"'
+            value: '-Dprobes.databaseLatency.enabled=true -Dprobes.databaseLatency.type="JDBC_LATENCY" -Dprobes.databaseLatency.interval="11S" -Dprobes.sitesLatency.enabled=true -Dprobes.sitesLatency.type="FILE_SYSTEM_LATENCY" -Dprobes.sitesLatency.interval="12S" -Dprobes.sitesLatency.path="/intershop/sites/not-root" -Dprobes.sitesReadThroughput.enabled=true -Dprobes.sitesReadThroughput.type="FILE_SYSTEM_READ_THROUGHPUT" -Dprobes.sitesReadThroughput.interval="13S" -Dprobes.sitesReadThroughput.path="/intershop/sites/.readThroughputProbingCustom" -Dprobes.sitesReadThroughput.fileSize="11 Mi" -Dprobes.sitesWriteThroughput.enabled=true -Dprobes.sitesWriteThroughput.type="FILE_SYSTEM_WRITE_THROUGHPUT" -Dprobes.sitesWriteThroughput.interval="14S" -Dprobes.sitesWriteThroughput.path="/intershop/sites/.writeThroughputProbingCustom" -Dprobes.sitesWriteThroughput.fileSize="12 Mi"'
 
   - it: probes can be enabled/disabled
     template: templates/as-deployment.yaml
@@ -89,7 +89,7 @@ tests:
           path: spec.template.spec.containers[1].env
           content:
             name: JAVA_OPTS_APPEND
-            value: '-Dprobes.databaseLatency.enabled=false -Dprobes.sitesLatency.enabled=false -Dprobes.sitesReadThroughput.enabled=true -Dprobes.sitesReadThroughput.type="FILE_SYSTEM_READ_THROUGHPUT" -Dprobes.sitesReadThroughput.interval="60S"-Dprobes.sitesReadThroughput.path="/intershop/sites/.readThroughputProbing"-Dprobes.sitesReadThroughput.fileSize="5 Mi" -Dprobes.sitesWriteThroughput.enabled=true -Dprobes.sitesWriteThroughput.type="FILE_SYSTEM_WRITE_THROUGHPUT" -Dprobes.sitesWriteThroughput.interval="60S"-Dprobes.sitesWriteThroughput.path="/intershop/sites/.writeThroughputProbing"-Dprobes.sitesWriteThroughput.fileSize="5 Mi"'
+            value: '-Dprobes.databaseLatency.enabled=false -Dprobes.sitesLatency.enabled=false -Dprobes.sitesReadThroughput.enabled=true -Dprobes.sitesReadThroughput.type="FILE_SYSTEM_READ_THROUGHPUT" -Dprobes.sitesReadThroughput.interval="60S" -Dprobes.sitesReadThroughput.path="/intershop/sites/.readThroughputProbing" -Dprobes.sitesReadThroughput.fileSize="5 Mi" -Dprobes.sitesWriteThroughput.enabled=true -Dprobes.sitesWriteThroughput.type="FILE_SYSTEM_WRITE_THROUGHPUT" -Dprobes.sitesWriteThroughput.interval="60S" -Dprobes.sitesWriteThroughput.path="/intershop/sites/.writeThroughputProbing" -Dprobes.sitesWriteThroughput.fileSize="5 Mi"'
 
   - it: service is properly configured
     template: templates/infrastructure-monitoring-service.yaml

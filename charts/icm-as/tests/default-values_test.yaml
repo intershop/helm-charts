@@ -180,7 +180,7 @@ tests:
           path: spec.template.spec.containers[1].env
           content:
             name: JAVA_OPTS_APPEND
-            value: '-Dprobes.databaseLatency.enabled=true -Dprobes.databaseLatency.type="JDBC_LATENCY" -Dprobes.databaseLatency.interval="60S" -Dprobes.sitesLatency.enabled=true -Dprobes.sitesLatency.type="FILE_SYSTEM_LATENCY" -Dprobes.sitesLatency.interval="60S"-Dprobes.sitesLatency.path="/intershop/sites/root" -Dprobes.sitesReadThroughput.enabled=false -Dprobes.sitesWriteThroughput.enabled=false'
+            value: '-Dprobes.databaseLatency.enabled=true -Dprobes.databaseLatency.type="JDBC_LATENCY" -Dprobes.databaseLatency.interval="60S" -Dprobes.sitesLatency.enabled=true -Dprobes.sitesLatency.type="FILE_SYSTEM_LATENCY" -Dprobes.sitesLatency.interval="60S" -Dprobes.sitesLatency.path="/intershop/sites/root" -Dprobes.sitesReadThroughput.enabled=false -Dprobes.sitesWriteThroughput.enabled=false'
       #spec.template.spec.containers[1].ports
       - contains:
           path: spec.template.spec.containers[1].ports
