@@ -102,13 +102,41 @@ infrastructureMonitoring:
     # pull policy
     pullPolicy: IfNotPresent
     # repository (incl. tag)
-    repository: "intershophub/infrastructure-probing:1.0.0"
+    repository: "intershophub/infrastructure-probing:2.0.0"
   # section for database latency metrics
   databaseLatency:
-    # enabled/disabled
+    # enabled/disabled (default=false)
     enabled: true
-    # how often to gather a sample for the metrics (pattern compatible to java.time.Duration#parse)
+    # how often to gather a sample for the metrics (pattern compatible to java.time.Duration#parse, default=60S)
     interval: 60S
+  # section for sites storage latency metrics
+  sitesLatency:
+    # enabled/disabled (default=false)
+    enabled: true
+    # how often to gather a sample for the metrics (pattern compatible to java.time.Duration#parse, default=60S)
+    interval: 60S
+    # which path has to be used (mandatory)
+    path: /intershop/sites/root
+  # section for sites storage latency metrics
+  sitesReadThroughput:
+    # enabled/disabled (default=false)
+    enabled: false
+    # how often to gather a sample for the metrics (pattern compatible to java.time.Duration#parse, default=60S)
+    interval: 60S
+    # which path has to be used (mandatory)
+    path: /intershop/sites/.readThroughputProbing
+    # size of the file to be read (format compatible to https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/, default=5 Mi)
+    fileSize: 5 Mi
+  # section for sites storage latency metrics
+  sitesWriteThroughput:
+    # enabled/disabled (default=false)
+    enabled: false
+    # how often to gather a sample for the metrics (pattern compatible to java.time.Duration#parse, default=60S)
+    interval: 60S
+    # which path has to be used (mandatory)
+    path: /intershop/sites/.writeThroughputProbing
+    # size of the file to be written (format compatible to https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/, default=5 Mi)
+    fileSize: 5 Mi
 
 nameOverride: ""
 
