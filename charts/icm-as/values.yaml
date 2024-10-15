@@ -78,9 +78,6 @@ newrelic:
   # enable or disable the New Relic Java agent to monitor the icm-as JVM
   # https://docs.newrelic.com/docs/kubernetes-pixie/kubernetes-integration/advanced-configuration/link-apm-applications-kubernetes/
   enabled: false
-  #   application name (~= environment name): calculated from operationalContext section, set to override
-  # "app_name" deprecated since ICM-AS Helm Charts 1.9.0, will be removed in a future version. Use appName instead.
-  # appName: "icm"
   # provide license key as plain text
   # "license_key" deprecated since ICM-AS Helm Charts 1.8.0, will be removed in a future version.
   # Use licenseKeySecretKeyRef instead.
@@ -96,6 +93,51 @@ newrelic:
     # fine grade possibility to disable apm for cost reduction
     enabled: true
 
+# configuration for metrics about infrastructure components
+infrastructureMonitoring:
+  # enable or disable the whole feature
+  enabled: true
+  # the metrics agent requires a docker image to run
+  image:
+    # pull policy
+    pullPolicy: IfNotPresent
+    # repository (incl. tag)
+    repository: "intershophub/infrastructure-probing:2.0.0"
+  # section for database latency metrics
+  databaseLatency:
+    # enabled/disabled (default=false)
+    enabled: true
+    # how often to gather a sample for the metrics (pattern compatible to java.time.Duration#parse, default=60S)
+    interval: 60S
+  # section for sites storage latency metrics
+  sitesLatency:
+    # enabled/disabled (default=false)
+    enabled: true
+    # how often to gather a sample for the metrics (pattern compatible to java.time.Duration#parse, default=60S)
+    interval: 60S
+    # which path has to be used (mandatory)
+    path: /intershop/sites/root
+  # section for sites storage latency metrics
+  sitesReadThroughput:
+    # enabled/disabled (default=false)
+    enabled: false
+    # how often to gather a sample for the metrics (pattern compatible to java.time.Duration#parse, default=60S)
+    interval: 60S
+    # which path has to be used (mandatory)
+    path: /intershop/sites/.readThroughputProbing
+    # size of the file to be read (format compatible to https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/, default=5 Mi)
+    fileSize: 5 Mi
+  # section for sites storage latency metrics
+  sitesWriteThroughput:
+    # enabled/disabled (default=false)
+    enabled: false
+    # how often to gather a sample for the metrics (pattern compatible to java.time.Duration#parse, default=60S)
+    interval: 60S
+    # which path has to be used (mandatory)
+    path: /intershop/sites/.writeThroughputProbing
+    # size of the file to be written (format compatible to https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/, default=5 Mi)
+    fileSize: 5 Mi
+
 nameOverride: ""
 
 fullnameOverride: ""
@@ -106,13 +148,11 @@ fullnameOverride: ""
 # operational context (~= environment) this icm is running in
 operationalContext:
   #   id of the customer e.g. xxxxx
-  # customerId: <customerId>
+  customerId: "n_a"
   # type of the environment (one of {int,uat,prd}, default=prd)
   environmentType: prd
   # name of the environment (environment-type + some sort of id, e.g. int-01, default=<environmentType>)
   environmentName: prd
-  # type of the application (default=icm)
-  applicationType: icm
 
 # provide custom cluster config from "icm-as.fullname"-system-conf-cluster configmap
 provideCustomConfig:
@@ -445,12 +485,41 @@ replication:
   # defines the type of this replication system (source | target)
   role: <source|target>
 
+  # "targetSystemUrl" deprecated since ICM-AS Helm Charts 2.2.0, will be removed in a future version.
+  # Configure the source and targets within replication instead.
   # if role=source the following properties are mandatory (otherwise they are ignored)
   # the external URL of the webServer/proxy/ingress e.g. https://icm-web-live-wa:443
   targetSystemUrl: <externalUrl>
 
+  # "sourceDatabaseName" deprecated since ICM-AS Helm Charts 2.2.0, will be removed in a future version.
+  # Configure the source and targets within replication instead.
   # the name of the (source) database to be used at the target-system to read data from e.g. intershop_edit
   sourceDatabaseName: <databaseName>
+
+  # The following "source" and "targets" configuration blocks take precedence over
+  # the deprecated "targetSystemUrl" / "sourceDatabaseName" configurations
+  # Configuration for source system that participates in replication
+  # source:
+    # the external URL of the webServer/proxy/ingress e.g. https://icm-web-edit-wa:443
+    # webserverUrl: <sourceExternalUrl>
+    # either mutual exclusive databaseUser or databaseLink have to be configured
+    # databaseLink: <sourceDatabaseLink>
+    # databaseUser: <sourceDatabaseUser>
+    # databaseName: <sourceDatabaseName>
+
+  # Configuration for all target systems that participates in replication
+  # targets:
+    # create multiple target systems - please avoid characters like '.', '-' or '_' in the chosen name/key
+    # live1:
+      # the external URL of the webServer/proxy/ingress e.g. https://icm-web-live-wa:443
+      # webserverUrl: <targetExternalUrl>
+      # this database user will be granted access to the database schema of the source replication system
+      # databaseUser: <targetDatabaseUser>
+    # live2:
+      # the external URL of the webServer/proxy/ingress e.g. https://icm-web-live-wa:443
+      # webserverUrl: <targetExternalUrl>
+      # this database user will be granted access to the database schema of the source replication system
+      # databaseUser: <targetDatabaseUser>
 
 # Configuration of messaging via jgroups
 jgroups:
@@ -464,7 +533,7 @@ jgroups:
   discovery: file_ping
 
   # extra attributes to be added at the ping-section in xml,
-  # e.g. "readTimeout=\"1000\" operationAttempts=\"5\""
+  # e.g. 'readTimeout="1000" operationAttempts="5"'
   # discoveryExtraAttributes: <extra-attributes>
 
   # the DNS-query. Used with discovery type dns_ping

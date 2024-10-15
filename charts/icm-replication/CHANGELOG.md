@@ -1,4 +1,204 @@
 
+<a name="icm-replication-2.6.0"></a>
+## [icm-replication-2.6.0](https://github.com/intershop/helm-charts/compare/icm-replication-2.5.2...icm-replication-2.6.0)
+
+> 2024-09-03
+
+### Chore
+
+* bump versions of icm:minor icm-as:minor icm-replication:minor
+
+### Feat
+
+* **icm:** New replication environment configuration ([#803](https://github.com/intershop/helm-charts/issues/803))
+
+
+<a name="icm-replication-2.5.2"></a>
+## [icm-replication-2.5.2](https://github.com/intershop/helm-charts/compare/icm-replication-2.5.1...icm-replication-2.5.2)
+
+> 2024-09-02
+
+### Chore
+
+* bump versions of icm-as:patch
+
+
+<a name="icm-replication-2.5.1"></a>
+## [icm-replication-2.5.1](https://github.com/intershop/helm-charts/compare/icm-replication-2.5.0...icm-replication-2.5.1)
+
+> 2024-08-26
+
+### Chore
+
+* generated changelog+release notes for icm:patch icm-replication:patch
+* bump versions of icm:patch icm-replication:patch
+
+### Fix
+
+* **icm:** no command overwrite in wa and waa ([#793](https://github.com/intershop/helm-charts/issues/793))
+
+
+<a name="icm-replication-2.5.0"></a>
+## [icm-replication-2.5.0](https://github.com/intershop/helm-charts/compare/icm-replication-2.4.0...icm-replication-2.5.0)
+
+> 2024-08-12
+
+### Chore
+
+* bump versions of icm-as:minor icm-web:minor
+
+
+<a name="icm-replication-2.4.0"></a>
+## [icm-replication-2.4.0](https://github.com/intershop/helm-charts/compare/icm-replication-2.3.0...icm-replication-2.4.0)
+
+> 2024-08-05
+
+### Chore
+
+* generated changelog+release notes for icm:minor icm-replication:minor
+* bump versions of icm:minor icm-replication:minor
+
+### Feat
+
+* **icm:** prevent test abortions ([#775](https://github.com/intershop/helm-charts/issues/775))
+
+
+<a name="icm-replication-2.3.0"></a>
+## [icm-replication-2.3.0](https://github.com/intershop/helm-charts/compare/icm-replication-2.2.2...icm-replication-2.3.0)
+
+> 2024-07-24
+
+### Chore
+
+* bump versions of icm-web:minor
+
+
+<a name="icm-replication-2.2.2"></a>
+## [icm-replication-2.2.2](https://github.com/intershop/helm-charts/compare/icm-replication-2.2.1...icm-replication-2.2.2)
+
+> 2024-07-19
+
+### Chore
+
+* bump versions of icm-as:patch
+
+### Fix
+
+* **icm:** test performance optimized ([#764](https://github.com/intershop/helm-charts/issues/764))
+
+
+<a name="icm-replication-2.2.1"></a>
+## [icm-replication-2.2.1](https://github.com/intershop/helm-charts/compare/icm-replication-2.2.0...icm-replication-2.2.1)
+
+> 2024-07-17
+
+### Chore
+
+* generated changelog+release notes for icm:patch icm-replication:patch
+* bump versions of icm:patch icm-replication:patch
+
+### Fix
+
+* **icm:** use logger instead of tee ([#716](https://github.com/intershop/helm-charts/issues/716))
+
+
+<a name="icm-replication-2.2.0"></a>
+## [icm-replication-2.2.0](https://github.com/intershop/helm-charts/compare/icm-replication-2.1.5...icm-replication-2.2.0)
+
+> 2024-07-09
+
+### Chore
+
+* bump versions of icm-web:minor
+* generated changelog+release notes for icm:patch icm-replication:patch
+* bump versions of icm:patch icm-replication:patch
+
+
+<a name="icm-replication-2.1.5"></a>
+## [icm-replication-2.1.5](https://github.com/intershop/helm-charts/compare/icm-replication-2.1.4...icm-replication-2.1.5)
+
+> 2024-07-08
+
+### Chore
+
+* generated changelog+release notes for icm:patch icm-replication:patch
+* bump versions of icm:patch icm-replication:patch
+
+### Fix
+
+* **icm:** use domain to check system status ([#736](https://github.com/intershop/helm-charts/issues/736))
+
+
+<a name="icm-replication-2.1.4"></a>
+## [icm-replication-2.1.4](https://github.com/intershop/helm-charts/compare/icm-replication-2.1.3...icm-replication-2.1.4)
+
+> 2024-07-05
+
+### Chore
+
+* bump versions of icm:patch
+
+
+<a name="icm-replication-2.1.3"></a>
+## [icm-replication-2.1.3](https://github.com/intershop/helm-charts/compare/icm-replication-2.1.2...icm-replication-2.1.3)
+
+> 2024-06-26
+
+### Chore
+
+* generated changelog+release notes for icm:patch icm-replication:patch
+* bump versions of icm:patch icm-replication:patch
+
+### Fix
+
+* remove csi volume mount ([#709](https://github.com/intershop/helm-charts/issues/709))
+
+
+<a name="icm-replication-2.1.2"></a>
+## [icm-replication-2.1.2](https://github.com/intershop/helm-charts/compare/icm-replication-2.1.1...icm-replication-2.1.2)
+
+> 2024-06-20
+
+### Chore
+
+* generated changelog+release notes for icm-replication:patch
+* bump versions of icm-replication:patch
+
+### Fix
+
+* **icm:** replication url without slash ([#691](https://github.com/intershop/helm-charts/issues/691))
+
+
+<a name="icm-replication-2.1.1"></a>
+## [icm-replication-2.1.1](https://github.com/intershop/helm-charts/compare/icm-replication-2.1.0...icm-replication-2.1.1)
+
+> 2024-06-19
+
+### Chore
+
+* generated changelog+release notes for icm-replication:patch
+* bump versions of icm-replication:patch
+
+### Fix
+
+* **icm:** replication ingress controller only needed or live during end2end test ([#691](https://github.com/intershop/helm-charts/issues/691))
+
+
+<a name="icm-replication-2.1.0"></a>
+## [icm-replication-2.1.0](https://github.com/intershop/helm-charts/compare/icm-replication-2.0.3...icm-replication-2.1.0)
+
+> 2024-06-19
+
+### Chore
+
+* generated changelog+release notes for icm:minor icm-replication:minor
+* bump versions of icm:minor icm-replication:minor
+
+### Feat
+
+* **icm:** iste with weblayer config ([#691](https://github.com/intershop/helm-charts/issues/691))
+
+
 <a name="icm-replication-2.0.3"></a>
 ## [icm-replication-2.0.3](https://github.com/intershop/helm-charts/compare/icm-replication-2.0.2...icm-replication-2.0.3)
 
@@ -6,6 +206,7 @@
 
 ### Chore
 
+* generated changelog+release notes for icm:patch icm-replication:patch
 * bump versions of icm:patch icm-replication:patch
 
 ### Fix

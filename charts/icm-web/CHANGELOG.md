@@ -1,4 +1,49 @@
 
+<a name="icm-web-0.12.0"></a>
+## [icm-web-0.12.0](https://github.com/intershop/helm-charts/compare/icm-web-0.11.0...icm-web-0.12.0)
+
+> 2024-08-12
+
+### Chore
+
+* bump versions of icm-as:minor icm-web:minor
+
+### Feat
+
+* **icm:** WAA and WA doesn't share pagecache directory in case of emptydir is configured and New Relic ([#785](https://github.com/intershop/helm-charts/issues/785), [#786](https://github.com/intershop/helm-charts/issues/786))
+* **icm:** allow shutdown via replicas=0 definition ([#787](https://github.com/intershop/helm-charts/issues/787))
+
+
+<a name="icm-web-0.11.0"></a>
+## [icm-web-0.11.0](https://github.com/intershop/helm-charts/compare/icm-web-0.10.0...icm-web-0.11.0)
+
+> 2024-07-24
+
+### Chore
+
+* generated changelog+release notes for icm-web:minor
+* bump versions of icm-web:minor
+
+### Feat
+
+* **icm:** Configurable access to internal WA endpoints
+
+
+<a name="icm-web-0.10.0"></a>
+## [icm-web-0.10.0](https://github.com/intershop/helm-charts/compare/icm-web-0.9.1...icm-web-0.10.0)
+
+> 2024-07-09
+
+### Chore
+
+* generated changelog+release notes for icm-web:minor
+* bump versions of icm-web:minor
+
+### Feat
+
+* **icm:** Try to schedule WA pods evenly over different nodes ([#729](https://github.com/intershop/helm-charts/issues/729))
+
+
 <a name="icm-web-0.9.1"></a>
 ## [icm-web-0.9.1](https://github.com/intershop/helm-charts/compare/icm-web-0.9.0...icm-web-0.9.1)
 
@@ -6,6 +51,7 @@
 
 ### Chore
 
+* generated changelog+release notes for icm:patch icm-as:patch icm-replication:patch icm-web:patch
 * bump versions of icm:patch icm-as:patch icm-replication:patch icm-web:patch
 * Consume WebAdapterAgent 4.0.1
 * Consume WebAdapter 2.5.0

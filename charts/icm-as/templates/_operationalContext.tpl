@@ -20,9 +20,18 @@ Renders values from the operational context
   {{- .Values.operationalContext.environmentName | default (include "icm-as.environmentType" .) -}}
 {{- end -}}
 
-{{- define "icm-as.applicationType" -}}
+{{- define "icm-as.stagingType" -}}
   {{- include "icm-as.operationalContext" . -}}
-  {{- .Values.operationalContext.applicationType | default "icm" -}}
+  {{- if .Values.replication.enabled -}}
+    {{- if eq .Values.replication.role "source" -}}
+      {{- $_ := set .Values.operationalContext "stagingType" "edit" -}}
+    {{- else -}}
+      {{- $_ := set .Values.operationalContext "stagingType" "live" -}}
+    {{- end -}}
+    {{- .Values.operationalContext.stagingType -}}
+  {{- else -}}
+    {{- .Values.operationalContext.stagingType | default "standalone" -}}
+  {{- end -}}
 {{- end -}}
 
 {{/*
@@ -31,17 +40,7 @@ Renders the operational context name
 {{- define "icm-as.operationalContextName" -}}
   {{- include "icm-as.operationalContext" . -}}
   {{- $customerId := .Values.operationalContext.customerId | default "n_a" -}}
-  {{- $environmentType := include "icm-as.environmentType" . -}}
   {{- $environmentName := include "icm-as.environmentName" . -}}
-  {{- $applicationType := include "icm-as.applicationType" . -}}
-  {{/* stagingType calculation differs from icm-web */}}
-  {{- $_ := set .Values.operationalContext "stagingType" "standalone" -}}
-  {{- if .Values.replication.enabled -}}
-    {{- if eq .Values.replication.role "source" -}}
-      {{- $_ := set .Values.operationalContext "stagingType" "edit" -}}
-    {{- else -}}
-      {{- $_ := set .Values.operationalContext "stagingType" "live" -}}
-    {{- end -}}
-  {{- end -}}
-  {{- printf "%s-%s-%s-%s" $customerId $environmentName $applicationType .Values.operationalContext.stagingType -}}
+  {{- $stagingType := include "icm-as.stagingType" . -}}
+  {{- printf "%s-%s-%s" $customerId $environmentName $stagingType -}}
 {{- end -}}

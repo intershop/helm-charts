@@ -9,15 +9,21 @@ metadata:
   labels:
     app: {{ include "icm-web.fullname" . }}-wa
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    environment-name: "{{ include "icm-as.environmentName" . }}"
+    environment-name: "{{ include "icm-web.environmentName" . }}"
+    environment-type: "{{ include "icm-web.environmentType" . }}"
     operational-context: "{{ include "icm-web.operationalContextName" . }}"
     {{- if .Values.webadapter.deploymentLabels }}
       {{- toYaml .Values.webadapter.deploymentLabels | trim | nindent 4 }}
     {{- end }}
 spec:
-  replicas: {{ .Values.webadapter.replicaCount | default 1 }}
+  replicas: {{ .Values.webadapter.replicaCount | default 0 }}
+  {{- if (ne (int .Values.webadapter.replicaCount) 0) }}
   strategy:
     type: {{ .Values.webadapter.updateStrategy | default "RollingUpdate" }}
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  {{- end }}
   selector:
     matchLabels:
       app: icm-wa
@@ -41,6 +47,24 @@ spec:
       {{- if .Values.nodeSelector}}
       nodeSelector:
         {{- toYaml .Values.nodeSelector | trim | nindent 8 }}
+      {{- end }}
+      {{- if and (not .Values.nodeSelector) (.Values.webadapter.schedulePodsPreferredEvenlyAcrossNodes) }}
+      affinity:
+        podAntiAffinity:
+          # Choose schedulability over pod anti-affinity preference satisfaction
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              # Spread WA pods evenly over nodes
+              # See ticket #95582 regarding the simultaneous kill at nearly the exact same moment,
+              # likely same node was affected by memory pressure
+              topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - {{ include "icm-web.fullname" . }}-wa
       {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -122,6 +146,12 @@ spec:
           volumeAttributes:
             secretProviderClass: {{ include "icm-web.fullname" . }}-wa-spc-cert
         {{- end }}
+        {{- if (and .Values.agent.newrelic.enabled .Values.agent.enabled (eq .Values.persistence.pagecache.type "emptyDir")) }}
+      - name: waa-newrelic-config-volume
+        configMap:
+          defaultMode: 420
+          name: {{ template "icm-web.fullname" . }}-newrelic-yml
+        {{- end }}
       containers:
         - name: "{{ .Chart.Name }}-wa"
           {{- if .Values.webadapter.image.tag }}
@@ -130,10 +160,6 @@ spec:
           image: "{{ .Values.webadapter.image.repository }}"
           {{- end }}
           imagePullPolicy: {{ .Values.webadapter.image.pullPolicy }}
-          command:
-          - "/bin/sh"
-          - "-c"
-          - {{- toYaml .Values.webadapter.image.command | nindent 12 }}
           env:
           - name: ICM_ICMSERVLETURLS
             value: "cs.url.0=http://{{ .Release.Name }}-{{ .Values.appServerConnection.serviceName }}:{{ .Values.appServerConnection.port }}/servlet/ConfigurationServlet"
@@ -205,3 +231,7 @@ spec:
               protocol: TCP
           resources:
             {{- toYaml .Values.resources.webadapter | nindent 12 }}
+        {{- if (and .Values.agent.enabled (eq .Values.persistence.pagecache.type "emptyDir"))}}
+        - name: "{{ .Chart.Name }}-agent"
+          {{- include "icm-waa.container" . | nindent 10 }}
+        {{- end }}

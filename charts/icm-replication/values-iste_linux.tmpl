@@ -6,8 +6,14 @@ icm-edit:
       # as long as there are no long running job pods we need this annotation for icm-as
       "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
     replication:
-      targetSystemUrl: https://${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}:443
-      sourceDatabaseName: "${DATABASE_USER_EDIT}"
+      source:
+        webserverUrl: "https://${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}:443"
+        databaseUser: "${DATABASE_USER_EDIT}"
+        databaseName: "${DATABASE_USER_EDIT}"
+      targets:
+        live1:
+          webserverUrl: "https://${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}:443"
+          databaseUser: "${DATABASE_USER_LIVE}"
     image:
       repository: "${ICM_TEST_IMAGE}"
     customCommand:
@@ -108,6 +114,15 @@ icm-live:
     podAnnotations:
       # as long as there are no long running job pods we need this annotation for icm-as
       "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
+    replication:
+      source:
+        webserverUrl: "https://${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}:443"
+        databaseUser: "${DATABASE_USER_EDIT}"
+        databaseName: "${DATABASE_USER_EDIT}"
+      targets:
+        live1:
+          webserverUrl: "https://${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}:443"
+          databaseUser: "${DATABASE_USER_LIVE}"
     image:
       repository: "${ICM_TEST_IMAGE}"
     customCommand:
@@ -171,7 +186,6 @@ icm-live:
         type: emptyDir
       customdata:
         enabled: true
-        existingClaim: icm-nfs
         existingClaim: icm-nfs
     newrelic:
       enabled: true
@@ -238,19 +252,11 @@ icm-live:
         disable-access-log: "true"
       resources:
         requests:
+          cpu: 100m
+          memory: 90Mi
+        limits:
           cpu: 200m
           memory: 300Mi
-      extraVolumes:
-      - name: secrets-store-inline
-        csi:
-          driver: secrets-store.csi.k8s.io
-          readOnly: true
-          volumeAttributes:
-            secretProviderClass: "azure-tls"
-      extraVolumeMounts:
-      - name: secrets-store-inline
-        mountPath: "/mnt/secrets-store"
-        readOnly: true
 
   # TODO: move this to values.yaml after weblayer gets standard
   icm-web:
@@ -284,6 +290,8 @@ icm-live:
                 port: 1025
 
   testrunner:
+    initContainerDomainNameLive: "${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}"
+    initContainerDomainNameEdit: "${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}"
     nodeSelector:
       agentpool: agentpool2
     image:
@@ -313,8 +321,26 @@ icm-live:
         su ${SERVER_DIRECTORY_USER} <<'EOF'
           set -x
           export PATH=$ROOTPATH
-          sh /intershop/bin/testrunner.sh -s=${TESTSUITE} -o=${RESULT_DIRECTORY} 2>&1 | tee -a ${RESULT_DIRECTORY}/istestrunner_log.txt
+          logfile=${RESULT_DIRECTORY}/istestrunner_log.txt
+          sh /intershop/bin/testrunner.sh -s=${TESTSUITE} -o=${RESULT_DIRECTORY} 2>&1 | tee outfile $logfile &
+          main_pid=$!
+
+          prev_size=0
+          update_modified_date() {
+            while kill -0 $main_pid 2>/dev/null; do
+              sleep 120
+              curr_size=$(stat -c%s "$logfile")
+              if [ "$curr_size" -ne "$prev_size" ]; then
+                touch $logfile
+                sync
+                prev_size=$curr_size
+              fi
+            done
+          }
+          update_modified_date &
+          wait $main_pid
           PROCESS_ERROR_LEVEL=$?
+
           TEST_EXECUTION_RESULT_STATUS="failed"
           if [ "${PROCESS_ERROR_LEVEL}" -eq 0 ];
           then

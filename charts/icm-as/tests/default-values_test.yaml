@@ -11,6 +11,8 @@ tests:
       appVersion: 11.0.1
     values:
       - ../values.yaml
+    set:
+      infrastructureMonitoring.enabled: true
     template: templates/as-deployment.yaml
     asserts:
       - isKind:
@@ -27,7 +29,7 @@ tests:
           value: prd
       - equal:
           path: metadata.labels.operational-context
-          value: n_a-prd-icm-standalone
+          value: n_a-prd-standalone
       - equal:
           path: metadata.labels["app.kubernetes.io/name"]
           value: icm-as
@@ -60,7 +62,7 @@ tests:
       - equal:
           path: spec.template.metadata.labels.app
           value: icm-as
-      #spec.template.spec.containers
+      #spec.template.spec.containers[0]
       - equal:
           path: spec.template.spec.containers[0].name
           value: icm-as-server
@@ -148,6 +150,57 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].lifecycle.preStop.httpGet.path
           value: /status/action/shutdown
+      #spec.template.spec.containers[1]
+      - equal:
+          path: spec.template.spec.containers[1].name
+          value: infrastructure-monitoring
+      - equal:
+          path: spec.template.spec.containers[1].image
+          value: intershophub/infrastructure-probing:2.0.0
+      - equal:
+          path: spec.template.spec.containers[1].imagePullPolicy
+          value: IfNotPresent
+      #spec.template.spec.containers[1].env
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: QUARKUS_DATASOURCE_JDBC_URL
+            value: "jdbc:sqlserver://<ipaddress or hostname>:1433;databaseName=intershop;TrustServerCertificate=True;"
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: QUARKUS_DATASOURCE_USERNAME
+            value: "intershop"
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: QUARKUS_DATASOURCE_PASSWORD
+            value: "intershop"
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: JAVA_OPTS_APPEND
+            value: '-Dprobes.databaseLatency.enabled=true -Dprobes.databaseLatency.type="JDBC_LATENCY" -Dprobes.databaseLatency.interval="60S" -Dprobes.sitesLatency.enabled=true -Dprobes.sitesLatency.type="FILE_SYSTEM_LATENCY" -Dprobes.sitesLatency.interval="60S" -Dprobes.sitesLatency.path="/intershop/sites/root" -Dprobes.sitesReadThroughput.enabled=false -Dprobes.sitesWriteThroughput.enabled=false'
+      #spec.template.spec.containers[1].ports
+      - contains:
+          path: spec.template.spec.containers[1].ports
+          content:
+            name: inframonitoring
+            containerPort: 8080
+            protocol: TCP
+      #spec.template.spec.containers[0].resources
+      - equal:
+          path: spec.template.spec.containers[1].resources.limits.cpu
+          value: 100m
+      - equal:
+          path: spec.template.spec.containers[1].resources.limits.memory
+          value: 200Mi
+      - equal:
+          path: spec.template.spec.containers[1].resources.requests.cpu
+          value: 100m
+      - equal:
+          path: spec.template.spec.containers[1].resources.requests.memory
+          value: 200Mi
       #spec.template.spec.<misc>
       - equal:
           path: spec.template.spec.dnsPolicy

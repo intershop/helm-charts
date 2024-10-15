@@ -85,6 +85,7 @@ icm-as:
   # TODO: move this to values.yaml after weblayer gets standard
   webLayer:
     enabled: true
+
   ingress:
     enabled: true
     className: "ingress-class-${HELM_JOB_NAME}"
@@ -145,19 +146,11 @@ ingress-nginx:
       disable-access-log: "true"
     resources:
       requests:
+        cpu: 100m
+        memory: 90Mi
+      limits:
         cpu: 200m
         memory: 300Mi
-    extraVolumes:
-    - name: secrets-store-inline
-      csi:
-        driver: secrets-store.csi.k8s.io
-        readOnly: true
-        volumeAttributes:
-          secretProviderClass: "azure-tls"
-    extraVolumeMounts:
-    - name: secrets-store-inline
-      mountPath: "/mnt/secrets-store"
-      readOnly: true
 
   defaultBackend:
     enabled: false
@@ -187,6 +180,7 @@ mailhog:
               port: 1025
 
 testrunner:
+  initContainerDomainName: "${HELM_JOB_NAME}.${DNS_ZONE_NAME}"
   nodeSelector:
     agentpool: agentpool2
   appServerConnection:
@@ -218,8 +212,26 @@ testrunner:
       su ${SERVER_DIRECTORY_USER} <<'EOF'
         set -x
         export PATH=$ROOTPATH
-        sh /intershop/bin/testrunner.sh -s=${TESTSUITE} -o=${RESULT_DIRECTORY} 2>&1 | tee -a ${RESULT_DIRECTORY}/istestrunner_log.txt
+        logfile=${RESULT_DIRECTORY}/istestrunner_log.txt
+        sh /intershop/bin/testrunner.sh -s=${TESTSUITE} -o=${RESULT_DIRECTORY} 2>&1 | tee outfile $logfile &
+        main_pid=$!
+
+        prev_size=0
+        update_modified_date() {
+          while kill -0 $main_pid 2>/dev/null; do
+            sleep 120
+            curr_size=$(stat -c%s "$logfile")
+            if [ "$curr_size" -ne "$prev_size" ]; then
+              touch $logfile
+              sync
+              prev_size=$curr_size
+            fi
+          done
+        }
+        update_modified_date &
+        wait $main_pid
         PROCESS_ERROR_LEVEL=$?
+
         TEST_EXECUTION_RESULT_STATUS="failed"
         if [ "${PROCESS_ERROR_LEVEL}" -eq 0 ];
         then

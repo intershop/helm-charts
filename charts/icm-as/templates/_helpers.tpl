@@ -60,7 +60,7 @@ Create the name of the service account to use
 
 {{/*
 Create the values for the environment variable FEATURED_JVM_ARGUMENTS.
-These are predefined parameter from serveral features.
+These are predefined parameter from several features.
 */}}
 {{- define "icm-as.featuredJVMArguments" -}}
 {{- $addVmOptions := list -}}
@@ -162,6 +162,17 @@ command: {{- toYaml .Values.customCommand | nindent 2 }}
 {{- end -}}
 
 {{/*
+Image SemVer release
+*/}}
+{{- define "icm-as.imageSemanticVersion" -}}
+  {{- if contains ":" .Values.image.repository -}}
+    {{- splitList ":" .Values.image.repository | last | trim -}}
+  {{- else -}}
+    {{- .Values.image.tag | default .Chart.AppVersion -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
 imagePullSecrets spec
 */}}
 {{- define "icm-as.imagePullSecrets" -}}
@@ -198,3 +209,26 @@ The discovery mode of jgroups messaging
 {{- end -}}
 {{- end -}}
 
+{{/*
+Whether replication uses the new configuration
+*/}}
+{{- define "icm-as.replicationUsesNewConfiguration" -}}
+  {{- if .Values.replication.enabled -}}
+    {{- $hasNewReplicationConfiguration := or (hasKey .Values.replication "source") (hasKey .Values.replication "targets") -}}
+    {{- $hasNewReplicationConfiguration -}}
+  {{- else -}}
+    false
+  {{- end -}}
+{{- end -}}
+
+{{/*
+Whether replications' replication-clusters.xml configuration is used
+*/}}
+{{- define "icm-as.replicationUsesReplicationClustersXmlConfiguration" -}}
+  {{- if .Values.replication.enabled -}}
+    {{- $hasDeprecatedReplicationConfiguration := include "icm-as.replicationUsesNewConfiguration" . | eq "false" -}}
+    {{- and ($hasDeprecatedReplicationConfiguration) (eq .Values.replication.role "source") -}}
+  {{- else -}}
+    false
+  {{- end -}}
+{{- end -}}

@@ -37,6 +37,33 @@ tests:
       - hasDocuments:
           count: 0
 
+  - it: as-deployment without replication
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: false
+    template: templates/as-deployment.yaml
+    asserts:
+      - notContains:
+          any: true
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEM_TYPE
+      - notContains:
+          any: true
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: replication-volume
+      - notContains:
+          any: true
+          path: spec.template.spec.volumes
+          content:
+            name: replication-volume
+
   - it: as-deployment role=source
     release:
       name: icm-as
@@ -70,7 +97,7 @@ tests:
             configMap:
               name: icm-as-replication-clusters-xml
 
-  - it: config-replication-clusters-xml-cm default values
+  - it: config-replication-clusters-xml-cm default values (ICM-AS >= 12.2.0)
     release:
       name: icm-as
     chart:
@@ -82,9 +109,30 @@ tests:
       replication.role: source
       replication.targetSystemUrl: https://icm-web-live-wa:443
       replication.sourceDatabaseName: intershop_edit
+      image:
+        tag: 12.2.0
     template: templates/config-replication-clusters-xml-cm.yaml
     asserts:
       # unfortunatelly the complex content can not be checked
+      - isNotEmpty:
+          path: data["replication-clusters.xml"]
+
+  - it: config-replication-clusters-xml-cm default values (ICM-AS < 12.2.0)
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: true
+      replication.role: source
+      replication.targetSystemUrl: https://icm-web-live-wa:443
+      replication.sourceDatabaseName: intershop_edit
+      image:
+        tag: 12.1.0
+    template: templates/config-replication-clusters-xml-cm.yaml
+    asserts:
       - isNotEmpty:
           path: data["replication-clusters.xml"]
 
@@ -116,7 +164,7 @@ tests:
           content:
             name: replication-volume
 
-  - it: config-replication-clusters-xml-cm role=target
+  - it: config-replication-clusters-xml-cm role=target (ICM-AS < 12.2.0)
     release:
       name: icm-as
     chart:
@@ -128,8 +176,650 @@ tests:
       replication.role: target
       replication.targetSystemUrl: https://icm-web-live-wa:443
       replication.sourceDatabaseName: intershop_edit
+      image:
+        tag: 11.11.0-LTS
     template: templates/config-replication-clusters-xml-cm.yaml
     asserts:
       - hasDocuments:
           count: 0
 
+  - it: config-replication-clusters-xml-cm role=target (ICM-AS >= 12.2.0)
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: true
+      replication.role: target
+      replication.targetSystemUrl: https://icm-web-live-wa:443
+      replication.sourceDatabaseName: intershop_edit
+      image:
+        tag: 12.2.0
+    template: templates/config-replication-clusters-xml-cm.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: as-deployment new replication configuration (ICM-AS >= 12.2.0)
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: true
+      replication.role: source
+      replication.source:
+        webserverUrl: https://icm-web-edit-wa:443
+        databaseUser: repl_user_edit
+        databaseName: icm_edit
+      replication.targets:
+        live1:
+          webserverUrl: https://icm-web-live-wa:443
+          databaseUser: repl_user_live
+      image:
+        tag: 12.2.0
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_IDS
+            value: "live1"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_SOURCE_BASEURL
+            value: "https://icm-web-edit-wa:443"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_SOURCE_DATABASEUSER
+            value: "repl_user_edit"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_SOURCE_DATABASENAME
+            value: "icm_edit"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_TARGET_BASEURL
+            value: "https://icm-web-live-wa:443"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_TARGET_DATABASEUSER
+            value: "repl_user_live"
+      - notContains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            mountPath: /intershop/replication-conf/replication-clusters.xml
+      - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: replication-volume
+
+  - it: as-deployment new replication configuration (ICM-AS >= 12.2.0 with version tag in repository)
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: true
+      replication.role: source
+      replication.source:
+        webserverUrl: https://icm-web-edit-wa:443
+        databaseUser: repl_user_edit
+        databaseName: icm_edit
+      replication.targets:
+        live1:
+          webserverUrl: https://icm-web-live-wa:443
+          databaseUser: repl_user_live
+      image:
+        repository: intershophub/icm-as:12.2.0
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_IDS
+            value: "live1"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_SOURCE_BASEURL
+            value: "https://icm-web-edit-wa:443"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_SOURCE_DATABASEUSER
+            value: "repl_user_edit"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_SOURCE_DATABASENAME
+            value: "icm_edit"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_TARGET_BASEURL
+            value: "https://icm-web-live-wa:443"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_TARGET_DATABASEUSER
+            value: "repl_user_live"
+      - notContains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            mountPath: /intershop/replication-conf/replication-clusters.xml
+      - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: replication-volume
+
+  - it: as-deployment new replication configuration (ICM-AS >= 13.0.0)
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: true
+      replication.role: source
+      replication.source:
+        webserverUrl: https://icm-web-edit-wa:443
+        databaseUser: repl_user_edit
+        databaseName: icm_edit
+      replication.targets:
+        live1:
+          webserverUrl: https://icm-web-live-wa:443
+          databaseUser: repl_user_live
+      image:
+        tag: 13.0.0
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_IDS
+            value: "live1"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_SOURCE_BASEURL
+            value: "https://icm-web-edit-wa:443"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_SOURCE_DATABASEUSER
+            value: "repl_user_edit"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_SOURCE_DATABASENAME
+            value: "icm_edit"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_TARGET_BASEURL
+            value: "https://icm-web-live-wa:443"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_TARGET_DATABASEUSER
+            value: "repl_user_live"
+      - notContains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            mountPath: /intershop/replication-conf/replication-clusters.xml
+      - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: replication-volume
+
+  - it: as-deployment new replication configuration (ICM-AS uses non semantic version)
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: true
+      replication.role: source
+      replication.source:
+        webserverUrl: https://icm-web-edit-wa:443
+        databaseUser: repl_user_edit
+        databaseName: icm_edit
+      replication.targets:
+        live1:
+          webserverUrl: https://icm-web-live-wa:443
+          databaseUser: repl_user_live
+      image:
+        tag: LOCAL
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_IDS
+            value: "live1"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_SOURCE_BASEURL
+            value: "https://icm-web-edit-wa:443"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_SOURCE_DATABASEUSER
+            value: "repl_user_edit"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_SOURCE_DATABASENAME
+            value: "icm_edit"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_TARGET_BASEURL
+            value: "https://icm-web-live-wa:443"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_TARGET_DATABASEUSER
+            value: "repl_user_live"
+      - notContains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            mountPath: /intershop/replication-conf/replication-clusters.xml
+      - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: replication-volume
+
+  - it: as-deployment new replication configuration with multiple targets (role = source)
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: true
+      replication.role: source
+      replication.source:
+        webserverUrl: https://icm-web-edit-wa:443
+        databaseUser: repl_user_edit
+        databaseName: icm_edit
+      replication.targets:
+        live1:
+          webserverUrl: https://icm-web-live-wa:443
+          databaseUser: repl_user_live
+        live2:
+          webserverUrl: https://icm-web-stage-wa:443
+          databaseUser: repl_user_stage
+      image:
+        tag: 13.0.0
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_IDS
+            value: "live1,live2"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_SOURCE_BASEURL
+            value: "https://icm-web-edit-wa:443"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_SOURCE_DATABASEUSER
+            value: "repl_user_edit"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_TARGET_BASEURL
+            value: "https://icm-web-live-wa:443"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_TARGET_DATABASEUSER
+            value: "repl_user_live"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE2_SOURCE_BASEURL
+            value: "https://icm-web-edit-wa:443"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE2_SOURCE_DATABASEUSER
+            value: "repl_user_edit"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE2_TARGET_BASEURL
+            value: "https://icm-web-stage-wa:443"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE2_TARGET_DATABASEUSER
+            value: "repl_user_stage"
+      - notContains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            mountPath: /intershop/replication-conf/replication-clusters.xml
+      - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: replication-volume
+
+  - it: as-deployment new replication configuration with multiple targets (role = target)
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: true
+      replication.role: target
+      replication.source:
+        webserverUrl: https://icm-web-edit-wa:443
+        databaseUser: repl_user_edit
+        databaseName: icm_edit
+      replication.targets:
+        live1:
+          webserverUrl: https://icm-web-live-wa:443
+          databaseUser: repl_user_live
+        live2:
+          webserverUrl: https://icm-web-stage-wa:443
+          databaseUser: repl_user_stage
+      image:
+        tag: 13.0.0
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_IDS
+            value: "live1,live2"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_SOURCE_BASEURL
+            value: "https://icm-web-edit-wa:443"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_SOURCE_DATABASEUSER
+            value: "repl_user_edit"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_TARGET_BASEURL
+            value: "https://icm-web-live-wa:443"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_TARGET_DATABASEUSER
+            value: "repl_user_live"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE2_SOURCE_BASEURL
+            value: "https://icm-web-edit-wa:443"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE2_SOURCE_DATABASEUSER
+            value: "repl_user_edit"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE2_TARGET_BASEURL
+            value: "https://icm-web-stage-wa:443"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE2_TARGET_DATABASEUSER
+            value: "repl_user_stage"
+      - notContains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            mountPath: /intershop/replication-conf/replication-clusters.xml
+      - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: replication-volume
+
+  - it: as-deployment new replication configuration with databaseLink
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: true
+      replication.role: source
+      replication.source:
+        webserverUrl: https://icm-web-edit-wa:443
+        databaseLink: edit_db_link
+      replication.targets:
+        live1:
+          webserverUrl: https://icm-web-live-wa:443
+          databaseUser: repl_user_live
+      image:
+        tag: 13.0.0
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_SOURCE_DATABASELINK
+            value: "edit_db_link"
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_SOURCE_DATABASENAME
+      - notContains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            mountPath: /intershop/replication-conf/replication-clusters.xml
+      - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: replication-volume
+
+  - it: as-deployment with new and old replication configuration
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: true
+      replication.role: source
+      replication.sourceDatabaseName: other_database_name
+      replication.targetSystemUrl: https://icm-web-live-wa:443
+      replication.source:
+        webserverUrl: https://icm-web-edit-wa:443
+        databaseUser: repl_user_edit
+        databaseName: icm_edit
+      replication.targets:
+        live1:
+          webserverUrl: https://icm-web-live-wa:443
+          databaseUser: repl_user_live
+      image:
+        tag: 12.2.0
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_IDS
+            value: "live1"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_SOURCE_BASEURL
+            value: "https://icm-web-edit-wa:443"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_SOURCE_DATABASEUSER
+            value: "repl_user_edit"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_SOURCE_DATABASENAME
+            value: "icm_edit"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_TARGET_BASEURL
+            value: "https://icm-web-live-wa:443"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_SYSTEMS_LIVE1_TARGET_DATABASEUSER
+            value: "repl_user_live"
+      - notContains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            mountPath: /intershop/replication-conf/replication-clusters.xml
+      - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: replication-volume
+
+  - it: as-deployment with new and old null-ed replication configuration
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: true
+      replication.role: source
+      replication.sourceDatabaseName: null
+      replication.targetSystemUrl: null
+      replication.source:
+        webserverUrl: https://icm-web-edit-wa:443
+        databaseUser: repl_user_edit
+      replication.targets:
+        live1:
+          webserverUrl: https://icm-web-live-wa:443
+          databaseUser: repl_user_live
+      image:
+        tag: 12.2.0
+    template: templates/config-replication-clusters-xml-cm.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: as-deployment fails with old replication configuration (ICM-AS >= 13.0.0)
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: true
+      replication.role: source
+      replication.targetSystemUrl: https://icm-web-live-wa:443
+      replication.sourceDatabaseName: icm_edit
+      image:
+        tag: 13.0.0
+    template: templates/as-deployment.yaml
+    asserts:
+      - failedTemplate:
+          errorMessage: "Error: Since ICM-AS 13.0.0 you need to use the new 'replication.source'/'replication.targets' configuration for replication, currently used '13.0.0'."
+
+  - it: as-deployment fails with new replication configuration (ICM-AS < 12.2.0)
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: true
+      replication.role: source
+      replication.source:
+        webserverUrl: https://icm-web-edit-wa:443
+        databaseUser: repl_user_edit
+      replication.targets:
+        live1:
+          webserverUrl: https://icm-web-live-wa:443
+          databaseUser: repl_user_live
+      image:
+        tag: 12.1.0
+    template: templates/as-deployment.yaml
+    asserts:
+      - failedTemplate:
+          errorMessage: "Error: The new replication configuration 'replication.source'/'replication.targets' can be only used with ICM-AS 12.2.0 and newer, currently used '12.1.0'."
+
+  - it: as-deployment fails with both databaseLink and databaseName
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: true
+      replication.role: source
+      replication.source:
+        webserverUrl: https://icm-web-edit-wa:443
+        databaseLink: edit_db_link
+        databaseName: icm_edit
+      replication.targets:
+        live1:
+          webserverUrl: https://icm-web-live-wa:443
+          databaseUser: repl_user_live
+      image:
+        tag: 13.0.0
+    template: templates/as-deployment.yaml
+    asserts:
+      - failedTemplate:
+          errorMessage: "Error: Either mutual exclusive 'replication.source.databaseUser' or 'replication.source.databaseLink' have to be configured, but not both."
+
+  - it: as-deployment fails with invalid replication target key
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: true
+      replication.role: source
+      replication.source:
+        webserverUrl: https://icm-web-edit-wa:443
+        databaseUser: repl_user_edit
+      replication.targets:
+        live-system:
+          webserverUrl: https://icm-web-live-wa:443
+          databaseUser: repl_user_live
+      image:
+        tag: 13.0.0
+    template: templates/as-deployment.yaml
+    asserts:
+      - failedTemplate:
+          errorMessage: "Error: The key 'live-system' in 'replication.targets' violates the constraint that it cannot contain any of these characters: '.', '-', '_'."

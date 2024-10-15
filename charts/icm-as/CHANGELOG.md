@@ -1,16 +1,68 @@
 
-<a name="icm-as-2.0.2"></a>
-## [icm-as-2.0.2](https://github.com/intershop/helm-charts/compare/icm-as-2.0.1...icm-as-2.0.2)
+<a name="icm-as-2.2.0"></a>
+## [icm-as-2.2.0](https://github.com/intershop/helm-charts/compare/icm-as-2.1.1...icm-as-2.2.0)
 
-> 2024-06-14
+> 2024-09-03
 
 ### Chore
 
+* bump versions of icm:minor icm-as:minor icm-replication:minor
+
+### Feat
+
+* **icm:** New replication environment configuration ([#803](https://github.com/intershop/helm-charts/issues/803))
+
+
+<a name="icm-as-2.1.1"></a>
+## [icm-as-2.1.1](https://github.com/intershop/helm-charts/compare/icm-as-2.1.0...icm-as-2.1.1)
+
+> 2024-09-02
+
+### Chore
+
+* generated changelog+release notes for icm-as:patch
 * bump versions of icm-as:patch
 
 ### Fix
 
-* **icm:** fix typo ([#678](https://github.com/intershop/helm-charts/issues/678))
+* **icm:** Fix invalid operational context labels in replication context ([#800](https://github.com/intershop/helm-charts/issues/800))
+
+
+<a name="icm-as-2.1.0"></a>
+## [icm-as-2.1.0](https://github.com/intershop/helm-charts/compare/icm-as-2.0.3...icm-as-2.1.0)
+
+> 2024-08-12
+
+### Chore
+
+* generated changelog+release notes for icm-as:minor icm-web:minor
+* bump versions of icm-as:minor icm-web:minor
+
+### Feat
+
+* **icm:** WAA and WA doesn't share pagecache directory in case of emptydir is configured and New Relic ([#785](https://github.com/intershop/helm-charts/issues/785), [#786](https://github.com/intershop/helm-charts/issues/786))
+* **icm:** allow shutdown via replicas=0 definition ([#787](https://github.com/intershop/helm-charts/issues/787))
+
+
+<a name="icm-as-2.0.3"></a>
+## [icm-as-2.0.3](https://github.com/intershop/helm-charts/compare/icm-as-2.0.2...icm-as-2.0.3)
+
+> 2024-07-17
+
+### Chore
+
+* generated changelog+release notes for icm-as:patch
+* bump versions of icm-as:patch
+
+### Fix
+
+* **icm:** the jgroups now has its own sc ([#751](https://github.com/intershop/helm-charts/issues/751)) ([#758](https://github.com/intershop/helm-charts/issues/758))
+
+
+<a name="icm-as-2.0.2"></a>
+## [icm-as-2.0.2](https://github.com/intershop/helm-charts/compare/icm-as-2.0.1...icm-as-2.0.2)
+
+> 2024-06-14
 
 
 <a name="icm-as-2.0.1"></a>

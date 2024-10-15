@@ -1,14 +1,14 @@
 
-<a name="icm-replication-2.0.3"></a>
-## [icm-replication-2.0.3](https://github.com/intershop/helm-charts/compare/icm-replication-2.0.2...icm-replication-2.0.3)
+<a name="icm-replication-2.6.0"></a>
+## [icm-replication-2.6.0](https://github.com/intershop/helm-charts/compare/icm-replication-2.5.2...icm-replication-2.6.0)
 
-> 2024-06-18
+> 2024-09-03
 
 ### Chore
 
-* bump versions of icm:patch icm-replication:patch
+* bump versions of icm:minor icm-as:minor icm-replication:minor
 
-### Fix
+### Feat
 
-* **icm:** fix local repl. exec and enable CSI secret creation ([#677](https://github.com/intershop/helm-charts/issues/677))
+* **icm:** New replication environment configuration ([#803](https://github.com/intershop/helm-charts/issues/803))
 
