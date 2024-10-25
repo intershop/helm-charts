@@ -17,10 +17,10 @@ spec:
   failedJobsHistoryLimit: 3
   jobTemplate:
     spec:
-      backoffLimit: 3 # Number of retries before considering job as failed
+      backoffLimit: 2 # Number of sole retries before considering job as failed (results in max. 3 starts)
       template:
         spec:
-          restartPolicy: OnFailure
+          restartPolicy: Never # Do not restart on failure as the failed pod logs are lost through the restart otherwise
           terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds | default 30 }}
           containers:
             - name: icm-as-kpi-exporter
