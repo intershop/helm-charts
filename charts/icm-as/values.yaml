@@ -138,6 +138,28 @@ infrastructureMonitoring:
     # size of the file to be written (format compatible to https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/, default=5 Mi)
     fileSize: 5 Mi
 
+# configuration for KPI exporter
+kpiExporter:
+  # if no KPI metrics exist for this customer, may enable the flag to run the associated cronjob
+  # in initial export mode once to export all KPIs from the beginning and disable this flag afterwards
+  enableInitialExport: false
+  # Start KPI exporter within every environment type
+  # "ignoreEnvironmentType" incubating since ICM-AS Helm Charts 2.8.0, might be removed in any future version.
+  # do not use/modify this configuration! it's for test purposes only and might be removed
+  ignoreEnvironmentType: false
+  # azure functions key secret key reference
+  azureFunctionsKeySecretKeyRef:
+   name: <intershop-prd-azure-functions-key-secret-name>
+   key: <intershop-prd-azure-functions-key-secret-key>
+  # the docker image to run
+  image:
+    # pull policy
+    pullPolicy: IfNotPresent
+    # repository (incl. tag)
+    # "repository" incubating since ICM-AS Helm Charts 2.8.0, might be removed in any future version.
+    # do not use/modify this configuration! it's for test purposes only and might be removed
+    repository: "intershophub/icm-as-kpi-exporter:1.0.0"
+
 nameOverride: ""
 
 fullnameOverride: ""
