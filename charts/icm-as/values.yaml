@@ -149,8 +149,8 @@ kpiExporter:
   ignoreEnvironmentType: false
   # azure functions key secret key reference
   azureFunctionsKeySecretKeyRef:
-   name: <intershop-prd-azure-functions-key-secret-name>
-   key: <intershop-prd-azure-functions-key-secret-key>
+    name: <intershop-prd-azure-functions-key-secret-name>
+    key: <intershop-prd-azure-functions-key-secret-key>
   # the docker image to run
   image:
     # pull policy
