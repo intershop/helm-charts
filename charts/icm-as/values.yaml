@@ -147,10 +147,16 @@ kpiExporter:
   # "ignoreEnvironmentType" incubating since ICM-AS Helm Charts 2.8.0, might be removed in any future version.
   # do not use/modify this configuration! it's for test purposes only and might be removed
   ignoreEnvironmentType: false
+  # start the KPI exporter in dry-run mode, this means no data will be exported to the azure functions
+  enableDryRun: false
   # azure functions key secret key reference
-  azureFunctionsKeySecretKeyRef:
-    name: <intershop-prd-azure-functions-key-secret-name>
-    key: <intershop-prd-azure-functions-key-secret-key>
+  azureFunctionsKeyFeatureUsageSecretKeyRef:
+    name: <intershop-prd-azure-functions-key-feature-usage-secret-name>
+    key: <intershop-prd-azure-functions-key-feature-usage-secret-key>
+  # azure functions key secret key reference
+  azureFunctionsKeyRevenueReportSecretKeyRef:
+    name: <intershop-prd-azure-functions-key-revenue-report-secret-name>
+    key: <intershop-prd-azure-functions-key-revenue-report-secret-key>
   # the docker image to run
   image:
     # pull policy

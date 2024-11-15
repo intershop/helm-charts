@@ -61,9 +61,15 @@ spec:
                 - name: AZURE_FUNCTIONS_KEY
                   valueFrom:
                     secretKeyRef:
-                      {{- toYaml .Values.kpiExporter.azureFunctionsKeySecretKeyRef | nindent 22 }}
+                      {{- toYaml .Values.kpiExporter.azureFunctionsKeyFeatureUsageSecretKeyRef | nindent 22 }}
+                - name: AZURE_FUNCTIONS_KEY_REVENUE
+                  valueFrom:
+                    secretKeyRef:
+                      {{- toYaml .Values.kpiExporter.azureFunctionsKeyRevenueReportSecretKeyRef | nindent 22 }}
                 - name: ENVIRONMENT_TYPE_REQUIREMENT_IGNORED
                   value: {{ .Values.kpiExporter.ignoreEnvironmentType | default "false" | quote }}
                 - name: INITIAL_EXPORT_ENABLED
                   value: {{ .Values.kpiExporter.enableInitialExport | default "false" | quote }}
+                - name: ENABLE_DRY_RUN
+                  value: {{ .Values.kpiExporter.enableDryRun | default "false" | quote }}
 {{- end -}}
