@@ -92,8 +92,6 @@ replace:  '.Values.infrastructureMonitoring.databaseLatency' by the probe's valu
 {{- $probeType := $probeOpts.type }}
 {{- if $isEnabled -}}
 {{- printf "-Dprobes.%s.enabled=%t -Dprobes.%s.type=%s -Dprobes.%s.interval=%s" $probeName $isEnabled $probeName (quote $probeType) $probeName (quote (default "60S" $probeValues.interval)) -}}
-{{- else -}}
-{{- printf "-Dprobes.%s.enabled=%t" $probeName $isEnabled -}}
 {{- end -}}
 {{- end -}}
 
