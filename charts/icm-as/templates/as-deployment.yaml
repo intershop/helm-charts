@@ -65,6 +65,7 @@ spec:
         {{- include "icm-as.volumeMounts" . | nindent 8 }}
         {{- include "icm-as.probes" . | nindent 8 }}
         {{- include "icm-as.lifecycle" . | nindent 8 }}
+      {{- include "icm-as.infrastructureMonitoringContainer" . | nindent 6 }}
       {{- include "icm-as.initContainers" . | nindent 6 }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always

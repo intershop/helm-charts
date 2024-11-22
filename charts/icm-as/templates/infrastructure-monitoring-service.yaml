@@ -1,0 +1,24 @@
+{{- if .Values.infrastructureMonitoring.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "icm-as.fullname" . }}-inframonitoring
+  labels:
+    app: {{ include "icm-as.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+  annotations:
+    prometheus.io/path: /q/metrics
+    prometheus.io/scheme: http
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '8080'
+spec:
+  ports:
+  - name: inframonitoring
+    port: 8080
+    targetPort: inframonitoring
+  selector:
+    app: icm-as
+    release: {{ include "icm-as.fullname" . }}
+status:
+  loadBalancer: {}
+{{- end }}

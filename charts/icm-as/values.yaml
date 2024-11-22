@@ -93,6 +93,51 @@ newrelic:
     # fine grade possibility to disable apm for cost reduction
     enabled: true
 
+# configuration for metrics about infrastructure components
+infrastructureMonitoring:
+  # enable or disable the whole feature
+  enabled: true
+  # the metrics agent requires a docker image to run
+  image:
+    # pull policy
+    pullPolicy: IfNotPresent
+    # repository (incl. tag)
+    repository: "intershophub/infrastructure-probing:2.0.1"
+  # section for database latency metrics
+  databaseLatency:
+    # enabled/disabled (default=false)
+    enabled: true
+    # how often to gather a sample for the metrics (pattern compatible to java.time.Duration#parse, default=60S)
+    interval: 60S
+  # section for sites storage latency metrics
+  sitesLatency:
+    # enabled/disabled (default=false)
+    enabled: true
+    # how often to gather a sample for the metrics (pattern compatible to java.time.Duration#parse, default=60S)
+    interval: 60S
+    # which path has to be used (mandatory)
+    path: /intershop/sites/root
+  # section for sites storage latency metrics
+  sitesReadThroughput:
+    # enabled/disabled (default=false)
+    enabled: false
+    # how often to gather a sample for the metrics (pattern compatible to java.time.Duration#parse, default=60S)
+    interval: 60S
+    # which path has to be used (mandatory)
+    path: /intershop/sites/.readThroughputProbing
+    # size of the file to be read (format compatible to https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/, default=5 Mi)
+    fileSize: 5 Mi
+  # section for sites storage latency metrics
+  sitesWriteThroughput:
+    # enabled/disabled (default=false)
+    enabled: false
+    # how often to gather a sample for the metrics (pattern compatible to java.time.Duration#parse, default=60S)
+    interval: 60S
+    # which path has to be used (mandatory)
+    path: /intershop/sites/.writeThroughputProbing
+    # size of the file to be written (format compatible to https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/, default=5 Mi)
+    fileSize: 5 Mi
+
 nameOverride: ""
 
 fullnameOverride: ""
