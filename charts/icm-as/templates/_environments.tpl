@@ -59,15 +59,7 @@ env:
   value: {{ printf "jdbc:sqlserver://%s-mssql-service:1433;database=%s" (include "icm-as.fullname" .) .Values.mssql.databaseName }}
 - name: INTERSHOP_JDBC_USER
   value: "{{ .Values.mssql.user }}"
-- name: INTERSHOP_JDBC_PASSWORD
-{{- /* passwordSecretKeyRef has precedence over password */ -}}
-{{- if .Values.mssql.passwordSecretKeyRef }}
-  valueFrom:
-    secretKeyRef:
-{{- toYaml .Values.mssql.passwordSecretKeyRef | nindent 6 }}
-{{- else }}
-  value: "{{ .Values.mssql.password }}"
-{{- end }}
+{{ include "icm-as.envDatabasePassword" (list "INTERSHOP_JDBC_PASSWORD" .Values.mssql.passwordSecretKeyRef .Values.mssql.password) -}}
 {{- else }}
 - name: INTERSHOP_DATABASETYPE
   value: "{{ .Values.database.type }}"
@@ -75,15 +67,7 @@ env:
   value: "{{ .Values.database.jdbcURL }}"
 - name: INTERSHOP_JDBC_USER
   value: "{{ .Values.database.jdbcUser }}"
-- name: INTERSHOP_JDBC_PASSWORD
-{{- /* jdbcPasswordSecretKeyRef has precedence over jdbcPassword */ -}}
-{{- if .Values.database.jdbcPasswordSecretKeyRef }}
-  valueFrom:
-    secretKeyRef:
-{{- toYaml .Values.database.jdbcPasswordSecretKeyRef | nindent 6 }}
-{{- else }}
-  value: "{{ .Values.database.jdbcPassword }}"
-{{- end }}
+{{ include "icm-as.envDatabasePassword" (list "INTERSHOP_JDBC_PASSWORD" .Values.database.jdbcPasswordSecretKeyRef .Values.database.jdbcPassword) -}}
 {{- end }}
 {{ include "icm-as.envReplication" . }}
 {{ include "icm-as.featuredJVMArguments" . }}
@@ -220,4 +204,24 @@ AppServer-specific-environment
   value: "BOS,WFS"
 {{- end }}
 {{- include "icm-as.envSecrets" . }}
+{{- end -}}
+
+{{/*
+JDBC password env-entry (name+value)
+expecting to get called like:
+{{ include "icm-as.envDatabasePassword" (list "INTERSHOP_JDBC_PASSWORD" .Values.database.jdbcPasswordSecretKeyRef .Values.database.jdbcPassword) -}}
+*/}}
+{{- define "icm-as.envDatabasePassword" -}}
+{{- $envName := index . 0 }}
+{{- $secretKeyRef := index . 1 }}
+{{- $plainPassword := index . 2 }}
+{{- /* secretKeyRef has precedence over plainPassword */ -}}
+- name: {{ $envName }}
+{{- if $secretKeyRef }}
+  valueFrom:
+    secretKeyRef:
+{{- toYaml $secretKeyRef | nindent 6 }}
+{{- else }}
+  value: "{{ $plainPassword }}"
+{{- end }}
 {{- end -}}
