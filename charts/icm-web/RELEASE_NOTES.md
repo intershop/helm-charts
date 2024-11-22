@@ -1,15 +1,14 @@
 
-<a name="icm-web-0.12.0"></a>
-## [icm-web-0.12.0](https://github.com/intershop/helm-charts/compare/icm-web-0.11.0...icm-web-0.12.0)
+<a name="icm-web-0.12.1"></a>
+## [icm-web-0.12.1](https://github.com/intershop/helm-charts/compare/icm-web-0.12.0...icm-web-0.12.1)
 
-> 2024-08-12
+> 2024-11-22
 
 ### Chore
 
-* bump versions of icm-as:minor icm-web:minor
+* bump versions of icm-as:minor icm-web:patch
 
-### Feat
+### Fix
 
-* **icm:** WAA and WA doesn't share pagecache directory in case of emptydir is configured and New Relic ([#785](https://github.com/intershop/helm-charts/issues/785), [#786](https://github.com/intershop/helm-charts/issues/786))
-* **icm:** allow shutdown via replicas=0 definition ([#787](https://github.com/intershop/helm-charts/issues/787))
+* fix ingress annotation conflict in icm-web chart ([#834](https://github.com/intershop/helm-charts/issues/834))
 
