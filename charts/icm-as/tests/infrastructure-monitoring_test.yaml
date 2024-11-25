@@ -1,0 +1,131 @@
+suite: tests the infrastructure monitoring section values
+templates:
+  - templates/as-deployment.yaml
+  - templates/infrastructure-monitoring-service.yaml
+tests:
+  - it: should not render if disabled
+    template: templates/as-deployment.yaml
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      infrastructureMonitoring.enabled: false
+    asserts:
+      - isNull:
+          path: spec.template.spec.containers[1]
+
+  - it: image is customizable
+    template: templates/as-deployment.yaml
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      infrastructureMonitoring.enabled: true
+      infrastructureMonitoring.image.repository: "intershop/infrastructure-probing:0.8.15"
+      infrastructureMonitoring.imagePullPolicy: "Always"
+    asserts:
+      #spec.template.spec.containers[1]
+      - equal:
+          path: spec.template.spec.containers[1].image
+          value: intershop/infrastructure-probing:0.8.15
+      - equal:
+          path: spec.template.spec.containers[1].imagePullPolicy
+          value: Always
+
+  - it: probes are customizable
+    template: templates/as-deployment.yaml
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      infrastructureMonitoring.enabled: true
+      infrastructureMonitoring.databaseLatency.enabled: true
+      infrastructureMonitoring.databaseLatency.interval: 11S
+      infrastructureMonitoring.sitesLatency.enabled: true
+      infrastructureMonitoring.sitesLatency.interval: 12S
+      infrastructureMonitoring.sitesLatency.path: /intershop/sites/not-root
+      infrastructureMonitoring.sitesReadThroughput.enabled: true
+      infrastructureMonitoring.sitesReadThroughput.interval: 13S
+      infrastructureMonitoring.sitesReadThroughput.path: /intershop/sites/.readThroughputProbingCustom
+      infrastructureMonitoring.sitesReadThroughput.fileSize: 11 Mi
+      infrastructureMonitoring.sitesWriteThroughput.enabled: true
+      infrastructureMonitoring.sitesWriteThroughput.interval: 14S
+      infrastructureMonitoring.sitesWriteThroughput.path: /intershop/sites/.writeThroughputProbingCustom
+      infrastructureMonitoring.sitesWriteThroughput.fileSize: 12 Mi
+    asserts:
+      #spec.template.spec.containers[1].env
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: JAVA_OPTS_APPEND
+            value: '-Dprobes.databaseLatency.enabled=true -Dprobes.databaseLatency.type="JDBC_LATENCY" -Dprobes.databaseLatency.interval="11S" -Dprobes.sitesLatency.enabled=true -Dprobes.sitesLatency.type="FILE_SYSTEM_LATENCY" -Dprobes.sitesLatency.interval="12S" -Dprobes.sitesLatency.path="/intershop/sites/not-root" -Dprobes.sitesReadThroughput.enabled=true -Dprobes.sitesReadThroughput.type="FILE_SYSTEM_READ_THROUGHPUT" -Dprobes.sitesReadThroughput.interval="13S" -Dprobes.sitesReadThroughput.path="/intershop/sites/.readThroughputProbingCustom" -Dprobes.sitesReadThroughput.fileSize="11 Mi" -Dprobes.sitesWriteThroughput.enabled=true -Dprobes.sitesWriteThroughput.type="FILE_SYSTEM_WRITE_THROUGHPUT" -Dprobes.sitesWriteThroughput.interval="14S" -Dprobes.sitesWriteThroughput.path="/intershop/sites/.writeThroughputProbingCustom" -Dprobes.sitesWriteThroughput.fileSize="12 Mi"'
+
+  - it: probes can be enabled/disabled
+    template: templates/as-deployment.yaml
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      infrastructureMonitoring.enabled: true
+      infrastructureMonitoring.databaseLatency.enabled: false
+      infrastructureMonitoring.sitesLatency.enabled: false
+      infrastructureMonitoring.sitesReadThroughput.enabled: true
+      infrastructureMonitoring.sitesWriteThroughput.enabled: true
+    asserts:
+      #spec.template.spec.containers[1].env
+      - contains:
+          path: spec.template.spec.containers[1].env
+          content:
+            name: JAVA_OPTS_APPEND
+            value: '  -Dprobes.sitesReadThroughput.enabled=true -Dprobes.sitesReadThroughput.type="FILE_SYSTEM_READ_THROUGHPUT" -Dprobes.sitesReadThroughput.interval="60S" -Dprobes.sitesReadThroughput.path="/intershop/sites/.readThroughputProbing" -Dprobes.sitesReadThroughput.fileSize="5 Mi" -Dprobes.sitesWriteThroughput.enabled=true -Dprobes.sitesWriteThroughput.type="FILE_SYSTEM_WRITE_THROUGHPUT" -Dprobes.sitesWriteThroughput.interval="60S" -Dprobes.sitesWriteThroughput.path="/intershop/sites/.writeThroughputProbing" -Dprobes.sitesWriteThroughput.fileSize="5 Mi"'
+
+  - it: service is properly configured
+    template: templates/infrastructure-monitoring-service.yaml
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      infrastructureMonitoring.enabled: true
+      infrastructureMonitoring.databaseLatency.enabled: false
+    asserts:
+      - isKind:
+          of: Service
+      - equal:
+          path: metadata.name
+          value: icm-as-inframonitoring
+      #metadata.labels
+      - equal:
+          path: metadata.labels.app
+          value: icm-as
+      - equal:
+          path: metadata.labels.chart
+          value: icm-as-0.8.15
+      #spec.ports
+      - contains:
+          path: spec.ports
+          content:
+            name: inframonitoring
+            port: 8080
+            targetPort: inframonitoring
+      #spec.selector
+      - equal:
+          path: spec.selector.app
+          value: icm-as
+      #status
+      - isEmpty:
+          path: status.loadBalancer
