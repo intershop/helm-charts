@@ -37,14 +37,17 @@ webadapter:
     #  initialDelaySeconds: 0
     #  periodSeconds: 5
     #  failureThreshold: 6
+    #  timeoutSeconds: 1
     liveness: {}
     #  initialDelaySeconds: 0
     #  periodSeconds: 10
     #  failureThreshold: 3
+    #  timeoutSeconds: 1
     readiness: {}
     #  initialDelaySeconds: 0
     #  periodSeconds: 10
     #  failureThreshold: 3
+    #  timeoutSeconds: 1
   sslCertificateRetrieval:
     enabled: false
     supportV1: false
