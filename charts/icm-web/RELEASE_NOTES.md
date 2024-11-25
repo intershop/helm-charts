@@ -1,14 +1,10 @@
 
-<a name="icm-web-0.12.1"></a>
-## [icm-web-0.12.1](https://github.com/intershop/helm-charts/compare/icm-web-0.12.0...icm-web-0.12.1)
+<a name="icm-web-0.13.0"></a>
+## [icm-web-0.13.0](https://github.com/intershop/helm-charts/compare/icm-web-0.12.1...icm-web-0.13.0)
 
-> 2024-11-22
+> 2024-11-25
 
 ### Chore
 
-* bump versions of icm-as:minor icm-web:patch
-
-### Fix
-
-* fix ingress annotation conflict in icm-web chart ([#834](https://github.com/intershop/helm-charts/issues/834))
+* bump versions of icm-web:minor
 
