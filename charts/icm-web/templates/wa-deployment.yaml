@@ -202,7 +202,7 @@ spec:
             initialDelaySeconds: {{ .Values.webadapter.probes.readiness.initialDelaySeconds | default 0 }}
             periodSeconds: {{ .Values.webadapter.probes.readiness.periodSeconds | default 10 }}
             failureThreshold: {{ .Values.webadapter.probes.readiness.failureThreshold | default 3 }}
-            timeoutSeconds: {{ .Values.webadapter.probes.readiness.timeoutSeconds | default 1 }}
+            timeoutSeconds: {{ .Values.webadapter.probes.readiness.timeoutSeconds | default 5 }}
           volumeMounts:
           {{- if .Values.webadapter.customHttpdConfig }}
           - name: httpd-config-volume
