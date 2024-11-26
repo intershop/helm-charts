@@ -1,10 +1,10 @@
 
-<a name="icm-web-0.13.0"></a>
-## [icm-web-0.13.0](https://github.com/intershop/helm-charts/compare/icm-web-0.12.1...icm-web-0.13.0)
+<a name="icm-web-0.13.1"></a>
+## [icm-web-0.13.1](https://github.com/intershop/helm-charts/compare/icm-web-0.13.0...icm-web-0.13.1)
 
-> 2024-11-25
+> 2024-11-26
 
 ### Chore
 
-* bump versions of icm-web:minor
+* bump versions of icm-web:patch
 
