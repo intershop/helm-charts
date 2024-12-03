@@ -130,9 +130,12 @@ tests:
       operationalContext:
         environmentType: prd
       kpiExporter:
-        azureFunctionsKeySecretKeyRef:
+        azureFunctionsKeyFeatureUsageSecretKeyRef:
           name: test-secret-name
-          key: test-secret-key
+          key: test-secret-key1
+        azureFunctionsKeyRevenueReportSecretKeyRef:
+          name: test-secret-name
+          key: test-secret-key2
     asserts:
       - contains:
           path: spec.jobTemplate.spec.template.spec.containers[0].env
@@ -141,7 +144,15 @@ tests:
             valueFrom:
               secretKeyRef:
                 name: test-secret-name
-                key: test-secret-key
+                key: test-secret-key1
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: AZURE_FUNCTIONS_KEY_REVENUE
+            valueFrom:
+              secretKeyRef:
+                name: test-secret-name
+                key: test-secret-key2
 
   - it: should set optional feature flags correctly
     release:
@@ -154,9 +165,6 @@ tests:
       kpiExporter:
         image:
           repository: test-repo/kpi-exporter
-        azureFunctionsKeySecretKeyRef:
-          name: azure-functions-key
-          key: key
         enableInitialExport: true
         ignoreEnvironmentType: false
     asserts:
@@ -187,3 +195,56 @@ tests:
           path: spec.schedule
           # Ensures minute is between 0-59
           pattern: ^([0-5]?[0-9]) 5 1 \* \*$
+
+  - it: should not run in dry-run mode per default
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    set:
+      operationalContext:
+        environmentType: prd
+    asserts:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: ENABLE_DRY_RUN
+            value: "false"
+
+  - it: should not run in dry-run mode
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    set:
+      operationalContext:
+        environmentType: prd
+      kpiExporter:
+        image:
+          repository: test-repo/kpi-exporter
+        enableDryRun: false
+    asserts:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: ENABLE_DRY_RUN
+            value: "false"
+
+  - it: should run in dry-run mode
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    set:
+      operationalContext:
+        environmentType: prd
+      kpiExporter:
+        image:
+          repository: test-repo/kpi-exporter
+        enableDryRun: true
+    asserts:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: ENABLE_DRY_RUN
+            value: "true"
