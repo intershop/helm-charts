@@ -151,12 +151,12 @@ kpiExporter:
   enableDryRun: false
   # azure functions key secret key reference
   azureFunctionsKeyFeatureUsageSecretKeyRef:
-    name: <intershop-prd-azure-functions-key-feature-usage-secret-name>
-    key: <intershop-prd-azure-functions-key-feature-usage-secret-key>
+    name: kpi-exporter
+    key: ReceiveFeatureUsageReport-key
   # azure functions key secret key reference
   azureFunctionsKeyRevenueReportSecretKeyRef:
-    name: <intershop-prd-azure-functions-key-revenue-report-secret-name>
-    key: <intershop-prd-azure-functions-key-revenue-report-secret-key>
+    name: kpi-exporter
+    key: ReceiveRevenueReport-key
   # the docker image to run
   image:
     # pull policy
