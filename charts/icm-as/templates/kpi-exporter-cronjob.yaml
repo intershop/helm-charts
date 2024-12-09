@@ -20,6 +20,9 @@ spec:
       backoffLimit: 2 # Number of sole retries before considering job as failed (results in max. 3 starts)
       template:
         spec:
+          {{- if include "icm-as.imagePullSecrets" . }}
+            {{- include "icm-as.imagePullSecrets" . | nindent 10 }}
+          {{- end }}
           restartPolicy: Never # Do not restart on failure as the failed pod logs are lost through the restart otherwise
           terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds | default 30 }}
           containers:
