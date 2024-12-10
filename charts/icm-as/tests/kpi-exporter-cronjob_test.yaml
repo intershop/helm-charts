@@ -248,3 +248,56 @@ tests:
           content:
             name: ENABLE_DRY_RUN
             value: "true"
+
+  - it: should run when replication disabled
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    set:
+      operationalContext:
+        environmentType: prd
+      kpiExporter:
+        image:
+          repository: test-repo/kpi-exporter
+      replication:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 1
+
+  - it: should not run with replication role source
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    set:
+      operationalContext:
+        environmentType: prd
+      kpiExporter:
+        image:
+          repository: test-repo/kpi-exporter
+      replication:
+        enabled: true
+        role: source
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should run with replication role target
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    set:
+      operationalContext:
+        environmentType: prd
+      kpiExporter:
+        image:
+          repository: test-repo/kpi-exporter
+      replication:
+        enabled: true
+        role: target
+    asserts:
+      - hasDocuments:
+          count: 1

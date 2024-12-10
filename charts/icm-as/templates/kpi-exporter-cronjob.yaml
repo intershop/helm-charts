@@ -1,5 +1,7 @@
 {{- $environmentType := include "icm-as.environmentType" . -}}
+{{/* environment type eq "prd" or ignoreEnviromentType is true */}}
 {{- if or (eq $environmentType "prd") .Values.kpiExporter.ignoreEnvironmentType -}}
+{{/* replication disabled or replication role equals "target" */}}
 {{- if or (not .Values.replication.enabled) (eq .Values.replication.role "target") -}}
 apiVersion: batch/v1
 kind: CronJob
