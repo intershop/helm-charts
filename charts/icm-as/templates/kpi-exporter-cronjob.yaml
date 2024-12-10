@@ -1,5 +1,6 @@
 {{- $environmentType := include "icm-as.environmentType" . -}}
-{{- if or (eq $environmentType "prd") .Values.kpiExporter.ignoreEnvironmentType -}}
+{{- if or (eq $environmentType "prd") .Values.kpiExporter.ignoreEnvironmentType -}} # environment type eq "prd" or ignoreEnviromentType is true
+{{- if or (not .Values.replication.enabled) (eq .Values.replication.role "target") -}} # replication disabled or replication role equals "target"
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -75,4 +76,5 @@ spec:
                   value: {{ .Values.kpiExporter.enableInitialExport | default "false" | quote }}
                 - name: ENABLE_DRY_RUN
                   value: {{ .Values.kpiExporter.enableDryRun | default "false" | quote }}
+{{- end -}}
 {{- end -}}
