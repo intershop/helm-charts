@@ -81,7 +81,7 @@ agent:
   # in some REST-based environment the webadapteragent isn't mandatory
   enabled: true
   image:
-    repository: intershophub/icm-webadapteragent:4.5.1
+    repository: intershophub/icm-webadapteragent:5.1.0
     pullPolicy: IfNotPresent
   # define the number of replicas being deployed (int, > 0, default=1)
   replicaCount: 1
@@ -201,11 +201,11 @@ resources:
       memory: 400Mi
   agent:
     limits:
-      cpu: 100m
-      memory: 500Mi
+      cpu: 2000m
+      memory: 400Mi
     requests:
-      cpu: 100m
-      memory: 500Mi
+      cpu: 50m
+      memory: 100Mi
 
 ingress:
   enabled: false
