@@ -1,8 +1,8 @@
 
-<a name="icm-as-2.3.0"></a>
-## [icm-as-2.3.0](https://github.com/intershop/helm-charts/compare/icm-as-2.2.0...icm-as-2.3.0)
+<a name="icm-as-2.4.0"></a>
+## [icm-as-2.4.0](https://github.com/intershop/helm-charts/compare/icm-as-2.3.0...icm-as-2.4.0)
 
-> 2024-11-22
+> 2024-12-12
 
 ### Chore
 
@@ -10,9 +10,5 @@
 
 ### Feat
 
-* enhance icm infrastructure probing by file system probes ([#829](https://github.com/intershop/helm-charts/issues/829))
-
-### Fix
-
-* fix inframon jvm-options ([#838](https://github.com/intershop/helm-charts/issues/838))
+* **icm:** ICM-AS KPI-Exporter Integration ([#100553](https://github.com/intershop/helm-charts/issues/100553))
 
