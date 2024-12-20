@@ -551,7 +551,6 @@ replication:
 
 # Configuration of messaging via jgroups
 jgroups:
-
   # the discovery protocol to use
   # supported values are file_ping or kube_ping. Defaults to file_ping, but kube_ping | azure_ping is recommended
   # file_ping (default) requires a mounted file system
@@ -559,6 +558,11 @@ jgroups:
   # azure_ping (playground) mounts azure storage directly
   # dns_ping (playground) declared dns query
   discovery: file_ping
+
+  # location allows to set a different (optional) directory for file_ping discovery protocol
+  # it needs to point into an existing e.g. mounted file system storage that is shared to other application servers
+  # e.g. '/intershop/sites/root/jgroups'
+  location:
 
   # extra attributes to be added at the ping-section in xml,
   # e.g. 'readTimeout="1000" operationAttempts="5"'
