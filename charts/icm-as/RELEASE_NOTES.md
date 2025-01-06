@@ -1,14 +1,14 @@
 
-<a name="icm-as-2.4.0"></a>
-## [icm-as-2.4.0](https://github.com/intershop/helm-charts/compare/icm-as-2.3.0...icm-as-2.4.0)
+<a name="icm-as-2.4.1"></a>
+## [icm-as-2.4.1](https://github.com/intershop/helm-charts/compare/icm-as-2.4.0...icm-as-2.4.1)
 
-> 2024-12-12
+> 2025-01-06
 
 ### Chore
 
-* bump versions of icm-as:minor icm-web:patch
+* bump versions of icm-as:patch
 
-### Feat
+### Fix
 
-* **icm:** ICM-AS KPI-Exporter Integration ([#100553](https://github.com/intershop/helm-charts/issues/100553))
+* **icm:** update kpi exporter schedule date ([#102730](https://github.com/intershop/helm-charts/issues/102730))
 
