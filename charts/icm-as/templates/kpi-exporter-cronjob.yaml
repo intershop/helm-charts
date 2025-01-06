@@ -14,7 +14,7 @@ metadata:
 spec:
   {{- $randNumber := randNumeric 2 }}
   {{- $randomMinute := mod $randNumber 60 }}
-  schedule: "{{ $randomMinute }} 5 1 * *"  # Runs between 5am and 6am on the first day of each month
+  schedule: "{{ $randomMinute }} 5 * * *"  # Runs between 5am and 6am on the first day of each month
   concurrencyPolicy: Forbid # No concurrent running CronJobs
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
