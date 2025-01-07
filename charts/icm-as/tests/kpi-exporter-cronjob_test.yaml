@@ -190,11 +190,11 @@ tests:
     asserts:
       - matchRegex:
           path: spec.schedule
-          pattern: ^[0-9]+ 5 1 \* \*$
+          pattern: ^[0-9]+ 5 \* \* \*$
       - matchRegex:
           path: spec.schedule
           # Ensures minute is between 0-59
-          pattern: ^([0-5]?[0-9]) 5 1 \* \*$
+          pattern: ^([0-5]?[0-9]) 5 \* \* \*$
 
   - it: should not run in dry-run mode per default
     release:

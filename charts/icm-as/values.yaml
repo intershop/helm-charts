@@ -367,7 +367,7 @@ mssql:
       cpu: 1000m
       memory: 2Gi
   image:
-    repository: "intershophub/mssql-intershop:2019-latest"
+    repository: "intershophub/mssql-intershop:2022-latest"
   # needs to be explicitly switched at deployment to "Y"
   acceptEula: "N"
   saPassword: "1nstershop5A"
