@@ -27,16 +27,18 @@ If you have any questions feel free to also send them to this email address.
 ## Contribution process
 
 1. Fork the repository
-2. Use the `main` branch for your edits
+2. Use the appropriate `develop\?` branch as base for your feature branch. See [Release Process](Release Process)
 3. Work on changes
 4. Comment the changes
 5. Check whether the changes comply with the the rules (design etc.)
-6. Create a pull request
+6. Commit changes according to our Commit Message Guidelines
+6. Create a pull request into the `develop\?` base branch
 7. Add as much information as needed
 8. Reference the solved issue
 9. Wait for the review
 10. PR is approved, denied (with explanation) or sent back for further information
 11. We are trying to react as fast as possible to pull-request, issues, feedback and any other community interaction. However, we can’t guarantee a particular timeframe for every answer. We hope you understand and apologize for any inconveniences.
+12. If PR is approved the changes shall be merged via squash commit to improve commit history readability
 
 ## Commit Message Guidelines
 
@@ -55,7 +57,3 @@ Here is a sample commit message: `feat(icm): my short commit description (#123)`
 Chart unrelated commits (like e.g. docs, chore, build, test) will not be taken into account but still should be conventional and informative as possible.
 
 All of this will help to read and interpret our changlogs and release notes.
-
-## Release Process
-
-There's also a defined [Release Process](Release Process) allowing it us to work in teams with this project. Please also read this carefully if you want to contribute to this code base.
