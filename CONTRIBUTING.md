@@ -48,6 +48,14 @@ Some rules to be emphasized for chart related commits:
 * A commit message starting with `feat(icm):` (or e.g.: `feat(pwa):`) will get a _MINOR_ change.
 * The rest will be _PATCH_.
 
-Chart unreleated commits (like e.g. docs, chore, build, test) will not be taken into account but still should be conventional and informative as possible.
+Please also enhance your commit message with an existing **github issue number**, where detailed information could be found. Github will later on link the commit to the issue ticket automatically.
+
+Here is a sample commit message: `feat(icm): my short commit description (#123)`
+
+Chart unrelated commits (like e.g. docs, chore, build, test) will not be taken into account but still should be conventional and informative as possible.
 
 All of this will help to read and interpret our changlogs and release notes.
+
+## Release Process
+
+There's also a defined [Release Process](Release Process) allowing it us to work in teams with this project. Please also read this carefully if you want to contribute to this code base.
