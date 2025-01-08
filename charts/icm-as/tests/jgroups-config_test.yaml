@@ -14,6 +14,23 @@ tests:
       - matchRegex:
           path: data["jgroups-config.xml"]
           pattern: <FILE_PING*
+      - matchRegex:
+          path: data["jgroups-config.xml"]
+          pattern: location="/intershop/jgroups-share"
+  - it: jgroups-config.xml FILE_PING optional location
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: templates/jgroups-config-xml-cm.yaml
+    set:
+      jgroups.location: "/intershop/other-jgroups-directory"
+    asserts:
+      - matchRegex:
+          path: data["jgroups-config.xml"]
+          pattern: location="/intershop/other-jgroups-directory"
   - it: jgroups-config.xml configured to use KUB_PING
     release:
       name: icm-as
