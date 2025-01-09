@@ -139,7 +139,7 @@ ICM-AS >= 13.0.0 requires new replication configuration
   {{- fail (printf "Error: The new replication configuration 'replication.source'/'replication.targets' can be only used with ICM-AS 12.2.0 and newer, currently used '%s'." $icmApplicationServerImageSemanticVersion) -}}
 {{- end -}}
 {{- if and ($hasNewReplicationConfiguration) (hasKey .Values.replication.source "databaseLink") (hasKey .Values.replication.source "databaseName") -}}
-  {{- fail "Error: Either mutual exclusive 'replication.source.databaseUser' or 'replication.source.databaseLink' have to be configured, but not both." -}}
+  {{- fail "Error: Either mutual exclusive 'replication.source.databaseName' or 'replication.source.databaseLink' have to be configured, but not both." -}}
 {{- end -}}
 {{- if and (or (not $hasIcmApplicationServerImageSemanticVersion) $hasNewReplicationConfigurationSupport) $hasNewReplicationConfiguration }}
 {{- $replicationSystemIDs := keys .Values.replication.targets | sortAlpha -}}
