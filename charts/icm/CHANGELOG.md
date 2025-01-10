@@ -1,4 +1,78 @@
 
+<a name="icm-2.10.1"></a>
+## [icm-2.10.1](https://github.com/intershop/helm-charts/compare/icm-2.10.0...icm-2.10.1)
+
+> 2025-01-09
+
+### Chore
+
+* bump versions of icm:patch icm-as:patch
+
+### Docs
+
+* **common:** link "Release Process"-wiki page to the contribution rules ([#867](https://github.com/intershop/helm-charts/issues/867))
+
+
+<a name="icm-2.10.0"></a>
+## [icm-2.10.0](https://github.com/intershop/helm-charts/compare/icm-2.9.1...icm-2.10.0)
+
+> 2025-01-08
+
+### Chore
+
+* bump versions of icm-as:minor
+
+
+<a name="icm-2.9.1"></a>
+## [icm-2.9.1](https://github.com/intershop/helm-charts/compare/icm-2.9.0...icm-2.9.1)
+
+> 2025-01-07
+
+### Chore
+
+* bump versions of icm-as:patch
+
+
+<a name="icm-2.9.0"></a>
+## [icm-2.9.0](https://github.com/intershop/helm-charts/compare/icm-2.8.1...icm-2.9.0)
+
+> 2024-12-12
+
+### Chore
+
+* bump versions of icm-as:minor icm-web:patch
+
+
+<a name="icm-2.8.1"></a>
+## [icm-2.8.1](https://github.com/intershop/helm-charts/compare/icm-2.8.0...icm-2.8.1)
+
+> 2024-11-26
+
+### Chore
+
+* bump versions of icm-web:patch
+
+
+<a name="icm-2.8.0"></a>
+## [icm-2.8.0](https://github.com/intershop/helm-charts/compare/icm-2.7.0...icm-2.8.0)
+
+> 2024-11-25
+
+### Chore
+
+* bump versions of icm-web:minor
+
+
+<a name="icm-2.7.0"></a>
+## [icm-2.7.0](https://github.com/intershop/helm-charts/compare/icm-2.6.0...icm-2.7.0)
+
+> 2024-11-22
+
+### Chore
+
+* bump versions of icm-as:minor icm-web:patch
+
+
 <a name="icm-2.6.0"></a>
 ## [icm-2.6.0](https://github.com/intershop/helm-charts/compare/icm-2.5.2...icm-2.6.0)
 
@@ -6,6 +80,7 @@
 
 ### Chore
 
+* generated changelog+release notes for icm:minor icm-as:minor icm-replication:minor
 * bump versions of icm:minor icm-as:minor icm-replication:minor
 
 ### Feat
