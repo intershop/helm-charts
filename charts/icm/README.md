@@ -67,7 +67,7 @@ Prerequisites are:
 * [helm-unittest](https://github.com/helm-unittest/helm-unittest)
 
 ```bash
-helm unittest --helm3  --output-file unit.xml --output-type JUnit charts/icm
+helm unittest --output-file unit.xml --output-type JUnit charts/icm
 ```
 
 ### ct lint & install
