@@ -1,14 +1,14 @@
 
-<a name="icm-2.6.0"></a>
-## [icm-2.6.0](https://github.com/intershop/helm-charts/compare/icm-2.5.2...icm-2.6.0)
+<a name="icm-2.10.1"></a>
+## [icm-2.10.1](https://github.com/intershop/helm-charts/compare/icm-2.10.0...icm-2.10.1)
 
-> 2024-09-03
+> 2025-01-09
 
 ### Chore
 
-* bump versions of icm:minor icm-as:minor icm-replication:minor
+* bump versions of icm:patch icm-as:patch
 
-### Feat
+### Docs
 
-* **icm:** New replication environment configuration ([#803](https://github.com/intershop/helm-charts/issues/803))
+* **common:** link "Release Process"-wiki page to the contribution rules ([#867](https://github.com/intershop/helm-charts/issues/867))
 

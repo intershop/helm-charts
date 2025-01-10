@@ -7,8 +7,8 @@ icm-as:
     "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
 
   image:
-  #  repository: intershophub/icm-as
-  #  tag: :11.0.12-dev1
+#    repository: intershophub/icm-as
+#    tag: :11.0.12-dev1
 
   ## define a secret for a container registry
   dockerSecret:
@@ -75,27 +75,27 @@ icm-as:
     # The following "source" and "targets" configuration blocks take precedence over
     # the deprecated "targetSystemUrl" / "sourceDatabaseName" configurations
     # Configuration for source system that participates in replication
-    # source:
-      # the external URL of the webServer/proxy/ingress e.g. https://icm-web-edit-wa:443
-      # webserverUrl: <sourceExternalUrl>
-      # either mutual exclusive databaseUser or databaseLink have to be configured
-      # databaseLink: <sourceDatabaseLink>
-      # databaseUser: <sourceDatabaseUser>
-      # databaseName: <sourceDatabaseName>
+#    source:
+#      # the external URL of the webServer/proxy/ingress e.g. https://icm-web-edit-wa:443
+#      webserverUrl: <sourceExternalUrl>
+#      # either mutual exclusive databaseUser or databaseLink have to be configured
+#      databaseLink: <sourceDatabaseLink>
+#      databaseUser: <sourceDatabaseUser>
+#      databaseName: <sourceDatabaseName>
 
     # Configuration for all target systems that participates in replication
-    # targets:
-      # create multiple target systems - please avoid characters like '.', '-' or '_' in the chosen name/key
-      # live1:
-        # the external URL of the webServer/proxy/ingress e.g. https://icm-web-live-wa:443
-        # webserverUrl: <targetExternalUrl>
-        # this database user will be granted access to the database schema of the source replication system
-        # databaseUser: <targetDatabaseUser>
-      # live2:
-        # the external URL of the webServer/proxy/ingress e.g. https://icm-web-live-wa:443
-        # webserverUrl: <targetExternalUrl>
-        # this database user will be granted access to the database schema of the source replication system
-        # databaseUser: <targetDatabaseUser>
+#    targets:
+#      # create multiple target systems - please avoid characters like '.', '-' or '_' in the chosen name/key
+#      live1:
+#        # the external URL of the webServer/proxy/ingress e.g. https://icm-web-live-wa:443
+#        webserverUrl: <targetExternalUrl>
+#        # this database user will be granted access to the database schema of the source replication system
+#        databaseUser: <targetDatabaseUser>
+#      live2:
+#        # the external URL of the webServer/proxy/ingress e.g. https://icm-web-live-wa:443
+#        webserverUrl: <targetExternalUrl>
+#        # this database user will be granted access to the database schema of the source replication system
+#        databaseUser: <targetDatabaseUser>
 
 icm-web:
   enabled: true
