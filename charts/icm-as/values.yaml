@@ -530,7 +530,7 @@ replication:
 #  source:
 #    # the external URL of the webServer/proxy/ingress e.g. https://icm-web-edit-wa:443
 #    webserverUrl: <sourceExternalUrl>
-#    # either mutual exclusive databaseUser or databaseLink have to be configured
+#    # either mutual exclusive databaseName or databaseLink have to be configured
 #    databaseLink: <sourceDatabaseLink>
 #    databaseUser: <sourceDatabaseUser>
 #    databaseName: <sourceDatabaseName>
