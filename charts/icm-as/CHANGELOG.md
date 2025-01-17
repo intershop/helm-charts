@@ -1,11 +1,30 @@
 
-<a name="icm-as-2.5.1"></a>
-## [icm-as-2.5.1](https://github.com/intershop/helm-charts/compare/icm-as-2.5.0...icm-as-2.5.1)
+<a name="icm-as-2.6.0"></a>
+## [icm-as-2.6.0](https://github.com/intershop/helm-charts/compare/icm-as-2.5.1...icm-as-2.6.0)
 
-> 2025-01-09
+> 2025-01-17
 
 ### Chore
 
+* bump versions of icm-as:minor
+
+### Feat
+
+* **icm:** kpi exporter is removed ([#892](https://github.com/intershop/helm-charts/issues/892))
+
+### Fix
+
+* **icm:** fix error message about mutual exclusive databaseName/databaseLink configuration ([#884](https://github.com/intershop/helm-charts/issues/884))
+
+
+<a name="icm-as-2.5.1"></a>
+## [icm-as-2.5.1](https://github.com/intershop/helm-charts/compare/icm-as-2.5.0...icm-as-2.5.1)
+
+> 2025-01-10
+
+### Chore
+
+* generated changelog+release notes for icm:patch icm-as:patch
 * bump versions of icm:patch icm-as:patch
 
 ### Docs
