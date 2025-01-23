@@ -44,13 +44,13 @@ volumes:
 {{- end }}
 - name: customizations-volume
   emptyDir: {}
-{{- if .Values.sslCertificateRetrieval.enabled }}
-- name: secrets-store-inline
+{{- if .Values.keyvault.enabled }}
+- name: keyvault-secrets-store-inline
   csi:
     driver: secrets-store.csi.k8s.io
     readOnly: true
     volumeAttributes:
-      secretProviderClass: {{ include "icm-as.fullname" . }}-cert
+      secretProviderClass: {{ .Release.Name }}-keyvault-secretproviderclass
 {{- end }}
 {{- end -}}
 
