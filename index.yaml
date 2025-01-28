@@ -6,6 +6,42 @@ entries:
       requestedMemoryQuota: 6000Mi
     apiVersion: v2
     appVersion: 12.0.0
+    created: "2025-01-28T12:01:25.337493182Z"
+    dependencies:
+    - name: icm-as
+      repository: file://../icm-as
+      version: 2.7.0-alpha
+    - condition: icm-web.enabled
+      name: icm-web
+      repository: file://../icm-web
+      version: 0.13.2
+    - condition: ingress-nginx.enabled
+      name: ingress-nginx
+      repository: https://kubernetes.github.io/ingress-nginx
+      version: 4.11.1
+    - condition: mailhog.enabled
+      name: mailhog
+      repository: https://codecentric.github.io/helm-charts
+      version: 5.2.0
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 17.15.2
+    - condition: redis-cluster.enabled
+      name: redis-cluster
+      repository: https://charts.bitnami.com/bitnami
+      version: 8.6.12
+    description: Intershop Commerce Management - ICM
+    digest: 80a7c17bdab6e4c70fe8f65c09f2ebd083596836dbcd9135eb3d3f90a00f4ace
+    name: icm
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-2.12.0-alpha/icm-2.12.0-alpha.tgz
+    version: 2.12.0-alpha
+  - annotations:
+      requestedCpuQuotaInMinutes: "2200"
+      requestedMemoryQuota: 6000Mi
+    apiVersion: v2
+    appVersion: 12.0.0
     created: "2025-01-17T08:40:30.012849673Z"
     dependencies:
     - name: icm-as
@@ -6659,6 +6695,16 @@ entries:
   icm-as:
   - apiVersion: v2
     appVersion: 11.10.3-LTS
+    created: "2025-01-28T12:01:25.48943067Z"
+    description: Intershop Commerce Management - AppServer
+    digest: 7db724ac2aa50dca0b9c9448cf743769ff50200daf119bcc1218b5e6d55ff2e8
+    name: icm-as
+    type: application
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-as-2.7.0-alpha/icm-as-2.7.0-alpha.tgz
+    version: 2.7.0-alpha
+  - apiVersion: v2
+    appVersion: 11.10.3-LTS
     created: "2025-01-17T08:40:30.269263073Z"
     description: Intershop Commerce Management - AppServer
     digest: 7bdd3e36f5bc1c616ca7f74d4b8676a1b997ed96a3c51f72d91b1918ff69a340
@@ -12445,4 +12491,4 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.2.3/pwa-main-0.2.3.tgz
     version: 0.2.3
-generated: "2025-01-17T08:40:30.430101646Z"
+generated: "2025-01-28T12:01:25.491351382Z"
