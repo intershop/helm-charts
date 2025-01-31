@@ -50,14 +50,14 @@ spec:
       serviceAccountName: {{ .Release.Name }}-iom-patch
       containers:
       - name: patch-replica-count
-        image: "bitnami/kubectl"
-        args: 
-        - patch 
-        - --type=merge 
-        - sts 
-        - {{ include "iom.fullname" . }} 
+        image: {{ .Values.kubectlImageRepository }}
+        args:
+        - patch
+        - --type=merge
+        - sts
+        - {{ include "iom.fullname" . }}
         - -n
-        - {{ .Release.Namespace }} 
+        - {{ .Release.Namespace }}
         - -p
         - '{"spec":{"replicas":{{ .Values.replicaCount }}}}'
 {{- end }}
