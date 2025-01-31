@@ -69,6 +69,21 @@ up to version 3.14 of Helm.
    .. [5] Helm parameter *oms.smtp.encryption* does not work in this combination.
 
 =============
+Version 3.1.1
+=============
+
+------------
+Bugfix
+------------
+
+Make patch job kubectl image configurable
+=========================================
+
+The helm chart allows it to override the patch job kubectl image.
+
+Requires IOM version 5.1.0 or later.
+
+=============
 Version 3.1.0
 =============
 
@@ -103,7 +118,7 @@ Added Support for *New Relic APM*
 =================================
 
 Helm Charts 3.0 now support the use of *New Relic APM* (Application Performance Monitoring). *New
-Relic APM* can be managed through new Helm parameters within the *newRelic* parameter group. 
+Relic APM* can be managed through new Helm parameters within the *newRelic* parameter group.
 
 For a detailed description of all new parameters, see `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
@@ -168,12 +183,12 @@ following cases:
 2. In very simple demo and test installations, the internal NGINX could also be used as Ingress controller. This made the
    setup easier, since the installation of a cluster-wide Ingress controller could be skipped.
 
-If an installation is currently using the internal NGINX (*nginx.enabled* parameter is set to *true*), then measures must be taken 
+If an installation is currently using the internal NGINX (*nginx.enabled* parameter is set to *true*), then measures must be taken
 before using IOM Helm Charts 3.0.0. Depending on the use case that is causing the internal NGINX to be used, the steps will vary.
 
 1. Session stickiness must be provided by the Ingress controller, otherwise IOM can not be operated. If an NGINX Ingress
    controller is used, the IOM Helm Charts already provide the required configuration settings. If any other Ingress
-   controller is used, you have to determine how to configure it in order to provide session stickiness. The appropriate 
+   controller is used, you have to determine how to configure it in order to provide session stickiness. The appropriate
    configuration must then be applied to the Helm values.
 2. Simple demo and test installations must now use a separately installed Ingress controller. Preferred is an NGINX
    Ingress controller, since the required configuration for session stickiness is already provided by IOM Helm Charts.
@@ -196,7 +211,7 @@ Default value of *oms.jwtSecret* has changed
 ============================================
 
 The default value of *oms.jwtSecret* is now empty, causing the usage of an automatically generated random secret. This means that if you
-have not set *oms.jwtSecret* and *oms.jwtSecretKeyRef*, this automatically generated secret will be used instead. 
+have not set *oms.jwtSecret* and *oms.jwtSecretKeyRef*, this automatically generated secret will be used instead.
 
 See also `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
 
@@ -219,11 +234,11 @@ Improved handling of persistent storage for the shared file system
 .. regular warnings are not rendered correctly in GitHub
 
 **Warning**
-   
+
    If persistent storage for the shared file system has been configured via *persistence.hostPath*, upgrading the Helm release is not supported.
 
 In previous versions of IOM Helm Charts, the provisioning of a persistent storage method depended on the two parameters, *persistence.hostPath*
-and *persistence.storageClass*. There was also a third parameter, *persistence.pvc*, but it has been removed. 
+and *persistence.storageClass*. There was also a third parameter, *persistence.pvc*, but it has been removed.
 There was a precedence defined for these parameters to select the provisioning method: if *persistence.hostPath* was set,
 *persistence.storageClass* was ignored.
 
@@ -269,14 +284,14 @@ Only in case of *dynamic* provisioning, there is a single default annotation:
   The following code shows, how this could be done.
 
   .. code-block:: shell
-                  
+
     # replace <namespace> and <release-name> with actual values
     NAMESPACE=<namespace>
     RELEASE_NAME=<release-name>
-                  
+
     kubectl annotate pvc ${RELEASE_NAME}-iom  meta.helm.sh/release-name=$RELEASE_NAME -n $NAMESPACE
     kubectl annotate pvc ${RELEASE_NAME}-iom  meta.helm.sh/release-namespace=$NAMESPACE -n $NAMESPACE
-  
+
 
 Examples for migrations
 -----------------------
@@ -356,7 +371,7 @@ Improved handling of persistent storage for PostgreSQL data
 .. regular warnings are not rendered correctly in GitHub
 
 **Warning**
-   
+
    If persistent storage for PostgreSQL data is enabled, an upgrade of the Helm release is not supported.
 
 -----------------
@@ -372,7 +387,7 @@ will be removed in a future version of IOM Helm Charts.
 -------------
 Removal Notes
 -------------
-          
+
 IOM prior version 4 is no longer supported
 ==========================================
 
