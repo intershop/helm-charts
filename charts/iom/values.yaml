@@ -4,6 +4,7 @@
 
 replicaCount: 2
 downtime: true
+kubectlImageRepository: "bitnami/kubectl:1.32.1"
 
 image:
   repository: docker.tools.intershop.com/iom/intershophub/iom
@@ -217,7 +218,7 @@ newRelic:
     # Use an empty "config" parameter to set no configuration at all.
     # Default values are applied only, if NO "config" parameter is defined.
     #config:
-      
+
 # Datadog APM related settings
 # Datadog APM is deprecated and will be removed in a future version of IOM Helm Charts.
 datadogApm:
@@ -277,7 +278,7 @@ persistence:
   # Selects the subset of configuration parameters to be used.
   provisioning: dynamic
   storageSize: 1Gi
-    
+
   dynamic:
     storageClass: azurefile
     # Annotations of persistent-volums-claim.
@@ -296,7 +297,7 @@ persistence:
     storageClass:
     # Annotations of persistent-volums-claim.
     annotations:
-      
+
   # To be used in simple, single node environments (e.g. demos) to persist data on local host.
   local:
     # Path in local filesystem to be used for persistent storage.
@@ -417,7 +418,7 @@ postgres:
       # Use an empty "annotations" parameter to set no annotations at all.
       # Default values are applied only, if NO "annotations" parameter is set at all.
       #annotations:
-    
+
     # If an already existing persistent-volume should be used, this can be done by
     # selecting static provisioning.
     static:
@@ -427,7 +428,7 @@ postgres:
       storageClass:
       # Annotations of persistent-volums-claim.
       annotations:
-    
+
     # To be used in simple, single node environments (e.g. demos) to persist data on local host.
     local:
       # Path in local filesystem to be used for persistent storage.
