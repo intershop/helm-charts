@@ -1,0 +1,25 @@
+# used for test:
+# keyvault-secretproviderclass_test.yaml/keyvault is provided
+
+keyvault:
+  enabled: true
+  tenantId: "test-tenant-id"
+  managedIdentity:
+    clientID: "test-client-id"
+  keyvaultName: "test-keyvault"
+  secrets:
+    - generatedSecretName: "test-secret"
+      type: "Opaque"
+      data:
+        - objectName: "test-secret-obj"
+          key: "test-secret-key"
+  certificates:
+    - generatedSecretName: "test-cert"
+      certName: "test-cert-name"
+      keys:
+        - objectName: "test-cert-key-obj"
+          key: "test-cert-key"
+  keys:
+    - generatedSecretName: "test-key"
+      objectName: "test-key-obj"
+      key: "test-key-name"

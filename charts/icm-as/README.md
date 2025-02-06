@@ -82,7 +82,7 @@ Prerequisites are:
 Please check the unit tests before pushing changes.
 
 ```bash
-helm unittest --helm3 charts/icm-as
+helm unittest charts/icm-as
 ```
 
 #### ct lint & install

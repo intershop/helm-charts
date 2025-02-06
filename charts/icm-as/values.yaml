@@ -220,6 +220,31 @@ secrets:
   #  name: <emailSecrets> # name of the secret, containing the referenced key
   #  key: <smtpPassword> # key within the secret
 
+# configure ServiceProviderClass to access secrets, certificates and keys in a keyvault
+keyvault:
+  enabled: false
+  tenantId: <tenant-ID-of-the-KeyVault>
+  subscriptionId: <subscription-ID-of-the-KeyVault>
+  resourceGroup: <resource-group-of-the-KeyVault>
+  managedIdentity:
+    clientID: <client-id-to access-keyvault>
+  keyvaultName: <name-of-the-KeyVault>
+#  secrets:
+#  - generatedSecretName: "my-secret-1"
+#    type: "Opaque"
+#    data:
+#    - objectName: "my-secret-obj"
+#      key: "my-secret-key"
+
+#  certificates:
+#  - generatedSecretName: "my-tls-cert-1"
+#    certName: "test-intershop-com"
+
+#  keys:
+#  - generatedSecretName: "my-key-secret-1"
+#    objectName: "key-object-1"
+#    key: "encryption.key"
+
 persistence:
   sites:
     size: 1Gi
@@ -437,17 +462,6 @@ webLayer:
     enabled: false
     # Redisson client yaml config
     config: null
-
-sslCertificateRetrieval:
-  enabled: false
-  supportV1: false
-  # secretName: <explicit-ssl-secret-name>
-  keyvault:
-    tenantId: <tenant-ID-of-the-KeyVault>
-    subscriptionId: <subscription-ID-of-the-KeyVault>
-    resourceGroup: <resource-group-of-the-KeyVault>
-    keyvaultName: <name-of-the-KeyVault>
-    certificateName: <name-of-the-certificate>
 
 # Configure configuration of the job-server.
 # The job-server template inherits most properties from the configuration of the application-server.
