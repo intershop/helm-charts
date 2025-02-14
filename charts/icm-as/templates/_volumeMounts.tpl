@@ -48,8 +48,4 @@ volumeMounts:
   readOnly: true
   subPath: newrelic.yml
 {{- end }}
-{{- if .Values.keyvault.enabled }}
-- mountPath: /mnt/secrets
-  name: keyvault-secrets-store-inline
-{{- end }}
 {{- end -}}

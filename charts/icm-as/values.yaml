@@ -221,24 +221,23 @@ secrets:
   #  key: <smtpPassword> # key within the secret
 
 # configure ServiceProviderClass to access secrets, certificates and keys in a keyvault
-keyvault:
-  enabled: false
-  tenantId: <tenant-ID-of-the-KeyVault>
-  subscriptionId: <subscription-ID-of-the-KeyVault>
-  resourceGroup: <resource-group-of-the-KeyVault>
-  managedIdentity:
+secretStore:
+  mounter:
+    image: "busybox:1.36.1"
+  azureKeyvaults:
+  - tenantId: <tenant-ID-of-the-KeyVault>
     clientID: <client-id-to access-keyvault>
-  keyvaultName: <name-of-the-KeyVault>
-#  secrets:
-#  - generatedSecretName: "my-secret-1"
-#    type: "Opaque"
-#    data:
-#    - objectName: "my-secret-obj"
-#      key: "my-secret-key"
+    keyvaultName: <name-of-the-KeyVault>
+    secrets:
+    - generatedSecretName: "my-secret-1"
+      type: "Opaque"
+      data:
+      - objectName: "my-secret-obj"
+        key: "my-secret-key"
+    certificates:
+    - generatedSecretName: "my-tls-cert-1"
+      certName: "test-intershop-com"
 
-#  certificates:
-#  - generatedSecretName: "my-tls-cert-1"
-#    certName: "test-intershop-com"
 
 #  keys:
 #  - generatedSecretName: "my-key-secret-1"

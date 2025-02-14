@@ -44,14 +44,6 @@ volumes:
 {{- end }}
 - name: customizations-volume
   emptyDir: {}
-{{- if .Values.keyvault.enabled }}
-- name: keyvault-secrets-store-inline
-  csi:
-    driver: secrets-store.csi.k8s.io
-    readOnly: true
-    volumeAttributes:
-      secretProviderClass: {{ .Release.Name }}-keyvault-secretproviderclass
-{{- end }}
 {{- end -}}
 
 {{/*
