@@ -231,7 +231,7 @@ spec:
   chart:
     repository: https://intershop.github.io/helm-charts
     name: pwa-main
-    version: 0.9.2
+    version: 0.9.3
   values:
 ```
 
@@ -262,7 +262,7 @@ spec:
     spec:
       # pwa helm chart, version from https://github.com/intershop/helm-charts
       chart: pwa-main
-      version: 0.9.2
+      version: 0.9.3
       # Source reference to the HelmChart Repo
       sourceRef:
         kind: HelmRepository
@@ -318,7 +318,7 @@ For the more common Intershop PWA deployments via Flux the repository also provi
 This file needs to be referenced in the PWA Flux deployment configuration files with a reference to the fitting version in the following way.
 
 ```yaml
-# yaml-language-server: $schema=https://raw.githubusercontent.com/intershop/helm-charts/pwa-main-0.9.2/charts/pwa/values-flux.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/intershop/helm-charts/pwa-main-0.9.3/charts/pwa/values-flux.schema.json
 ```
 
 ## Development
