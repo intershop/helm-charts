@@ -20,6 +20,7 @@ fullnameOverride: ""
 
 upstream:
   icmBaseURL: https://develop.icm.intershop.de
+
   ## @param cdnPrefixURL The base URL of your CDN
   ## E.g:
   ## cdnPrefixURL: "https://www.example.com"
@@ -47,13 +48,16 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
 ## @param podAnnotations Annotations for SSR pods
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 ##
 podAnnotations: {}
+
 ### @param podLabels Labels for SSR pods and deployment
 ### ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
+
 ## @param environment Extra environment variables to be set on SSR containers
 ## E.g:
 ## environment:
@@ -68,8 +72,8 @@ podLabels: {}
 ##       {
 ##         "Punchout": {"type": "PUNCHOUT"}
 ##       }
-
 environment: []
+
 ## Prometheus Exporter / Metrics
 ##
 metrics:
@@ -108,8 +112,8 @@ cache:
   ## @param NGinx ignore query parameters during caching
   ##   cacheIgnoreParams: |
   ##     params:
-  ##     - utm_source
-  ##     - utm_campaign
+  ##       - utm_source
+  ##       - utm_campaign
   #### empty cacheIgnoreParams example
   ##   cacheIgnoreParams: |
   ##     params: []
@@ -190,10 +194,12 @@ cache:
   tolerations: []
 
   affinity: {}
+
   ## @param podAnnotations Annotations for NGINX pods
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   ##
   podAnnotations: {}
+
   ### @param podLabels Labels for NGINX/Cache pods and deployment
   ### ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}

@@ -25,5 +25,5 @@ data:
   additional-headers.yaml: {{- .Values.cache.additionalHeaders | toYaml | indent 4}}
   {{- else }}
   additional-headers.yaml: |-
-    params: []
+    headers: []
   {{- end -}}

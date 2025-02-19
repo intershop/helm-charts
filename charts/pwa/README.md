@@ -19,8 +19,9 @@ In addition, the version changes and necessary migration information is provided
 
 | Chart | PWA    | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                 | Migration Information                                                                                                                                                                                                                                                                           |
 | ----- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0.9.2 | 1.0.0  | <ul><li>Fix options to configure `successfulJobsHistoryLimit` and `failedJobsHistoryLimit` for the prefetch job</li></ul>                                                                                                                                                                                              |                                                                                                                                                                                                                                                                                                 |
-| 0.9.1 | 1.0.0  | <ul><li>Init container image needs to be configurable</li></ul>                                                                                                                                                                                              |                                                                                                                                                                                                                                                                                                 |
+| 0.9.3 | 1.0.0  | <ul><li>Fix `cache.additionalHeaders` functionality introduced with version 0.8.0</li></ul>                                                                                                                                                                                                                                                                                                                                             |                                                                                                                                                                                                                                                                                                 |
+| 0.9.2 | 1.0.0  | <ul><li>Fix options to configure `successfulJobsHistoryLimit` and `failedJobsHistoryLimit` for the prefetch job</li></ul>                                                                                                                                                                                                                                                                                                               |                                                                                                                                                                                                                                                                                                 |
+| 0.9.1 | 1.0.0  | <ul><li>Init container image needs to be configurable</li></ul>                                                                                                                                                                                                                                                                                                                                                                         |                                                                                                                                                                                                                                                                                                 |
 | 0.9.0 | 1.0.0  | <ul><li>Options to configure `successfulJobsHistoryLimit` and `failedJobsHistoryLimit` for the prefetch job</li><li>Make prefetch job `args` and `image` configurable</li><li>Provide validation support for Flux configurations</li></ul>                                                                                                                                                                                              |                                                                                                                                                                                                                                                                                                 |
 | 0.8.0 | 1.0.0  | <ul><li>New format of declaring (multiple) Ingresses (Split Ingress)</li><li>Shared Redis cache for the nginx containers (requires PWA 5.0.0)</li><li>Additional result headers configuration (requires PWA 5.0.0)</li><li>Monitoring support with Prometheus and Grafana (for development and testing)</li><li>Delay NGINX until PWA SSR is listening</li><li>Configurable update strategy</li><li>Less verbose prefetch job</li></ul> | See [Migration to 0.8.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.8.0.md) in regards to the new format of configuring Ingress and the dropped support of older kubernetes clusters<br/>Configurable `updateStrategy` stays at `RollingUpdate` by default |
 | 0.7.0 | 1.0.0  | <ul><li>Re-enabled support for `multi-channel.yaml` and `caching-ignore-params.yaml` source code fallbacks</li><li>Added additional Ingress for domain whitelisting</li><li>Added labels on deployment and pod levels</li></ul>                                                                                                                                                                                                         | Removed deprecated configuration options:<ul><li>`upstream.icm`</li><li>`cache.enabled` - was not optional</li><li>`cache.channels`</li></ul>See [Migration to 0.7.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.7.0.md)                                   |
@@ -41,15 +42,16 @@ In addition, the version changes and necessary migration information is provided
 
 ### NGINX
 
-| Name                      | Description                                                | Example Value                                                                 |
-| ------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| `cache.extraEnvVars`      | Extra environment variables to be set                      | `extraEnvVars:`<br>`- name: FOO`<br> ` value: BAR`                            |
-| `cache.multiChannel`      | Multi-channel/site configuration object                    | `.+:`<br>`channel: default`                                                   |
-| `cache.cacheIgnoreParams` | NGINX ignore query parameters during caching               | `params:`<br>`- utm_source`<br>`- utm_campaign`                               |
-| `cache.additionalHeaders` | Additional result headers configuration                    | `additionalHeaders:`<br>`  headers:`<br>`    - X-Frame-Options: 'SAMEORIGIN'` |
-| `cache.prefetch`          | Specify settings for the prefetch job that heats up caches | `prefetch:`<br>`- host: example.com`<br> ` path: /home`                       |
+| Name                      | Description                                                | Example Value                                                                                         |
+| ------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `cache.extraEnvVars`      | Extra environment variables to be set                      | `- name: FOO`<br>&nbsp;&nbsp;&nbsp;&nbsp;`value: BAR`                                                 |
+| `cache.multiChannel`      | Multi-channel/site configuration object                    | `.+:`<br>&nbsp;&nbsp;`channel: default`                                                               |
+| `cache.cacheIgnoreParams` | NGINX ignore query parameters during caching               | `params:`<br>&nbsp;&nbsp;`- utm_source`<br>&nbsp;&nbsp;`- utm_campaign`                               |
+| `cache.additionalHeaders` | Additional result headers configuration                    | `headers:`<br>&nbsp;&nbsp;`- X-Frame-Options: 'SAMEORIGIN'`                                           |
+| `cache.prefetch`          | Specify settings for the prefetch job that heats up caches | `prefetch:`<br>&nbsp;&nbsp;`- host: example.com`<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`path: /home` |
 
-Both `cacheIgnoreParams` and `multiChannel` parameters take precedence over any `extraEnvVars` value containing `MULTI_CHANNEL` or `CACHING_IGNORE_PARAMS` variables.
+> [!NOTE]
+> Both `cacheIgnoreParams` and `multiChannel` parameters take precedence over any `extraEnvVars` value containing `MULTI_CHANNEL` or `CACHING_IGNORE_PARAMS` variables.
 
 ### Hybrid Approach
 
@@ -229,7 +231,7 @@ spec:
   chart:
     repository: https://intershop.github.io/helm-charts
     name: pwa-main
-    version: 0.9.2
+    version: 0.9.3
   values:
 ```
 
@@ -260,7 +262,7 @@ spec:
     spec:
       # pwa helm chart, version from https://github.com/intershop/helm-charts
       chart: pwa-main
-      version: 0.9.2
+      version: 0.9.3
       # Source reference to the HelmChart Repo
       sourceRef:
         kind: HelmRepository
@@ -316,7 +318,7 @@ For the more common Intershop PWA deployments via Flux the repository also provi
 This file needs to be referenced in the PWA Flux deployment configuration files with a reference to the fitting version in the following way.
 
 ```yaml
-# yaml-language-server: $schema=https://raw.githubusercontent.com/intershop/helm-charts/pwa-main-0.9.2/charts/pwa/values-flux.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/intershop/helm-charts/pwa-main-0.9.3/charts/pwa/values-flux.schema.json
 ```
 
 ## Development
