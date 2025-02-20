@@ -121,6 +121,8 @@ spec:
                 path: multi-channel.yaml
               - key: caching-ignore-params.yaml
                 path: caching-ignore-params.yaml
+              - key: additional-headers.yaml
+                path: additional-headers.yaml
 
       {{- with .Values.cache.nodeSelector }}
       nodeSelector:
