@@ -37,6 +37,6 @@ In order to contribute, please have a look at our [Contribution Guidelines](./CO
 
 ## License
 
-Copyright &copy; 2024 Intershop Communications AG
+Copyright &copy; 2025 Intershop Communications AG
 
 [MIT license](./LICENSE).
