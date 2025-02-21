@@ -1,0 +1,42 @@
+suite: test correctness of dnsConfig
+templates:
+  - templates/as-deployment.yaml
+tests:
+  - it: Should not have any dnsConfig by default
+    asserts:
+      - notExists:
+          path: spec.template.spec.dnsConfig
+
+  - it: Should contain specified dnsConfig values
+    set:
+      dnsConfig:
+        nameservers:
+          - "192.0.2.1"
+        searches:
+          - "ns1.svc.cluster-domain.example"
+          - "my.dns.search.suffix"
+        options:
+          - name: "ndots"
+            value: "2"
+          - name: "edns0"
+    asserts:
+      - exists:
+          path: spec.template.spec.dnsConfig
+      - equal:
+          path: spec.template.spec.dnsConfig.nameservers[0]
+          value: "192.0.2.1"
+      - equal:
+          path: spec.template.spec.dnsConfig.searches[0]
+          value: "ns1.svc.cluster-domain.example"
+      - equal:
+          path: spec.template.spec.dnsConfig.searches[1]
+          value: "my.dns.search.suffix"
+      - equal:
+          path: spec.template.spec.dnsConfig.options[0].name
+          value: "ndots"
+      - equal:
+          path: spec.template.spec.dnsConfig.options[0].value
+          value: "2"
+      - equal:
+          path: spec.template.spec.dnsConfig.options[1].name
+          value: "edns0"

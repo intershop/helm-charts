@@ -73,5 +73,11 @@ spec:
       {{- if include "icm-as.podSecurityContext" . }}
         {{- include "icm-as.podSecurityContext" . | nindent 6 }}
       {{- end }}
+      {{- if include "icm-as.hostAliases" . }}
+        {{- include "icm-as.hostAliases" . | nindent 6 }}
+      {{- end }}
+      {{- if include "icm-as.dnsConfig" . }}
+        {{- include "icm-as.dnsConfig" . | nindent 6 }}
+      {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds | default 30 }}
       {{- include "icm-as.volumes" . | nindent 6 }}
