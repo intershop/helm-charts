@@ -9,5 +9,18 @@ metadata:
 data:
   newrelic.yml:  |-
     common: &default_settings
-      app_name : "{{ (include "icm-web.operationalContextName" .) }}-icm-waa"
+      app_name: "{{ (include "icm-web.operationalContextName" .) }}-icm-waa"
+      application_logging:
+        enabled: true
+        forwarding:
+          enabled: false
+          max_samples_stored: 10000
+          context_data:
+            enabled: false
+            include:
+            exclude:
+        metrics:
+          enabled: {{ .Values.agent.newrelic.metrics.enabled }}
+        local_decorating:
+          enabled: true
 {{- end -}}
