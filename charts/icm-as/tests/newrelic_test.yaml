@@ -152,7 +152,7 @@ tests:
           of: ConfigMap
       - matchRegex:
           path: data["newrelic.yml"]
-          pattern: '.*(app_name : "n_a-int_01-standalone-icm-as").*'
+          pattern: '.*(app_name: "n_a-int_01-standalone-icm-as").*'
   - it: newrelic custom appName
     release:
       name: icm-as
@@ -169,4 +169,38 @@ tests:
           of: ConfigMap
       - matchRegex:
           path: data["newrelic.yml"]
-          pattern: '.*(app_name : "n_a-prd-standalone-icm-as").*'
+          pattern: '.*(app_name: "n_a-prd-standalone-icm-as").*'
+  - it: newrelic log metrics (on)
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      newrelic.enabled: true
+      newrelic.metrics.enabled: true
+    template: templates/config-newrelic-yaml-cm.yaml
+    asserts:
+      - isKind:
+          of: ConfigMap
+      - matchRegex:
+          path: data["newrelic.yml"]
+          pattern: '(?m)^\W{4}metrics:\n\W{6}enabled: true$'
+  - it: newrelic log metrics (off)
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      newrelic.enabled: true
+      newrelic.metrics.enabled: false
+    template: templates/config-newrelic-yaml-cm.yaml
+    asserts:
+      - isKind:
+          of: ConfigMap
+      - matchRegex:
+          path: data["newrelic.yml"]
+          pattern: '(?m)^\W{4}metrics:\n\W{6}enabled: false$'
