@@ -195,6 +195,26 @@ securityContext:
 {{- end -}}
 
 {{/*
+Add entries to a Pod's /etc/hosts
+*/}}
+{{- define "icm-as.hostAliases" -}}
+{{- if .Values.hostAliases -}}
+hostAliases:
+  {{- toYaml .Values.hostAliases | nindent 2 }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Customize DNS configuration
+*/}}
+{{- define "icm-as.dnsConfig" -}}
+{{- if .Values.dnsConfig -}}
+dnsConfig:
+  {{- toYaml .Values.dnsConfig | nindent 2 }}
+{{- end }}
+{{- end -}}
+
+{{/*
 The discovery mode of jgroups messaging
 */}}
 {{- define "icm-as.jgroups.discovery" -}}
