@@ -1,8 +1,8 @@
 
-<a name="icm-web-0.13.2"></a>
-## [icm-web-0.13.2](https://github.com/intershop/helm-charts/compare/icm-web-0.13.1...icm-web-0.13.2)
+<a name="icm-web-0.13.3"></a>
+## [icm-web-0.13.3](https://github.com/intershop/helm-charts/compare/icm-web-0.13.2...icm-web-0.13.3)
 
-> 2024-12-12
+> 2025-02-27
 
 ### Chore
 
@@ -10,5 +10,5 @@
 
 ### Fix
 
-* update WAA to 5.1.0 and adapt resource defaults ([#831](https://github.com/intershop/helm-charts/issues/831))
+* **icm:** disable integrated NR agent log forwding ([#915](https://github.com/intershop/helm-charts/issues/915))
 
