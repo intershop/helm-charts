@@ -97,6 +97,8 @@ icm-as:
 #        # this database user will be granted access to the database schema of the source replication system
 #        databaseUser: <targetDatabaseUser>
 
+# Here is a basic configuration of icm-web.
+# For a more detailed configuration, consider checking the subchart.
 icm-web:
   enabled: true
   imagePullSecrets:
@@ -109,6 +111,7 @@ icm-web:
     image:
       repository: intershophub/icm-webadapter:2.5.0
       secret: dockerhub
+
   agent:
     # in some REST-based environment the webadapteragent isn't mandatory
     enabled: true

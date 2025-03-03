@@ -1,0 +1,15 @@
+# used for test:
+# provide-configmap-mounts_test.yaml/configMapMounts is provided
+
+configMapMounts:
+- name: logback-main-xml
+  mountPath: /intershop/system-conf/cluster
+  configMapName: icm-as-logback-main-xml
+  fileName: logback-main.xml
+  fileMode: 660
+- name: url-rewrite-rules-xml
+  mountPath: /intershop/system-conf/cluster
+  configMapName: icm-as-urlrewriterules-xml
+  fileName: urlrewriterules.xml
+  fileMode: 440
+  readOnly: true
