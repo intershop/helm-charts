@@ -23,7 +23,24 @@ webadapter:
     pullPolicy: IfNotPresent
   # disable HTTP/2 protocol support if required
   disableHTTP2: false
+
+  # Deprecated: The customHttpdConfig option has been replaced by configMapMounts.
+  # Please use configMapMounts to manually define the required ConfigMaps.
   customHttpdConfig: false
+
+  # List of ConfigMaps to be mounted as volumes
+  configMapMounts: []
+#    # the key will be part of the volume name (max 15 chars)
+#    - name: httpdConfig
+#      # where to mount the configMap
+#      mountPath: /intershop/conf/
+#      # name of the configMap
+#      configMapName: icm-web-httpd-conf
+#      # name of the file in the configMap
+#      fileName: httpd.conf
+#      # fileMode of the file
+#      fileMode: 440
+
   # provides custom certificates for webadapter
   customSSLCertificates: false
   overrideSSL: false

@@ -1,11 +1,26 @@
 
-<a name="icm-as-2.7.0"></a>
-## [icm-as-2.7.0](https://github.com/intershop/helm-charts/compare/icm-as-2.6.0...icm-as-2.7.0)
+<a name="icm-as-2.8.0"></a>
+## [icm-as-2.8.0](https://github.com/intershop/helm-charts/compare/icm-as-2.7.0...icm-as-2.8.0)
 
-> 2025-02-27
+> 2025-03-03
 
 ### Chore
 
+* bump versions of icm:minor icm-as:minor icm-web:minor
+
+### Feat
+
+* configuration of volumemounts for existing configmaps ([#921](https://github.com/intershop/helm-charts/issues/921))
+
+
+<a name="icm-as-2.7.0"></a>
+## [icm-as-2.7.0](https://github.com/intershop/helm-charts/compare/icm-as-2.6.0...icm-as-2.7.0)
+
+> 2025-02-28
+
+### Chore
+
+* generated changelog+release notes for icm-as:minor icm-web:patch
 * bump versions of icm-as:minor icm-web:patch
 
 ### Feat

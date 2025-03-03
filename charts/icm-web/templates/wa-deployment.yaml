@@ -80,6 +80,12 @@ spec:
         configMap:
           name:  {{ template "icm-web.fullname" . }}-httpd-conf
       {{- end }}
+      {{- range .Values.configMapMounts }}
+      - name: {{ .name }}
+        configMap:
+          defaultMode: {{ .fileMode }}
+          name: {{ .fileName }}
+      {{- end }}
       {{- if .Values.webadapter.customSSLCertificates }}
       - name: ssl-config-volume
         configMap:
@@ -207,6 +213,12 @@ spec:
           {{- if .Values.webadapter.customHttpdConfig }}
           - name: httpd-config-volume
             mountPath: /intershop/conf
+          {{- end }}
+          {{- range .Values.webadapter.configMapMounts }}
+          - name: {{ .name }}
+            mountPath: {{ .mountPath }}{{ if .fileName }}/{{ .fileName }}{{ end }}
+            subPath: {{ .fileName }}
+            {{ if .readOnly }}readOnly: {{ .readOnly }}{{ end }}
           {{- end }}
           {{- if .Values.webadapter.customSSLCertificates }}
           - name: ssl-config-volume
