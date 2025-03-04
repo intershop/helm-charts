@@ -4,12 +4,11 @@ Creates the volume mounts
 */}}
 {{- define "icm-as.volumeMounts" -}}
 volumeMounts:
-{{- if .Values.provideCustomConfig }}
-{{- range $k, $v := .Values.provideCustomConfig }}
-- mountPath: {{ $v.mountPath }}{{ $v.fileName }}
-  name: {{ $k }}-volume
-  subPath: {{ $v.fileName }}
-{{- end }}
+{{- range .Values.configMapMounts }}
+- name: {{ .name }}
+  mountPath: {{ .mountPath }}{{ if .fileName }}/{{ .fileName }}{{ end }}
+  subPath: {{ .fileName }}
+  {{ if .readOnly }}readOnly: {{ .readOnly }}{{ end }}
 {{- end }}
 - mountPath: /intershop/sites
   name: sites-volume
