@@ -6,6 +6,42 @@ entries:
       requestedMemoryQuota: 6000Mi
     apiVersion: v2
     appVersion: 12.0.0
+    created: "2025-03-04T06:17:01.267728257Z"
+    dependencies:
+    - name: icm-as
+      repository: file://../icm-as
+      version: 2.8.1
+    - condition: icm-web.enabled
+      name: icm-web
+      repository: file://../icm-web
+      version: 0.14.1
+    - condition: ingress-nginx.enabled
+      name: ingress-nginx
+      repository: https://kubernetes.github.io/ingress-nginx
+      version: 4.11.1
+    - condition: mailhog.enabled
+      name: mailhog
+      repository: https://codecentric.github.io/helm-charts
+      version: 5.2.0
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 17.15.2
+    - condition: redis-cluster.enabled
+      name: redis-cluster
+      repository: https://charts.bitnami.com/bitnami
+      version: 8.6.12
+    description: Intershop Commerce Management - ICM
+    digest: 135a95d34b13ba841d13f5b97eda10191944b00aba68275de520c67976881a86
+    name: icm
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-2.13.1/icm-2.13.1.tgz
+    version: 2.13.1
+  - annotations:
+      requestedCpuQuotaInMinutes: "2200"
+      requestedMemoryQuota: 6000Mi
+    apiVersion: v2
+    appVersion: 12.0.0
     created: "2025-03-03T16:39:34.983717669Z"
     dependencies:
     - name: icm-as
@@ -6767,6 +6803,16 @@ entries:
   icm-as:
   - apiVersion: v2
     appVersion: 11.10.3-LTS
+    created: "2025-03-04T06:17:01.450775055Z"
+    description: Intershop Commerce Management - AppServer
+    digest: bf30cccc3fb0331d78af87117482046c41e24dbae3c3c9db6485646562db6852
+    name: icm-as
+    type: application
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-as-2.8.1/icm-as-2.8.1.tgz
+    version: 2.8.1
+  - apiVersion: v2
+    appVersion: 11.10.3-LTS
     created: "2025-03-03T16:39:35.194404414Z"
     description: Intershop Commerce Management - AppServer
     digest: be2a40d482b1fc057b0d2c87f84890494771b2090d33275cfec608a47f0b4dfe
@@ -8126,6 +8172,27 @@ entries:
     - https://github.com/intershop/helm-charts/releases/download/icm-proxy-1.0.0/icm-proxy-1.0.0.tgz
     version: 1.0.0
   icm-replication:
+  - annotations:
+      requestedCpuQuotaInMinutes: "3000"
+      requestedMemoryQuota: 9Gi
+    apiVersion: v2
+    appVersion: 11.9.0
+    created: "2025-03-04T06:17:01.667405067Z"
+    dependencies:
+    - alias: icm-live
+      name: icm
+      repository: file://../icm
+      version: 2.13.1
+    - alias: icm-edit
+      name: icm
+      repository: file://../icm
+      version: 2.13.1
+    description: Intershop Commerce Management - ICM Replication
+    digest: 4ace5d12b7a44d0bbe5a9b853c628d0263f46c87d35c49326423a86cd5b5deb2
+    name: icm-replication
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-replication-2.13.1/icm-replication-2.13.1.tgz
+    version: 2.13.1
   - annotations:
       requestedCpuQuotaInMinutes: "3000"
       requestedMemoryQuota: 9Gi
@@ -11519,6 +11586,15 @@ entries:
     version: 1.0.0-alpha
   - apiVersion: v2
     appVersion: 11.0.13
+    created: "2025-03-04T06:17:01.902348922Z"
+    description: Intershop Commerce Management - Web Adapter and Web Adapter Agent
+    digest: 3b68a4310ba41b412b0949cf3252f32fb5ceb0e49778495c5aca4a61cabd98fb
+    name: icm-web
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-web-0.14.1/icm-web-0.14.1.tgz
+    version: 0.14.1
+  - apiVersion: v2
+    appVersion: 11.0.13
     created: "2025-03-03T16:39:35.616607402Z"
     description: Intershop Commerce Management - Web Adapter and Web Adapter Agent
     digest: 1fc64386ba205ec1493d74ce921b4ffcef66c4c5c9eef6581f650505c027d31b
@@ -12540,4 +12616,4 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.2.3/pwa-main-0.2.3.tgz
     version: 0.2.3
-generated: "2025-03-03T16:39:35.618649233Z"
+generated: "2025-03-04T06:17:01.905815666Z"
