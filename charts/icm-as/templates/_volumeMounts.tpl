@@ -6,9 +6,9 @@ Creates the volume mounts
 volumeMounts:
 {{- range .Values.configMapMounts }}
 - name: {{ .name }}
-  mountPath: {{ .mountPath }}{{ if .fileName }}/{{ .fileName }}{{ end }}
+  mountPath: {{ trimSuffix "/" .mountPath }}{{ if .fileName }}/{{ .fileName }}{{ end }}
   subPath: {{ .fileName }}
-  {{ if .readOnly }}readOnly: {{ .readOnly }}{{ end }}
+  readOnly: {{ .readOnly | default false }}
 {{- end }}
 - mountPath: /intershop/sites
   name: sites-volume

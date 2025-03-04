@@ -20,13 +20,14 @@ tests:
             mountPath: /intershop/system-conf/cluster/logback-main.xml
             name: logback-main-xml
             subPath: logback-main.xml
+            readOnly: false
       - contains:
           path: spec.template.spec.containers[0].volumeMounts
           content:
             mountPath: /intershop/system-conf/cluster/urlrewriterules.xml
             name: url-rewrite-rules-xml
-            readOnly: true
             subPath: urlrewriterules.xml
+            readOnly: true
       #spec.template.spec.volumes
       - contains:
           path: spec.template.spec.volumes
