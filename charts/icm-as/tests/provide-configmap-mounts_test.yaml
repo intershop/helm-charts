@@ -34,12 +34,12 @@ tests:
           content:
             configMap:
               defaultMode: 660
-              name: logback-main.xml
+              name: icm-as-logback-main-xml
             name: logback-main-xml
       - contains:
           path: spec.template.spec.volumes
           content:
             configMap:
               defaultMode: 440
-              name: urlrewriterules.xml
+              name: icm-as-urlrewriterules-xml
             name: url-rewrite-rules-xml
