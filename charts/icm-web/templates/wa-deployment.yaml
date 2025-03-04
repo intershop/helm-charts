@@ -80,11 +80,11 @@ spec:
         configMap:
           name:  {{ template "icm-web.fullname" . }}-httpd-conf
       {{- end }}
-      {{- range .Values.configMapMounts }}
+      {{- range .Values.webadapter.configMapMounts }}
       - name: {{ .name }}
         configMap:
           defaultMode: {{ .fileMode }}
-          name: {{ .fileName }}
+          name: {{ .configMapName }}
       {{- end }}
       {{- if .Values.webadapter.customSSLCertificates }}
       - name: ssl-config-volume
