@@ -216,9 +216,9 @@ spec:
           {{- end }}
           {{- range .Values.webadapter.configMapMounts }}
           - name: {{ .name }}
-            mountPath: {{ .mountPath }}{{ if .fileName }}/{{ .fileName }}{{ end }}
+            mountPath: {{ trimSuffix "/" .mountPath }}{{ if .fileName }}/{{ .fileName }}{{ end }}
             subPath: {{ .fileName }}
-            {{ if .readOnly }}readOnly: {{ .readOnly }}{{ end }}
+            readOnly: {{ .readOnly | default false }}
           {{- end }}
           {{- if .Values.webadapter.customSSLCertificates }}
           - name: ssl-config-volume
