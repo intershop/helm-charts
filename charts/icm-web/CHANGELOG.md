@@ -1,4 +1,18 @@
 
+<a name="icm-web-0.14.2"></a>
+## [icm-web-0.14.2](https://github.com/intershop/helm-charts/compare/icm-web-0.14.1...icm-web-0.14.2)
+
+> 2025-03-04
+
+### Chore
+
+* bump versions of icm-web:patch
+
+### Fix
+
+* **icm:** wrong context ([#928](https://github.com/intershop/helm-charts/issues/928))
+
+
 <a name="icm-web-0.14.1"></a>
 ## [icm-web-0.14.1](https://github.com/intershop/helm-charts/compare/icm-web-0.14.0...icm-web-0.14.1)
 
@@ -6,6 +20,7 @@
 
 ### Chore
 
+* generated changelog+release notes for icm-as:patch icm-web:patch
 * bump versions of icm-as:patch icm-web:patch
 
 ### Fix
