@@ -156,7 +156,7 @@ operationalContext:
 
 # List of ConfigMaps to be mounted as volumes
 configMapMounts: []
-#  # the key will be part of the volume name (max 15 chars)
+#  # the key will be part of the volume name
 #  - name: logback-main-xml
 #    # where to mount the configMap
 #    mountPath: /intershop/system-conf/cluster/
