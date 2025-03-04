@@ -1,4 +1,18 @@
 
+<a name="icm-web-0.14.1"></a>
+## [icm-web-0.14.1](https://github.com/intershop/helm-charts/compare/icm-web-0.14.0...icm-web-0.14.1)
+
+> 2025-03-04
+
+### Chore
+
+* bump versions of icm-as:patch icm-web:patch
+
+### Fix
+
+* some optimizations to configMapMounts ([#928](https://github.com/intershop/helm-charts/issues/928))
+
+
 <a name="icm-web-0.14.0"></a>
 ## [icm-web-0.14.0](https://github.com/intershop/helm-charts/compare/icm-web-0.13.3...icm-web-0.14.0)
 
@@ -6,6 +20,7 @@
 
 ### Chore
 
+* generated changelog+release notes for icm:minor icm-as:minor icm-web:minor
 * bump versions of icm:minor icm-as:minor icm-web:minor
 
 ### Feat
