@@ -1,20 +1,16 @@
-suite: tests correctness of provideCustomConfig
+suite: tests correctness of configMapMounts
 templates:
   - templates/as-deployment.yaml
-  - templates/system-conf-cluster-cm.yaml
 tests:
-  - it: two configs
+  - it: default values in as-deployment
     release:
       name: icm-as
     chart:
       version: 0.8.15
     values:
       - ../values.yaml
-    set:
-      provideCustomConfig.logback-main.mountPath: /intershop/system-conf/cluster/
-      provideCustomConfig.logback-main.fileName: logback-main.xml
-      provideCustomConfig.urlrewriterules.mountPath: /intershop/system-conf/cluster/
-      provideCustomConfig.urlrewriterules.fileName: urlrewriterules.xml
+      # use a separate values-yaml because setting array values directly does not work
+      - values/configMapMounts.yaml
     template: templates/as-deployment.yaml
     asserts:
       #spec.template.spec.containers[0].volumeMounts
@@ -22,26 +18,27 @@ tests:
           path: spec.template.spec.containers[0].volumeMounts
           content:
             mountPath: /intershop/system-conf/cluster/logback-main.xml
-            name: logback-main-volume
+            name: logback-main-xml
             subPath: logback-main.xml
       - contains:
           path: spec.template.spec.containers[0].volumeMounts
           content:
             mountPath: /intershop/system-conf/cluster/urlrewriterules.xml
-            name: urlrewriterules-volume
+            name: url-rewrite-rules-xml
+            readOnly: true
             subPath: urlrewriterules.xml
       #spec.template.spec.volumes
       - contains:
           path: spec.template.spec.volumes
           content:
-            name: logback-main-volume
             configMap:
-              defaultMode: 420
-              name: icm-as-system-conf-cluster
+              defaultMode: 660
+              name: logback-main.xml
+            name: logback-main-xml
       - contains:
           path: spec.template.spec.volumes
           content:
-            name: urlrewriterules-volume
             configMap:
-              defaultMode: 420
-              name: icm-as-system-conf-cluster
+              defaultMode: 440
+              name: urlrewriterules.xml
+            name: url-rewrite-rules-xml
