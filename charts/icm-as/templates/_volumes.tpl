@@ -8,7 +8,7 @@ volumes:
 - name: {{ .name }}
   configMap:
     defaultMode: {{ .fileMode }}
-    name: {{ .fileName }}
+    name: {{ .configMapName }}
 {{- end }}
 {{- if .Values.newrelic.enabled }}
 - name: newrelic-config-volume

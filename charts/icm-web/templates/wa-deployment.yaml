@@ -84,7 +84,7 @@ spec:
       - name: {{ .name }}
         configMap:
           defaultMode: {{ .fileMode }}
-          name: {{ .fileName }}
+          name: {{ .configMapName }}
       {{- end }}
       {{- if .Values.webadapter.customSSLCertificates }}
       - name: ssl-config-volume
