@@ -1,5 +1,5 @@
 [tool.bumpversion]
-current_version = "2.13.1"
+current_version = "2.13.3"
 
 [[tool.bumpversion.files]]
 filename = "Chart.yaml"
