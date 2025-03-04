@@ -80,7 +80,7 @@ spec:
         configMap:
           name:  {{ template "icm-web.fullname" . }}-httpd-conf
       {{- end }}
-      {{- range .Values.configMapMounts }}
+      {{- range .Values.webadapter.configMapMounts }}
       - name: {{ .name }}
         configMap:
           defaultMode: {{ .fileMode }}
