@@ -1,14 +1,14 @@
 
-<a name="icm-2.10.1"></a>
-## [icm-2.10.1](https://github.com/intershop/helm-charts/compare/icm-2.10.0...icm-2.10.1)
+<a name="icm-2.13.0"></a>
+## [icm-2.13.0](https://github.com/intershop/helm-charts/compare/icm-2.12.0...icm-2.13.0)
 
-> 2025-01-09
+> 2025-03-03
 
 ### Chore
 
-* bump versions of icm:patch icm-as:patch
+* bump versions of icm:minor icm-as:minor icm-web:minor
 
-### Docs
+### Feat
 
-* **common:** link "Release Process"-wiki page to the contribution rules ([#867](https://github.com/intershop/helm-charts/issues/867))
+* configuration of volumemounts for existing configmaps ([#921](https://github.com/intershop/helm-charts/issues/921))
 

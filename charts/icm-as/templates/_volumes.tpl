@@ -4,13 +4,11 @@ Creates the volumes used by an ICM
 */}}
 {{- define "icm-as.volumes" -}}
 volumes:
-{{- if .Values.provideCustomConfig }}
-{{- range $k, $v := .Values.provideCustomConfig }}
-- name: {{ $k }}-volume
+{{- range .Values.configMapMounts }}
+- name: {{ .name }}
   configMap:
-    name: {{ template "icm-as.fullname" $ }}-system-conf-cluster
-    defaultMode: 420
-{{- end }}
+    defaultMode: {{ .fileMode }}
+    name: {{ .fileName }}
 {{- end }}
 {{- if .Values.newrelic.enabled }}
 - name: newrelic-config-volume
