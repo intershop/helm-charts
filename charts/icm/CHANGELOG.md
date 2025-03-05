@@ -1,4 +1,48 @@
 
+<a name="icm-2.13.4"></a>
+## [icm-2.13.4](https://github.com/intershop/helm-charts/compare/icm-2.13.3...icm-2.13.4)
+
+> 2025-03-05
+
+### Chore
+
+* bump versions of icm:patch icm-replication:patch
+
+### Fix
+
+* **icm:** rename istestrunner logfile ([#941](https://github.com/intershop/helm-charts/issues/941))
+
+
+<a name="icm-2.13.3"></a>
+## [icm-2.13.3](https://github.com/intershop/helm-charts/compare/icm-2.13.2...icm-2.13.3)
+
+> 2025-03-04
+
+### Chore
+
+* bump versions of icm-as:patch icm-web:patch
+
+
+<a name="icm-2.13.2"></a>
+## [icm-2.13.2](https://github.com/intershop/helm-charts/compare/icm-2.13.1...icm-2.13.2)
+
+> 2025-03-04
+
+### Chore
+
+* bump versions of icm-web:patch
+
+
+<a name="icm-2.13.1"></a>
+## [icm-2.13.1](https://github.com/intershop/helm-charts/compare/icm-2.13.0...icm-2.13.1)
+
+> 2025-03-04
+
+### Chore
+
+* bump versions of icm-as:patch icm-web:patch
+
+
 <a name="icm-2.13.0"></a>
 ## [icm-2.13.0](https://github.com/intershop/helm-charts/compare/icm-2.12.0...icm-2.13.0)
 
@@ -6,6 +50,7 @@
 
 ### Chore
 
+* generated changelog+release notes for icm:minor icm-as:minor icm-web:minor
 * bump versions of icm:minor icm-as:minor icm-web:minor
 
 ### Feat

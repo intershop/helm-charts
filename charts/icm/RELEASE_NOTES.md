@@ -1,14 +1,14 @@
 
-<a name="icm-2.13.0"></a>
-## [icm-2.13.0](https://github.com/intershop/helm-charts/compare/icm-2.12.0...icm-2.13.0)
+<a name="icm-2.13.4"></a>
+## [icm-2.13.4](https://github.com/intershop/helm-charts/compare/icm-2.13.3...icm-2.13.4)
 
-> 2025-03-03
+> 2025-03-05
 
 ### Chore
 
-* bump versions of icm:minor icm-as:minor icm-web:minor
+* bump versions of icm:patch icm-replication:patch
 
-### Feat
+### Fix
 
-* configuration of volumemounts for existing configmaps ([#921](https://github.com/intershop/helm-charts/issues/921))
+* **icm:** rename istestrunner logfile ([#941](https://github.com/intershop/helm-charts/issues/941))
 
