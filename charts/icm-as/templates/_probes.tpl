@@ -32,5 +32,5 @@ readinessProbe:
   #wait 60s (startup min) then poll every 5s up to a total timeout of 15s
   failureThreshold: {{ .Values.probes.readiness.failureThreshold | default 3 }}
   initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds | default 60 }}
-  periodSeconds: {{ .Values.probes.readiness.periodSeconds | default 5 }}
+  periodSeconds: {{ .Values.probes.readiness.periodSeconds | default 10 }}
 {{- end -}}
