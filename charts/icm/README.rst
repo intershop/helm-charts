@@ -119,4 +119,4 @@ Follow these steps to execute a test:
 Local Execution Guide
 ---------------------
 
-For detailed instructions on local execution, see `Local Execution Guide <docs/local-execution.html>`_.
+For detailed instructions on local execution, see `Local Execution Guide <docs/local-execution.rst>`_.
