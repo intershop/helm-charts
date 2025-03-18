@@ -1,12 +1,28 @@
 
+<a name="icm-2.13.6"></a>
+## [icm-2.13.6](https://github.com/intershop/helm-charts/compare/icm-2.13.5...icm-2.13.6)
+
+> 2025-03-18
+
+### Chore
+
+* bump versions of icm:patch
+
+### Doc
+
+* **icm:** add README rst and local execution rst guide for ICM helm chart ([#947](https://github.com/intershop/helm-charts/issues/947))
+
+
+<a name="icm-2.13.5"></a>
+## [icm-2.13.5](https://github.com/intershop/helm-charts/compare/icm-2.13.4...icm-2.13.5)
+
+> 2025-03-05
+
+
 <a name="icm-2.13.4"></a>
 ## [icm-2.13.4](https://github.com/intershop/helm-charts/compare/icm-2.13.3...icm-2.13.4)
 
 > 2025-03-05
-
-### Chore
-
-* bump versions of icm:patch icm-replication:patch
 
 ### Fix
 
