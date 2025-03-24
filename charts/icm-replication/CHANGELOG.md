@@ -1,12 +1,38 @@
 
-<a name="icm-replication-2.13.4"></a>
-## [icm-replication-2.13.4](https://github.com/intershop/helm-charts/compare/icm-replication-2.13.3...icm-replication-2.13.4)
+<a name="icm-replication-2.13.7"></a>
+## [icm-replication-2.13.7](https://github.com/intershop/helm-charts/compare/icm-replication-2.13.6...icm-replication-2.13.7)
 
-> 2025-03-05
+> 2025-03-24
 
 ### Chore
 
 * bump versions of icm:patch icm-replication:patch
+
+### Fix
+
+* **icm:** do not do it as root ([#961](https://github.com/intershop/helm-charts/issues/961))
+
+
+<a name="icm-replication-2.13.6"></a>
+## [icm-replication-2.13.6](https://github.com/intershop/helm-charts/compare/icm-replication-2.13.5...icm-replication-2.13.6)
+
+> 2025-03-18
+
+### Chore
+
+* bump versions of icm:patch
+
+
+<a name="icm-replication-2.13.5"></a>
+## [icm-replication-2.13.5](https://github.com/intershop/helm-charts/compare/icm-replication-2.13.4...icm-replication-2.13.5)
+
+> 2025-03-05
+
+
+<a name="icm-replication-2.13.4"></a>
+## [icm-replication-2.13.4](https://github.com/intershop/helm-charts/compare/icm-replication-2.13.3...icm-replication-2.13.4)
+
+> 2025-03-05
 
 ### Fix
 
