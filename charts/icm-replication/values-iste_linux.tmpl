@@ -101,11 +101,6 @@ icm-edit:
     agent:
       image:
         repository: "${ICM_WEBADAPTER_AGENT_IMAGE}"
-    podSecurityContext:
-      runAsUser: 0
-      runAsGroup: 0
-      fsGroup: 0
-      runAsNonRoot: false
     environment:
       HELM_DIRECTORY: "${HELM_DIRECTORY}"
       SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
@@ -243,11 +238,6 @@ icm-live:
     agent:
       image:
         repository: "${ICM_WEBADAPTER_AGENT_IMAGE}"
-    podSecurityContext:
-      runAsUser: 0
-      runAsGroup: 0
-      fsGroup: 0
-      runAsNonRoot: false
     environment:
       HELM_DIRECTORY: "${HELM_DIRECTORY}"
       SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
