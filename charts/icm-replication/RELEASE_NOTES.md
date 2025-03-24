@@ -1,8 +1,8 @@
 
-<a name="icm-replication-2.13.4"></a>
-## [icm-replication-2.13.4](https://github.com/intershop/helm-charts/compare/icm-replication-2.13.3...icm-replication-2.13.4)
+<a name="icm-replication-2.13.7"></a>
+## [icm-replication-2.13.7](https://github.com/intershop/helm-charts/compare/icm-replication-2.13.6...icm-replication-2.13.7)
 
-> 2025-03-05
+> 2025-03-24
 
 ### Chore
 
@@ -10,5 +10,5 @@
 
 ### Fix
 
-* **icm:** rename istestrunner logfile ([#941](https://github.com/intershop/helm-charts/issues/941))
+* **icm:** do not do it as root ([#961](https://github.com/intershop/helm-charts/issues/961))
 
