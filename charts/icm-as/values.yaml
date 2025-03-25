@@ -154,19 +154,6 @@ operationalContext:
   # name of the environment (environment-type + some sort of id, e.g. int-01, default=<environmentType>)
   environmentName: prd
 
-# List of ConfigMaps to be mounted as volumes
-configMapMounts: []
-#  # the key will be part of the volume name
-#  - name: logback-main-xml
-#    # where to mount the configMap
-#    mountPath: /intershop/system-conf/cluster/
-#    # name of the configMap
-#    configMapName: icm-as-logback-main-xml
-#    # name of the file in the configMap
-#    fileName: logback-main.xml
-#    # fileMode of the file
-#    fileMode: 440
-
 serviceAccount:
   # Specifies whether a service account should be created and used
   create: false
