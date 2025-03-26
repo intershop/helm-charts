@@ -4,12 +4,6 @@ Creates the volume mounts
 */}}
 {{- define "icm-as.volumeMounts" -}}
 volumeMounts:
-{{- range .Values.configMapMounts }}
-- name: {{ .name }}
-  mountPath: {{ trimSuffix "/" .mountPath }}{{ if .fileName }}/{{ .fileName }}{{ end }}
-  subPath: {{ .fileName }}
-  readOnly: {{ .readOnly | default false }}
-{{- end }}
 - mountPath: /intershop/sites
   name: sites-volume
 - mountPath: /intershop/system-conf/cluster/encryption
