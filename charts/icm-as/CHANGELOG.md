@@ -1,8 +1,8 @@
 
-<a name="icm-as-2.8.3"></a>
-## [icm-as-2.8.3](https://github.com/intershop/helm-charts/compare/icm-as-2.8.2...icm-as-2.8.3)
+<a name="icm-as-2.8.4"></a>
+## [icm-as-2.8.4](https://github.com/intershop/helm-charts/compare/icm-as-2.8.3...icm-as-2.8.4)
 
-> 2025-03-05
+> 2025-03-25
 
 ### Chore
 
@@ -10,7 +10,13 @@
 
 ### Fix
 
-* increase icm-as readinessProbe periodSeconds to 10 ([#948](https://github.com/intershop/helm-charts/issues/948))
+* **icm:** remove dynamic configMap mount ([#967](https://github.com/intershop/helm-charts/issues/967))
+
+
+<a name="icm-as-2.8.3"></a>
+## [icm-as-2.8.3](https://github.com/intershop/helm-charts/compare/icm-as-2.8.2...icm-as-2.8.3)
+
+> 2025-03-05
 
 
 <a name="icm-as-2.8.2"></a>
