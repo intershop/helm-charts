@@ -3,16 +3,16 @@ appVersion: "11.9.0"
 description: Intershop Commerce Management - ICM Replication
 # name and version must be in this exact order, otherwise bump2version won't work
 name: icm-replication
-version: 2.13.8
+version: 2.13.9
 annotations:
   requestedMemoryQuota: 9Gi
   requestedCpuQuotaInMinutes: 3000
 dependencies:
   - name: icm
-    version: 2.13.8
+    version: 2.13.9
     repository: file://../icm
     alias: icm-live
   - name: icm
-    version: 2.13.8
+    version: 2.13.9
     repository: file://../icm
     alias: icm-edit
