@@ -127,8 +127,8 @@ Creates the environment replication section
 ICM-AS >= 12.2.0 supports new replication configuration via environments instead of replication-clusters.xml
 ICM-AS >= 13.0.0 requires new replication configuration
 */}}
-{{- $icmApplicationServerImageSemanticVersion := include "icm-as.imageSemanticVersion" . -}}
-{{- $hasIcmApplicationServerImageSemanticVersion := regexMatch "([0-9]+)\\.([0-9]+)\\.([0-9]+)" $icmApplicationServerImageSemanticVersion -}}
+{{- $icmApplicationServerImageSemanticVersion := splitList "-" (include "icm-as.imageSemanticVersion" .) | first -}}
+{{- $hasIcmApplicationServerImageSemanticVersion := regexMatch "^([0-9]+)\\.([0-9]+)\\.([0-9]+)$" $icmApplicationServerImageSemanticVersion -}}
 {{- $hasNewReplicationConfigurationRequirement := and ($hasIcmApplicationServerImageSemanticVersion) (semverCompare ">= 13.0.0" $icmApplicationServerImageSemanticVersion) -}}
 {{- $hasNewReplicationConfigurationSupport := and ($hasIcmApplicationServerImageSemanticVersion) (semverCompare ">= 12.2.0" $icmApplicationServerImageSemanticVersion) -}}
 {{- $hasNewReplicationConfiguration := or (hasKey .Values.replication "source") (hasKey .Values.replication "targets") -}}
