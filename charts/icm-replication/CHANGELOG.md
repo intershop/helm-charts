@@ -1,4 +1,28 @@
 
+<a name="icm-replication-2.13.9"></a>
+## [icm-replication-2.13.9](https://github.com/intershop/helm-charts/compare/icm-replication-2.13.8...icm-replication-2.13.9)
+
+> 2025-03-28
+
+### Chore
+
+* bump versions of icm:patch icm-as:patch icm-replication:patch
+
+### Fix
+
+* version comparision for replication fixed ([#974](https://github.com/intershop/helm-charts/issues/974))
+
+
+<a name="icm-replication-2.13.8"></a>
+## [icm-replication-2.13.8](https://github.com/intershop/helm-charts/compare/icm-replication-2.13.7...icm-replication-2.13.8)
+
+> 2025-03-25
+
+### Chore
+
+* bump versions of icm-as:patch
+
+
 <a name="icm-replication-2.13.7"></a>
 ## [icm-replication-2.13.7](https://github.com/intershop/helm-charts/compare/icm-replication-2.13.6...icm-replication-2.13.7)
 
@@ -6,6 +30,7 @@
 
 ### Chore
 
+* generated changelog+release notes for icm:patch icm-replication:patch
 * bump versions of icm:patch icm-replication:patch
 
 ### Fix

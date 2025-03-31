@@ -775,6 +775,30 @@ tests:
       - failedTemplate:
           errorMessage: "Error: The new replication configuration 'replication.source'/'replication.targets' can be only used with ICM-AS 12.2.0 and newer, currently used '12.1.0'."
 
+  - it: as-deployment should not fail if version ends with string
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: true
+      replication.role: source
+      replication.source:
+        webserverUrl: https://icm-web-edit-wa:443
+        databaseUser: repl_user_edit
+      replication.targets:
+        live1:
+          webserverUrl: https://icm-web-live-wa:443
+          databaseUser: repl_user_live
+      image:
+        tag: 12.4.2-SNAPSHOT
+    template: templates/as-deployment.yaml
+    asserts:
+      - hasDocuments:
+          count: 1
+
   - it: as-deployment fails with both databaseLink and databaseName
     release:
       name: icm-as
