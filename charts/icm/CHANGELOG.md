@@ -1,4 +1,18 @@
 
+<a name="icm-2.13.10"></a>
+## [icm-2.13.10](https://github.com/intershop/helm-charts/compare/icm-2.13.9...icm-2.13.10)
+
+> 2025-04-02
+
+### Chore
+
+* bump versions of icm:patch
+
+### Docs
+
+* **icm:** Add icm configMapMounts docu ([#976](https://github.com/intershop/helm-charts/issues/976))
+
+
 <a name="icm-2.13.9"></a>
 ## [icm-2.13.9](https://github.com/intershop/helm-charts/compare/icm-2.13.8...icm-2.13.9)
 
@@ -6,6 +20,7 @@
 
 ### Chore
 
+* generated changelog+release notes for icm:patch icm-as:patch icm-replication:patch
 * bump versions of icm:patch icm-as:patch icm-replication:patch
 
 ### Fix
