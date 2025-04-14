@@ -230,6 +230,8 @@ In general, binary files should not be stored or maintained in the GitOps enviro
 
 If small binary files such as PNG or JPG images need to be used with the ``configMapMounts`` functionality, they should be renamed with a custom extension in the GitOps environments repository, such as ``.png_file`` or ``.jpg_file``. These files can then be renamed back to their original extensions directly in the ``configMapGenerator`` configuration by specifying the desired key name.
 
+**Note:** The size of a ConfigMap is limited to 1MiB. For more details, refer to the official Kubernetes documentation: `ConfigMap Limitations <https://kubernetes.io/docs/concepts/configuration/configmap/>`_.
+
 **Example:**
 
 1. Add the binary file to the GitOps repository with a custom extension:
