@@ -1,8 +1,8 @@
 
-<a name="icm-2.13.10"></a>
-## [icm-2.13.10](https://github.com/intershop/helm-charts/compare/icm-2.13.9...icm-2.13.10)
+<a name="icm-2.13.11"></a>
+## [icm-2.13.11](https://github.com/intershop/helm-charts/compare/icm-2.13.10...icm-2.13.11)
 
-> 2025-04-02
+> 2025-04-23
 
 ### Chore
 
@@ -10,5 +10,5 @@
 
 ### Docs
 
-* **icm:** Add icm configMapMounts docu ([#976](https://github.com/intershop/helm-charts/issues/976))
+* **icm:** Add explanations and examples to ConfigMapMounts documentation ([#994](https://github.com/intershop/helm-charts/issues/994))
 
