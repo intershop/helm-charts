@@ -1,6 +1,8 @@
 icm-edit:
   icm-as:
     nodeSelector: null
+    infrastructureMonitoring:
+      enabled: false
     imagePullSecrets:
     - "${ICM_AS_PULL_SECRET}"
     persistence:
@@ -13,10 +15,31 @@ icm-edit:
         enabled: true
         existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
         mountPoint: /data
+    mssql:
+      enabled: true
+      acceptEula: "Y"
+      persistence:
+        data:
+          size: 1Gi
+          type: local
+          local:
+            path: ${LOCAL_MOUNT_BASE}/mssql-edit/data
+        backup:
+          size: 1Gi
+          type: local
+          local:
+            path: ${LOCAL_MOUNT_BASE}/mssql-edit/backup
+  icm-web:
+    nodeSelector: null
+    persistence:
+      customdata:
+        existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
 
 icm-live:
   icm-as:
     nodeSelector: null
+    infrastructureMonitoring:
+      enabled: false
     imagePullSecrets:
     - "${ICM_AS_PULL_SECRET}"
     persistence:
@@ -29,6 +52,29 @@ icm-live:
         enabled: true
         existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
         mountPoint: /data
+    mssql:
+      enabled: true
+      acceptEula: "Y"
+      persistence:
+        data:
+          size: 1Gi
+          type: local
+          local:
+            path: ${LOCAL_MOUNT_BASE}/mssql-live/data
+        backup:
+          size: 1Gi
+          type: local
+          local:
+            path: ${LOCAL_MOUNT_BASE}/mssql-live/backup
+  icm-web:
+    nodeSelector: null
+    persistence:
+      customdata:
+        existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
+
+  ingress-nginx:
+    controller:
+      nodeSelector: null
 
   ingress-nginx:
     controller:

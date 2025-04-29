@@ -26,7 +26,7 @@ tests:
           value: 60
       - equal:
           path: spec.template.spec.containers[0].readinessProbe.periodSeconds
-          value: 5
+          value: 10
 
   - it: custom values in as-deployment
     release:

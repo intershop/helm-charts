@@ -23,7 +23,24 @@ webadapter:
     pullPolicy: IfNotPresent
   # disable HTTP/2 protocol support if required
   disableHTTP2: false
+
+  # Deprecated: The customHttpdConfig option has been replaced by configMapMounts.
+  # Please use configMapMounts to manually define the required ConfigMaps.
   customHttpdConfig: false
+
+  # List of ConfigMaps to be mounted as volumes
+  configMapMounts: []
+#    # the key will be part of the volume name
+#    - name: httpdConfig
+#      # where to mount the configMap
+#      mountPath: /intershop/conf/
+#      # name of the configMap
+#      configMapName: icm-web-httpd-conf
+#      # name of the file in the configMap
+#      fileName: httpd.conf
+#      # fileMode of the file
+#      fileMode: 440
+
   # provides custom certificates for webadapter
   customSSLCertificates: false
   overrideSSL: false
@@ -37,14 +54,17 @@ webadapter:
     #  initialDelaySeconds: 0
     #  periodSeconds: 5
     #  failureThreshold: 6
+    #  timeoutSeconds: 1
     liveness: {}
     #  initialDelaySeconds: 0
     #  periodSeconds: 10
     #  failureThreshold: 3
+    #  timeoutSeconds: 1
     readiness: {}
     #  initialDelaySeconds: 0
     #  periodSeconds: 10
     #  failureThreshold: 3
+    #  timeoutSeconds: 1
   sslCertificateRetrieval:
     enabled: false
     supportV1: false
@@ -78,7 +98,7 @@ agent:
   # in some REST-based environment the webadapteragent isn't mandatory
   enabled: true
   image:
-    repository: intershophub/icm-webadapteragent:4.5.1
+    repository: intershophub/icm-webadapteragent:5.1.0
     pullPolicy: IfNotPresent
   # define the number of replicas being deployed (int, > 0, default=1)
   replicaCount: 1
@@ -198,11 +218,11 @@ resources:
       memory: 400Mi
   agent:
     limits:
-      cpu: 100m
-      memory: 500Mi
+      cpu: 2000m
+      memory: 400Mi
     requests:
-      cpu: 100m
-      memory: 500Mi
+      cpu: 50m
+      memory: 100Mi
 
 ingress:
   enabled: false
@@ -222,10 +242,6 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
-  # define list of IPs which are allowed to access internal pages of the webadapter service (e.g. "wastatistics")
-  # Intershop network addresses and loopback addresses of the local host container are already permitted by default
-  # accessInternalWebAdapterPagesAllowIPs:
-  # - 10.0.0.0/8
 
 nameOverride: ""
 fullnameOverride: ""

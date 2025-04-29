@@ -48,3 +48,37 @@ tests:
       - equal:
           path: metadata.name
           value: release-name-icm-web-newrelic-yml
+  - it: newrelic log metrics (on)
+    release:
+      name: release-name
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      agent.newrelic.enabled: true
+      agent.newrelic.metrics.enabled: true
+    template: templates/config-newrelic-yaml-cm.yaml
+    asserts:
+      - isKind:
+          of: ConfigMap
+      - matchRegex:
+          path: data["newrelic.yml"]
+          pattern: '(?m)^\W{4}metrics:\n\W{6}enabled: true$'
+  - it: newrelic log metrics (off)
+    release:
+      name: release-name
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      agent.newrelic.enabled: true
+      agent.newrelic.metrics.enabled: false
+    template: templates/config-newrelic-yaml-cm.yaml
+    asserts:
+      - isKind:
+          of: ConfigMap
+      - matchRegex:
+          path: data["newrelic.yml"]
+          pattern: '(?m)^\W{4}metrics:\n\W{6}enabled: false$'

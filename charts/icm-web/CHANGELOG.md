@@ -1,4 +1,126 @@
 
+<a name="icm-web-0.14.3"></a>
+## [icm-web-0.14.3](https://github.com/intershop/helm-charts/compare/icm-web-0.14.2...icm-web-0.14.3)
+
+> 2025-03-04
+
+### Chore
+
+* bump versions of icm-as:patch icm-web:patch
+
+
+<a name="icm-web-0.14.2"></a>
+## [icm-web-0.14.2](https://github.com/intershop/helm-charts/compare/icm-web-0.14.1...icm-web-0.14.2)
+
+> 2025-03-04
+
+### Chore
+
+* generated changelog+release notes for icm-web:patch
+* bump versions of icm-web:patch
+
+### Fix
+
+* **icm:** wrong context ([#928](https://github.com/intershop/helm-charts/issues/928))
+
+
+<a name="icm-web-0.14.1"></a>
+## [icm-web-0.14.1](https://github.com/intershop/helm-charts/compare/icm-web-0.14.0...icm-web-0.14.1)
+
+> 2025-03-04
+
+### Chore
+
+* generated changelog+release notes for icm-as:patch icm-web:patch
+* bump versions of icm-as:patch icm-web:patch
+
+### Fix
+
+* some optimizations to configMapMounts ([#928](https://github.com/intershop/helm-charts/issues/928))
+
+
+<a name="icm-web-0.14.0"></a>
+## [icm-web-0.14.0](https://github.com/intershop/helm-charts/compare/icm-web-0.13.3...icm-web-0.14.0)
+
+> 2025-03-03
+
+### Chore
+
+* generated changelog+release notes for icm:minor icm-as:minor icm-web:minor
+* bump versions of icm:minor icm-as:minor icm-web:minor
+
+### Feat
+
+* configuration of volumemounts for existing configmaps ([#921](https://github.com/intershop/helm-charts/issues/921))
+
+
+<a name="icm-web-0.13.3"></a>
+## [icm-web-0.13.3](https://github.com/intershop/helm-charts/compare/icm-web-0.13.2...icm-web-0.13.3)
+
+> 2025-02-28
+
+### Chore
+
+* generated changelog+release notes for icm-as:minor icm-web:patch
+* bump versions of icm-as:minor icm-web:patch
+
+### Fix
+
+* **icm:** disable integrated NR agent log forwding ([#915](https://github.com/intershop/helm-charts/issues/915))
+
+
+<a name="icm-web-0.13.2"></a>
+## [icm-web-0.13.2](https://github.com/intershop/helm-charts/compare/icm-web-0.13.1...icm-web-0.13.2)
+
+> 2024-12-12
+
+### Chore
+
+* generated changelog+release notes for icm-as:minor icm-web:patch
+* bump versions of icm-as:minor icm-web:patch
+
+### Fix
+
+* update WAA to 5.1.0 and adapt resource defaults ([#831](https://github.com/intershop/helm-charts/issues/831))
+
+
+<a name="icm-web-0.13.1"></a>
+## [icm-web-0.13.1](https://github.com/intershop/helm-charts/compare/icm-web-0.13.0...icm-web-0.13.1)
+
+> 2024-11-26
+
+### Chore
+
+* generated changelog+release notes for icm-web:patch
+* bump versions of icm-web:patch
+
+
+<a name="icm-web-0.13.0"></a>
+## [icm-web-0.13.0](https://github.com/intershop/helm-charts/compare/icm-web-0.12.1...icm-web-0.13.0)
+
+> 2024-11-25
+
+### Chore
+
+* generated changelog+release notes for icm-web:minor
+* bump versions of icm-web:minor
+
+
+<a name="icm-web-0.12.1"></a>
+## [icm-web-0.12.1](https://github.com/intershop/helm-charts/compare/icm-web-0.12.0...icm-web-0.12.1)
+
+> 2024-11-22
+
+### Chore
+
+* generated changelog+release notes for icm-as:minor icm-web:patch
+* bump versions of icm-as:minor icm-web:patch
+
+### Fix
+
+* fix ingress annotation conflict in icm-web chart ([#834](https://github.com/intershop/helm-charts/issues/834))
+
+
 <a name="icm-web-0.12.0"></a>
 ## [icm-web-0.12.0](https://github.com/intershop/helm-charts/compare/icm-web-0.11.0...icm-web-0.12.0)
 
@@ -6,6 +128,7 @@
 
 ### Chore
 
+* generated changelog+release notes for icm-as:minor icm-web:minor
 * bump versions of icm-as:minor icm-web:minor
 
 ### Feat

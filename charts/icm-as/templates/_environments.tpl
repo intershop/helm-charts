@@ -127,8 +127,8 @@ Creates the environment replication section
 ICM-AS >= 12.2.0 supports new replication configuration via environments instead of replication-clusters.xml
 ICM-AS >= 13.0.0 requires new replication configuration
 */}}
-{{- $icmApplicationServerImageSemanticVersion := include "icm-as.imageSemanticVersion" . -}}
-{{- $hasIcmApplicationServerImageSemanticVersion := regexMatch "([0-9]+)\\.([0-9]+)\\.([0-9]+)" $icmApplicationServerImageSemanticVersion -}}
+{{- $icmApplicationServerImageSemanticVersion := splitList "-" (include "icm-as.imageSemanticVersion" .) | first -}}
+{{- $hasIcmApplicationServerImageSemanticVersion := regexMatch "^([0-9]+)\\.([0-9]+)\\.([0-9]+)$" $icmApplicationServerImageSemanticVersion -}}
 {{- $hasNewReplicationConfigurationRequirement := and ($hasIcmApplicationServerImageSemanticVersion) (semverCompare ">= 13.0.0" $icmApplicationServerImageSemanticVersion) -}}
 {{- $hasNewReplicationConfigurationSupport := and ($hasIcmApplicationServerImageSemanticVersion) (semverCompare ">= 12.2.0" $icmApplicationServerImageSemanticVersion) -}}
 {{- $hasNewReplicationConfiguration := or (hasKey .Values.replication "source") (hasKey .Values.replication "targets") -}}
@@ -139,7 +139,7 @@ ICM-AS >= 13.0.0 requires new replication configuration
   {{- fail (printf "Error: The new replication configuration 'replication.source'/'replication.targets' can be only used with ICM-AS 12.2.0 and newer, currently used '%s'." $icmApplicationServerImageSemanticVersion) -}}
 {{- end -}}
 {{- if and ($hasNewReplicationConfiguration) (hasKey .Values.replication.source "databaseLink") (hasKey .Values.replication.source "databaseName") -}}
-  {{- fail "Error: Either mutual exclusive 'replication.source.databaseUser' or 'replication.source.databaseLink' have to be configured, but not both." -}}
+  {{- fail "Error: Either mutual exclusive 'replication.source.databaseName' or 'replication.source.databaseLink' have to be configured, but not both." -}}
 {{- end -}}
 {{- if and (or (not $hasIcmApplicationServerImageSemanticVersion) $hasNewReplicationConfigurationSupport) $hasNewReplicationConfiguration }}
 {{- $replicationSystemIDs := keys .Values.replication.targets | sortAlpha -}}

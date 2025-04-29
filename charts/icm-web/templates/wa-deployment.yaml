@@ -80,6 +80,12 @@ spec:
         configMap:
           name:  {{ template "icm-web.fullname" . }}-httpd-conf
       {{- end }}
+      {{- range .Values.webadapter.configMapMounts }}
+      - name: {{ .name }}
+        configMap:
+          defaultMode: {{ .fileMode }}
+          name: {{ .configMapName }}
+      {{- end }}
       {{- if .Values.webadapter.customSSLCertificates }}
       - name: ssl-config-volume
         configMap:
@@ -180,6 +186,7 @@ spec:
             initialDelaySeconds: {{ .Values.webadapter.probes.startup.initialDelaySeconds | default 0 }}
             periodSeconds: {{ .Values.webadapter.probes.startup.periodSeconds | default 5 }}
             failureThreshold: {{ .Values.webadapter.probes.startup.failureThreshold | default 6 }}
+            timeoutSeconds: {{ .Values.webadapter.probes.startup.timeoutSeconds | default 1 }}
           livenessProbe:
             tcpSocket:
               port: {{ .Values.service.httpPort }}
@@ -187,6 +194,7 @@ spec:
             initialDelaySeconds: {{ .Values.webadapter.probes.liveness.initialDelaySeconds | default 0 }}
             periodSeconds: {{ .Values.webadapter.probes.liveness.periodSeconds | default 10 }}
             failureThreshold: {{ .Values.webadapter.probes.liveness.failureThreshold | default 3 }}
+            timeoutSeconds: {{ .Values.webadapter.probes.liveness.timeoutSeconds | default 1 }}
           readinessProbe:
             httpGet:
               # /INTERSHOP/wastatus response code is directly linked to configuration servlet availability/validity and
@@ -200,10 +208,17 @@ spec:
             initialDelaySeconds: {{ .Values.webadapter.probes.readiness.initialDelaySeconds | default 0 }}
             periodSeconds: {{ .Values.webadapter.probes.readiness.periodSeconds | default 10 }}
             failureThreshold: {{ .Values.webadapter.probes.readiness.failureThreshold | default 3 }}
+            timeoutSeconds: {{ .Values.webadapter.probes.readiness.timeoutSeconds | default 5 }}
           volumeMounts:
           {{- if .Values.webadapter.customHttpdConfig }}
           - name: httpd-config-volume
             mountPath: /intershop/conf
+          {{- end }}
+          {{- range .Values.webadapter.configMapMounts }}
+          - name: {{ .name }}
+            mountPath: {{ trimSuffix "/" .mountPath }}{{ if .fileName }}/{{ .fileName }}{{ end }}
+            subPath: {{ .fileName }}
+            readOnly: {{ .readOnly | default false }}
           {{- end }}
           {{- if .Values.webadapter.customSSLCertificates }}
           - name: ssl-config-volume

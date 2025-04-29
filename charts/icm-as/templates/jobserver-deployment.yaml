@@ -67,6 +67,12 @@ spec:
           {{- if include "icm-as.podSecurityContext" $jobValues }}
             {{- include "icm-as.podSecurityContext" $jobValues | nindent 10 }}
           {{- end }}
+          {{- if include "icm-as.hostAliases" . }}
+            {{- include "icm-as.hostAliases" . | nindent 10 }}
+          {{- end }}
+          {{- if include "icm-as.dnsConfig" . }}
+            {{- include "icm-as.dnsConfig" . | nindent 10 }}
+          {{- end }}
           {{- include "icm-as.volumes" . | nindent 10 }}
 {{- end -}}
 

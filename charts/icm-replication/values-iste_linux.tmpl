@@ -321,7 +321,7 @@ icm-live:
         su ${SERVER_DIRECTORY_USER} <<'EOF'
           set -x
           export PATH=$ROOTPATH
-          logfile=${RESULT_DIRECTORY}/istestrunner_log.txt
+          logfile=${RESULT_DIRECTORY}/istestrunner.log
           sh /intershop/bin/testrunner.sh -s=${TESTSUITE} -o=${RESULT_DIRECTORY} 2>&1 | tee outfile $logfile &
           main_pid=$!
 

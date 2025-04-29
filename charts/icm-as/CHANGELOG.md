@@ -1,4 +1,198 @@
 
+<a name="icm-as-2.8.5"></a>
+## [icm-as-2.8.5](https://github.com/intershop/helm-charts/compare/icm-as-2.8.4...icm-as-2.8.5)
+
+> 2025-03-28
+
+### Chore
+
+* bump versions of icm:patch icm-as:patch icm-replication:patch
+
+### Fix
+
+* version comparision for replication fixed ([#974](https://github.com/intershop/helm-charts/issues/974))
+
+
+<a name="icm-as-2.8.4"></a>
+## [icm-as-2.8.4](https://github.com/intershop/helm-charts/compare/icm-as-2.8.3...icm-as-2.8.4)
+
+> 2025-03-25
+
+### Chore
+
+* generated changelog+release notes for icm-as:patch
+* bump versions of icm-as:patch
+
+### Fix
+
+* **icm:** remove dynamic configMap mount ([#967](https://github.com/intershop/helm-charts/issues/967))
+
+
+<a name="icm-as-2.8.3"></a>
+## [icm-as-2.8.3](https://github.com/intershop/helm-charts/compare/icm-as-2.8.2...icm-as-2.8.3)
+
+> 2025-03-05
+
+
+<a name="icm-as-2.8.2"></a>
+## [icm-as-2.8.2](https://github.com/intershop/helm-charts/compare/icm-as-2.8.1...icm-as-2.8.2)
+
+> 2025-03-04
+
+### Chore
+
+* generated changelog+release notes for icm-as:patch icm-web:patch
+* bump versions of icm-as:patch icm-web:patch
+
+
+<a name="icm-as-2.8.1"></a>
+## [icm-as-2.8.1](https://github.com/intershop/helm-charts/compare/icm-as-2.8.0...icm-as-2.8.1)
+
+> 2025-03-04
+
+### Chore
+
+* generated changelog+release notes for icm-as:patch icm-web:patch
+* bump versions of icm-as:patch icm-web:patch
+
+### Fix
+
+* some optimizations to configMapMounts ([#928](https://github.com/intershop/helm-charts/issues/928))
+
+
+<a name="icm-as-2.8.0"></a>
+## [icm-as-2.8.0](https://github.com/intershop/helm-charts/compare/icm-as-2.7.0...icm-as-2.8.0)
+
+> 2025-03-03
+
+### Chore
+
+* generated changelog+release notes for icm:minor icm-as:minor icm-web:minor
+* bump versions of icm:minor icm-as:minor icm-web:minor
+
+### Feat
+
+* configuration of volumemounts for existing configmaps ([#921](https://github.com/intershop/helm-charts/issues/921))
+
+
+<a name="icm-as-2.7.0"></a>
+## [icm-as-2.7.0](https://github.com/intershop/helm-charts/compare/icm-as-2.6.0...icm-as-2.7.0)
+
+> 2025-02-28
+
+### Chore
+
+* generated changelog+release notes for icm-as:minor icm-web:patch
+* bump versions of icm-as:minor icm-web:patch
+
+### Feat
+
+* **icm:** added hostAliases + dnsConfig config to icm-as and icm-job ([#913](https://github.com/intershop/helm-charts/issues/913))
+
+### Fix
+
+* **icm:** disable integrated NR agent log forwding ([#915](https://github.com/intershop/helm-charts/issues/915))
+
+
+<a name="icm-as-2.6.0"></a>
+## [icm-as-2.6.0](https://github.com/intershop/helm-charts/compare/icm-as-2.5.1...icm-as-2.6.0)
+
+> 2025-01-17
+
+### Chore
+
+* generated changelog+release notes for icm-as:minor
+* bump versions of icm-as:minor
+
+### Feat
+
+* **icm:** kpi exporter is removed ([#892](https://github.com/intershop/helm-charts/issues/892))
+
+### Fix
+
+* **icm:** fix error message about mutual exclusive databaseName/databaseLink configuration ([#884](https://github.com/intershop/helm-charts/issues/884))
+
+
+<a name="icm-as-2.5.1"></a>
+## [icm-as-2.5.1](https://github.com/intershop/helm-charts/compare/icm-as-2.5.0...icm-as-2.5.1)
+
+> 2025-01-10
+
+### Chore
+
+* generated changelog+release notes for icm:patch icm-as:patch
+* bump versions of icm:patch icm-as:patch
+
+### Docs
+
+* **common:** link "Release Process"-wiki page to the contribution rules ([#867](https://github.com/intershop/helm-charts/issues/867))
+
+
+<a name="icm-as-2.5.0"></a>
+## [icm-as-2.5.0](https://github.com/intershop/helm-charts/compare/icm-as-2.4.1...icm-as-2.5.0)
+
+> 2025-01-08
+
+### Chore
+
+* generated changelog+release notes for icm-as:minor
+* bump versions of icm-as:minor
+
+### Feat
+
+* **icm:** jgroups location directory configurable ([#865](https://github.com/intershop/helm-charts/issues/865))
+
+
+<a name="icm-as-2.4.1"></a>
+## [icm-as-2.4.1](https://github.com/intershop/helm-charts/compare/icm-as-2.4.0...icm-as-2.4.1)
+
+> 2025-01-07
+
+### Chore
+
+* generated changelog+release notes for icm-as:patch
+* bump versions of icm-as:patch
+
+### Fix
+
+* **icm:** use newer mssql image ([#871](https://github.com/intershop/helm-charts/issues/871))
+* **icm:** update kpi exporter schedule date ([#102730](https://github.com/intershop/helm-charts/issues/102730))
+
+
+<a name="icm-as-2.4.0"></a>
+## [icm-as-2.4.0](https://github.com/intershop/helm-charts/compare/icm-as-2.3.0...icm-as-2.4.0)
+
+> 2024-12-12
+
+### Chore
+
+* generated changelog+release notes for icm-as:minor icm-web:patch
+* bump versions of icm-as:minor icm-web:patch
+
+### Feat
+
+* **icm:** ICM-AS KPI-Exporter Integration ([#100553](https://github.com/intershop/helm-charts/issues/100553))
+
+
+<a name="icm-as-2.3.0"></a>
+## [icm-as-2.3.0](https://github.com/intershop/helm-charts/compare/icm-as-2.2.0...icm-as-2.3.0)
+
+> 2024-11-22
+
+### Chore
+
+* generated changelog+release notes for icm-as:minor icm-web:patch
+* bump versions of icm-as:minor icm-web:patch
+
+### Feat
+
+* enhance icm infrastructure probing by file system probes ([#829](https://github.com/intershop/helm-charts/issues/829))
+
+### Fix
+
+* fix inframon jvm-options ([#838](https://github.com/intershop/helm-charts/issues/838))
+
+
 <a name="icm-as-2.2.0"></a>
 ## [icm-as-2.2.0](https://github.com/intershop/helm-charts/compare/icm-as-2.1.1...icm-as-2.2.0)
 
@@ -6,6 +200,7 @@
 
 ### Chore
 
+* generated changelog+release notes for icm:minor icm-as:minor icm-replication:minor
 * bump versions of icm:minor icm-as:minor icm-replication:minor
 
 ### Feat
