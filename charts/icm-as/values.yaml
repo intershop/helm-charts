@@ -221,7 +221,8 @@ environment:
 
 # environment variable secrets to be propagated to the icm-as-container
 # @Deprecated since 2.9.0, replaced by secretMounts with targetEnv provided
-secrets: []
+secrets:
+  []
   # - env: <YOUR_MAIL_PASSWORD> # environment variable key
   #  name: <emailSecrets> # name of the secret, containing the referenced key
   #  key: <smtpPassword> # key within the secret
@@ -236,10 +237,11 @@ secrets: []
 # See https://support.intershop.com/kb/index.php/Display/X31381 for details on how to make secrets and certificates from an Azure KeyVault available in K8s secrets
 secretMounts: # array containing the secret mappings to be mounted
   - secretName: <secretName> # name of the secret
-    type: secret # target type inside the ICM, supported values incl. mount path
-                      # secret (default) -> /secrets
-                      # certificate -> /certificates
-    key:  data # data field inside the secret, optional for type=certificate with default=tls.crt
+    type:
+      secret # target type inside the ICM, supported values incl. mount path
+      # secret (default) -> /secrets
+      # certificate -> /certificates
+    key: data # data field inside the secret, optional for type=certificate with default=tls.crt
     targetFile: <releativeFileName> # path relative to the parent path defined by the type, optional, if ommited no file will be mounted
     targetEnv: <ENV_VARIABLE_NAME> # name of the environment variable to be set, optional, if ommited no variable will be set
 
@@ -332,13 +334,13 @@ persistence:
 # Probes, all values are optional, below are the defaults
 probes:
   startup: {}
-#    failureThreshold: 6
-#    initialDelaySeconds: 60
-#    periodSeconds: 10
+  #    failureThreshold: 6
+  #    initialDelaySeconds: 60
+  #    periodSeconds: 10
   liveness: {}
-#    failureThreshold: 3
-#    initialDelaySeconds: 0
-#    periodSeconds: 10
+  #    failureThreshold: 3
+  #    initialDelaySeconds: 0
+  #    periodSeconds: 10
   readiness: {}
 #    failureThreshold: 3
 #    initialDelaySeconds: 0
@@ -531,7 +533,7 @@ replication:
 #    databaseUser: <sourceDatabaseUser>
 #    databaseName: <sourceDatabaseName>
 
-  # Configuration for all target systems that participates in replication
+# Configuration for all target systems that participates in replication
 #  targets:
 #    # create multiple target systems - please avoid characters like '.', '-' or '_' in the chosen name/key
 #    live1:
