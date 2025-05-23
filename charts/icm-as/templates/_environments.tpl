@@ -123,6 +123,8 @@ Creates the environment replication section
   {{- else }}
   value: live
   {{- end }}
+- name: STAGING_PROCESS_CLASSIC
+  value: {{ .Values.replication.classic | quote}}
 {{/*
 ICM-AS >= 12.2.0 supports new replication configuration via environments instead of replication-clusters.xml
 ICM-AS >= 13.0.0 requires new replication configuration

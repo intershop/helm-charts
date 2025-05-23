@@ -487,6 +487,10 @@ replication:
   # enables/disables the replication support: whether this icm-as is part of a replication system or not
   enabled: false
 
+  # enables/disables the classic, pipeline-based replication mode.
+  # Note: Performing replication by live-job-server requires classic: false.
+  classic: false
+
   # defines the type of this replication system (source | target)
   role: <source|target>
 
@@ -508,22 +512,27 @@ replication:
 #    # the external URL of the webServer/proxy/ingress e.g. https://icm-web-edit-wa:443
 #    webserverUrl: <sourceExternalUrl>
 #    # either mutual exclusive databaseName or databaseLink have to be configured
+#    # linked database mode: the edit database is accessed by the live system via a database link
 #    databaseLink: <sourceDatabaseLink>
-#    databaseUser: <sourceDatabaseUser>
+#    # local-database-mode: edit and live database are located on the same database server
 #    databaseName: <sourceDatabaseName>
 
-  # Configuration for all target systems that participates in replication
+# Configuration for all target systems that participates in replication
 #  targets:
 #    # create multiple target systems - please avoid characters like '.', '-' or '_' in the chosen name/key
 #    live1:
 #      # the external URL of the webServer/proxy/ingress e.g. https://icm-web-live-wa:443
+#      # note: Use 'https:' because replication uses REST services which require https
 #      webserverUrl: <targetExternalUrl>
-#      # this database user will be granted access to the database schema of the source replication system
+#      # (optional) this database user will be granted access to the database schema of the source replication system,
+#      # only necessary if direct access to the source-database is required (local-database-mode)
 #      databaseUser: <targetDatabaseUser>
 #    live2:
 #      # the external URL of the webServer/proxy/ingress e.g. https://icm-web-live-wa:443
+#      # note: Use 'https:' because replication uses REST services which require https
 #      webserverUrl: <targetExternalUrl>
-#      # this database user will be granted access to the database schema of the source replication system
+#      # (optional) this database user will be granted access to the database schema of the source replication system,
+#      # only necessary if direct access to the source-database is required (local-database-mode)
 #      databaseUser: <targetDatabaseUser>
 
 # Configuration of messaging via jgroups
