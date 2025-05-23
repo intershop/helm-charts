@@ -220,10 +220,28 @@ environment:
   CARTRIDGE_LIST: "ft_icm_as"
 
 # environment variable secrets to be propagated to the icm-as-container
-secrets:
+# @Deprecated since 2.9.0, replaced by secretMounts with targetEnv provided
+secrets: []
   # - env: <YOUR_MAIL_PASSWORD> # environment variable key
   #  name: <emailSecrets> # name of the secret, containing the referenced key
   #  key: <smtpPassword> # key within the secret
+
+# Configure the secret mounts for the ICM application server.
+# List 0..n secret mounts consisting of the following properties: secretName[, type][, key,][, targetFile][, targetEnv]
+# If more than one field has to be mounted from a single secret add multiple entries with the same secretName (different targetFile|targetEnv).
+# If targetFile is provided the secret's value will be mounted as a file
+# If targetEnv is provided the secret's value set a an environment variable
+# If neither targetFile nor targetEnv is provided the secret's value not be available
+# Secrets of type "certificate" are imported into the JVM's truststore
+# See https://support.intershop.com/kb/index.php/Display/X31381 for details on how to make secrets and certificates from an Azure KeyVault available in K8s secrets
+secretMounts: # array containing the secret mappings to be mounted
+  - secretName: <secretName> # name of the secret
+    type: secret # target type inside the ICM, supported values incl. mount path
+                      # secret (default) -> /secrets
+                      # certificate -> /certificates
+    key:  data # data field inside the secret, optional for type=certificate with default=tls.crt
+    targetFile: <releativeFileName> # path relative to the parent path defined by the type, optional, if ommited no file will be mounted
+    targetEnv: <ENV_VARIABLE_NAME> # name of the environment variable to be set, optional, if ommited no variable will be set
 
 persistence:
   sites:
@@ -443,6 +461,7 @@ webLayer:
     # Redisson client yaml config
     config: null
 
+# @Deprecated since 2.9.0, replaced by secretMounts
 sslCertificateRetrieval:
   enabled: false
   supportV1: false
