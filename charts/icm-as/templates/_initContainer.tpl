@@ -4,7 +4,7 @@ Creates init-containers
 */}}
 {{- define "icm-as.initContainers" -}}
 initContainers:
-{{- if eq .Values.persistence.sites.type "local_" }}
+{{- if eq .Values.persistence.sites.type "local" }}
 # the following container
 # 1) only is active if local storage is enabled
 # 2) applies permission 777 to sites volume
