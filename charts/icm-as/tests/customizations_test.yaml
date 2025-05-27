@@ -13,8 +13,12 @@ tests:
       customizations: {}
     template: templates/as-deployment.yaml
     asserts:
-      - isNullOrEmpty:
+      - contains:
           path: spec.template.spec.initContainers
+          content:
+            name: sites-volume-mount-hack
+          count: 1
+          any: true
 
   - it: one customization with default pullPolicy
     release:

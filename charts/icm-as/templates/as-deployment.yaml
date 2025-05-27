@@ -58,7 +58,7 @@ spec:
       {{- end }}
       containers:
       - name: icm-as-server
-        {{- include "icm-as.command" (list . true) | nindent 8 }}
+        {{- include "icm-as.command" (list .Values.customCommand true) | nindent 8 }}
         {{- include "icm-as.image" . | nindent 8 }}
         {{- include "icm-as.envAS" . | nindent 8 }}
         {{- include "icm-as.ports" . | nindent 8 }}

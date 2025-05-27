@@ -254,10 +254,11 @@ Whether replications' replication-clusters.xml configuration is used
 Handle the command for the icm-as container.
 */}}
 {{- define "icm-as.command" -}}
-  {{- $values := index . 0 }}
+  {{- $customCommand := index . 0 }}
   {{- $isAsDeployment := index . 1 }}
-  {{- if and ($values.customCommand) ($isAsDeployment) -}}
-  command: {{- toYaml $values.customCommand | nindent 10 }}
+  {{- if and ($customCommand) ($isAsDeployment) -}}
+  command:
+    {{- toYaml $customCommand | nindent 2 }}
   {{- else -}}
   command:
   - /bin/bash
