@@ -4,14 +4,14 @@ Installs the ICM application server independently.
 
 ## Prerequisites Details
 
-* helm+kubectl
-* Kubernetes 1.14+
+- helm+kubectl
+- Kubernetes 1.14+
 
 ## Chart Details
 
 This chart will do the following:
 
-* Deploy an ICM Application Server
+- Deploy an ICM Application Server
 
 ## Installing the Chart
 
@@ -41,7 +41,7 @@ The needed database connection could be configured via section `database`. The c
 
 ### Replication/Staging
 
-A replication/staging scenario is supported via the section `replication`. To use this feature just deploy 2 separate icm-as (+ icm-web) one for the source (*edit*) system and one for the target (*live*) system.
+A replication/staging scenario is supported via the section `replication`. To use this feature just deploy 2 separate icm-as (+ icm-web) one for the source (_edit_) system and one for the target (_live_) system.
 
 ### Add the Intershop Helm repository
 
@@ -77,7 +77,7 @@ There are helm-unit tests to support development and secure several functionalit
 
 Prerequisites are:
 
-* [helm-unittest](https://github.com/helm-unittest/helm-unittest)
+- [helm-unittest](https://github.com/helm-unittest/helm-unittest)
 
 Please check the unit tests before pushing changes.
 
@@ -89,10 +89,15 @@ helm unittest charts/icm-as
 
 Prerequisites are:
 
-* [kind cluster](https://github.com/kubernetes-sigs/kind)
-* Install cluster: `kind create cluster --config icm-as.yaml`
+- [kind cluster](https://github.com/kubernetes-sigs/kind)
+- Install cluster: `kind create cluster --config icm-as.yaml`
 
 ```bash
 docker run -it --network host --workdir=/data --volume <my kube config>:/root/.kube/config:ro --volume
 $(pwd):/data quay.io/helmpack/chart-testing:v3.8.0 ct lint --config ct_icm-as.yaml
 ```
+
+## Detailed documentation
+
+- [values.yaml documentation](docs/values-yaml.md)
+- [How to ...](docs/how-to.md)

@@ -44,7 +44,27 @@ volumes:
     volumeAttributes:
       secretProviderClass: {{ include "icm-as.fullname" . }}-cert
 {{- end }}
-{{- end -}}
+{{- if .Values.secretMounts }}
+{{- range $index, $mount := .Values.secretMounts }}
+{{- $type := default "secret" $mount.type }}
+{{- $key := $mount.key }}
+{{- if eq $type "certificate" }}
+  {{- $key = default "tls.crt" $key }}
+{{- end }}
+{{- if not $key }}
+  {{- fail (printf "Error: missing value at secretMounts[%d].key" $index) -}}
+{{- end }}
+{{- if $mount.targetFile }}
+- name: secretmount-{{ $index }}
+  secret:
+    secretName: {{ $mount.secretName | quote }}
+    items:
+    - key: {{ $key | quote }}
+      path: {{ $mount.targetFile | quote }}
+{{- end }} {{/*if $mount.targetFile*/}}
+{{- end }} {{/*range*/}}
+{{- end }} {{/*if .Values.secretMounts*/}}
+{{- end -}} {{/*define "icm-as.volumes"*/}}
 
 {{/*
 Creates a volume named {$name}-volume

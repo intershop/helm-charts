@@ -11,8 +11,17 @@ tests:
       - ../values.yaml
     template: templates/as-deployment.yaml
     asserts:
-      - isNull:
+      - equal:
           path: spec.template.spec.containers[0].command
+          value:
+            - /bin/bash
+            - -c
+            - |
+              source /__cacert_entrypoint.sh && \
+              ADDITIONAL_JVM_ARGUMENTS="${ADDITIONAL_JVM_ARGUMENTS} ${JAVA_TOOL_OPTIONS}" && \
+              printf '%.0s-' {1..80} && \
+              echo && \
+              /intershop/bin/intershop.sh
 
   - it: customComamnd is empty
     release:
@@ -25,8 +34,17 @@ tests:
       customComamnd: []
     template: templates/as-deployment.yaml
     asserts:
-      - isNull:
+      - equal:
           path: spec.template.spec.containers[0].command
+          value:
+            - /bin/bash
+            - -c
+            - |
+              source /__cacert_entrypoint.sh && \
+              ADDITIONAL_JVM_ARGUMENTS="${ADDITIONAL_JVM_ARGUMENTS} ${JAVA_TOOL_OPTIONS}" && \
+              printf '%.0s-' {1..80} && \
+              echo && \
+              /intershop/bin/intershop.sh
 
   - it: customComamnd is provided
     release:
