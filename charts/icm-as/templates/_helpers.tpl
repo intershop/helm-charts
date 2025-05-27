@@ -156,9 +156,6 @@ Image spec
 {{- define "icm-as.image" -}}
 image: "{{ .Values.image.repository }}{{ if not (contains ":" .Values.image.repository) }}:{{ .Values.image.tag | default .Chart.AppVersion }}{{ end }}"
 imagePullPolicy: "{{ .Values.image.pullPolicy }}"
-{{- if .Values.customCommand }}
-command: {{- toYaml .Values.customCommand | nindent 2 }}
-{{- end }}
 {{- end -}}
 
 {{/*
@@ -252,3 +249,25 @@ Whether replications' replication-clusters.xml configuration is used
     false
   {{- end -}}
 {{- end -}}
+
+{{/*
+Handle the command for the icm-as container.
+*/}}
+{{- define "icm-as.command" -}}
+  {{- $customCommand := index . 0 }}
+  {{- $isAsDeployment := index . 1 }}
+  {{- if and ($customCommand) ($isAsDeployment) -}}
+  command:
+    {{- toYaml $customCommand | nindent 2 }}
+  {{- else -}}
+  command:
+  - /bin/bash
+  - -c
+  - |
+    source /__cacert_entrypoint.sh && \
+    ADDITIONAL_JVM_ARGUMENTS="${ADDITIONAL_JVM_ARGUMENTS} ${JAVA_TOOL_OPTIONS}" && \
+    printf '%.0s-' {1..80} && \
+    echo && \
+    /intershop/bin/intershop.sh
+  {{- end }}{{/* if .Values.customCommand */}}
+{{- end -}}{{/* define "icm-as.command" */}}
