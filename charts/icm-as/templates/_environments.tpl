@@ -75,12 +75,17 @@ env:
 {{- range $key, $value := .Values.environment }}
 {{ $environmentContainsSecret := false -}}
 {{- /*
-Nested loop on "secrets" values list necessary due to limited functions on type lists.
-No other reasonable possibility to get each dict within list "secrets" values.
-Purpose is to filter out any duplicated environment assignment when set both on "secrets" and "environment".
+Nested loops on "secrets" and "secretsMounts" values lists are necessary due to limited functions on type lists.
+No other reasonable possibility to get each dict within list "secrets"/"secretsMounts" values.
+Purpose is to filter out any duplicated environment assignment when set both on "secrets"/"secretsMounts" and "environment".
 */}}
 {{- range $secret := $.Values.secrets }}
 {{- if eq $secret.env $key }}
+{{ $environmentContainsSecret = true -}}
+{{- end -}}
+{{- end -}}
+{{- range $mount := $.Values.secretsMounts }}
+{{- if eq $mount.targetEnv $key }}
 {{ $environmentContainsSecret = true -}}
 {{- end -}}
 {{- end -}}
@@ -109,6 +114,34 @@ Creates the environment secrets section
     secretKeyRef:
       name: {{ $secret.name | quote }}
       key: {{ $secret.key | quote }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Creates the environment secretMounts section
+*/}}
+{{- define "icm-as.envSecretMounts" -}}
+{{- $secretMountsRequireCertImport := false -}}
+{{- range $index, $mount := .Values.secretMounts }}
+{{- $type := default "secret" $mount.type }}
+{{- $validTypes := list "secret" "certificate" }}
+{{- if not (has $type $validTypes) }}
+  {{- fail (printf "Error: invalid value '%s' at secretMounts[%d].type, must be one of (secret,certificate), default=secret." $type $index) -}}
+{{- end -}}
+{{- if $mount.targetEnv }}
+- name: {{ $mount.targetEnv }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ $mount.secretName | quote }}
+      key: {{ $mount.key | quote }}
+{{- end -}}
+{{- if and (eq $mount.type "certificate") ($mount.targetFile) }}
+  {{- $secretMountsRequireCertImport = true -}}
+{{- end -}}
+{{- if eq $secretMountsRequireCertImport true }}
+- name: USE_SYSTEM_CA_CERTS
+  value: "1"
+{{- end -}}
 {{- end -}}
 {{- end -}}
 
@@ -192,6 +225,7 @@ Job-specific-environment
 - name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
   value: {{ .jobServerGroup }}
 {{- include "icm-as.envSecrets" . }}
+{{- include "icm-as.envSecretMounts" . }}
 {{- end -}}
 
 {{/*
@@ -204,6 +238,7 @@ AppServer-specific-environment
   value: "BOS,WFS"
 {{- end }}
 {{- include "icm-as.envSecrets" . }}
+{{- include "icm-as.envSecretMounts" . }}
 {{- end -}}
 
 {{/*

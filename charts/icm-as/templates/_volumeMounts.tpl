@@ -45,4 +45,22 @@ volumeMounts:
 - mountPath: /mnt/secrets
   name: secrets-store-inline
 {{- end }}
-{{- end -}}
+{{- if .Values.secretMounts }}
+{{- range $index, $mount := .Values.secretMounts }}
+{{- $type := default "secret" $mount.type }}
+{{- $mountPath := "" }}
+{{- if $mount.targetFile }}
+{{- if eq $type "secret" }}
+  {{- $mountPath = "/secrets" }}
+{{- else if eq $type "certificate" }}
+  {{- $mountPath = "/certificates" }}
+{{- else }}
+  {{- fail (printf "Error: invalid value '%s' at secretMounts[%d].type, must be one of (secret,certificate), default=secret." $type $index) -}}
+{{- end }}
+- name: secretmount-{{ $index }}
+  mountPath: {{ $mountPath | quote }}
+  readOnly: true
+{{- end }} {{/*if $mount.targetFile*/}}
+{{- end }} {{/*range*/}}
+{{- end }} {{/*if .Values.secretMounts*/}}
+{{- end -}} {{/*define "icm-as.volumeMounts"*/}}
