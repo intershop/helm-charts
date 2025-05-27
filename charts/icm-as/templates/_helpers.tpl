@@ -249,3 +249,24 @@ Whether replications' replication-clusters.xml configuration is used
     false
   {{- end -}}
 {{- end -}}
+
+{{/*
+Handle the command for the icm-as container.
+*/}}
+{{- define "icm-as.command" -}}
+  {{- $values := index . 0 }}
+  {{- $isAsDeployment := index . 1 }}
+  {{- if and ($values.customCommand) ($isAsDeployment) -}}
+  command: {{- toYaml $values.customCommand | nindent 10 }}
+  {{- else -}}
+  command:
+  - /bin/bash
+  - -c
+  - |
+    source /__cacert_entrypoint.sh && \
+    ADDITIONAL_JVM_ARGUMENTS="${ADDITIONAL_JVM_ARGUMENTS} ${JAVA_TOOL_OPTIONS}" && \
+    printf '%.0s-' {1..80} && \
+    echo && \
+    /intershop/bin/intershop.sh
+  {{- end }}{{/* if .Values.customCommand */}}
+{{- end -}}{{/* define "icm-as.command" */}}

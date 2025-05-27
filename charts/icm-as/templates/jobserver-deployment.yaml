@@ -55,6 +55,7 @@ spec:
           {{- end }}
           containers:
           - name: icm-as-server
+            {{- include "icm-as.command" (list . false) | nindent 12 }}
             {{- include "icm-as.image" . | nindent 12 }}
             {{- include "icm-as.envJob" $jobValues | nindent 12 }}
             {{- include "icm-as.ports" $jobValues | nindent 12 }}

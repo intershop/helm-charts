@@ -58,19 +58,7 @@ spec:
       {{- end }}
       containers:
       - name: icm-as-server
-        {{- if .Values.customCommand }}
-        command: {{- toYaml .Values.customCommand | nindent 10 }}
-        {{- else }}
-        command:
-          - /bin/bash
-          - -c
-          - |
-            source /__cacert_entrypoint.sh && \
-            ADDITIONAL_JVM_ARGUMENTS="${ADDITIONAL_JVM_ARGUMENTS} ${JAVA_TOOL_OPTIONS}" && \
-            printf '%.0s-' {1..80} && \
-            echo && \
-            /intershop/bin/intershop.sh
-        {{- end }}
+        {{- include "icm-as.command" (list . true) | nindent 8 }}
         {{- include "icm-as.image" . | nindent 8 }}
         {{- include "icm-as.envAS" . | nindent 8 }}
         {{- include "icm-as.ports" . | nindent 8 }}

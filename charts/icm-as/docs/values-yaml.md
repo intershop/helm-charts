@@ -2,7 +2,7 @@
 
 ## State of this document
 
-> Currently this document is created an filled with new content. So it is by far not a complete documentation!
+> Currently this document is created and filled with new content. So it is by far not a complete documentation!
 
 ## Sections
 
@@ -51,7 +51,7 @@ The following table gives a short overview about the different sections.
 
 ## Description
 
-Allows to mount the content of Kubernetes secrets as files of make it available as environment variables to the `icm-as-server` container.
+Allows the content of Kubernetes secrets to be mounted as files or made available as environment variables to the icm-as-server container.
 The `secretMounts` section is a list of objects containing the following attributes:
 
 | Attribute  | Description                                                                              | Type                           | Mandatory/Optional             | Default Value                   |
