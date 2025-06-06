@@ -30,16 +30,16 @@ webadapter:
 
   # List of ConfigMaps to be mounted as volumes
   configMapMounts: []
-#    # the key will be part of the volume name
-#    - name: httpdConfig
-#      # where to mount the configMap
-#      mountPath: /intershop/conf/
-#      # name of the configMap
-#      configMapName: icm-web-httpd-conf
-#      # name of the file in the configMap
-#      fileName: httpd.conf
-#      # fileMode of the file
-#      fileMode: 440
+  #    # the key will be part of the volume name
+  #    - name: httpdConfig
+  #      # where to mount the configMap
+  #      mountPath: /intershop/conf/
+  #      # name of the configMap
+  #      configMapName: icm-web-httpd-conf
+  #      # name of the file in the configMap
+  #      fileName: httpd.conf
+  #      # fileMode of the file
+  #      fileMode: 440
 
   # provides custom certificates for webadapter
   customSSLCertificates: false
@@ -149,7 +149,7 @@ imagePullSecrets:
 persistence:
   pagecache:
     size: 1Gi
-    # type cluster | nfs | azurefiles | existingClaim | local | emptyDir
+    # -- type cluster \| nfs \| azurefiles \| existingClaim \| local \| emptyDir
     type: emptyDir
     existingClaim: claimName
     cluster:
@@ -159,6 +159,7 @@ persistence:
         # if empty value is set the default storage class is used
         # existingClass: ""
         skuName: Standard_LRS
+        # -- Mount options for the storage class.
         mountOptions:
           - uid=150
           - gid=150
