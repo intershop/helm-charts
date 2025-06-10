@@ -1,14 +1,14 @@
 
-<a name="icm-2.13.11"></a>
-## [icm-2.13.11](https://github.com/intershop/helm-charts/compare/icm-2.13.10...icm-2.13.11)
+<a name="icm-2.14.1"></a>
+## [icm-2.14.1](https://github.com/intershop/helm-charts/compare/icm-2.14.0...icm-2.14.1)
 
-> 2025-04-23
+> 2025-06-10
 
 ### Chore
 
 * bump versions of icm:patch
 
-### Docs
+### Fix
 
-* **icm:** Add explanations and examples to ConfigMapMounts documentation ([#994](https://github.com/intershop/helm-charts/issues/994))
+* **icm:** prevent CVE-2025-1974 ([#1006](https://github.com/intershop/helm-charts/issues/1006))
 
