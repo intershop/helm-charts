@@ -1,54 +1,180 @@
 = Documentation about what can be configured using the `values.yaml`-file
 :icons: font
+:experimental:
+
+ifdef::backend-html5[]
+++++
+<style>
+.mand {
+  color: #e00000;
+}
+.opt {
+  color: #b0adac;
+}
+.cond {
+  color: #FFDC00;
+}
+.tag-audience {
+  font-style: italic;
+}
+.tag-audience::before {
+  content: "@Target Audience: ";
+}
+.tag-since {
+  font-style: italic;
+}
+.tag-since::before {
+  content: "@Since: ";
+}
+
+</style>
+++++
+endif::[]
+
+:mandatory: icon:check[role="mand"]
+:optional: icon:times[role="opt"]
+:conditional: icon:question[role="cond"]
+
+== Target audience
+
+This document is intended for users of the Intershop Commerce Management Application Server (icm-as) Helm Chart who want to understand how to configure the chart using the `values.yaml` file. This explicitly includes developers, system administrators, and DevOps engineers who are responsible for deploying and managing the Intershop Commerce Management Application Server in a Kubernetes environment.
+
+If a part of this document only targets a specific audience, it is explicitly marked as such.
 
 == Sections overview
 
-The following table gives a short overview about the different sections.
+The following table gives a short overview about the different sections (sorted alphabetically):
 
 [cols="1,3",options="header"]
 |===
 |Section |Topic
-|nodeSelector|agent pool assignment
+|<<_noSection,+<none>+>>|attributes without any section
+|<<_copySitesDir,copySitesDir>>|copy sites directory
+|<<_customizations,customizations>>|customizations to be deployed
+|database|database configuration
 |deploymentAnnotations|annotations for deployment
+|deploymentLabels|labels for deployment
+|dnsConfig|dns configuration
+|dockerSecret|deployment of a docker registry secret
+|environment|environment variables
+|image|icm-as image configuration
+|imagePullSecrets|image pull secrets
+|ingress|ingress configuration
+|infrastructureMonitoring|infrastructure monitoring configuration
+|job|job server configuration
+|jgroups|jgroups configuration
+|jvm|icm-as jvm configuration
+|mssql|deployment of an MSSQL database inside a pod
+|newrelic|newrelic configuration
+|nodeSelector|agent pool assignment
+|operationalContext|operational context configuration
+|persistence|persistence / volumes configuration
 |podAnnotations|annotations for pods
 |podBindings|pod bindings
-|deploymentLabels|labels for deployment
 |podLabels|labels for pods
-|image|icm-as image configuration
-|dockerSecret|deployment of a docker registry secret
-|imagePullSecrets|image pull secrets
-|customizations|customizations to be deployed
-|jvm|icm-as jvm configuration
-|newrelic|newrelic configuration
-|infrastructureMonitoring|infrastructure monitoring configuration
-|operationalContext|operational context configuration
-|serviceAccount|service account to be deployed
 |podSecurityContext|pod security context
-|dnsConfig|dns configuration
-|testConnection|test connection configuration
+|probes|probes (startup, liveness, readiness) configuration
+|replication|replication/staging configuration
 |resources|resources / limits configuration
-|database|database configuration
-|environment|environment variables
 |secrets|secrets to be made available as environment variables
 |<<secretMounts,secretMounts>>|secrets to be mounted as files / environment variables
-|persistence|persistence / volumes configuration
-|probes|probes (startup, liveness, readiness) configuration
-|mssql|deployment of an MSSQL database inside a pod
-|copySitesDir|copy sites directory
-|ingress|ingress configuration
-|webLayer|web layer (webadapter-replacement) configuration
+|serviceAccount|service account to be deployed
 |sslCertificateRetrieval|ssl certificate retrieval
-|job|job server configuration
-|replication|replication/staging configuration
-|jgroups|jgroups configuration
+|testConnection|test connection configuration
 |tolerations|pod tolerations configuration
+|webLayer|web layer (webadapter-replacement) configuration
 |===
+
+[#_noSection]
+== Attributes without any section
+
+=== Description
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory|Default Value
+|replicaCount|number of icm-as pods to be deployed|int|{optional}|`1`
+|updateStrategy|define the https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy[update strategy]|enum {`Recreate`, `RollingUpdate`}|{optional}|`RollingUpdate`
+|nameOverride|override the name used for label `app.kubernetes.io/name` which normally is calculated from chart name|string|{optional}|_<empty string>_
+|fullnameOverride|override the names/prefix of the several deployed resources which normally is calculated from chart and release name|string|{optional}|_<empty string>_
+|nodeSelector|https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector[node selector configuration]|yaml object|{optional}|`{}`
+|deploymentAnnotations|https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/[annotations] applied to the `icm-as` https://kubernetes.io/docs/concepts/workloads/controllers/deployment/[deployment]|yaml object|{optional}|`{}`
+|deploymentLabels|https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/[labels] applied to the `icm-as` https://kubernetes.io/docs/concepts/workloads/controllers/deployment/[deployment]|yaml object|{optional}|`{}`
+|podAnnotations|https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/[annotations] applied to the `icm-as` and the 'jobServer' https://kubernetes.io/docs/concepts/workloads/pods/[pods]|yaml object|{optional}|`{}`
+|podLabels|https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/[labels] applied to the `icm-as` and the 'jobServer' https://kubernetes.io/docs/concepts/workloads/pods/[pods]|yaml object|{optional}|`{}`
+|===
+
+[#_copySitesDir]
+== copySitesDir
+
+[.tag-audience]#developer, test#
+
+=== Description
+
+Allows to have files copied from a directory into the sites directory/volume of the `icm-as` container. This is
+done by an https://kubernetes.io/docs/concepts/workloads/pods/init-containers/[init container] using the `icm-as` image that runs before the `icm-as` container starts.
+The `copySitesDir` section contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory|Default Value
+|enabled|enable/disable this feature|boolean|{optional}|`false`
+|fromDir|source folder of the files/folder to be copied|absolute path|{mandatory}|-
+|resultDir|folder for a `sites.txt` containing all the files inside of the `sites` volume|absolute path|{mandatory}|-
+|chmodUser|user name/uid to be applied to all the files inside of the sites volume|user name/uid|{mandatory}|-
+|chmodGroup|group name/gid to be applied to all the files inside of the sites volume|group name/gid|{mandatory}|-
+|===
+
+=== Example
+
+[source,yaml]
+----
+copySitesDir:
+  enabled: true
+  fromDir: /some/custom/sites/files
+  resultDir: /some/custom/sites
+  chmodUser: intershop
+  chmodGroup: intershop
+----
+This example will copy all files and folders from `/some/custom/sites/files` into the sites volume of the `icm-as` container and create a file `/some/custom/sites/sites.txt` containing all the files inside the sites volume. All files will be owned by `intershop:intershop`.
+
+[#_customizations]
+== customizations
+
+=== Description
+
+Defines the customizations to be deployed into the `icm-as` container. The customizations are defined as a yaml object containing attributes that define the customizations. The attribute's name defines a symbolic name of the customization to be deployed (). The following table lists the attributes of such a customization-object:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|repository|https://kubernetes.io/docs/concepts/containers/images/#image-names[image] to be used|image reference|{mandatory}|-
+|pullPolicy|https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy[image pull policy]|enum {`IfNotPresent`, `Always`, `Never`}|{optional}|`IfNotPresent`
+|===
+
+=== Example
+
+[source,yaml]
+----
+customizations:
+  headless: <1>
+    repository: intershophub/icm-as-customization-headless:3.0.0
+  solr: <2>
+    repository: intershophub/icm-as-customization-f_solrcloud:6.0.0
+  my-customization: <3>
+    repository: my-repo/icm-as-customization-my_customization:1.0.0
+    pullPolicy: Always
+----
+This example deploy three customizations into the `icm-as` container:
+
+<1> `headless` using the image `intershophub/icm-as-customization-headless:3.0.0`
+<2> `solr` using the image `intershophub/icm-as-customization-f_solrcloud:6.0.0`
+<3> `my-customization` using the image `my-repo/icm-as-customization-my_customization:1.0.0` with pull policy `Always`
 
 [#_secretmounts]
 == secretMounts
 
-[.lead]
-_@Since 2.9.0_
+[.tag-since]#2.9.0#
 
 === Description
 
@@ -57,12 +183,12 @@ The `secretMounts` section is a list of objects containing the following attribu
 
 [cols="1,3,1,1,1",options="header"]
 |===
-|Attribute |Description |Type |Mandatory/Optional |Default Value
-|secretName|the name of the secret|string|mandatory|-
-|type|the type of the secret|enum {`secret`, `certificate`}|optional|`secret`
-|key|the data field inside the secret|string|optional if `type=certificate`|`tls.crt` if `type=certificate`
-|targetFile|path relative to `/secrets` if `type=secret` resp. `/certificates` if `type=certificate`|path|optional|-
-|targetEnv|name of the environment variable to get made available|string|optional|-
+|Attribute |Description |Type |Mandatory |Default Value
+|secretName|the name of the secret|string|{mandatory}|-
+|type|the type of the secret|enum {`secret`, `certificate`}|{optional}|`secret`
+|key|the data field inside the secret|string|{conditional} optional if `type=certificate`|`tls.crt` if `type=certificate`
+|targetFile|path relative to `/secrets` if `type=secret` resp. `/certificates` if `type=certificate`|path|{optional}|-
+|targetEnv|name of the environment variable to get made available|string|{optional}|-
 |===
 
 [WARNING]
@@ -70,9 +196,9 @@ The `secretMounts` section is a list of objects containing the following attribu
 If neither `targetFile` nor `targetEnv` is set, the `secretMounts`-entry will have no effect at all.
 ====
 
-[WARNING]
+[NOTE]
 ====
-`certificate`s are imported into the truststore of the `icm-as-server`-container's JVM. So it is available to validate SSL/TLS connections to other servers that use this certificate.
+`*.crt`-files mounted into `/certificates` are imported into the truststore of the `icm-as-server`-container's JVM. So they are available to validate SSL/TLS connections to other servers that use this certificate.
 ====
 
 === Example
