@@ -156,7 +156,7 @@ tests:
           value: infrastructure-monitoring
       - equal:
           path: spec.template.spec.containers[1].image
-          value: intershophub/infrastructure-probing:2.0.1
+          value: intershophub/infrastructure-probing:3.0.0
       - equal:
           path: spec.template.spec.containers[1].imagePullPolicy
           value: IfNotPresent
