@@ -53,7 +53,7 @@ The following table gives a short overview about the different sections (sorted 
 |link:values-yaml/copy-sites-dir.asciidoc[copySitesDir]|copy sites directory
 |link:values-yaml/customizations.asciidoc[customizations]|customizations to be deployed
 |link:values-yaml/database.asciidoc[database]|database configuration
-|dockerSecret|deployment of a docker registry secret
+|link:values-yaml/docker-secret.asciidoc[dockerSecret]|deployment of a docker registry secret
 |environment|environment variables
 |image|icm-as image configuration
 |imagePullSecrets|image pull secrets

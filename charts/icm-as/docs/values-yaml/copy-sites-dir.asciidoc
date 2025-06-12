@@ -1,7 +1,7 @@
 = Documentation about the `values.yaml` attributes belonging to section `copySitesDir`
 include::definitions.include[]
 
-[.tag-audience]#Developer, Test, DevOps#
+[.tag-audience]#Developer, Tester, DevOps#
 
 === Description
 
