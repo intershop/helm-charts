@@ -1,5 +1,41 @@
 = Documentation about what can be configured using the `values.yaml`-file
-include::definitions.include[]
+//include::definitions.include[]
+// GitHub issue: https://github.com/github/markup/issues/1095
+:icons: font
+:experimental:
+
+ifdef::backend-html5[]
+++++
+<style>
+.mand {
+  color: #e00000;
+}
+.opt {
+  color: #b0adac;
+}
+.cond {
+  color: #FFDC00;
+}
+.tag-audience {
+  font-style: italic;
+}
+.tag-audience::before {
+  content: "@Target Audience: ";
+}
+.tag-since {
+  font-style: italic;
+}
+.tag-since::before {
+  content: "@Since: ";
+}
+
+</style>
+++++
+endif::[]
+
+:mandatory: icon:check[role="mand"]
+:optional: icon:times[role="opt"]
+:conditional: icon:question[role="cond"]
 
 == Target audience
 
@@ -18,8 +54,6 @@ The following table gives a short overview about the different sections (sorted 
 |<<_copySitesDir,copySitesDir>>|copy sites directory
 |<<_customizations,customizations>>|customizations to be deployed
 |<<_database,database>>|database configuration
-|deploymentAnnotations|annotations for deployment
-|deploymentLabels|labels for deployment
 |dnsConfig|dns configuration
 |dockerSecret|deployment of a docker registry secret
 |environment|environment variables
@@ -35,9 +69,7 @@ The following table gives a short overview about the different sections (sorted 
 |nodeSelector|agent pool assignment
 |operationalContext|operational context configuration
 |persistence|persistence / volumes configuration
-|podAnnotations|annotations for pods
 |podBindings|pod bindings
-|podLabels|labels for pods
 |podSecurityContext|pod security context
 |probes|probes (startup, liveness, readiness) configuration
 |replication|replication/staging configuration
@@ -59,21 +91,290 @@ The following table gives a short overview about the different sections (sorted 
 [cols="1,3,1,1,1",options="header"]
 |===
 |Attribute |Description |Type |Mandatory|Default Value
-|replicaCount|number of icm-as pods to be deployed|int|{optional}|`1`
-|updateStrategy|define the https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy[update strategy]|enum {`Recreate`, `RollingUpdate`}|{optional}|`RollingUpdate`
-|nameOverride|override the name used for label `app.kubernetes.io/name` which normally is calculated from chart name|string|{optional}|_<empty string>_
-|fullnameOverride|override the names/prefix of the several deployed resources which normally is calculated from chart and release name|string|{optional}|_<empty string>_
-|nodeSelector|https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector[node selector configuration]|yaml object|{optional}|`{}`
-|deploymentAnnotations|https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/[annotations] applied to the `icm-as` https://kubernetes.io/docs/concepts/workloads/controllers/deployment/[deployment]|yaml object|{optional}|`{}`
-|deploymentLabels|https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/[labels] applied to the `icm-as` https://kubernetes.io/docs/concepts/workloads/controllers/deployment/[deployment]|yaml object|{optional}|`{}`
-|podAnnotations|https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/[annotations] applied to the `icm-as` and the 'jobServer' https://kubernetes.io/docs/concepts/workloads/pods/[pods]|yaml object|{optional}|`{}`
-|podLabels|https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/[labels] applied to the `icm-as` and the 'jobServer' https://kubernetes.io/docs/concepts/workloads/pods/[pods]|yaml object|{optional}|`{}`
+|<<_example_replicaCount,replicaCount>>|number of icm-as pods to be deployed|int|{optional}|`1`
+|<<_example_updateStrategy,updateStrategy>>|define the https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy[update strategy]|enum {`Recreate`, `RollingUpdate`}|{optional}|`RollingUpdate`
+|<<_example_nameOverride,nameOverride>>|override the name used for label `app.kubernetes.io/name` which normally is calculated from chart name|string|{optional}|_<empty string>_
+|<<_example_nameOverride,fullnameOverride>>|override the names/prefix of the several deployed resources which normally is calculated from chart and release name|string|{optional}|_<empty string>_
+|<<_example_nodeSelector,nodeSelector>>|https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector[node selector configuration]|yaml object|{optional}|`{}`
+|<<_example_deploymentAnnotations,deploymentAnnotations>>|https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/[annotations] applied to the `icm-as` https://kubernetes.io/docs/concepts/workloads/controllers/deployment/[deployment]|yaml object|{optional}|`{}`
+|<<_example_deploymentLabels,deploymentLabels>>|https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/[labels] applied to the `icm-as` https://kubernetes.io/docs/concepts/workloads/controllers/deployment/[deployment]|yaml object|{optional}|`{}`
+|<<_example_podAnnotations_podLabels,podAnnotations>>|https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/[annotations] applied to the `icm-as` and the 'jobServer' https://kubernetes.io/docs/concepts/workloads/pods/[pods]|yaml object|{optional}|`{}`
+|<<_example_podAnnotations_podLabels,podLabels>>|https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/[labels] applied to the `icm-as` and the 'jobServer' https://kubernetes.io/docs/concepts/workloads/pods/[pods]|yaml object|{optional}|`{}`
 |===
+
+=== Examples
+
+[NOTE]
+====
+The following examples use `my-icm-as` as the release name.
+====
+
+[#_example_replicaCount]
+==== replicaCount
+Configuring `replicaCount` like this:
+[source,yaml]
+----
+replicaCount: 4
+----
+will result in 4 pods being deployed for the `icm-as` application server. With a deployment looking like:
+[source,yaml]
+----
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-icm-as
+  labels:
+    ...
+    app: my-icm-as
+spec:
+  replicas: 4
+----
+
+[#_example_updateStrategy]
+==== updateStrategy
+Configuring `updateStrategy` like this:
+[source,yaml]
+----
+updateStrategy: Recreate
+----
+will result in the `icm-as` deployment being updated using the https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#recreate-update-strategy[Recreate update strategy]. This means that all pods of the `icm-as` application server will be stopped and then started again. The deployment will look like this:
+
+[source,yaml]
+----
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-icm-as
+  ...
+spec:
+  ...
+  strategy:
+    type: Recreate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+----
+
+[#_example_nameOverride]
+==== nameOverride and fullnameOverride
+Without configuring `nameOverride` and `fullnameOverride` all relevant names are generated from the release and chart name. So the 'icm-as-appserver' deployment looks like this:
+
+[source,yaml]
+----
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-icm-as
+  labels:
+    app.kubernetes.io/name: icm-as
+    app.kubernetes.io/instance: my-icm-as
+    app: my-icm-as
+----
+
+`nameOverride` can now be used to customize parts of this:
+[source,yaml]
+----
+nameOverride: my-custom-icm-as
+----
+So the deployment will look like:
+[source,yaml]
+----
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-icm-as-my-custom-icm-as
+  labels:
+    app.kubernetes.io/name: my-custom-icm-as
+    app.kubernetes.io/instance: my-icm-as
+    app: my-icm-as-my-custom-icm-as
+----
+
+Other resources like the `icm-as` https://kubernetes.io/docs/concepts/services-networking/service/[service] will also use this name:
+[source,yaml]
+----
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-icm-as-my-custom-icm-as
+  labels:
+    app: my-icm-as-my-custom-icm-as
+----
+
+`fullnameOverride` can be used to get full control over the names:
+[source,yaml]
+----
+nameOverride: my-custom-icm-as
+fullnameOverride: your-custom-icm-as
+----
+So the deployment will look like:
+[source,yaml]
+----
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: your-custom-icm-as
+  labels:
+    app.kubernetes.io/name: my-custom-icm-as
+    app.kubernetes.io/instance: my-icm-as
+    app: your-custom-icm-as
+----
+
+Other resources like the `icm-as` https://kubernetes.io/docs/concepts/services-networking/service/[service] will also use this fullname:
+[source,yaml]
+----
+apiVersion: v1
+kind: Service
+metadata:
+  name: your-custom-icm-as
+  labels:
+    app: your-custom-icm-as
+----
+
+[#_example_nodeSelector]
+==== nodeSelector
+[.tag-audience]#DevOps, Ops#
+
+Configuring `nodeSelector` like this:
+[source,yaml]
+----
+nodeSelector:
+  label0: value0
+  ...
+  labeln: valuen
+----
+will result in the `icm-as` pods being scheduled on nodes that have the all the configured labels. The deployment will look like this:
+
+[source,yaml]
+----
+apiVersion: apps/v1
+kind: Deployment
+...
+spec:
+  ...
+  template:
+    ...
+    spec:
+      nodeSelector:
+        label0: value0
+        ...
+        labeln: valuen
+----
+
+[#_example_deploymentAnnotations]
+==== deploymentAnnotations
+
+Configuring `deploymentAnnotations` like this:
+[source,yaml]
+----
+deploymentAnnotations:
+  annotation0: value0
+  ...
+  annotationn: valuen
+----
+will result in the `icm-as` deployment annotated with the configured annotations. The deployment will look like this:
+
+[source,yaml]
+----
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-icm-as
+  annotations:
+    annotation0: value0
+    ...
+    annotationn: valuen
+----
+
+[#_example_deploymentLabels]
+==== deploymentLabels
+
+Configuring `deploymentLabels` like this:
+[source,yaml]
+----
+deploymentLabels:
+  label0: value0
+  ...
+  labeln: valuen
+----
+will result in the `icm-as` deployment labeled with the configured labels. The deployment will look like this:
+
+[source,yaml]
+----
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-icm-as
+  labels:
+    ...
+    annotation0: value0
+    ...
+    annotationn: valuen
+----
+
+[#_example_podAnnotations_podLabels]
+==== podAnnotations and podLabels
+
+Configuring `podAnnotations` and `podLabels` basically does the same as `deploymentAnnotations` and `deploymentLabels` but instead annotating and labeling the deployment it will influence the annotations and labels of the `icm-as` and `jobserver` pods:
+[source,yaml]
+----
+podAnnotations:
+  annotation0: value0
+  ...
+  annotationn: valuen
+deploymentLabels:
+  label0: value0
+  ...
+  labeln: valuen
+----
+
+The `icm-as` deployment will look like this:
+
+[source,yaml]
+----
+apiVersion: apps/v1
+kind: Deployment
+...
+spec:
+  ...
+  template:
+    metadata:
+      annotations:
+        ...
+        annotation0: value0
+        annotationn: valuen
+      labels:
+        ...
+        label0: value0
+        labeln: valuen
+----
+
+The `jobserver` resource will look like this:
+
+[source,yaml]
+----
+apiVersion: batch.core.intershop.de/v1
+kind: ICMJob
+metadata:
+  name: my-icm-as-job
+  annotations:
+    ...
+    annotation0: value0
+    annotationn: valuen
+  labels:
+    ...
+    label0: value0
+    labeln: valuen
+----
+
+[NOTE]
+====
+The annotations and labels inside of this resource will be processed by the job server operator that then deploys Kubernetes jobs that use pods containing the configured annotations and labels.
+====
 
 [#_copySitesDir]
 == copySitesDir
 
-[.tag-audience]#developer, test#
+[.tag-audience]#Developer, Test, DevOps#
 
 === Description
 

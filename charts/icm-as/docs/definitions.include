@@ -1,6 +1,7 @@
 :icons: font
 :experimental:
 
+ifdef::backend-html5[]
 ++++
 <style>
 .mand {
@@ -27,6 +28,7 @@
 
 </style>
 ++++
+endif::[]
 
 :mandatory: icon:check[role="mand"]
 :optional: icon:times[role="opt"]
