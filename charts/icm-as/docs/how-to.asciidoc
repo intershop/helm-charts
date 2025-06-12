@@ -1,17 +1,26 @@
 = What has to be done to reach a certain goal
 :icons: font
 
-== Make a custom TLS certificate available to the `icm-as-server`-container's JVM
+== Make a custom TLS certificate available to the `icm-as-appserver`-container's JVM
 
 1. Follow link: https://support.intershop.com/kb/index.php/Display/X31381[Guide - Secret Store Process] to create a secret in the K8s cluster using a certificate stored inside an Azure Key Vault.
-2. Add an entry inside the link:values-yaml.asciidoc#_secretmounts[secretMounts] section
+2. Add an entry inside the link:values-yaml/secret-mounts.asciidoc[secretMounts] section
 
-   * Reference the secret created from step 1
+   * Reference the secret created following the guide from step 1
    * Set `type` to `certificate`
    * Set `key` to `tls.crt` or omit the `key`
    * Set `targetFile` to a valid file name using the file extension `.crt`
 
-   [NOTE]
-   ====
-   The certificate will then be imported into the truststore of the JVM using the alias built from the base file name.
-   ====
+[source,yaml]
+----
+secretMounts:
+  - secretName: nameOfTheSecret
+    type: certificate
+    key: tls.crt
+    targetFile: my-certificate-file.crt
+----
+
+[NOTE]
+====
+The certificate will then be imported into the truststore of the JVM using the alias built from the base file name `my-certificate-file`.
+====

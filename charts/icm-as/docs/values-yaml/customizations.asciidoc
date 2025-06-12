@@ -1,0 +1,32 @@
+= Documentation about the `values.yaml` attributes belonging to section `customizations`
+include::definitions.include[]
+
+=== Description
+
+Defines the customizations to be deployed into the `icm-as` container. The customizations are defined as a yaml object containing attributes that define the customizations. The attribute's name defines a symbolic name of the customization to be deployed (). The following table lists the attributes of such a customization-object:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|repository|https://kubernetes.io/docs/concepts/containers/images/#image-names[image] to be used|image reference|{mandatory}|-
+|pullPolicy|https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy[image pull policy]|enum {`IfNotPresent`, `Always`, `Never`}|{optional}|`IfNotPresent`
+|===
+
+=== Example
+
+[source,yaml]
+----
+customizations:
+  headless: <1>
+    repository: intershophub/icm-as-customization-headless:3.0.0
+  solr: <2>
+    repository: intershophub/icm-as-customization-f_solrcloud:6.0.0
+  my-customization: <3>
+    repository: my-repo/icm-as-customization-my_customization:1.0.0
+    pullPolicy: Always
+----
+This example deploys three customizations into the `icm-as` container:
+
+<1> `headless` using the image `intershophub/icm-as-customization-headless:3.0.0`
+<2> `solr` using the image `intershophub/icm-as-customization-f_solrcloud:6.0.0`
+<3> `my-customization` using the image `my-repo/icm-as-customization-my_customization:1.0.0` with pull policy `Always`
