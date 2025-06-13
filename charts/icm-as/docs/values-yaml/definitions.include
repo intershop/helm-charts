@@ -24,7 +24,15 @@ ifdef::backend-html5[]
 .tag-since::before {
   content: "@Since: ";
 }
-
+.placeholder {
+  font-style: italic;
+}
+.placeholder::before {
+  content: "<";
+}
+.placeholder::after {
+  content: ">";
+}
 </style>
 ++++
 endif::[]

@@ -1,40 +1,7 @@
 = Documentation about what can be configured using the `values.yaml`-file
 //include::values-yaml/definitions.include[]
 // GitHub issue: https://github.com/github/markup/issues/1095
-:icons: font
-
-ifdef::backend-html5[]
-++++
-<style>
-.mand {
-  color: #e00000;
-}
-.opt {
-  color: #b0adac;
-}
-.cond {
-  color: #FFDC00;
-}
-.tag-audience {
-  font-style: italic;
-}
-.tag-audience::before {
-  content: "@Target Audience: ";
-}
-.tag-since {
-  font-style: italic;
-}
-.tag-since::before {
-  content: "@Since: ";
-}
-
-</style>
-++++
-endif::[]
-
-:mandatory: icon:check[role="mand"]
-:optional: icon:times[role="opt"]
-:conditional: icon:question[role="cond"]
+include::values-yaml/definitions.include[]
 
 == Target audience
 
@@ -55,7 +22,7 @@ The following table gives a short overview about the different sections (sorted 
 |link:values-yaml/database.asciidoc[database]|database configuration
 |link:values-yaml/docker-secret.asciidoc[dockerSecret]|deployment of a docker registry secret
 |link:values-yaml/environment.asciidoc[environment]|environment variables
-|image|`icm-as` image configuration
+|link:values-yaml/image.asciidoc[image]|`icm-as-server` image configuration
 |imagePullSecrets|image pull secrets
 |ingress|ingress configuration
 |infrastructureMonitoring|infrastructure monitoring configuration

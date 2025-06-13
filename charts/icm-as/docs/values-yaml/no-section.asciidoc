@@ -8,8 +8,8 @@ include::definitions.include[]
 |Attribute |Description |Type |Mandatory|Default Value
 |<<_example_replicaCount,replicaCount>>|number of icm-as pods to be deployed|int|{optional}|`1`
 |<<_example_updateStrategy,updateStrategy>>|define the https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy[update strategy]|enum {`Recreate`, `RollingUpdate`}|{optional}|`RollingUpdate`
-|<<_example_nameOverride,nameOverride>>|override the name used for label `app.kubernetes.io/name` which normally is calculated from chart name|string|{optional}|_<empty string>_
-|<<_example_nameOverride,fullnameOverride>>|override the names/prefix of the several deployed resources which normally is calculated from chart and release name|string|{optional}|_<empty string>_
+|<<_example_nameOverride,nameOverride>>|override the name used for label `app.kubernetes.io/name` which normally is calculated from chart name|string|{optional}|[.placeholder]#empty string#
+|<<_example_nameOverride,fullnameOverride>>|override the names/prefix of the several deployed resources which normally is calculated from chart and release name|string|{optional}|[.placeholder]#empty string#
 |<<_example_nodeSelector,nodeSelector>>|https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector[node selector configuration]|yaml object|{optional}|`{}`
 |<<_example_deploymentAnnotations,deploymentAnnotations>>|https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/[annotations] applied to the `icm-as` https://kubernetes.io/docs/concepts/workloads/controllers/deployment/[deployment]|yaml object|{optional}|`{}`
 |<<_example_deploymentLabels,deploymentLabels>>|https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/[labels] applied to the `icm-as-server` https://kubernetes.io/docs/concepts/workloads/controllers/deployment/[deployment]|yaml object|{optional}|`{}`

@@ -1,0 +1,26 @@
+= Documentation about the `values.yaml` attributes belonging to section `image`
+include::definitions.include[]
+
+=== Description
+
+Configures which Docker image to use for the `icm-as-server` container and which image pull policy to apply. The following table lists the attributes of the `image` section:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|repository|https://kubernetes.io/docs/concepts/containers/images/#image-names[image] to be used. If this reference does not contain a tag the value of the attribute `tag` is used.|image reference|{mandatory}|-
+|tag|tag of the https://kubernetes.io/docs/concepts/containers/images/#image-names[image] to be used|tag|{optional}|[.placeholder]#chart version#
+|pullPolicy|https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy[image pull policy]|enum {`IfNotPresent`, `Always`, `Never`}|{optional}|`IfNotPresent`
+|===
+
+=== Example
+
+[source,yaml]
+----
+image:
+  repository: "intershophub/icm-as:13.0.0" <1>
+  pullPolicy: "IfNotPresent" <2>
+----
+
+<1> uses `intershophub/icm-as:13.0.0` as the image for the `icm-as-server` container
+<2> the image is pull on demand
