@@ -24,7 +24,7 @@ The following table gives a short overview about the different sections (sorted 
 |link:values-yaml/environment.asciidoc[environment]|environment variables
 |link:values-yaml/image.asciidoc[image]|`icm-as-server` image configuration
 |link:values-yaml/image-pull-secrets.asciidoc[imagePullSecrets]|image pull secrets
-|ingress|ingress configuration
+|link:values-yaml/ingress.asciidoc[ingress]|ingress configuration
 |infrastructureMonitoring|infrastructure monitoring configuration
 |job|job server configuration
 |jgroups|jgroups configuration
@@ -45,5 +45,5 @@ The following table gives a short overview about the different sections (sorted 
 |sslCertificateRetrieval|SSL/TLS certificate retrieval
 |testConnection|test connection configuration
 |tolerations|pod tolerations configuration
-|webLayer|web layer (webadapter-replacement) configuration
+|link:values-yaml/web-layer.asciidoc[webLayer]|web layer (webadapter-replacement) configuration
 |===
