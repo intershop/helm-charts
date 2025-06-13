@@ -54,14 +54,14 @@ The following table gives a short overview about the different sections (sorted 
 |link:values-yaml/customizations.asciidoc[customizations]|customizations to be deployed
 |link:values-yaml/database.asciidoc[database]|database configuration
 |link:values-yaml/docker-secret.asciidoc[dockerSecret]|deployment of a docker registry secret
-|environment|environment variables
-|image|icm-as image configuration
+|link:values-yaml/environment.asciidoc[environment]|environment variables
+|image|`icm-as` image configuration
 |imagePullSecrets|image pull secrets
 |ingress|ingress configuration
 |infrastructureMonitoring|infrastructure monitoring configuration
 |job|job server configuration
 |jgroups|jgroups configuration
-|jvm|icm-as jvm configuration
+|jvm|`icm-as` jvm configuration
 |mssql|deployment of an MSSQL database inside a pod
 |newrelic|newrelic configuration
 |nodeSelector|agent pool assignment
@@ -75,7 +75,7 @@ The following table gives a short overview about the different sections (sorted 
 |secrets|secrets to be made available as environment variables
 |link:values-yaml/secret-mounts.asciidoc[secretMounts]|secrets to be mounted as files / environment variables
 |serviceAccount|service account to be deployed
-|sslCertificateRetrieval|ssl certificate retrieval
+|sslCertificateRetrieval|SSL/TLS certificate retrieval
 |testConnection|test connection configuration
 |tolerations|pod tolerations configuration
 |webLayer|web layer (webadapter-replacement) configuration

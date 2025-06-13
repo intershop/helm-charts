@@ -1,0 +1,30 @@
+= Documentation about the `values.yaml` attributes belonging to section `environment`
+include::definitions.include[]
+
+=== Description
+
+Allows to define environment variables for `icm-as-server` and `jobserver` containers. The environment variables are defined as a yaml object containing attributes that define the variable's name and value. The attribute's name itself is used as the environment variable's name and the value as its value. These environment variables control the behavior of the Intershop Commerce Management Application Server on different levels:
+
+* startup of the container
+* runtime configuration of the application server
+
+[TIP]
+====
+See https://support.intershop.com/kb/index.php/Display/301L43[ICM Concept Configuration paragraph 5.1.] for details on how to name environment variables to be read as ICM configuration properties.
+====
+
+=== Example
+
+[source,yaml]
+----
+environment:
+  CARTRIDGE_LIST: ft_icm_as <1>
+  INTERSHOP_WEBSERVERURL: http://my-host.intershop.com:80 <2>
+  INTERSHOP_WEBSERVERSECUREURL: https://my-host.intershop.com:443 <3>
+----
+
+This example defines 3 environment variables:
+
+<1> CARTRIDGE_LIST: `ft_icm_as`
+<2> INTERSHOP_WEBSERVERURL: `http://my-host.intershop.com:80`
+<3> INTERSHOP_WEBSERVERSECUREURL: `https://my-host.intershop.com:443`

@@ -12,10 +12,10 @@ include::definitions.include[]
 |<<_example_nameOverride,fullnameOverride>>|override the names/prefix of the several deployed resources which normally is calculated from chart and release name|string|{optional}|_<empty string>_
 |<<_example_nodeSelector,nodeSelector>>|https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector[node selector configuration]|yaml object|{optional}|`{}`
 |<<_example_deploymentAnnotations,deploymentAnnotations>>|https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/[annotations] applied to the `icm-as` https://kubernetes.io/docs/concepts/workloads/controllers/deployment/[deployment]|yaml object|{optional}|`{}`
-|<<_example_deploymentLabels,deploymentLabels>>|https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/[labels] applied to the `icm-as` https://kubernetes.io/docs/concepts/workloads/controllers/deployment/[deployment]|yaml object|{optional}|`{}`
-|<<_example_podAnnotations_podLabels,podAnnotations>>|https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/[annotations] applied to the `icm-as` and the 'jobServer' https://kubernetes.io/docs/concepts/workloads/pods/[pods]|yaml object|{optional}|`{}`
-|<<_example_podAnnotations_podLabels,podLabels>>|https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/[labels] applied to the `icm-as` and the 'jobServer' https://kubernetes.io/docs/concepts/workloads/pods/[pods]|yaml object|{optional}|`{}`
-|<<_example_dnsConfig,dnsConfig>>|defines the https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config[DNS config] of the pods running the `icm-as` appserver and the jobserver|yaml object|{optional}|`{}`
+|<<_example_deploymentLabels,deploymentLabels>>|https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/[labels] applied to the `icm-as-server` https://kubernetes.io/docs/concepts/workloads/controllers/deployment/[deployment]|yaml object|{optional}|`{}`
+|<<_example_podAnnotations_podLabels,podAnnotations>>|https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/[annotations] applied to the `icm-as` and the `jobServer` https://kubernetes.io/docs/concepts/workloads/pods/[pods]|yaml object|{optional}|`{}`
+|<<_example_podAnnotations_podLabels,podLabels>>|https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/[labels] applied to the `icm-as-server` and the `jobServer` https://kubernetes.io/docs/concepts/workloads/pods/[pods]|yaml object|{optional}|`{}`
+|<<_example_dnsConfig,dnsConfig>>|defines the https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config[DNS config] of the pods running the `icm-as-server` and the `jobserver`|yaml object|{optional}|`{}`
 |===
 
 === Examples
@@ -230,7 +230,7 @@ metadata:
 [#_example_podAnnotations_podLabels]
 ==== podAnnotations and podLabels
 
-Configuring `podAnnotations` and `podLabels` basically does the same as `deploymentAnnotations` and `deploymentLabels` but instead annotating and labeling the deployment it will influence the annotations and labels of the `icm-as` and `jobserver` pods:
+Configuring `podAnnotations` and `podLabels` basically does the same as `deploymentAnnotations` and `deploymentLabels` but instead annotating and labeling the deployment it will influence the annotations and labels of the `icm-as-server` and `jobserver` pods:
 [source,yaml]
 ----
 podAnnotations:
