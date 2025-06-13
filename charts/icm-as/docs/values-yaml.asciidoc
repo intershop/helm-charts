@@ -23,12 +23,12 @@ The following table gives a short overview about the different sections (sorted 
 |link:values-yaml/docker-secret.asciidoc[dockerSecret]|deployment of a docker registry secret
 |link:values-yaml/environment.asciidoc[environment]|environment variables
 |link:values-yaml/image.asciidoc[image]|`icm-as-server` image configuration
-|imagePullSecrets|image pull secrets
+|link:values-yaml/image-pull-secrets.asciidoc[imagePullSecrets]|image pull secrets
 |ingress|ingress configuration
 |infrastructureMonitoring|infrastructure monitoring configuration
 |job|job server configuration
 |jgroups|jgroups configuration
-|jvm|`icm-as` jvm configuration
+|jvm|`icm-as-server` JVM configuration
 |mssql|deployment of an MSSQL database inside a pod
 |newrelic|newrelic configuration
 |nodeSelector|agent pool assignment
@@ -36,7 +36,7 @@ The following table gives a short overview about the different sections (sorted 
 |persistence|persistence / volumes configuration
 |podBindings|pod bindings
 |podSecurityContext|pod security context
-|probes|probes (startup, liveness, readiness) configuration
+|probes|probes configuration (startup, liveness, readiness)
 |replication|replication/staging configuration
 |resources|resources / limits configuration
 |secrets|secrets to be made available as environment variables
