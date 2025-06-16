@@ -3,7 +3,12 @@ include::definitions.include[]
 
 === Description
 
-Configures if the `icm-as` is configured to process requests on its own (without the `webadapter`) and how to do so. The following table lists the attributes of the `webLayer` section:
+Configures how the `icm-as` processes requests
+
+* on its own (without the `webadapter`).
+* using the `webadapter`
+
+The following table lists the attributes of the `webLayer` section:
 
 [CAUTION]
 ====
