@@ -1,0 +1,30 @@
+= Documentation about the `values.yaml` attributes belonging to section `jgroups`
+include::definitions.include[]
+
+[.tag-audience]#Developer, Tester, DevOps, Ops#
+
+=== Description
+
+Configures which discovery technology is used by http://www.jgroups.org/[JGroups] to find all the `icm-as-server` pods that belong to a cluster. The following table lists the attributes of the `jgroups` section (attributes for _playground_ discovery technology are omitted here):
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|discovery|Configures which discovery technology is used|enum {`file_ping`,
+`kube_ping`,
+`azure_ping` (_playground_),
+`dns_ping` (_playground_)}|{optional}|`file_ping`
+|location|if `discovery=file_ping` this attribute configures where JGroups creates the necessary files (needs to be a file system shared between all `icm-as-server` pods).|path|{optional}|`/intershop/jgroups-share`
+|clusterLabel|if `discovery=kube_ping` this attribute configures the label of the `icm-as-server` cluster - all pods using this label belong to the same cluster.|string|{optional}|[.placeholder]#release name#>
+|portRange|if `discovery=kube_ping` this attribute configures the ports range used be JGroups.|int|{optional}|`5`
+|===
+
+=== Example
+[source,yaml]
+----
+jgroups:
+  discovery: file_ping <1>
+----
+
+<1> Just use `file_ping` with default values.
+
