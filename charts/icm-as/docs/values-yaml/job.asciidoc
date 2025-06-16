@@ -27,3 +27,11 @@ job:
 
 <1> Enable the jobserver.
 <2> Let the ICM Job Controller poll for new jobs every 10 seconds.
+
+[WARNING]
+====
+When enabling the `jobserver`:
+
+* please make sure that the `ICM Job Controller` is also deployed in your cluster. Otherwise, the `jobserver` will not be able to execute any jobs.
+* the K8s jobs deployed be the `ICM Job Controller` get the server group `JOB` assigned, all regular `icm-as-server` pods get the server groups `BOS` and `WFS` assigned. So jobs only assigned server group `JOB` will be executed by `jobserver` pods.
+====
