@@ -1,0 +1,52 @@
+= Documentation about the `values.yaml` attributes belonging to section `jvm`
+include::definitions.include[]
+
+[.tag-audience]#Developer, Test#
+
+=== Description
+
+Configures the https://eclipse.dev/openj9/docs/cmdline_specifying/[command line options for the JVM] of the `icm-as-server`. The following table lists the attributes of the `jvm` section:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|debug|enables/disables JVM debugging|<<_debug,Debug>>|{optional}|[.placeholder]#<<_debugDefault,see type definition>>#
+|===
+
+[#_debug]
+==== Type `Debug`
+
+The type `Debug` enables/disables JVM debugging. It contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|enabled|enable/disable the JVM debugging.|boolean|{optional}|`false`
+|options|Configures the JVM command line options.|string|{optional}|`-XX:MaxRAMPercentage=70 -XX:InitialRAMPercentage=70`
+|additionalOptions|Configures additional JVM command line options (appended to [.placeholder]#options#).|string|{optional}|[.placeholder]#empty#
+|===
+
+[NOTE]
+====
+If the JVM debugging is enabled, the `icm-as-server` container port `7746` is published so a debugging client can connect.
+====
+
+[#_debugDefault]
+.Default `Debug`
+[source,yaml]
+----
+debug:
+  enabled: false
+----
+
+==== Example
+[source,yaml]
+----
+jvm:
+  debug:
+    enabled: true <1>
+  additionalOptions: "-XX:+UseContainerSupport" <2>
+----
+
+<1> enable JVM debugging
+<2> add the JVM option `-XX:+UseContainerSupport`
