@@ -29,7 +29,7 @@ The following table gives a short overview about the different sections (sorted 
 |link:values-yaml/job.asciidoc[job]|job server configuration
 |link:values-yaml/jgroups.asciidoc[jgroups]|jgroups configuration
 |link:values-yaml/jvm.asciidoc[jvm]|`icm-as-server` JVM configuration
-|mssql|deployment of an MSSQL database inside a pod
+|link:values-yaml/mssql.asciidoc[mssql]|deployment of an MSSQL database inside a separate pod
 |newrelic|newrelic configuration
 |nodeSelector|agent pool assignment
 |operationalContext|operational context configuration

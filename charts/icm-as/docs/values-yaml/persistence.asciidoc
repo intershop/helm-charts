@@ -10,10 +10,10 @@ Configures the used file system storages. The following table lists the attribut
 [cols="1,3,1,1,1",options="header"]
 |===
 |Attribute |Description |Type |Mandatory |Default Value
-|sites|configures the storage for the `sites` volume.|<<_persistenceType,Type Persistence>>|{optional}|[.placeholder]#<<_sitesDefault,see sites default>>#
-|encryption|configures the storage for the `encryption` volume.|<<_persistenceType,Type Persistence>>|{optional}|[.placeholder]#<<_encryptionDefault,see encryption default>>#
-|jgroups|configures the storage for the `jgroups` volume.|<<_persistenceType,Type Persistence>>|{optional}|[.placeholder]#<<_jgroupsDefault,see jgroups default>>#
-|customdata|configures a storage for some custom data.|<<_customdataType,Type Customdata>>|{optional}|[.placeholder]#<<_customdataDefault,see customcata default>>#
+|sites|configures the storage for the `sites` volume.|<<_persistenceType,Persistence>>|{optional}|[.placeholder]#<<_sitesDefault,sites default>>#
+|encryption|configures the storage for the `encryption` volume.|<<_persistenceType,Persistence>>|{optional}|[.placeholder]#<<_encryptionDefault,encryption default>>#
+|jgroups|configures the storage for the `jgroups` volume.|<<_persistenceType,Persistence>>|{optional}|[.placeholder]#<<_jgroupsDefault,jgroups default>>#
+|customdata|configures a storage for some custom data.|<<_customdataType,Customdata>>|{optional}|[.placeholder]#<<_customdataDefault,customcata default>>#
 |===
 
 [#_persistenceType]
