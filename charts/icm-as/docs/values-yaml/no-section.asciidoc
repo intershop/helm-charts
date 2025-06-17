@@ -16,6 +16,7 @@ include::definitions.include[]
 |<<_example_podAnnotations_podLabels,podAnnotations>>|https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/[annotations] applied to the `icm-as` and the `jobServer` https://kubernetes.io/docs/concepts/workloads/pods/[pods]|yaml object|{optional}|`{}`
 |<<_example_podAnnotations_podLabels,podLabels>>|https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/[labels] applied to the `icm-as-server` and the `jobServer` https://kubernetes.io/docs/concepts/workloads/pods/[pods]|yaml object|{optional}|`{}`
 |<<_example_dnsConfig,dnsConfig>>|defines the https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config[DNS config] of the pods running the `icm-as-server` and the `jobserver`|yaml object|{optional}|`{}`
+|<<_example_resources,resources>>|configures the https://kubernetes.io/docs/tasks/configure-pod-container/assign-pod-level-resources/[`resource`] definitions (`requests`, `limits`) for the `icm-as-server` and the `jobserver` containers|yaml object|{optional}|`{}`
 |===
 
 === Examples
@@ -356,3 +357,30 @@ spec:
             - ns1.svc.cluster-domain.example
             - my.dns.search.suffix
 ----
+
+[#_example_resources]
+==== resources
+
+Configuring `resources` like this:
+[source,yaml]
+----
+resources:
+  limits:
+    cpu: 1000m
+    memory: 3Gi
+  requests:
+    cpu: 1000m
+    memory: 3Gi
+----
+
+will limit the `icm-as-server` and `jobserver` containers to 1 CPU and 3 GiB memory. Furthermore, it will request 1 CPU and 3 GiB memory for the `icm-as-server` and `jobserver` containers.
+
+[TIP]
+====
+For more details see https://kubernetes.io/docs/tasks/configure-pod-container/assign-pod-level-resources/.
+====
+
+[CAUTION]
+====
+Whenever you configure the `limtis` and the `requests` using the same values. That prevents the Kubernetes scheduler from migrating the pods onto other nodes when they currently request more resources than configured in the `requests`. Such a migration will most likely interrupt currently running processes these pods.
+====

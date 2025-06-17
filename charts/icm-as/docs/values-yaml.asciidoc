@@ -38,7 +38,6 @@ The following table gives a short overview about the different sections (sorted 
 |podSecurityContext|pod security context
 |probes|probes configuration (startup, liveness, readiness)
 |replication|replication/staging configuration
-|resources|resources / limits configuration
 |secrets|secrets to be made available as environment variables
 |link:values-yaml/secret-mounts.asciidoc[secretMounts]|secrets to be mounted as files / environment variables
 |serviceAccount|service account to be deployed
