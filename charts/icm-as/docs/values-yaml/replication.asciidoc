@@ -1,0 +1,85 @@
+= Documentation about the `values.yaml` attributes belonging to section `replication`
+include::definitions.include[]
+
+=== Description
+
+Configures the `icm-as-server` regarding mass data and object replication. The following attributes are available:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|enabled|if `true` the deployed ICM is a replication system|boolean|{optional}|`false`
+|role|defines whether this `icm-as-server` is a source (_edit_) or a target (_life_) system|enum {`source`,`target`}|{mandatory}|-
+|source|configures all the connections to the source (_edit_) system|<<_source,Source>>|{mandatory}|-
+|targets|configures all the connections to all the target (_life_) systems|<<_targets,Targets>>|{mandatory}|-
+|===
+
+[#_source]
+==== Type `Source`
+
+The type `Source` contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|webserverUrl|the most external *HTTPS* URL pointing to the source system|url|{mandatory}|-
+|databaseLink|name of the database link pointing to the database of the source system|string|{conditional} mandatory if `databaseName` is not set|-
+|databaseName|name of the database of the source system|string|{conditional} mandatory if `databaseLink` is not set|-
+|databaseUser|user of the database of the source system|string|{mandatory}|-
+|===
+
+[IMPORTANT]
+====
+Either `databaseLink` (connect using a database link) (x)or `databaseName` (connect using another schema inside the same server) must be set, but not both. *Ensure that the database users of the target system have access either to the database link or to the source database schema.*
+====
+
+[CAUTION]
+====
+The `webserverUrl` is meant to be the most external *HTTPS* URL pointing to the source system. This is normally the component e.g. ingress that does the SSL/TLS termination.
+====
+
+[#_targets]
+==== Type `Targets`
+
+The type `Targets` lists all the connected target systems (1 to n). Each entry in this list is a yaml object of type <<_target,`Target`>>. That means the type `Targets` contains 1 to n attributes (each of type <<_target,`Target`>>). The attribute name is than a symbolic name of the target system.
+
+[#_target]
+==== Type `Target`
+
+The type `Target` defines a single target system. It contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|webserverUrl|the most external *HTTPS* URL pointing to the target system|url|{mandatory}|-
+|databaseName|name of the database of the target system|string|{mandatory}|-
+|===
+
+[CAUTION]
+====
+The `webserverUrl` is meant to be the most external *HTTPS* URL pointing to the target system. This is normally the component e.g. ingress that does the SSL/TLS termination.
+====
+
+
+=== Example
+
+[source,yaml]
+----
+replication:
+  enabled: true
+  role: source
+  source:
+    webserverUrl: https://edit.my-icm.com:443
+    databaseUser: icmdbuser-edit
+    databaseName: icmdb-edit
+
+  targets:
+    live1:
+      webserverUrl: https://life1.my-icm.com:443
+      databaseUser: icmdb-life1
+    live2:
+      webserverUrl: https://life2.my-icm.com:443
+      databaseUser: icmdb-life2
+----
+
+Configure a source (_edit_) system and connected to two target (_life_) systems. The configuration for each of the target systems should look identical except for the attribute `role` that has to be `target`.
