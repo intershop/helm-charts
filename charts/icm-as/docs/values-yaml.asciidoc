@@ -33,7 +33,7 @@ The following table gives a short overview about the different sections (sorted 
 |newrelic|newrelic configuration
 |nodeSelector|agent pool assignment
 |operationalContext|operational context configuration
-|persistence|persistence / volumes configuration
+|link:values-yaml/persistence.asciidoc[persistence]|persistence / volumes configuration
 |podBindings|pod bindings
 |podSecurityContext|pod security context
 |probes|probes configuration (startup, liveness, readiness)

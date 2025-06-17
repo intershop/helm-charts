@@ -28,7 +28,7 @@ Although the default for attribute `tls` is an empty array, that default most of
 [#_annotations]
 ==== Type `Annotations`
 
-The type `Annotations` is a yaml object containing key-value pairs that are applied as annotations. The following table lists the
+The type `Annotations` is a yaml object containing key-value pairs that are applied as annotations. It contains the following attributes:
 
 ===== Example
 [source,yaml]
