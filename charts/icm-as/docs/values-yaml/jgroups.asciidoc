@@ -15,7 +15,7 @@ Configures which discovery technology is used by http://www.jgroups.org/[JGroups
 `azure_ping` (_playground_),
 `dns_ping` (_playground_)}|{optional}|`file_ping`
 |location|if `discovery=file_ping` this attribute configures where JGroups creates the necessary files (needs to be a file system shared between all `icm-as-server` pods).|path|{optional}|`/intershop/jgroups-share`
-|clusterLabel|if `discovery=kube_ping` this attribute configures the label of the `icm-as-server` cluster - all pods using this label belong to the same cluster.|string|{optional}|[.placeholder]#release name#>
+|clusterLabel|if `discovery=kube_ping` this attribute configures the label of the `icm-as-server` cluster - all pods using this label belong to the same cluster.|string|{optional}|[.placeholder]#release name#
 |portRange|if `discovery=kube_ping` this attribute configures the ports range used be JGroups.|int|{optional}|`5`
 |===
 

@@ -24,6 +24,12 @@ ifdef::backend-html5[]
 .tag-since::before {
   content: "@Since: ";
 }
+.tag-deprecated {
+  font-style: italic;
+}
+.tag-deprecated::before {
+  content: "@Deprecated: ";
+}
 .placeholder {
   font-style: italic;
 }

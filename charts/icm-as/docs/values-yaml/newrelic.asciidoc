@@ -1,0 +1,97 @@
+= Documentation about the `values.yaml` attributes belonging to section `newrelic`
+include::definitions.include[]
+
+=== Description
+
+Configures the monitoring user https://newrelic.com/[New Relic]. The following attributes are available:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|enabled|enables/disables the monitoring using New Relic (some data is monitored through Kubernetes(New Relic Agent) even if `enabled=false`)|boolean|{optional}|`false`
+|license_key|the New Relic license key as plain text|string|{conditional} mandatory if `licenseKeySecretKeyRef` is not set |-
+|licenseKeySecretKeyRef|a secret key reference pointing to a secret containing the New Relic license. *Takes precedence over `license_key`.* |<<_licenseKeySecretKeyRefType,LicenseKeySecretKeyRef>>|{conditional} mandatory if `license_key` is not set |-
+|metrics|configuration regarding metrics|<<_metricsType,Metrics>>|{optional}|see [.placeholder]#<<_metricsDefault,metrics default>>#
+|apm|configuration regarding APM|<<_apmType,APM>>|{optional}|see [.placeholder]#<<_apmDefault,apm default>>#
+|===
+
+[IMPORTANT]
+====
+Attribute `license_key` is deprecated since `1.8.0`, use `licenseKeySecretKeyRef` instead.
+====
+
+[TIP]
+====
+The New Relic configuration generated from configured values will use the link:operational-context.asciidoc[`operationalContextName`] as the `app_name`.
+====
+
+[#_licenseKeySecretKeyRefType]
+==== Type `LicenseKeySecretKeyRef`
+
+The type `LicenseKeySecretKeyRef` contains the following attributes to reference a value inside a Kubernetes secret:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|name|name of the secret|string|{mandatory}|-
+|key|key inside the secret pointing to the referenced value|string|{mandatory}|-
+|===
+
+[#_metricsType]
+==== Type `Metrics`
+
+The type `Metrics` contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|enabled|enables/disables the metrics data|boolean|{optional}|`true`
+|===
+
+[#_apmType]
+==== Type `APM`
+
+The type `APM` contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|enabled|enables/disables the APM data|boolean|{optional}|`true`
+|===
+
+=== Example
+
+[source,yaml]
+----
+newrelic:
+  enabled: true <1>
+  licenseKeySecretKeyRef: <2>
+    name: newrelic-license
+    key: license
+  metrics:
+    enabled: true <3>
+  apm:
+    enabled: true <4>
+----
+<1> Enable New Relic monitoring
+<2> For the license key, use the secret `newrelic-license` and key `license`
+<3> Enable metrics monitoring
+<4> Enable APM monitoring
+
+=== Defaults
+
+[#_metricsDefault]
+.Default `metrics`
+[source,yaml]
+----
+metrics:
+  enabled: true
+----
+
+[#_apmDefault]
+.Default `apm`
+[source,yaml]
+----
+apm:
+  enabled: true
+----
