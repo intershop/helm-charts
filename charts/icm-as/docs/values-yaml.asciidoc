@@ -34,7 +34,7 @@ The following table gives a short overview about the different sections (sorted 
 |link:values-yaml/operational-context.asciidoc[operationalContext]|operational context configuration
 |link:values-yaml/persistence.asciidoc[persistence]|persistence / volumes configuration
 |link:values-yaml/pod-binding.asciidoc[podBinding]|pod binding / pod identity configuration
-|podSecurityContext|pod security context
+|link:values-yaml/pod-security-context.asciidoc[podSecurityContext]|pod security context
 |probes|probes configuration (startup, liveness, readiness)
 |link:values-yaml/replication.asciidoc[replication]|replication/staging configuration
 |secrets|secrets to be made available as environment variables
