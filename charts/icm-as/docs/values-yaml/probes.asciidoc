@@ -1,0 +1,64 @@
+= Documentation about the `values.yaml` attributes belonging to section `probes`
+include::definitions.include[]
+
+=== Description
+
+Configures the readiness, liveness and startup https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/[probes] for the `icm-as-server` container. The following table lists the attributes of the `probes` section:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|startup|configures the startup probe.|<<_probeType,Probe>>|{optional}|[.placeholder]#<<_startupDefault,startup default>>#
+|liveness|configures the liveness probe.|<<_probeType,Probe>>|{optional}|[.placeholder]#<<_livenessDefault,liveness default>>#
+|readiness|configures the readiness probe.|<<_probeType,Probe>>|{optional}|[.placeholder]#<<_readinessDefault,readiness default>>#
+|===
+
+[#_probeType]
+==== Type `Probe`
+
+The type `Probe` configures the relevant values for a probe. So the type `Probe` contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|failureThreshold|the number of consecutive failures before the probe is considered failed.|int|{optional}|[.placeholder]#depends on probe type#
+|initialDelaySeconds|the number of seconds to wait before starting the probe.|int|{optional}|[.placeholder]#depends on probe type#
+|periodSeconds|the number of seconds between each probe.|int|{optional}|[.placeholder]#depends on probe type#
+|===
+
+[CAUTION]
+====
+When deploying the ICM using an empty database or awaiting lots of database migration effort ensure that the `startup` probe is configured sufficiently to allow the ICM to start up properly. Otherwise, Kubernetes might restart the pod before the `dbPrepare` process is completed.
+====
+
+=== Defaults
+
+[#_startupDefault]
+.Default `startup`
+[source,yaml]
+----
+startup:
+  failureThreshold: 6
+  initialDelaySeconds: 60
+  periodSeconds: 10
+----
+
+[#_livenessDefault]
+.Default `liveness`
+[source,yaml]
+----
+liveness:
+  failureThreshold: 3
+  initialDelaySeconds: 0
+  periodSeconds: 10
+----
+
+[#_readinessDefault]
+.Default `readiness`
+[source,yaml]
+----
+readiness:
+  failureThreshold: 3
+  initialDelaySeconds: 0
+  periodSeconds: 5
+----
