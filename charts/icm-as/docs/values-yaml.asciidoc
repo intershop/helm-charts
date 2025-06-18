@@ -31,10 +31,9 @@ The following table gives a short overview about the different sections (sorted 
 |link:values-yaml/jvm.asciidoc[jvm]|`icm-as-server` JVM configuration
 |link:values-yaml/mssql.asciidoc[mssql]|deployment of an MSSQL database inside a separate pod
 |link:values-yaml/newrelic.asciidoc[newrelic]|newrelic configuration
-|nodeSelector|agent pool assignment
 |link:values-yaml/operational-context.asciidoc[operationalContext]|operational context configuration
 |link:values-yaml/persistence.asciidoc[persistence]|persistence / volumes configuration
-|podBindings|pod bindings
+|link:values-yaml/pod-binding.asciidoc[podBinding]|pod binding / pod identity configuration
 |podSecurityContext|pod security context
 |probes|probes configuration (startup, liveness, readiness)
 |link:values-yaml/replication.asciidoc[replication]|replication/staging configuration

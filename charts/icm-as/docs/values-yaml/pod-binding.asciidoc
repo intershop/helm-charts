@@ -1,0 +1,7 @@
+= Documentation about the `values.yaml` attributes belonging to section `podBinding`
+include::definitions.include[]
+
+[WARNING]
+====
+Pod binding which uses pod identity is https://github.com/Azure/aad-pod-identity/issues/1349[deprecated] and replaced by https://azure.github.io/azure-workload-identity/docs/[workload identity].
+====

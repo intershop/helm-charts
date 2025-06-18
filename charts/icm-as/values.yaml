@@ -19,6 +19,7 @@ podAnnotations: {}
 #  myAnnotation: true
 
 # define pod binding if required
+# @Deprecated since 2.9.2 (https://github.com/Azure/aad-pod-identity/issues/1349) replaced by workload identity (https://azure.github.io/azure-workload-identity/docs/)
 podBinding:
   enabled: false
   binding: <name-of-the-binding>
