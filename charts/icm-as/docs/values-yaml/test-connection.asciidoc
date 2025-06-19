@@ -1,0 +1,33 @@
+= Documentation about the `values.yaml` attributes belonging to section `testConnection`
+include::definitions.include[]
+
+[.tag-audience]#Developer, Tester, DevOps#
+
+=== Description
+
+Utilizing the pod annotation https://helm.sh/docs/topics/charts_hooks/[`helm.sh/hook=test`] a pod is deployed to test if the `icm-as-server` is HTTP-connectable after deployment. Only if this connection test is successful, the helm release is marked as successful.
+The `testConnection` section contains the following attributes:
+
+[NOTE]
+====
+The second pod annotation `helm.sh/hook-delete-policy` is used to ensure that the pod is deleted after a successful deployment.
+====
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory|Default Value
+|protocol|configures the protocol to be used|string|{optional}|`http`
+|port|configures the port to be used|int|{optional}|`7443`
+|url|configures the relative URL to be used|string|{optional}|`/servlet/ConfigurationServlet`
+|serviceSuffix|used for hostname calculation (appended to [.placeholder]#release name#|string|{optional}|[.placeholder]#empty#
+|===
+
+=== Example
+
+[source,yaml]
+----
+testConnection:
+  protocol: http
+  port: 7743
+  url: /servlet/ConfigurationServlet
+----
