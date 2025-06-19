@@ -24,3 +24,33 @@ secretMounts:
 ====
 The certificate will then be imported into the truststore of the JVM using the alias built from the base file name `my-certificate-file`.
 ====
+
+== Deploy an ICM using replication/staging
+
+=== Prerequisites
+
+There is an ICM deployed *without* replication enabled (this system is referred to as the `source` (_edit_) server).
+
+=== Steps
+
+. Enable replication and configure the involved systems
+  .. `replication.enabled` to `true`
+  .. `replication.role` to `source`
+  .. configure the `replication.source` and `replication.targets` attributes accordingly (target systems don't need to be up and running at this point)
+  .. Ensure that the startup probe is configured to wait until the database is prepared for replication (`probes.startupProbe.initialDelaySeconds` is set properly - exact value depend on the database size)
+. Deploy the (source) ICM
+. Wait until the ICM is up and running (the database gets prepared for replication during startup)
+. Transfer the database content from the source database into the target database
+  .. transfer data for instance using backup + restore
+  .. ensure the configured target users also have access to the source database (direct access or via database link)
+. Transfer the sites content from the source `sites` volume into the target `sites` volume (e.g. using Azure's `az` command)
+. Prepare a second `values.yaml` file for the target system
+  .. set `replication.enabled` to `true`
+  .. set `replication.role` to `target`
+  .. copy the configuration of `replication.source` and `replication.targets` from the source system's `values.yaml` file
+. Deploy the (target) ICM (using the second `values.yaml` file)
+
+[TIP]
+====
+See the link:values-yaml/replication.asciidoc[replication] section for details about the replication configuration and link:values-yaml/probes.asciidoc[probes] section for details about the probes configuration.
+====
