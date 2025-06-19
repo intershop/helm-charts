@@ -19,6 +19,11 @@ Configures which discovery technology is used by http://www.jgroups.org/[JGroups
 |portRange|if `discovery=kube_ping` this attribute configures the ports range used be JGroups.|int|{optional}|`5`
 |===
 
+[NOTE]
+====
+If `discovery=kube_ping` the `icm-as-server` containers require access to the Kubernetes API. This can be done by deploying a link:service-account.asciidoc[serviceAccount].
+====
+
 === Example
 [source,yaml]
 ----
