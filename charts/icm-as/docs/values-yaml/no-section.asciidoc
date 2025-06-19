@@ -6,17 +6,18 @@ include::definitions.include[]
 [cols="1,3,1,1,1",options="header"]
 |===
 |Attribute |Description |Type |Mandatory|Default Value
-|<<_example_replicaCount,replicaCount>>|number of icm-as pods to be deployed|int|{optional}|`1`
-|<<_example_updateStrategy,updateStrategy>>|define the https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy[update strategy]|enum {`Recreate`, `RollingUpdate`}|{optional}|`RollingUpdate`
-|<<_example_nameOverride,nameOverride>>|override the name used for label `app.kubernetes.io/name` which normally is calculated from chart name|string|{optional}|[.placeholder]#empty string#
-|<<_example_nameOverride,fullnameOverride>>|override the names/prefix of the several deployed resources which normally is calculated from chart and release name|string|{optional}|[.placeholder]#empty string#
-|<<_example_nodeSelector,nodeSelector>>|https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector[node selector configuration]|yaml object|{optional}|`{}`
 |<<_example_deploymentAnnotations,deploymentAnnotations>>|https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/[annotations] applied to the `icm-as` https://kubernetes.io/docs/concepts/workloads/controllers/deployment/[deployment]|yaml object|{optional}|`{}`
 |<<_example_deploymentLabels,deploymentLabels>>|https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/[labels] applied to the `icm-as-server` https://kubernetes.io/docs/concepts/workloads/controllers/deployment/[deployment]|yaml object|{optional}|`{}`
+|<<_example_dnsConfig,dnsConfig>>|defines the https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config[DNS config] of the pods running the `icm-as-server` and the `jobserver`|yaml object|{optional}|`{}`
+|<<_example_nameOverride,fullnameOverride>>|override the names/prefix of the several deployed resources which normally is calculated from chart and release name|string|{optional}|[.placeholder]#empty string#
+|<<_example_nameOverride,nameOverride>>|override the name used for label `app.kubernetes.io/name` which normally is calculated from chart name|string|{optional}|[.placeholder]#empty string#
+|<<_example_nodeSelector,nodeSelector>>|https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector[node selector configuration]|yaml object|{optional}|`{}`
 |<<_example_podAnnotations_podLabels,podAnnotations>>|https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/[annotations] applied to the `icm-as` and the `jobServer` https://kubernetes.io/docs/concepts/workloads/pods/[pods]|yaml object|{optional}|`{}`
 |<<_example_podAnnotations_podLabels,podLabels>>|https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/[labels] applied to the `icm-as-server` and the `jobServer` https://kubernetes.io/docs/concepts/workloads/pods/[pods]|yaml object|{optional}|`{}`
-|<<_example_dnsConfig,dnsConfig>>|defines the https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config[DNS config] of the pods running the `icm-as-server` and the `jobserver`|yaml object|{optional}|`{}`
+|<<_example_replicaCount,replicaCount>>|number of icm-as pods to be deployed|int|{optional}|`1`
 |<<_example_resources,resources>>|configures the https://kubernetes.io/docs/tasks/configure-pod-container/assign-pod-level-resources/[`resource`] definitions (`requests`, `limits`) for the `icm-as-server` and the `jobserver` containers|yaml object|{optional}|`{}`
+|<<_example_tolerations,tolerations>>|configures the https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/[`tolerations`] for the `icm-as-server` and the `jobserver` containers|yaml object|{optional}|`null`
+|<<_example_updateStrategy,updateStrategy>>|define the https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy[update strategy]|enum {`Recreate`, `RollingUpdate`}|{optional}|`RollingUpdate`
 |===
 
 === Examples
@@ -382,5 +383,10 @@ For more details see https://kubernetes.io/docs/tasks/configure-pod-container/as
 
 [CAUTION]
 ====
-Whenever you configure the `limtis` and the `requests` using the same values. That prevents the Kubernetes scheduler from migrating the pods onto other nodes when they currently request more resources than configured in the `requests`. Such a migration will most likely interrupt currently running processes these pods.
+Whenever possible configure the `limtis` and the `requests` using the same values. That prevents the Kubernetes scheduler from migrating the pods onto other nodes when they currently request more resources than configured in the `requests`. Such a migration will most likely interrupt currently running processes these pods.
 ====
+
+[#_example_tolerations]
+==== tolerations
+
+See https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/[Taints and Tolerations] for details.
