@@ -1,0 +1,9 @@
+= Documentation about the `values.yaml` attributes belonging to section `sslCertificateRetrieval`
+include::definitions.include[]
+
+[.tag-deprecated]#since 2.9.0, use link:secret-mounts.asciidoc[secretMounts] and https://support.intershop.com/kb/index.php/Display/X31381[Guide - Secret Store Process] instead#
+
+[WARNING]
+====
+The section `sslCertificateRetrieval` is deprecated because it used link:pod-binding.asciidoc[podBinding] which is also deprecated.
+====

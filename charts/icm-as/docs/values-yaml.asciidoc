@@ -40,7 +40,7 @@ The following table gives a short overview about the different sections (sorted 
 |link:values-yaml/secrets.asciidoc[secrets]|secrets to be made available as environment variables
 |link:values-yaml/secret-mounts.asciidoc[secretMounts]|Kubernetes secrets to be mounted as files / environment variables
 |link:values-yaml/service-account.asciidoc[serviceAccount]|service account to be deployed
-|sslCertificateRetrieval|SSL/TLS certificate retrieval
+|link:values-yaml/ssl-certificate-retrieval.asciidoc[sslCertificateRetrieval]|SSL/TLS certificate retrieval
 |testConnection|test connection configuration
 |tolerations|pod tolerations configuration
 |link:values-yaml/web-layer.asciidoc[webLayer]|web layer (webadapter-replacement) configuration
