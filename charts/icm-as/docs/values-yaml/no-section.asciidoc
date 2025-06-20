@@ -15,7 +15,7 @@ include::definitions.include[]
 |<<_example_podAnnotations_podLabels,podAnnotations>>|https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/[annotations] applied to the `icm-as` and the `jobServer` https://kubernetes.io/docs/concepts/workloads/pods/[pods]|yaml object|{optional}|`{}`
 |<<_example_podAnnotations_podLabels,podLabels>>|https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/[labels] applied to the `icm-as-server` and the `jobServer` https://kubernetes.io/docs/concepts/workloads/pods/[pods]|yaml object|{optional}|`{}`
 |<<_example_replicaCount,replicaCount>>|number of icm-as pods to be deployed|int|{optional}|`1`
-|<<_example_resources,resources>>|configures the https://kubernetes.io/docs/tasks/configure-pod-container/assign-pod-level-resources/[`resource`] definitions (`requests`, `limits`) for the `icm-as-server` and the `jobserver` containers|yaml object|{optional}|`{}`
+|<<_example_resources,resources>>|configures the https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/[`resource`] definitions (`requests`, `limits`) for the `icm-as-server` and the `jobserver` containers|yaml object|{optional}|`{}`
 |<<_example_tolerations,tolerations>>|configures the https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/[`tolerations`] for the `icm-as-server` and the `jobserver` containers|yaml object|{optional}|`null`
 |<<_example_updateStrategy,updateStrategy>>|define the https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy[update strategy]|enum {`Recreate`, `RollingUpdate`}|{optional}|`RollingUpdate`
 |===

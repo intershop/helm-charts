@@ -25,7 +25,7 @@ The following table gives a short overview about the different sections (sorted 
 |link:values-yaml/operational-context.asciidoc[operationalContext]|operational context configuration
 |link:values-yaml/persistence.asciidoc[persistence]|persistence / volumes configuration
 |link:values-yaml/pod-security-context.asciidoc[podSecurityContext]|pod security context
-|resources|configures the resource definitions (requests, limits) for the icm-as-server and the jobserver containers
+|link:values-yaml/resources.asciidoc[resources]|configures the resource definitions (requests, limits) for the icm-as-server and the jobserver containers
 |link:values-yaml/service.asciidoc[service]|service configuration
 |webadapter|webadapter (`icm-web-wa`) configuration
 |===
