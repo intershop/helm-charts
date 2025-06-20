@@ -1,0 +1,30 @@
+= Documentation about the `values.yaml` attributes belonging to section `service`
+include::definitions.include[]
+
+=== Description
+
+Configures the Kubernetes https://kubernetes.io/docs/concepts/services-networking/service/[service] that routes the requests to all the `icm-web-wa` pods. The following table lists the attributes of the `service` section:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|type|sets the service type|enum as defined at https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types|{optional}|`ClusterIP`
+|httpPort|the port used by the service for http requests|integer|{optional}|`8080`
+|httpsPort|the port used by the service for https requests|integer|{optional}|`8443`
+|===
+
+
+
+=== Example
+
+[source,yaml]
+----
+service:
+  type: ClusterIP <1>
+  httpPort: 8080 <2>
+  httpsPort: 8443 <3>
+----
+
+<1> The service type is set to `ClusterIP`
+<2> The service will listen for http requests on port `8080`
+<3> The service will listen for https requests on port `8443`
