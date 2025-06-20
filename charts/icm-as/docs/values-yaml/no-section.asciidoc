@@ -294,17 +294,19 @@ The annotations and labels inside of this resource will be processed by the job 
 
 [.tag-audience]#DevOps, Ops#
 
-The value of the attribute `dnsConfig` is interpreted as a ymal object and simple put into the appropriate resources. So a configuration like this:
+The value of the attribute `dnsConfig` is interpreted as a yaml object and simply put into the appropriate resources. So for a configuration like this:
 [source,yaml]
 ----
-podAnnotations:
-  annotation0: value0
-  ...
-  annotationn: valuen
-deploymentLabels:
-  label0: value0
-  ...
-  labeln: valuen
+dnsConfig:
+  nameservers:
+  - 192.0.2.1
+  searches:
+  - ns1.svc.cluster-domain.example
+  - my.dns.search.suffix
+  options:
+  - name: ndots
+    value: "2"
+  - name: edns0
 ----
 
 The `icm-as-server` deployment will look like this:
