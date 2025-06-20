@@ -1,0 +1,8 @@
+= Documentation about the `values.yaml` attributes belonging to section `operationalContext`
+include::definitions.include[]
+
+=== Description
+
+Configures the operational context (aka _environment_) the ICM is running in.
+
+The operational context already is explained in detail for the `icm-as` Helm Chart so just see link:../../../icm-as/docs/values-yaml/operational-context.asciidoc[here].

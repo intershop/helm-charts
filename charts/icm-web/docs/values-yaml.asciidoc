@@ -1,0 +1,31 @@
+= Documentation about what can be configured using the `values.yaml`-file
+//include::values-yaml/definitions.include[]
+// GitHub issue: https://github.com/github/markup/issues/1095
+include::values-yaml/definitions.include[]
+
+== Target audience
+
+This document is intended for users of the Intershop Commerce Management Application Server (icm-as) Helm Chart who want to understand how to configure the chart using the `values.yaml` file. This explicitly includes developers, system administrators, and DevOps engineers who are responsible for deploying and managing the Intershop Commerce Management Application Server in a Kubernetes environment.
+
+If a part of this document only targets a specific audience, it is explicitly marked as such.
+
+== Sections overview
+
+The following table gives a short overview about the different sections (sorted alphabetically):
+
+[cols="1,3",options="header"]
+|===
+|Section |Topic
+|link:values-yaml/no-section.asciidoc[+<none>+]|attributes without any section
+|agent|webadapteragent (`icm-web-waa`) configuration
+|appServerConnection|connection to the `icm-as-server`s
+|link:values-yaml/environment.asciidoc[environment]|environment variables
+|link:values-yaml/image-pull-secrets.asciidoc[imagePullSecrets]|image pull secrets
+|ingress|ingress configuration
+|link:values-yaml/operational-context.asciidoc[operationalContext]|operational context configuration
+|persistence|persistence / volumes configuration
+|link:values-yaml/pod-security-context.asciidoc[podSecurityContext]|pod security context
+|resources|configures the resource definitions (requests, limits) for the icm-as-server and the jobserver containers
+|service|service configuration
+|webadapter|webadapter (`icm-web-wa`) configuration
+|===

@@ -160,7 +160,7 @@ nodeSelector:
   ...
   labeln: valuen
 ----
-will result in the `icm-as` pods being scheduled on nodes that have the all the configured labels. The deployment will look like this:
+will result in the `icm-as` pods being scheduled on nodes that have all the configured labels. The deployment will look like this:
 
 [source,yaml]
 ----
