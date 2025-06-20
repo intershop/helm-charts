@@ -1,0 +1,68 @@
+= Documentation about the `values.yaml` attributes belonging to section `persistence`
+include::definitions.include[]
+
+[.tag-audience]#Developer, Test#
+
+=== Description
+
+Configures the used file system storages. The following table lists the attributes of the `persistence` section:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|pagecache|configures the storage for the `pagecache` volume.|<<_persistenceType,Persistence>>|{optional}|[.placeholder]#<<_pagecacheDefault,pagecache default>>#
+|logs|configures the storage for the `logs` volume.|<<_persistenceType,Persistence>>|{optional}|[.placeholder]#<<_logsDefault,logs default>>#
+|customdata|configures a storage for some custom data.|<<_customdataType,Customdata>>|{optional}|[.placeholder]#<<_customdataDefault,customcata default>>#
+|===
+
+[#_persistenceType]
+==== Type `Persistence`
+
+The type `Persistence` already is explained in detail for the `icm-as` Helm Chart so just see link:../../../icm-as/docs/values-yaml/persistence.asciidoc#_persistenceType[here].
+
+[#_customdataType]
+==== Type `Customdata`
+
+[.tag-audience]#Developer, Tester#
+
+The type `Customdata` already is explained in detail for the `icm-as` Helm Chart so just see link:../../../icm-as/docs/values-yaml/persistence.asciidoc#_customdataType[here].
+
+=== Defaults
+
+[#_pagecacheDefault]
+.Default `pagecache`
+[source,yaml]
+----
+pagecache:
+  size: 1Gi
+  type: emptyDir
+----
+
+[WARNING]
+====
+This `pagecache` volume requires high read/write throughput performance with low latencies.
+====
+
+[#_logsDefault]
+.Default `logs`
+[source,yaml]
+----
+logs:
+  size: 1Gi
+  type: emptyDir
+----
+
+[#_customdataDefault]
+.Default `customdata`
+[source,yaml]
+----
+customdata:
+  enabled: false
+  existingClaim: icm-as-cluster-customData-pvc
+  mountPoint: /data
+----
+
+[NOTE]
+====
+[.tag-audience]#Developer, Test#
+====
