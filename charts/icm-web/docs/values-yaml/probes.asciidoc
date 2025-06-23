@@ -3,7 +3,7 @@ include::definitions.include[]
 
 === Description
 
-Configures the readiness, liveness and startup https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/[probes] for the `icm-as-server` container. The following table lists the attributes of the `probes` section:
+Configures the readiness, liveness and startup https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/[probes] for the `icm-web-wa` container. The following table lists the attributes of the `probes` section:
 
 [cols="1,3,1,1,1",options="header"]
 |===
@@ -24,6 +24,7 @@ The type `Probe` configures the relevant values for a probe. So the type `Probe`
 |failureThreshold|the number of consecutive failures before the probe is considered failed.|int|{optional}|[.placeholder]#depends on probe type#
 |initialDelaySeconds|the number of seconds to wait before starting the probe.|int|{optional}|[.placeholder]#depends on probe type#
 |periodSeconds|the number of seconds between each probe.|int|{optional}|[.placeholder]#depends on probe type#
+|timeoutSeconds|the number of seconds after which the probe times out.|int|{optional}|[.placeholder]#depends on probe type#
 |===
 
 [CAUTION]
@@ -41,6 +42,7 @@ startup:
   failureThreshold: 6
   initialDelaySeconds: 60
   periodSeconds: 10
+  timeoutSeconds: 1
 ----
 
 [#_livenessDefault]
@@ -51,6 +53,7 @@ liveness:
   failureThreshold: 3
   initialDelaySeconds: 0
   periodSeconds: 10
+  timeoutSeconds: 1
 ----
 
 [#_readinessDefault]
@@ -61,4 +64,5 @@ readiness:
   failureThreshold: 3
   initialDelaySeconds: 0
   periodSeconds: 5
+  timeoutSeconds: 1
 ----

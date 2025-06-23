@@ -17,8 +17,8 @@ The following table gives a short overview about the different sections (sorted 
 |===
 |Section |Topic
 |link:values-yaml/no-section.asciidoc[+<none>+]|attributes without any section
-|agent|webadapteragent (`icm-web-waa`) configuration
-|appServerConnection|connection to the `icm-as-server`s
+|link:values-yaml/agent.asciidoc[agent]|webadapteragent (`icm-web-waa`) configuration
+|link:values-yaml/app-server-connection.asciidoc[appServerConnection]|connection to the `icm-as-server` pods
 |link:values-yaml/environment.asciidoc[environment]|environment variables
 |link:values-yaml/image-pull-secrets.asciidoc[imagePullSecrets]|image pull secrets
 |link:values-yaml/ingress.asciidoc[ingress]|ingress configuration
@@ -27,5 +27,5 @@ The following table gives a short overview about the different sections (sorted 
 |link:values-yaml/pod-security-context.asciidoc[podSecurityContext]|pod security context
 |link:values-yaml/resources.asciidoc[resources]|configures the resource definitions (requests, limits) for the icm-as-server and the jobserver containers
 |link:values-yaml/service.asciidoc[service]|service configuration
-|webadapter|webadapter (`icm-web-wa`) configuration
+|link:values-yaml/webadapter.asciidoc[webadapter]|webadapter (`icm-web-wa`) configuration
 |===

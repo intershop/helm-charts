@@ -75,7 +75,7 @@ spec:
 
 [#_example_nameOverride]
 ==== nameOverride and fullnameOverride
-Without configuring `nameOverride` and `fullnameOverride` all relevant names are generated from the release and chart name. So the 'icm-as-appserver' deployment looks like this:
+Without configuring `nameOverride` and `fullnameOverride` all relevant names are generated from the release and chart name. So the 'icm-as-server' deployment looks like this:
 
 [source,yaml]
 ----
@@ -147,6 +147,12 @@ metadata:
   labels:
     app: your-custom-icm-as
 ----
+
+[#_example_icmAsServiceNaming]
+[TIP]
+====
+Keep in mind that the `nameOverride` and `fullnameOverride` attributes are used to generate the name of the service deployed by this chart. This name is used to access the `icm-as` application server (especially the `webadapter`).
+====
 
 [#_example_nodeSelector]
 ==== nodeSelector

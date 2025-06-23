@@ -1,0 +1,106 @@
+= Documentation about the `values.yaml` attributes belonging to section `webadapter`
+
+include::definitions.include[]
+
+=== Description
+
+Configures the `webadapter`. The section `webadapter` contains several attributes that already have been described in the `icm-as` Helm Chart documentation. The following list contains these attributes:
+
+* link:../../../icm-as/docs/values-yaml/no-section.asciidoc#_example_deploymentAnnotations[deploymentAnnotations]
+* link:../../../icm-as/docs/values-yaml/no-section.asciidoc#_example_deploymentLabels[deploymentLabels]
+* link:../../../icm-as/docs/values-yaml/image.asciidoc[image]
+* link:../../../icm-as/docs/values-yaml/no-section.asciidoc#_example_podAnnotations_podLabels[podAnnotations and podLabels]
+* link:../../../icm-as/docs/values-yaml/pod-binding.asciidoc[podBinding]
+* link:../../../icm-as/docs/values-yaml/no-section.asciidoc#_example_replicaCount[replicaCount]
+* link:../../../icm-as/docs/values-yaml/no-section.asciidoc#_example_updateStrategy[updateStrategy]
+
+The following table lists attributes that are specific to the `webadapter`:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|disableHTTP2|enables/disables the usage of the HTTP/2 protocol (`disableHTTP2=true` means HTTP 1.1)|boolean|{optional}|`false`
+|customHttpdConfig|[.tag-deprecated]#since 0.14.0, use link:config-map-mounts.asciidoc[configMapMounts] instead#|boolean|{optional}|`false`
+|configMapMounts|allows to mount values stored in Kubernetes https://kubernetes.io/docs/concepts/configuration/configmap/[configMaps] to be mounted as files inside the `icm-web-wa` container|link:config-map-mounts.asciidoc[ConfigMapMounts]|{optional}|`[]`
+|customSSLCertificates|[.tag-deprecated]#since 0.14.0, SSL/TLS termination is done by the link:ingress.asciidoc[ingress]#|boolean|{optional}|`false`
+|probes|probes configuration (startup, liveness, readiness)|link:probes.asciidoc[Probes]|{optional}|[.placeholder]#see link:config-map-mounts.asciidoc[Probes] defaults#
+|schedulePodsPreferredEvenlyAcrossNodes|If `true` and no link:no-section.asciidoc#_example_nodeSelector[nodeSelector] is defined the `icm-web-wa` pods are evenly distributed over the available nodes |boolean|{optional}|`true`
+|===
+
+
+[WARNING]
+====
+Although the default for attribute `tls` is an empty array, that default most often does not make any sense because in most cases the ingress should do the TLS termination.
+====
+
+[#_annotations]
+==== Type `Annotations`
+
+The type `Annotations` is a yaml object containing key-value pairs that are applied as annotations. It contains the following attributes:
+
+===== Example
+[source,yaml]
+----
+annotations:
+  annotation0: value0
+  ...
+  annotationn: valuen
+----
+
+[#_hostDefinition]
+==== Type `HostDefinition`
+
+The type `HostDefinition` configures the rules applied to the ingress configuration (e.g. which host / path is routed to which backend service). It contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|host|name of the host|string|{mandatory}|-
+|paths|configures the paths to be processed|yaml array containing 0 to n <<_hostPath,HostPath>> objects|{mandatory}|-
+|===
+
+[#_hostPath]
+==== Type `HostPath`
+
+The type `HostPath` configures the path mapping applied to the ingress configuration (e.g. which path is routed to which backend service). It contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|path|the path to be processed|string|{mandatory}|-
+|pathType|the https://kubernetes.io/docs/concepts/services-networking/ingress/#path-types[type of the path]|https://kubernetes.io/docs/concepts/services-networking/ingress/#path-types[path type]|{mandatory}|-
+|===
+
+[#_tlsDefinition]
+==== Type `TLSDefinition`
+
+The type `TLSDefinition` configures which TLS secret should be used for the assigned host(s). It contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|secretName|name of secret|string|{mandatory}|-
+|hosts|lists the hosts that should use the certificate|yaml array containing 0 to n host names|{mandatory}|-
+|===
+
+=== Example
+
+[source,yaml]
+----
+ingress:
+  enabled: true
+  className: icm-nginx
+  annotations:
+    annotation0: value0
+    ...
+    annotationn: valuen
+  hosts:
+    - host: my-host.icm.intershop.de
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: tls-my-host-icm-intershop-de
+      hosts:
+        - my-host.icm.intershop.de
+----

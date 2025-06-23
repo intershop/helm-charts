@@ -118,3 +118,8 @@ spec:
         ...
         labeln: valuen
 ----
+
+[CAUTION]
+====
+When node selectors are used, the attributes `webadapter.schedulePodsPreferredEvenlyAcrossNodes` is ignored so the node selection rules defined by `nodeSelector` are applied.
+====
