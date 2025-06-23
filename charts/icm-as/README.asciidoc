@@ -1,103 +1,108 @@
-# Helm Chart Intershop Commerce Management - Application Server
+= Helm Chart Intershop Commerce Management - Application Server
 
 Installs the ICM application server independently.
 
-## Prerequisites Details
+== Prerequisites Details
 
-- helm+kubectl
-- Kubernetes 1.14+
+* helm+kubectl
+* Kubernetes 1.14+
 
-## Chart Details
+== Chart Details
 
 This chart will do the following:
 
-- Deploy an ICM Application Server
+* Deploy an ICM Application Server
 
-## Installing the Chart
+== Installing the Chart
 
-### Docker pull secret
+=== Docker pull secret
 
 Create a secret for a docker registry where the images are coming from. The name of the secret must be equal to the configured secrets under `image.secret` within the application deployment. By default, the secret name is `dockerhub`.
 
-```bash
+[source,bash]
+----
 kubectl create secret docker-registry <yourDockerRegistryName> --docker-server=<yourDockerRegistryServer> --docker-username=<yourUsername> --docker-password=<yourPassword> --docker-email=<yourEmail>
-```
+----
 
-### Persistence
+=== Persistence
 
-#### Sites
+==== Sites
 
 `local`, `cluster`, `azurefiles`, `nfs`, `existingClaim` are possible persistence options.
 The default is `local` where `persistence.sites.local.path` need to be set to a valid local folder.
 
-#### jGroups
+==== jGroups
 
 `local`, `cluster`, `azurefiles`, `nfs`, `existingClaim` are possible persistence options.
 The default is `emptyDir`.
 
-### Database
+=== Database
 
 The needed database connection could be configured via section `database`. The chart also supports to deploy a (containerized) MSSQL database. If this is enabled the deployed MSSQL database is used instead of the one configured via section `database`.
 
-### Replication/Staging
+=== Replication/Staging
 
 A replication/staging scenario is supported via the section `replication`. To use this feature just deploy 2 separate icm-as (+ icm-web) one for the source (_edit_) system and one for the target (_live_) system.
 
-### Add the Intershop Helm repository
+=== Add the Intershop Helm repository
 
-Before installing Intershop helm charts, you need to add the [Intershop helm repository](https://intershop.github.io/helm-charts) to your helm client.
+Before installing Intershop helm charts, you need to add the https://intershop.github.io/helm-charts[Intershop helm repository] to your helm client.
 
-```bash
+[source,bash]
+----
 helm repo add intershop https://intershop.github.io/helm-charts
 helm repo update
-```
+----
 
-### Install Chart
+=== Install Chart
 
 To install the chart with the release name `icm-as`
 
-```bash
+[source,bash]
+----
 helm install my-release intershop/icm-as --values=values.yaml --namespace icm-as
-```
+----
 
-#### Job Server
+==== Job Server
 
-If `job.enable==true` the job server functionality of the application server is activated and a child chart [icm-job](../icm-job/README.md) is deployed.
+If `job.enable==true` the job server functionality of the application server is activated and a child chart link:../icm-job/README.md[icm-job] is deployed.
 During development you might need to update the dependencies:
 
-```bash
+[source,bash]
+----
 helm dependencies update .
-```
+----
 
-### Testing
+=== Testing
 
-#### helm-unit
+==== helm-unit
 
 There are helm-unit tests to support development and secure several functionality.
 
 Prerequisites are:
 
-- [helm-unittest](https://github.com/helm-unittest/helm-unittest)
+* https://github.com/helm-unittest/helm-unittest[helm-unittest]
 
 Please check the unit tests before pushing changes.
 
-```bash
+[source,bash]
+----
 helm unittest charts/icm-as
-```
+----
 
-#### ct lint & install
+==== ct lint &amp; install
 
 Prerequisites are:
 
-- [kind cluster](https://github.com/kubernetes-sigs/kind)
-- Install cluster: `kind create cluster --config icm-as.yaml`
-
-```bash
+* https://github.com/kubernetes-sigs/kind[kind cluster]
+* Install cluster: `kind create cluster --config icm-as.yaml`
+[source,bash]
+----
 docker run -it --network host --workdir=/data --volume <my kube config>:/root/.kube/config:ro --volume
 $(pwd):/data quay.io/helmpack/chart-testing:v3.8.0 ct lint --config ct_icm-as.yaml
-```
+----
 
-## Detailed documentation
+== Detailed documentation
 
-- [values.yaml documentation](docs/values-yaml.md)
-- [How to ...](docs/how-to.md)
+* link:docs/values-yaml/[values.yaml] documentation
+* link:docs/how-to.md/[How to …] reach a certain goal
