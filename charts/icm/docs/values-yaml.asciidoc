@@ -1,0 +1,61 @@
+= Documentation about what can be configured using the `values.yaml`-file
+
+:icons: font
+
+== Target audience
+
+This document is intended for users of the Intershop Commerce Management Application Server (icm-as) Helm Chart who want to understand how to configure the chart using the `values.yaml` file. This explicitly includes developers, system administrators, and DevOps engineers who are responsible for deploying and managing the Intershop Commerce Management Application Server in a Kubernetes environment.
+
+If a parts of this document only targets a specific audience, it is explicitly marked as such.
+
+== Section overview
+
+The `icm` Helm Chart is an umbrella chart that deploys the Intershop Commerce Management Application Server (`icm-as`) and its dependencies. The `values.yaml` file is used to configure various aspects of the chart, such as resource limits, image settings, and service configurations.
+
+Therefore, the `values.yaml` contains several sections, each belonging to a specific component of the chart. The sections are:
+
+[cols="1,3,2",options="header"]
+|===
+|Section |Topic |Documentation
+|icm-as|ICM application server|link:../../../icm-as/docs/values-yaml.asciidoc[icm-as documentation]
+|icm-web|ICM webadapter|link:../../../icm-web/docs/values-yaml.asciidoc[icm-web documentation]
+|ingress-nginx|https://github.com/kubernetes/ingress-nginx[Ingress NGINX controller] (for development/testing purposes)|https://kubernetes.github.io/ingress-nginx[ingress-nginx documentation]
+|mailhog|https://github.com/mailhog/MailHog[MailHog] instance (for development/testing purposes)|https://artifacthub.io/packages/helm/codecentric/mailhog[MailHog documentation]
+|redis|single https://redis.io/[Redis] master (page caching for webadapter replacement)|https://github.com/bitnami/charts/tree/main/bitnami/redis[Redis chart documentation]
+|redis-cluster|multiple https://redis.io/[Redis] masters (page caching for webadapter replacement)|https://github.com/bitnami/charts/tree/main/bitnami/redis[Redis chart documentation]
+|===
+
+So a `values.yaml` file for the `icm` Helm Chart looks like this:
+
+[source,yaml]
+----
+icm-as:
+  <icm-as configuration>
+icm-web:
+  <icm-web configuration>
+
+ingress-nginx:
+  enabled: true
+  <ingress-nginx configuration>
+
+mailhog:
+  enabled: true
+  <mailhog configuration>
+
+redis:
+  enabled: true
+  <redis configuration>
+
+redis-cluster:
+  enabled: false
+----
+
+This is a development example that deploys (besides the `icm-as` and `icm-web`):
+
+* an Ingress NGINX controller
+* a MailHog instance
+* a single Redis master
+* the Redis cluster is not deployed
+
+[CAUTION]
+When needed either set `redis.enabled=true` or `redis-cluster.enabled=true`, but not both at the same time.

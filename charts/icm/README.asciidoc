@@ -110,3 +110,7 @@ helm dependency update .
 === Local Execution Guide
 
 For detailed instructions on local execution, see link:docs/local-execution.asciidoc[Local Execution Guide].
+
+== Detailed documentation
+
+* link:docs/values-yaml/[values.yaml] documentation
