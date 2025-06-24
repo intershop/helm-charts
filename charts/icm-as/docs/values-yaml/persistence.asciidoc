@@ -3,55 +3,11 @@
 
 :icons: font
 
-ifdef::backend-html5[]
-++++
-<style>
-.mand {
-  color: #e00000;
-}
-.opt {
-  color: #b0adac;
-}
-.cond {
-  color: #FFDC00;
-}
-.tag-audience {
-  font-style: italic;
-}
-.tag-audience::before {
-  content: "@Target Audience: ";
-}
-.tag-since {
-  font-style: italic;
-}
-.tag-since::before {
-  content: "@Since: ";
-}
-.tag-deprecated {
-  font-style: italic;
-}
-.tag-deprecated::before {
-  content: "@Deprecated: ";
-}
-.placeholder {
-  font-style: italic;
-}
-.placeholder::before {
-  content: "<";
-}
-.placeholder::after {
-  content: ">";
-}
-</style>
-++++
-endif::[]
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
 
-:mandatory: icon:check[role="mand"]
-:optional: icon:times[role="opt"]
-:conditional: icon:question[role="cond"]
-
-
-[.tag-audience]#Developer, Test#
+_@Target Audience Developer, Test_
 
 === Description
 
@@ -60,10 +16,10 @@ Configures the used file system storages. The following table lists the attribut
 [cols="1,3,1,1,1",options="header"]
 |===
 |Attribute |Description |Type |Mandatory |Default Value
-|sites|configures the storage for the `sites` volume.|<<_persistenceType,Persistence>>|{optional}|[.placeholder]#<<_sitesDefault,sites default>>#
-|encryption|configures the storage for the `encryption` volume.|<<_persistenceType,Persistence>>|{optional}|[.placeholder]#<<_encryptionDefault,encryption default>>#
-|jgroups|configures the storage for the `jgroups` volume.|<<_persistenceType,Persistence>>|{optional}|[.placeholder]#<<_jgroupsDefault,jgroups default>>#
-|customdata|configures a storage for some custom data.|<<_customdataType,Customdata>>|{optional}|[.placeholder]#<<_customdataDefault,customcata default>>#
+|sites|configures the storage for the `sites` volume.|<<_persistenceType,Persistence>>|{optional}|_<<_sitesDefault,++<++sites default++>++>>_
+|encryption|configures the storage for the `encryption` volume.|<<_persistenceType,Persistence>>|{optional}|_<<_encryptionDefault,++<++encryption default++>++>>_
+|jgroups|configures the storage for the `jgroups` volume.|<<_persistenceType,Persistence>>|{optional}|_<<_jgroupsDefault,++<++jgroups default++>++>>_
+|customdata|configures a storage for some custom data.|<<_customdataType,Customdata>>|{optional}|_<<_customdataDefault,++<++customcata default++>++>>_
 |===
 
 [#_persistenceType]
@@ -112,7 +68,7 @@ Uses an existing storage class and lets the cluster decide how to actually store
 [cols="1,3,1,1,1",options="header"]
 |===
 |Attribute |Description |Type |Mandatory |Default Value
-|storageClass|configures the storage class to be used|<<_storageClassType,StorageClass>>|{mandatory}|[.placeholder]#<<_storageClassDefault,see storageClass default>>#
+|storageClass|configures the storage class to be used|<<_storageClassType,StorageClass>>|{mandatory}|_<<_storageClassDefault,++<++see storageClass default++>++>>_
 |===
 
 [TIP]
