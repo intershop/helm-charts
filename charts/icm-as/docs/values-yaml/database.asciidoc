@@ -3,7 +3,6 @@
 
 :icons: font
 
-ifdef::backend-html5[]
 ++++
 <style>
 .mand {
@@ -44,7 +43,6 @@ ifdef::backend-html5[]
 }
 </style>
 ++++
-endif::[]
 
 :mandatory: icon:check[role="mand"]
 :optional: icon:times[role="opt"]
