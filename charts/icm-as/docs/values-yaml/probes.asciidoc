@@ -1,54 +1,10 @@
 = Documentation about the `values.yaml` attributes belonging to section `probes`
-// GitHub issue: https://github.com/github/markup/issues/1095
 
 :icons: font
 
-ifdef::backend-html5[]
-++++
-<style>
-.mand {
-  color: #e00000;
-}
-.opt {
-  color: #b0adac;
-}
-.cond {
-  color: #FFDC00;
-}
-.tag-audience {
-  font-style: italic;
-}
-.tag-audience::before {
-  content: "@Target Audience: ";
-}
-.tag-since {
-  font-style: italic;
-}
-.tag-since::before {
-  content: "@Since: ";
-}
-.tag-deprecated {
-  font-style: italic;
-}
-.tag-deprecated::before {
-  content: "@Deprecated: ";
-}
-.placeholder {
-  font-style: italic;
-}
-.placeholder::before {
-  content: "<";
-}
-.placeholder::after {
-  content: ">";
-}
-</style>
-++++
-endif::[]
-
-:mandatory: icon:check[role="mand"]
-:optional: icon:times[role="opt"]
-:conditional: icon:question[role="cond"]
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
 
 
 === Description
@@ -58,9 +14,9 @@ Configures the readiness, liveness and startup https://kubernetes.io/docs/tasks/
 [cols="1,3,1,1,1",options="header"]
 |===
 |Attribute |Description |Type |Mandatory |Default Value
-|startup|configures the startup probe.|<<_probeType,Probe>>|{optional}|[.placeholder]#<<_startupDefault,startup default>>#
-|liveness|configures the liveness probe.|<<_probeType,Probe>>|{optional}|[.placeholder]#<<_livenessDefault,liveness default>>#
-|readiness|configures the readiness probe.|<<_probeType,Probe>>|{optional}|[.placeholder]#<<_readinessDefault,readiness default>>#
+|startup|configures the startup probe.|<<_probeType,Probe>>|{optional}|_<<_startupDefault,++<++startup default++>++>>_
+|liveness|configures the liveness probe.|<<_probeType,Probe>>|{optional}|_<<_livenessDefault,++<++liveness default++>++>>_
+|readiness|configures the readiness probe.|<<_probeType,Probe>>|{optional}|_<<_readinessDefault,++<++readiness default++>++>>_
 |===
 
 [#_probeType]

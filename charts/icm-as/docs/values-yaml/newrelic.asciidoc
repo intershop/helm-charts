@@ -1,55 +1,10 @@
 = Documentation about the `values.yaml` attributes belonging to section `newrelic`
-// GitHub issue: https://github.com/github/markup/issues/1095
 
 :icons: font
 
-ifdef::backend-html5[]
-++++
-<style>
-.mand {
-  color: #e00000;
-}
-.opt {
-  color: #b0adac;
-}
-.cond {
-  color: #FFDC00;
-}
-.tag-audience {
-  font-style: italic;
-}
-.tag-audience::before {
-  content: "@Target Audience: ";
-}
-.tag-since {
-  font-style: italic;
-}
-.tag-since::before {
-  content: "@Since: ";
-}
-.tag-deprecated {
-  font-style: italic;
-}
-.tag-deprecated::before {
-  content: "@Deprecated: ";
-}
-.placeholder {
-  font-style: italic;
-}
-.placeholder::before {
-  content: "<";
-}
-.placeholder::after {
-  content: ">";
-}
-</style>
-++++
-endif::[]
-
-:mandatory: icon:check[role="mand"]
-:optional: icon:times[role="opt"]
-:conditional: icon:question[role="cond"]
-
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
 
 === Description
 
@@ -61,8 +16,8 @@ Configures the monitoring user https://newrelic.com/[New Relic]. The following a
 |enabled|enables/disables the monitoring using New Relic (some data is monitored through Kubernetes(New Relic Agent) even if `enabled=false`)|boolean|{optional}|`false`
 |license_key|the New Relic license key as plain text|string|{conditional} mandatory if `licenseKeySecretKeyRef` is not set |-
 |licenseKeySecretKeyRef|a secret key reference pointing to a secret containing the New Relic license. *Takes precedence over `license_key`.* |<<_licenseKeySecretKeyRefType,LicenseKeySecretKeyRef>>|{conditional} mandatory if `license_key` is not set |-
-|metrics|configuration regarding metrics|<<_metricsType,Metrics>>|{optional}|see [.placeholder]#<<_metricsDefault,metrics default>>#
-|apm|configuration regarding APM|<<_apmType,APM>>|{optional}|see [.placeholder]#<<_apmDefault,apm default>>#
+|metrics|configuration regarding metrics|<<_metricsType,Metrics>>|{optional}|see _<<_metricsDefault,++<++metrics default++>++>>_
+|apm|configuration regarding APM|<<_apmType,APM>>|{optional}|see _<<_apmDefault,++<++apm default++>++>>_
 |===
 
 [IMPORTANT]

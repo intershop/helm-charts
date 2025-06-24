@@ -1,57 +1,13 @@
 = Documentation about the `values.yaml` attributes belonging to section `infrastructureMonitoring`
-// GitHub issue: https://github.com/github/markup/issues/1095
 
 :icons: font
 
-ifdef::backend-html5[]
-++++
-<style>
-.mand {
-  color: #e00000;
-}
-.opt {
-  color: #b0adac;
-}
-.cond {
-  color: #FFDC00;
-}
-.tag-audience {
-  font-style: italic;
-}
-.tag-audience::before {
-  content: "@Target Audience: ";
-}
-.tag-since {
-  font-style: italic;
-}
-.tag-since::before {
-  content: "@Since: ";
-}
-.tag-deprecated {
-  font-style: italic;
-}
-.tag-deprecated::before {
-  content: "@Deprecated: ";
-}
-.placeholder {
-  font-style: italic;
-}
-.placeholder::before {
-  content: "<";
-}
-.placeholder::after {
-  content: ">";
-}
-</style>
-++++
-endif::[]
-
-:mandatory: icon:check[role="mand"]
-:optional: icon:times[role="opt"]
-:conditional: icon:question[role="cond"]
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
 
 
-[.tag-audience]#Developer, Tester, DevOps, Ops#
+_@Target Audience: Developer, Tester, DevOps, Ops_
 
 === Description
 
@@ -62,11 +18,11 @@ The following table lists the attributes of the `infrastructureMonitoring` secti
 |===
 |Attribute |Description |Type |Mandatory |Default Value
 |enabled|enable/disable the `infrastructureMonitoring`. If disabled the sidecar is not deployed at all.|boolean|{optional}|`true`
-|image|configures the Docker image to be used for the sidecar|<<_image,Image>>|{optional}|[.placeholder]#<<_imageDefault,see type definition>>#
-|databaseLatency|configures the database latency monitoring|<<_databaseLatency,DatabaseLatency>>|{optional}|[.placeholder]#<<_databaseLatencyDefault,see type definition>>#
-|sitesLatency|configures the sites (volume) latency monitoring|<<_sitesLatency,SitesLatency>>|{optional}|[.placeholder]#<<_sitesLatencyDefault,see type definition>>#
-|sitesReadThroughput|configures the sites (volume) read throughput monitoring|<<_sitesReadThroughput,SitesReadThroughput>>|{optional}|[.placeholder]#<<_sitesReadThroughputDefault,see type definition>>#
-|sitesWriteThroughput|configures the sites (volume) write throughput monitoring|<<_sitesWriteThroughput,SitesWriteThroughput>>|{optional}|[.placeholder]#<<_sitesWriteThroughputDefault,see type definition>>#
+|image|configures the Docker image to be used for the sidecar|<<_image,Image>>|{optional}|_<<_imageDefault,++<++see type definition++>++>>_
+|databaseLatency|configures the database latency monitoring|<<_databaseLatency,DatabaseLatency>>|{optional}|_<<_databaseLatencyDefault,++<++see type definition++>++>>_
+|sitesLatency|configures the sites (volume) latency monitoring|<<_sitesLatency,SitesLatency>>|{optional}|_<<_sitesLatencyDefault,++<++see type definition++>++>>_
+|sitesReadThroughput|configures the sites (volume) read throughput monitoring|<<_sitesReadThroughput,SitesReadThroughput>>|{optional}|_<<_sitesReadThroughputDefault,++<++see type definition++>++>>_
+|sitesWriteThroughput|configures the sites (volume) write throughput monitoring|<<_sitesWriteThroughput,SitesWriteThroughput>>|{optional}|_<<_sitesWriteThroughputDefault,++<++see type definition++>++>>_
 |===
 
 [#_image]

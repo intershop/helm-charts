@@ -1,57 +1,12 @@
 = Documentation about the `values.yaml` attributes belonging to section `mssql`
-// GitHub issue: https://github.com/github/markup/issues/1095
 
 :icons: font
 
-ifdef::backend-html5[]
-++++
-<style>
-.mand {
-  color: #e00000;
-}
-.opt {
-  color: #b0adac;
-}
-.cond {
-  color: #FFDC00;
-}
-.tag-audience {
-  font-style: italic;
-}
-.tag-audience::before {
-  content: "@Target Audience: ";
-}
-.tag-since {
-  font-style: italic;
-}
-.tag-since::before {
-  content: "@Since: ";
-}
-.tag-deprecated {
-  font-style: italic;
-}
-.tag-deprecated::before {
-  content: "@Deprecated: ";
-}
-.placeholder {
-  font-style: italic;
-}
-.placeholder::before {
-  content: "<";
-}
-.placeholder::after {
-  content: ">";
-}
-</style>
-++++
-endif::[]
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
 
-:mandatory: icon:check[role="mand"]
-:optional: icon:times[role="opt"]
-:conditional: icon:question[role="cond"]
-
-
-[.tag-audience]#Developer, Test#
+_@Target Audience: Developer, Test_
 
 === Description
 
@@ -62,15 +17,15 @@ Enables and configures the deployment of a separate pod running an MSSQL databas
 |Attribute |Description |Type |Mandatory |Default Value
 |enabled|enables/disables the deployment of the MSSQL database pod|boolean|{optional}|`false`
 |recreation|if `true` the database/schema is recreated|boolean|{optional}|`false`
-|resources|configures the https://kubernetes.io/docs/tasks/configure-pod-container/assign-pod-level-resources/[`resource`] definitions (`requests`, `limits`) for the MSSQL container|see <<no-section.asciidoc#_example_resources,resources>>|{optional}|[.placeholder]#<<_resourcesDefault,resources default>>#
-|image|configures the Docker image to be used for the MSSQL container|<<_imageType,Image>>|{optional}|[.placeholder]#<<_imageDefault,image default>>#
+|resources|configures the https://kubernetes.io/docs/tasks/configure-pod-container/assign-pod-level-resources/[`resource`] definitions (`requests`, `limits`) for the MSSQL container|see <<no-section.asciidoc#_example_resources,resources>>|{optional}|_<<_resourcesDefault,++<++resources default++>++>>_
+|image|configures the Docker image to be used for the MSSQL container|<<_imageType,Image>>|{optional}|_<<_imageDefault,++<++image default++>++>>_
 |acceptEula|the author of MSSQL requires all users of the software to explicitly access the EULA. This attribute contains the value for this acceptance.|enum {`Y`,`N`}|{optional}|`N`
 |saPassword|the MSSQL contains a script that requires to first create the SA user. This attribute contains the password to be used for this user.|string|{optional}|`1nstershop5A`
 |databaseName|the name of the database to be created during startup on demand.|string|{optional}|`icmdb`
 |user|for the database named by attribute `databaseName` a user is created. This attribute contains the name of that user.|string|{optional}|`icmdbuser`
 |password|for the database named by attribute `databaseName` a user is created. This attribute contains the password of that user.|string|{conditional} mandatory if `passwordSecretKeyRef` is not set |`icmdbpassword`
 |passwordSecretKeyRef|same as `password` but the password comes out of a Kubernetes secret. This attribute is a secret key reference pointing to that secret. *Takes precedence over `password`.* |<<_secretKeyRef,SecretKeyRef>>|{conditional} mandatory if `password` is not set |-
-|persistence|configures where to store the database files.|<<#_storages,Storages>>|{optional}|see [.placeholder]#<<_dataDefault,data default>># and [.placeholder]#<<_backupDefault,backup default>>#
+|persistence|configures where to store the database files.|<<#_storages,Storages>>|{optional}|see _<<_dataDefault,++<++data default++>++>>_ and _<<_backupDefault,++<++backup default++>++>>_
 |===
 
 [CAUTION]
@@ -92,8 +47,8 @@ The MSSQL database requires one storage for its _normal_ data and one for its ba
 [cols="1,3,1,1,1",options="header"]
 |===
 |Attribute |Description |Type |Mandatory |Default Value
-|data|configures the storage for _normal_ data.|<<persistence.asciidoc#_persistenceType,Persistence>>|{optional}|[.placeholder]#<<_dataDefault,data default>>#
-|backup|configures the storage for backup data.|<<persistence.asciidoc#_persistenceType,Persistence>>|{optional}|[.placeholder]#<<_backupDefault,backup default>>#
+|data|configures the storage for _normal_ data.|<<persistence.asciidoc#_persistenceType,Persistence>>|{optional}|_<<_dataDefault,++<++data default++>++>>_
+|backup|configures the storage for backup data.|<<persistence.asciidoc#_persistenceType,Persistence>>|{optional}|_<<_backupDefault,++<++backup default++>++>>_
 |===
 
 [#_imageType]

@@ -1,53 +1,10 @@
 = Documentation about the `values.yaml` attributes belonging to section `database`
-// GitHub issue: https://github.com/github/markup/issues/1095
 
 :icons: font
-
-++++
-<style>
-.mand {
-  color: #e00000;
-}
-.opt {
-  color: #b0adac;
-}
-.cond {
-  color: #FFDC00;
-}
-.tag-audience {
-  font-style: italic;
-}
-.tag-audience::before {
-  content: "@Target Audience: ";
-}
-.tag-since {
-  font-style: italic;
-}
-.tag-since::before {
-  content: "@Since: ";
-}
-.tag-deprecated {
-  font-style: italic;
-}
-.tag-deprecated::before {
-  content: "@Deprecated: ";
-}
-.placeholder {
-  font-style: italic;
-}
-.placeholder::before {
-  content: "<";
-}
-.placeholder::after {
-  content: ">";
-}
-</style>
-++++
 
 :mandatory: image:../images/mandatory.webp[]
 :optional: image:../images/optional.webp[]
 :conditional: image:../images/conditional.webp[]
-
 
 === Description
 

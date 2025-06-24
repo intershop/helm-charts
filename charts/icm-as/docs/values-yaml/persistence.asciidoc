@@ -1,5 +1,4 @@
 = Documentation about the `values.yaml` attributes belonging to section `persistence`
-// GitHub issue: https://github.com/github/markup/issues/1095
 
 :icons: font
 
@@ -196,7 +195,7 @@ existingClaim: my-sites-pvc
 [#_localType]
 ==== Type `Local`
 
-[.tag-audience]#Developer, Tester#
+_@Target Audience: Developer, Tester_
 
 Uses a local file system path to store the data. It contains the following attributes:
 
@@ -221,7 +220,7 @@ The value if the `path` attribute highly depends on the installed Kubernetes clu
 [#_customdataType]
 ==== Type `Customdata`
 
-[.tag-audience]#Developer, Tester#
+_@Target Audience: Developer, Tester_
 
 The type `Customdata` configures a storage for some custom data. It contains the following attributes:
 
@@ -316,5 +315,5 @@ customdata:
 
 [NOTE]
 ====
-[.tag-audience]#Developer, Test#
+_@Target Audience: Developer, Test_
 ====
