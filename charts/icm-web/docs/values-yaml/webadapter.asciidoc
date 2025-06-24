@@ -1,55 +1,10 @@
 = Documentation about the `values.yaml` attributes belonging to section `webadapter`
 
-// GitHub issue: https://github.com/github/markup/issues/1095
-
 :icons: font
 
-ifdef::backend-html5[]
-++++
-<style>
-.mand {
-  color: #e00000;
-}
-.opt {
-  color: #b0adac;
-}
-.cond {
-  color: #FFDC00;
-}
-.tag-audience {
-  font-style: italic;
-}
-.tag-audience::before {
-  content: "@Target Audience: ";
-}
-.tag-since {
-  font-style: italic;
-}
-.tag-since::before {
-  content: "@Since: ";
-}
-.tag-deprecated {
-  font-style: italic;
-}
-.tag-deprecated::before {
-  content: "@Deprecated: ";
-}
-.placeholder {
-  font-style: italic;
-}
-.placeholder::before {
-  content: "<";
-}
-.placeholder::after {
-  content: ">";
-}
-</style>
-++++
-endif::[]
-
-:mandatory: icon:check[role="mand"]
-:optional: icon:times[role="opt"]
-:conditional: icon:question[role="cond"]
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
 
 
 === Description
@@ -70,9 +25,9 @@ The following table lists attributes that are specific to the `webadapter`:
 |===
 |Attribute |Description |Type |Mandatory |Default Value
 |disableHTTP2|enables/disables the usage of the HTTP/2 protocol (`disableHTTP2=true` means HTTP 1.1)|boolean|{optional}|`false`
-|customHttpdConfig|[.tag-deprecated]#since 0.14.0, use link:config-map-mounts.asciidoc[configMapMounts] instead#|boolean|{optional}|`false`
+|customHttpdConfig|_@Deprecated since 0.14.0, use link:config-map-mounts.asciidoc[configMapMounts] instead_|boolean|{optional}|`false`
 |configMapMounts|allows to mount values stored in Kubernetes https://kubernetes.io/docs/concepts/configuration/configmap/[configMaps] to be mounted as files inside the `icm-web-wa` container|link:config-map-mounts.asciidoc[ConfigMapMounts]|{optional}|`[]`
-|customSSLCertificates|[.tag-deprecated]#since 0.14.0, SSL/TLS termination is done by the link:ingress.asciidoc[ingress]#|boolean|{optional}|`false`
+|customSSLCertificates|_@Deprecated since 0.14.0, SSL/TLS termination is done by the link:ingress.asciidoc[ingress]_|boolean|{optional}|`false`
 |probes|probes configuration (startup, liveness, readiness)|link:probes.asciidoc[Probes]|{optional}|[.placeholder]#see link:config-map-mounts.asciidoc[Probes] defaults#
 |schedulePodsPreferredEvenlyAcrossNodes|If `true` and no link:no-section.asciidoc#_example_nodeSelector[nodeSelector] is defined the `icm-web-wa` pods are evenly distributed over the available nodes |boolean|{optional}|`true`
 |===
