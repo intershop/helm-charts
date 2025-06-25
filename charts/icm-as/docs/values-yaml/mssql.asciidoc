@@ -28,15 +28,9 @@ Enables and configures the deployment of a separate pod running an MSSQL databas
 |persistence|configures where to store the database files.|<<#_storages,Storages>>|{optional}|see _<<_dataDefault,++<++data default++>++>>_ and _<<_backupDefault,++<++backup default++>++>>_
 |===
 
-[CAUTION]
+[IMPORTANT]
 ====
-When enabling the deployment of the MSSQL database, keep in mind to also configure the usage of this database in the link:database.asciidoc[database] section. Use the following attribute values (when using default values):
-
-* `jdbcURL`: `jdbc:sqlserver://icm-as-mssql:1433;database=icmdb;`
-* `jdbcUser`: `icmdbuser`
-* `jdbcPassword`: `icmdbpassword`
-
-*Attention*: the host name inside the `jdbcURL` depends on the release name, chart name, <<no-section.asciidoc#_example_nameOverride,`nameOverride`>> and <<no-section.asciidoc#_example_nameOverride,`fullnameOverride`>>.
+When enabling the deployment of the MSSQL database, the configuration made in the link:database.asciidoc[database] section is overridden to ensure that the `icm-as-server` is using this MSSQL database.
 ====
 
 [#_storages]

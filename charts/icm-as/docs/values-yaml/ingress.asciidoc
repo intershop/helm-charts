@@ -8,7 +8,7 @@
 
 === Description
 
-Configures if and how an https://kubernetes.io/docs/concepts/services-networking/ingress/[ingress] configuration is deployed that points to use for the `icm-as-server` service. The following table lists the attributes of the `ingress` section:
+Configures if and how an https://kubernetes.io/docs/concepts/services-networking/ingress/[ingress] configuration is deployed that points to the `icm-as-server` service. The following table lists the attributes of the `ingress` section:
 
 [CAUTION]
 ====

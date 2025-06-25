@@ -104,5 +104,5 @@ $(pwd):/data quay.io/helmpack/chart-testing:v3.8.0 ct lint --config ct_icm-as.ya
 
 == Detailed documentation
 
-* link:docs/values-yaml/[values.yaml] documentation
-* link:docs/how-to.md/[How to …] reach a certain goal
+* link:docs/values-yaml.asciidoc[values.yaml] documentation
+* link:docs/how-to.asciidoc/[How to …] reach a certain goal
