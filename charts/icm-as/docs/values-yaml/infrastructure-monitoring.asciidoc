@@ -123,7 +123,7 @@ The used file is created by the sidecar container during startup if it does not 
 [#_sitesWriteThroughput]
 ==== Type `SitesWriteThroughput`
 
-The type `SitesReadThroughput` configures the sites (volume) write throughput monitoring. Not the current throughput is monitored but how much data can be written in a certain amount of time. To monitor the write throughput the sidecar container writes a defined file to the file system of the sites volume (see link:persistence.asciidoc[persistence]). It contains the following attributes:
+The type `SitesWriteThroughput` configures the sites (volume) write throughput monitoring. Not the current throughput is monitored but how much data can be written in a certain amount of time. To monitor the write throughput the sidecar container writes a defined file to the file system of the sites volume (see link:persistence.asciidoc[persistence]). It contains the following attributes:
 
 [cols="1,3,1,1,1",options="header"]
 |===
@@ -138,7 +138,7 @@ The type `SitesReadThroughput` configures the sites (volume) write throughput mo
 .Default `SitesWriteThroughput`
 [source,yaml]
 ----
-sitesReadThroughput:
+sitesWriteThroughput:
   enabled: false
   interval: 60S
   path: /intershop/sites/.writeThroughputProbing

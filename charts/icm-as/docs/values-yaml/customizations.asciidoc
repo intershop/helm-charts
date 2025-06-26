@@ -10,7 +10,7 @@
 
 === Description
 
-Defines the customizations to be deployed into the `icm-as` container. The customizations are defined as a yaml object containing attributes that define the customizations. The name of the is used as a symbolic name for the customization to be deployed. The following table lists the attributes of the `customizations` section:
+Defines the customizations to be deployed into the `icm-as` container. All the customizations to be deployed are defined as a yaml object. This yaml object contains 0 to n attributes. Each of these attributes define a customization to be deployed via another yaml object (see table below). The name of the attribute is used as a symbolic name for the customization. The following table lists the attributes of the `customizations` section:
 
 [cols="1,3,1,1,1",options="header"]
 |===

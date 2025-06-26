@@ -28,7 +28,7 @@ The following table gives a short overview about the different sections (sorted 
 |link:values-yaml/image.asciidoc[image]|`icm-as-server` image configuration
 |link:values-yaml/image-pull-secrets.asciidoc[imagePullSecrets]|image pull secrets
 |link:values-yaml/ingress.asciidoc[ingress]|ingress configuration
-|link:values-yaml/infrastructureMonitoring.asciidoc[infrastructureMonitoring]|infrastructure monitoring configuration
+|link:values-yaml/infrastructure-monitoring.asciidoc[infrastructureMonitoring]|infrastructure monitoring configuration
 |link:values-yaml/job.asciidoc[job]|job server configuration
 |link:values-yaml/jgroups.asciidoc[jgroups]|jgroups configuration
 |link:values-yaml/jvm.asciidoc[jvm]|`icm-as-server` JVM configuration
