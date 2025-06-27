@@ -4,7 +4,8 @@ Installs the ICM application server independently.
 
 == Prerequisites Details
 
-* helm+kubectl
+* Helm
+* kubectl
 * Kubernetes 1.14+
 
 == Chart Details
@@ -15,9 +16,9 @@ This chart will do the following:
 
 == Installing the Chart
 
-=== Docker pull secret
+=== Docker Pull Secret
 
-Create a secret for a docker registry where the images are coming from. The name of the secret must be equal to the configured secrets under `image.secret` within the application deployment. By default, the secret name is `dockerhub`.
+Create a secret for the Docker registry from which the images are coming. The secret's name must match the configured secret under `image.secret` within the application deployment. The default secret name is `dockerhub`.
 
 [source,bash]
 ----
@@ -29,7 +30,7 @@ kubectl create secret docker-registry <yourDockerRegistryName> --docker-server=<
 ==== Sites
 
 `local`, `cluster`, `azurefiles`, `nfs`, `existingClaim` are possible persistence options.
-The default is `local` where `persistence.sites.local.path` need to be set to a valid local folder.
+The default is `local`, where `persistence.sites.local.path` must be set to a valid local folder.
 
 ==== jGroups
 
@@ -38,15 +39,15 @@ The default is `emptyDir`.
 
 === Database
 
-The needed database connection could be configured via section `database`. The chart also supports to deploy a (containerized) MSSQL database. If this is enabled the deployed MSSQL database is used instead of the one configured via section `database`.
+The necessary database connection can be configured in the `database` section. The chart also supports deploying a (containerized) MSSQL database. If enabled, the deployed MSSQL database is used instead of the one configured in the `database` section.
 
 === Replication/Staging
 
-A replication/staging scenario is supported via the section `replication`. To use this feature just deploy 2 separate icm-as (+ icm-web) one for the source (_edit_) system and one for the target (_live_) system.
+The section `replication` supports a replication/staging scenario. To use this feature, deploy two separate icm-as (+ icm-web), one for the source (_edit_) system and one for the target (_live_) system.
 
-=== Add the Intershop Helm repository
+=== Add the Intershop Helm Repository
 
-Before installing Intershop helm charts, you need to add the https://intershop.github.io/helm-charts[Intershop helm repository] to your helm client.
+Before installing Intershop helm charts, add the https://intershop.github.io/helm-charts[Intershop helm repository] to your Helm client.
 
 [source,bash]
 ----
@@ -56,7 +57,7 @@ helm repo update
 
 === Install Chart
 
-To install the chart with the release name `icm-as`
+To install the chart with the release name `icm-as`:
 
 [source,bash]
 ----
@@ -65,7 +66,7 @@ helm install my-release intershop/icm-as --values=values.yaml --namespace icm-as
 
 ==== Job Server
 
-If `job.enable==true` the job server functionality of the application server is activated and a child chart link:../icm-job/README.md[icm-job] is deployed.
+If `job.enable==true`, the job server functionality of the application server is activated and a child chart link:../icm-job/README.md[icm-job] is deployed.
 During development you might need to update the dependencies:
 
 [source,bash]
@@ -77,7 +78,7 @@ helm dependencies update .
 
 ==== helm-unit
 
-There are helm-unit tests to support development and secure several functionality.
+There are helm-unit tests to support development and ensure functionality.
 
 Prerequisites are:
 
@@ -102,7 +103,7 @@ docker run -it --network host --workdir=/data --volume <my kube config>:/root/.k
 $(pwd):/data quay.io/helmpack/chart-testing:v3.8.0 ct lint --config ct_icm-as.yaml
 ----
 
-== Detailed documentation
+== Detailed Documentation
 
 * link:docs/values-yaml.asciidoc[values.yaml] documentation
 * link:docs/how-to.asciidoc/[How to …] reach a certain goal
