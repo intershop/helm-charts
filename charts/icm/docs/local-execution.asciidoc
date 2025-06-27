@@ -5,69 +5,67 @@
 
 toc::[]
 
-== 📌 Introduction
+== Introduction
 
 This document describes how to run the application locally using the *Helm Chart* and compares this method with execution via the ZIP archive.
 
-== ✅ Prerequisites
+== Prerequisites
 
-Before starting, ensure the following are installed:
+Before starting, ensure the following tools are installed:
 
 * *Docker* (with Kubernetes enabled if using Docker Desktop)
 * *Helm* (`helm version` should return a valid version)
 * *kubectl* (`kubectl version --client` should work)
 * *WSL* (if using Linux within Windows)
 
-== 🔧 Installation and Configuration
+== Installation and Configuration
 
-=== 0️⃣ Navigate to the correct directory
-
+. Navigate to the correct directory:
++
 [source,sh]
 ----
 cd /path/to/your/project/icm
 ----
 
-=== 1️⃣ Verify Kubernetes Access
-
-Run:
-
+. Verify Kubernetes access by runnning:
++
 [source,sh]
 ----
 kubectl cluster-info
 ----
-
++
 If using *Docker Desktop Kubernetes*, ensure WSL can access it:
-
++
 [source,sh]
 ----
 export KUBECONFIG=/mnt/c/Users/<your-username>/.kube/config
 ----
-
++
 Make this change permanent by adding it to `~/.bashrc`:
-
++
 [source,sh]
 ----
 echo 'export KUBECONFIG=/mnt/c/Users/<your-username>/.kube/config' >> ~/.bashrc
 source ~/.bashrc
 ----
 
-=== 2️⃣ Update Helm Dependencies
-
+. Update Helm Dependencies:
++
 [source,sh]
 ----
 helm dependency update ../icm-as
 helm dependency update .
 ----
 
-=== 3️⃣ Verify and Create Kubernetes Secrets
-
+. Verify and create Kubernetes secrets:
++
 [source,sh]
 ----
 kubectl get secrets -n icm
 ----
-
++
 If the `icmbuildsnapshot` secret does not exist, create it:
-
++
 [source,sh]
 ----
 kubectl create secret docker-registry icmbuildsnapshot \
@@ -78,7 +76,7 @@ kubectl create secret docker-registry icmbuildsnapshot \
       --namespace icm
 ----
 
-== 🚀 Run the Local Test
+== Run the Local Test
 
 Execute the script:
 
@@ -89,7 +87,7 @@ bash start-test-local.sh
 
 Follow the displayed instructions.
 
-== 🔍 Check Pod Status
+== Check Pod Status
 
 [source,sh]
 ----
@@ -103,7 +101,7 @@ If any pods show `Error` or `ImagePullBackOff`, check their logs:
 kubectl logs -f <pod-name> -n icm
 ----
 
-== ⚠️ Troubleshooting Common Issues
+== Troubleshooting Common Issues
 
 === Issue: `ImagePullBackOff`
 
@@ -130,7 +128,7 @@ helm upgrade my-release . --values=values.yaml --namespace icm
 export KUBECONFIG=/mnt/c/Users/<your-username>/.kube/config
 ----
 
-== 📊 Comparison: Helm Chart vs ZIP
+== Comparison: Helm Chart vs ZIP
 
 [cols="1,2,2", options="header"]
 |===
@@ -141,9 +139,9 @@ export KUBECONFIG=/mnt/c/Users/<your-username>/.kube/config
 | Dependencies | Managed by Kubernetes | May require manual installation
 |===
 
-== 📌 Possible Optimizations
+== Possible Optimizations
 
-* *Detect if Kubernetes is not installed and start a local cluster in a Docker container*.
+Detect if Kubernetes is not installed and start a local cluster in a Docker container:
 
 ** Check if Kubernetes is running:
 +

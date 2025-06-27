@@ -1,9 +1,9 @@
-= Using configMapsMounts to mount environment-specific files
+= Using configMapsMounts to Mount Environment-specific Files
 
 :toc: macro
 :toclevels: 2
 
-This document explains how to manage environment-specific files in a GitOps environments repository and mount them as volumes in the respective deployment.
+This document explains how to manage environment-specific files in a GitOps environments repository and mount them as volumes in the corresponding deployment.
 It is primarily created for Intershop customers and partners and refers to certain Intershop environment-specific functionalities.
 
 toc::[]
@@ -12,7 +12,7 @@ toc::[]
 
 * Access to the GitOps environments repository (e.g., the `environments` repository)
 * ICM-Helmchart version 2.13.3 or higher (configMapMounts feature requirement)
-* The *configMapsMounts* functionality is currently only available for ICM-Web and specifically for the webadapter deployment.
+* The *configMapsMounts* functionality is currently only available for ICM-Web and specifically for the Web Adapter deployment.
 * Install `kubectl` for local testing. Follow the instructions at https://kubernetes.io/docs/tasks/tools/[Install and Set Up kubectl].
 
 [NOTE]
@@ -44,7 +44,7 @@ configMapGenerator:
 
 === 3. Create Name Reference Configuration File
 
-. Create `name-reference-config.yaml`
+. Create `name-reference-config.yaml`.
 . Add the following content:
 
 [source,yaml]
@@ -74,7 +74,7 @@ configurations:
 
 === 5. Configure ConfigMap Mount in HelmRelease
 
-. Edit the ICM HelmRelease file
+. Edit the ICM HelmRelease file.
 . Add/modify the `configMapMounts` section under `spec/values/icm-web/webadapter`:
 
 [source,yaml]
@@ -98,12 +98,13 @@ spec:
 
 . Use the following command to build the resources and verify the changes:
 
++
 [source,bash]
 ----
 kubectl kustomize <DIRECTORY_OF_KUSTOMIZATION>
 ----
 
-. Check the output to ensure that the ConfigMap and its references are correctly generated.
+. Check the output to ensure that the ConfigMap and its references were generated correctly.
 . Verify that the `configMapMounts` section in the HelmRelease is properly configured with the expected values.
 
 For more information on the `kubectl kustomize` command, refer to the official Kubernetes documentation at https://kubernetes.io/docs/reference/kubectl/generated/kubectl_kustomize/[kubectl documentation].
@@ -138,7 +139,7 @@ environments/
 * Location: `int/icm/configs/robots.txt`
 * This file will override the default `robots.txt` in the pod.
 
-. Configure ConfigMap in `kustomization.yaml`
+. Configure ConfigMap in `kustomization.yaml`:
 +
 [source,yaml]
 ----
@@ -153,7 +154,7 @@ configurations:
   - name-reference-config.yaml
 ----
 
-. Configure Name Reference in `name-reference-config.yaml`
+. Configure `nameReference` in `name-reference-config.yaml`:
 +
 [source,yaml]
 ----
@@ -221,9 +222,9 @@ spec:
 
 After deployment:
 
-* The original `/intershop/public/robots.txt` in the container will be replaced
-* The Web Adapter will use the custom `robots.txt` from the integration environment
-* The file will have permissions set to 440 (read-only)
+* The original `/intershop/public/robots.txt` in the container will be replaced.
+* The Web Adapter will use the custom `robots.txt` from the integration environment.
+* The file will have permissions set to 440 (read-only).
 
 == Additional Information
 
@@ -237,7 +238,7 @@ In general, binary files should not be stored or maintained in the GitOps enviro
 * CLI configs: .goreleaser.yml, .sops.yaml
 * Flux v1 config: .flux.yaml
 
-If small binary files such as PNG or JPG images need to be used with the `configMapMounts` functionality, they should be renamed with a custom extension in the GitOps environments repository, such as `.png_file` or `.jpg_file`. These files can then be renamed back to their original extensions directly in the `configMapGenerator` configuration by specifying the desired key name.
+If you need to include small binary files (such as PNG or JPG images) with the `configMapMounts` functionality, rename these files in your GitOps environments repository to use a custom extension (for example, `.png_file` or `.jpg_file`). These files can then be renamed back to their original extensions directly in the `configMapGenerator` configuration by specifying the desired key name.
 
 [NOTE]
 The size of a ConfigMap is limited to 1MiB. For more details, refer to the official Kubernetes documentation: https://kubernetes.io/docs/concepts/configuration/configmap/[ConfigMap Limitations].
@@ -251,7 +252,7 @@ The size of a ConfigMap is limited to 1MiB. For more details, refer to the offic
 
 . Update the `kustomization.yaml` to include the renamed file and restore its original name:
 +
-By specifying the file in the format `image.png=configs/image.png_file`, you assign the file in the ConfigMap the key `image.png`. This allows you to reference the file with the desired key name in your application.
+By specifying the file in the format `image.png=configs/image.png_file`, you assign the key `image.png` to the file in the ConfigMap. This allows you to reference the file with the desired key name in your application.
 +
 [source,yaml]
 ----
@@ -286,7 +287,7 @@ Kustomize does not allow including files from outside the current directory. Whe
 
 `error: security; file '<DIRECTORY_OUTSIDE_OF_KUSTOMIZATION>' is not in or below '<DIRECTORY_OF_KUSTOMIZATION>'`
 
-To resolve this issue, instead of directly including files from the external directory, create a `kustomization.yaml` file in the external directory. Configure everything for the external directory in this file, and then reference this `kustomization.yaml` as a resource in the main `kustomization.yaml`.
+To resolve this issue, do not include files directly from the external directory. Instead, create a `kustomization.yaml` file in the external directory. Configure everything for the external directory in this file, and then reference this `kustomization.yaml` as a resource in the main `kustomization.yaml`.
 
 *Example Folder Structure*
 
@@ -332,7 +333,7 @@ resources:
 
 === Variable Substitution
 
-Intershop supports variable substitution to dynamically replace variables in your configuration files. Variables matching the pattern `${<VariableName>}` are replaced with their corresponding values during the build process. If no value is defined for a variable, it will default to an empty string.
+Intershop supports variable substitution to dynamically replace variables in your configuration files. Variables matching the pattern `${<VariableName>}` are replaced with their corresponding values during the build process. If no value is defined for a variable, it defaults to an empty string.
 Intershop creates and maintains these variables to ensure consistency and proper configuration across different environments.
 
 *Example:*
