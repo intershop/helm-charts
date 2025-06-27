@@ -6,7 +6,7 @@
 
 ### Chore
 
-* bump versions of icm-as:minor
+* Bump versions of icm-as:minor
 
 ### Feat
 
