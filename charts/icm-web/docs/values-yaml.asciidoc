@@ -1,4 +1,4 @@
-= Configuration Using the `values.yaml` File
+= Configuring icm-web Using the `values.yaml` File
 
 :icons: font
 
@@ -9,7 +9,7 @@
 
 == Target Audience
 
-This document is intended for users of the Intershop Commerce Management Application Server (icm-as) Helm Chart who want to understand how to configure the chart using the `values.yaml` file. This explicitly includes developers, system administrators, and DevOps engineers who are responsible for deploying and managing the Intershop Commerce Management Application Server in a Kubernetes environment.
+This document is intended for users of the Intershop Commerce Management Web Adapter (icm-web) Helm Chart who want to understand how to configure the chart using the `values.yaml` file. This explicitly includes developers, system administrators, and DevOps engineers who are responsible for deploying and managing the Intershop Commerce Management Web Adapter in a Kubernetes environment.
 
 If a part of this document only targets a specific audience, it is explicitly marked as such.
 

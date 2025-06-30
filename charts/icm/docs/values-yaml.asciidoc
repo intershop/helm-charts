@@ -4,7 +4,7 @@
 
 == Target Audience
 
-This document is intended for users of the Intershop Commerce Management Application Server (icm-as) Helm Chart who want to configure the chart using the `values.yaml` file. This explicitly includes developers, system administrators, and DevOps engineers who are responsible for deploying and managing the Intershop Commerce Management Application Server in a Kubernetes environment.
+This document is intended for users of the Intershop Commerce Management (icm) Helm Chart who want to configure the chart using the `values.yaml` file. This explicitly includes developers, system administrators, and DevOps engineers who are responsible for deploying and managing Intershop Commerce Management in a Kubernetes environment.
 
 If parts of this document target a specific audience, they are explicitly marked as such.
 
