@@ -19,7 +19,7 @@ This chart will do the following:
 
 === Add the Intershop Helm Repository
 
-Before installing Intershop Helm charts, you need to add the https://intershop.github.io/helm-charts[Intershop helm repository] to your Helm client:
+Before installing Intershop Helm charts, you need to add the https://intershop.github.io/helm-charts[Intershop helm-charts repository] to your Helm client:
 
 [source,bash]
 ----

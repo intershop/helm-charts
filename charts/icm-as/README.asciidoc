@@ -47,7 +47,7 @@ The section `replication` supports a replication/staging scenario. To use this f
 
 === Add the Intershop Helm Repository
 
-Before installing Intershop helm charts, add the https://intershop.github.io/helm-charts[Intershop helm repository] to your Helm client.
+Before installing Intershop Helm charts, add the https://intershop.github.io/helm-charts[Intershop helm-charts repository] to your Helm client.
 
 [source,bash]
 ----
