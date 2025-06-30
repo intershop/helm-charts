@@ -97,10 +97,8 @@ This helm chart also allows you to execute Intershop HtmlUnit tests via a testru
 There are already preconfigured value-files for local test execution, orchestrated by a bash script.
 Follow these steps to execute a test:
 
-.
-
-Be sure that each included chart is up-to-date:
-
+. Be sure that each included chart is up-to-date:
++
 [source,bash]
 ----
 helm dependency update ../icm-as

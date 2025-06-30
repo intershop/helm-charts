@@ -95,8 +95,9 @@ helm unittest charts/icm-as
 
 Prerequisites are:
 
-* https://github.com/kubernetes-sigs/kind[kind cluster]
-* Install cluster: `kind create cluster --config icm-as.yaml`
+* Install https://github.com/kubernetes-sigs/kind[kind cluster]: `kind create cluster --config icm-as.yaml`
+* Execute ct lint:
+
 [source,bash]
 ----
 docker run -it --network host --workdir=/data --volume <my kube config>:/root/.kube/config:ro --volume
