@@ -27,7 +27,7 @@ Enabling this ingress only makes sense if the link:web-layer.asciidoc[`webLayer`
 
 [WARNING]
 ====
-Although the default value for the `tls` is an empty array, this default rarely makes sense because the ingress should usually perform TLS termination.
+Although the default value for the `tls` is an empty array, this default is usually not practical. In most cases, the ingress should handle TLS termination.
 ====
 
 [#_annotations]
