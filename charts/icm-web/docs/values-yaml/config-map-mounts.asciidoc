@@ -7,19 +7,19 @@
 :conditional: image:../images/conditional.webp[]
 
 
-=== Description
+== Description
 
-Allows to mount values stored in Kubernetes https://kubernetes.io/docs/concepts/configuration/configmap/[configMaps] to be mounted as files inside the `icm-web-wa` container. The `configMapMounts` section is a list of objects containing the following attributes:
+Allows values stored in Kubernetes https://kubernetes.io/docs/concepts/configuration/configmap/[configMaps] to be mounted as files inside the `icm-web-wa` container. The `configMapMounts` section contains a list of objects with the following attributes:
 
 [cols="1,3,1,1,1",options="header"]
 |===
 |Attribute |Description |Type |Mandatory |Default Value
-|name|the name of the volume mount to be used|string|{mandatory}|-
-|configMapName|the name of the https://kubernetes.io/docs/concepts/configuration/configmap/[configMap]|string|{mandatory}|-
-|mountPath|absolute path of the folder where to mount the file. The complete file path is then [.placeholder]#`mountPath`#/[.placeholder]#`fileName`#.|path|{mandatory}|-
-|fileName|name of the file inside the Kubernetes https://kubernetes.io/docs/concepts/configuration/configmap/[configMap]|path|{mandatory}|-
+|name|The name of the volume mount to be used|string|{mandatory}|-
+|configMapName|The name of the https://kubernetes.io/docs/concepts/configuration/configmap/[configMap]|string|{mandatory}|-
+|mountPath|Absolute path of the folder where to mount the file. The complete file path is [.placeholder]#`mountPath`#/[.placeholder]#`fileName`#.|path|{mandatory}|-
+|fileName|Name of the file inside the Kubernetes https://kubernetes.io/docs/concepts/configuration/configmap/[configMap]|path|{mandatory}|-
 |fileMode|https://www.linuxfoundation.org/blog/blog/classic-sysadmin-understanding-linux-file-permissions[file permissions] of the mounted file|file permissions (octal)|{optional}|`440`
-|readOnly|if `true` the file is mounted read-only|string|{optional}|`false`
+|readOnly|If `true`, the file is mounted read-only|string|{optional}|`false`
 |===
 
 [CAUTION]
@@ -27,7 +27,7 @@ Allows to mount values stored in Kubernetes https://kubernetes.io/docs/concepts/
 Mounted files will hide files that are already present in the target directory coming out of the container image. Pay attention to not overwrite important files.
 ====
 
-=== Example
+== Example
 
 [source,yaml]
 ----
@@ -40,10 +40,10 @@ configMapMounts:
     readOnly: true <5>
 ----
 
-Given the https://kubernetes.io/docs/concepts/configuration/configmap/[configMap] `icm-web-httpd-conf` containing the file `httpd.conf` zhe configuration above _overwrites_ the default `/intershop/conf/httpd/httpd.conf`-file by from this https://kubernetes.io/docs/concepts/configuration/configmap/[configMap]:
+Given a https://kubernetes.io/docs/concepts/configuration/configmap/[configMap] `icm-web-httpd-conf` that contains the file `httpd.conf`, the configuration above _overwrites_ the default `/intershop/conf/httpd/httpd.conf`-file:
 
-<1> use mount name `httpd-config`
-<2> get data from https://kubernetes.io/docs/concepts/configuration/configmap/[configMap] `icm-web-httpd-conf`
-<3> reference configMap entry `httpd.conf` and make it available at `/intershop/conf/httpd/httpd.conf`
-<4> set file permissions to `440` (readable by owner and group, not writable)
-<5> mount the file read-only (somehow redundant because of the file permissions)
+<1> Use mount name `httpd-config`
+<2> Get data from https://kubernetes.io/docs/concepts/configuration/configmap/[configMap] `icm-web-httpd-conf`
+<3> Reference configMap entry `httpd.conf` and make it available at `/intershop/conf/httpd/httpd.conf`
+<4> Set file permissions to `440` (readable by owner and group, not writable)
+<5> Mount the file read-only (somehow redundant because of the file permissions)
