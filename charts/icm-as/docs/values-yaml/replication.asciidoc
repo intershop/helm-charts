@@ -7,31 +7,31 @@
 :conditional: image:../images/conditional.webp[]
 
 
-=== Description
+== Description
 
 Configures the `icm-as-server` regarding mass data and object replication. The following attributes are available:
 
 [cols="1,3,1,1,1",options="header"]
 |===
 |Attribute |Description |Type |Mandatory |Default Value
-|enabled|if `true` the deployed ICM is a replication system|boolean|{optional}|`false`
-|role|defines whether this `icm-as-server` is a source (_edit_) or a target (_life_) system|enum {`source`,`target`}|{mandatory}|-
-|source|configures all the connections to the source (_edit_) system|<<_source,Source>>|{mandatory}|-
-|targets|configures all the connections to all the target (_life_) systems|<<_targets,Targets>>|{mandatory}|-
+|enabled|If `true`, the deployed ICM is a replication system|boolean|{optional}|`false`
+|role|Defines whether this `icm-as-server` is a source (_edit_) or a target (_life_) system|enum {`source`,`target`}|{mandatory}|-
+|source|Configures all the connections to the source (_edit_) system|<<_source,Source>>|{mandatory}|-
+|targets|Configures all the connections to all the target (_life_) systems|<<_targets,Targets>>|{mandatory}|-
 |===
 
 [#_source]
-==== Type `Source`
+=== Type `Source`
 
-The type `Source` contains the following attributes:
+The `Source` type contains the following attributes:
 
 [cols="1,3,1,1,1",options="header"]
 |===
 |Attribute |Description |Type |Mandatory |Default Value
-|webserverUrl|the most external *HTTPS* URL pointing to the source system|url|{mandatory}|-
-|databaseLink|name of the database link pointing to the database of the source system|string|{conditional} mandatory if `databaseName` is not set|-
-|databaseName|name of the database of the source system|string|{conditional} mandatory if `databaseLink` is not set|-
-|databaseUser|user of the database of the source system|string|{mandatory}|-
+|webserverUrl|The most external *HTTPS* URL pointing to the source system|url|{mandatory}|-
+|databaseLink|Name of the database link pointing to the source system database|string|{conditional} mandatory if `databaseName` is not set|-
+|databaseName|Name of the source system database|string|{conditional} mandatory if `databaseLink` is not set|-
+|databaseUser|User of the source system database|string|{mandatory}|-
 |===
 
 [IMPORTANT]
@@ -41,29 +41,29 @@ Either `databaseLink` (connect using a database link) (x)or `databaseName` (conn
 
 [CAUTION]
 ====
-The `webserverUrl` is meant to be the most external *HTTPS* URL pointing to the source system. This is normally the component e.g. ingress that does the SSL/TLS termination.
+The `webserverUrl` is meant to be the most external *HTTPS* URL pointing to the source system. This is usually the component, e.g., ingress, that does the SSL/TLS termination.
 ====
 
 [#_targets]
-==== Type `Targets`
+=== Type `Targets`
 
-The type `Targets` lists all the connected target systems (1 to n). Each entry in this list is a yaml object of type <<_target,`Target`>>. That means the type `Targets` contains 1 to n attributes (each of type <<_target,`Target`>>). The attribute name is than a symbolic name of the target system.
+The `Targets` type lists all the connected target systems (1 to n). Each entry in this list is a yaml object of type <<_target,`Target`>>. This means that the `Targets` type contains 1 to n attributes (each of type <<_target,`Target`>>). The attribute name is a symbolic name of the target system.
 
 [#_target]
-==== Type `Target`
+=== Type `Target`
 
-The type `Target` defines a single target system. It contains the following attributes:
+The `Target` type defines a single target system. It contains the following attributes:
 
 [cols="1,3,1,1,1",options="header"]
 |===
 |Attribute |Description |Type |Mandatory |Default Value
-|webserverUrl|the most external *HTTPS* URL pointing to the target system|url|{mandatory}|-
-|databaseName|name of the database of the target system|string|{mandatory}|-
+|webserverUrl|The most external *HTTPS* URL pointing to the target system|url|{mandatory}|-
+|databaseName|Name of the database of the target system|string|{mandatory}|-
 |===
 
 [CAUTION]
 ====
-The `webserverUrl` is meant to be the most external *HTTPS* URL pointing to the target system. This is normally the component e.g. ingress that does the SSL/TLS termination.
+The `webserverUrl` is meant to be the most external *HTTPS* URL pointing to the target system. This is usually the component, e.g., ingress, that performs the SSL/TLS termination.
 ====
 
 
@@ -88,4 +88,4 @@ replication:
       databaseUser: icmdb-life2
 ----
 
-Configure a source (_edit_) system and connected to two target (_life_) systems. The configuration for each of the target systems should look identical except for the attribute `role` that has to be `target`.
+Configure a source (_edit_) system connected to two target (_life_) systems. The configuration for each target system should be identical, except for the `role` attribute, which must be `target`.

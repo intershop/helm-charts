@@ -6,20 +6,21 @@
 :optional: image:../images/optional.webp[]
 :conditional: image:../images/conditional.webp[]
 
-=== Description
+== Description
 
-Configures the usage of the `jobserver`. The `jobserver` is a separate `icm-as` pod (as a Kubernetes https://kubernetes.io/docs/concepts/workloads/controllers/job/[Job]) that is deployed by the `ICM Job Controller` which uses a custom resource called `ICMJob`. So this section actually controls if and how such a resource is deployed to be picked up by the `ICM Job Controller`. The following table lists the attributes of the `job` section:
+Configures the usage of the `jobserver`. The `jobserver` is a separate `icm-as` pod (as a Kubernetes https://kubernetes.io/docs/concepts/workloads/controllers/job/[Job]) that is deployed by the `ICM Job Controller` which uses a custom resource called `ICMJob`. This section controls whether and how such a resource is deployed and picked up by the `ICM Job Controller`.
+The following table lists the attributes of the `job` section:
 
 [cols="1,3,1,1,1",options="header"]
 |===
 |Attribute |Description |Type |Mandatory |Default Value
-|enabled|enable/disable the `jobserver` at all. If disabled all jobs (depending on their configuratons) will be executed by regular `icm-as-server` pods.|boolean|{optional}|`false`
-|suspend|If true, job-server-support will be available but no jobs will be created.|boolean|{optional}|`false`
-|pollInterval|Sets the polling interval of the ICM Job Controller in seconds.|int|{optional}|`30`
-|failedJobsHistoryLimit|Number of failed K8s Jobs to keep before removing.|int|{optional}|`1`
-|successfulJobsHistoryLimit|Number of successful K8s Jobs to keep before removing.|int|{optional}|`3`
-|nameSpecific|Whether to determine the current outstanding jobs from the `icm-as-server` using the [.placeholder]#serverName# or only using the `serverGroup=JOB`.|boolean|{optional}|`false`
-|serverName|Custom serverName to be used when determining the current outstanding jobs from the `icm-as-server`.|string|{optional}|`jobserver`
+|enabled|Enable/disable the `jobserver`. If disabled, all jobs (depending on their configuratons) will be executed by regular `icm-as-server` pods.|boolean|{optional}|`false`
+|suspend|If true, job-server-support will be available but no jobs will be created|boolean|{optional}|`false`
+|pollInterval|Sets the polling interval of the ICM Job Controller in seconds|int|{optional}|`30`
+|failedJobsHistoryLimit|Number of failed K8s jobs to keep before removing|int|{optional}|`1`
+|successfulJobsHistoryLimit|Number of successful K8s jobs to keep before removing|int|{optional}|`3`
+|nameSpecific|Determines whether outstanding jobs from the `icm-as-server` are identified based on [.placeholder]#serverName# or exclusively by using `serverGroup=JOB`|boolean|{optional}|`false`
+|serverName|Custom serverName to be used when determining the current outstanding jobs from the `icm-as-server`|string|{optional}|`jobserver`
 |===
 
 === Example
@@ -37,6 +38,6 @@ job:
 ====
 When enabling the `jobserver`:
 
-* please make sure that the `ICM Job Controller` is also deployed in your cluster. Otherwise, the `jobserver` will not be able to execute any jobs.
-* the K8s jobs deployed be the `ICM Job Controller` get the server group `JOB` assigned, all regular `icm-as-server` pods get the server groups `BOS` and `WFS` assigned. So jobs only assigned server group `JOB` will be executed by `jobserver` pods.
+* Ensure that the `ICM Job Controller` is also deployed in your cluster. Otherwise, the `jobserver` will not be able to execute any jobs.
+* The K8s jobs deployed by the `ICM Job Controller` get the server group `JOB` assigned. All regular `icm-as-server` pods get the server groups `BOS` and `WFS` assigned. Therefore, only jobs assigned to the server group `JOB` will be executed by `jobserver` pods.
 ====

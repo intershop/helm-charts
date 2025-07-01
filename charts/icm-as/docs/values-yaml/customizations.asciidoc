@@ -7,8 +7,7 @@
 :optional: icon:times[role="opt"]
 :conditional: icon:question[role="cond"]
 
-
-=== Description
+== Description
 
 Defines the customizations to be deployed into the `icm-as` container. All the customizations to be deployed are defined as a yaml object. This yaml object contains 0 to n attributes. Each of these attributes define a customization to be deployed via another yaml object (see table below). The name of the attribute is used as a symbolic name for the customization. The following table lists the attributes of the `customizations` section:
 

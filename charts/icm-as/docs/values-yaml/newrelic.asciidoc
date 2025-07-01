@@ -6,7 +6,7 @@
 :optional: image:../images/optional.webp[]
 :conditional: image:../images/conditional.webp[]
 
-=== Description
+== Description
 
 Configures the monitoring using https://newrelic.com/[New Relic]. The following attributes are available:
 
@@ -31,9 +31,9 @@ The New Relic configuration generated from configured values will use the link:o
 ====
 
 [#_licenseKeySecretKeyRefType]
-==== Type `LicenseKeySecretKeyRef`
+=== Type `LicenseKeySecretKeyRef`
 
-The type `LicenseKeySecretKeyRef` contains the following attributes to reference a value inside a Kubernetes secret:
+The `LicenseKeySecretKeyRef` type contains the following attributes to reference a value inside a Kubernetes secret:
 
 [cols="1,3,1,1,1",options="header"]
 |===
@@ -43,9 +43,9 @@ The type `LicenseKeySecretKeyRef` contains the following attributes to reference
 |===
 
 [#_metricsType]
-==== Type `Metrics`
+=== Type `Metrics`
 
-The type `Metrics` contains the following attributes:
+The `Metrics` type contains the following attributes:
 
 [cols="1,3,1,1,1",options="header"]
 |===
@@ -54,9 +54,9 @@ The type `Metrics` contains the following attributes:
 |===
 
 [#_apmType]
-==== Type `APM`
+=== Type `APM`
 
-The type `APM` contains the following attributes:
+The `APM` type contains the following attributes:
 
 [cols="1,3,1,1,1",options="header"]
 |===

@@ -6,9 +6,9 @@
 :optional: image:../images/optional.webp[]
 :conditional: image:../images/conditional.webp[]
 
-=== Description
+== Description
 
-Configures if and how an https://kubernetes.io/docs/concepts/services-networking/ingress/[ingress] configuration is deployed that points to the `icm-as-server` service. The following table lists the attributes of the `ingress` section:
+Configures if and how an https://kubernetes.io/docs/concepts/services-networking/ingress/[ingress] configuration that points to the `icm-as-server` service is deployed. The following table lists the attributes of the `ingress` section:
 
 [CAUTION]
 ====
@@ -18,24 +18,24 @@ Enabling this ingress only makes sense if the link:web-layer.asciidoc[`webLayer`
 [cols="1,3,1,1,1",options="header"]
 |===
 |Attribute |Description |Type |Mandatory |Default Value
-|enabled|enables/disables the deployment of the ingress configuration|boolean|{optional}|`false`
-|className|the name of the ingress class to be used|string|{optional}|[.placeholder]#https://kubernetes.io/docs/concepts/services-networking/ingress/#default-ingress-class[default ingress class]#
-|annotations|annotations to be applied to the ingress configuration|<<_annotations,Annotations>>|{optional}|`{}`
-|hosts|lists the hosts for the ingress rules|yaml array containing 0 to n <<_hostDefinition,HostDefinition>> objects|{mandatory}|-
-|tls|configures the SSL/TLS termination of the processed hosts|yaml array containing 0 to n <<_tlsDefinition,TLSDefinition>> objects|{optional}|`[]`
+|enabled|Enables/disables the deployment of the ingress configuration|Boolean|{optional}|`false`
+|className|The name of the ingress class to be used|String|{optional}|[.placeholder]#https://kubernetes.io/docs/concepts/services-networking/ingress/#default-ingress-class[default ingress class]#
+|annotations|Annotations to be applied to the ingress configuration|<<_annotations,Annotations>>|{optional}|`{}`
+|hosts|Lists the hosts for the ingress rules|yaml array containing 0 to n <<_hostDefinition,HostDefinition>> objects|{mandatory}|-
+|tls|Configures the SSL/TLS termination of the processed hosts|yaml array containing 0 to n <<_tlsDefinition,TLSDefinition>> objects|{optional}|`[]`
 |===
 
 [WARNING]
 ====
-Although the default for attribute `tls` is an empty array, that default most often does not make any sense because in most cases the ingress should do the TLS termination.
+Although the default value for the `tls` is an empty array, this default rarely makes sense because the ingress should usually perform TLS termination.
 ====
 
 [#_annotations]
-==== Type `Annotations`
+=== Type `Annotations`
 
-The type `Annotations` is a yaml object containing key-value pairs that are applied as annotations. It contains the following attributes:
+The `Annotations` type is a yaml object containing key-value pairs that are applied as annotations. It contains the following attributes:
 
-===== Example
+==== Example
 [source,yaml]
 ----
 annotations:
@@ -45,39 +45,39 @@ annotations:
 ----
 
 [#_hostDefinition]
-==== Type `HostDefinition`
+=== Type `HostDefinition`
 
-The type `HostDefinition` configures the rules applied to the ingress configuration (e.g. which host / path is routed to which backend service). It contains the following attributes:
+The `HostDefinition` type configures the rules applied to the ingress configuration (e.g., which host / path is routed to which backend service). It contains the following attributes:
 
 [cols="1,3,1,1,1",options="header"]
 |===
 |Attribute |Description |Type |Mandatory |Default Value
-|host|name of the host|string|{mandatory}|-
-|paths|configures the paths to be processed|yaml array containing 0 to n <<_hostPath,HostPath>> objects|{mandatory}|-
+|host|Name of the host|string|{mandatory}|-
+|paths|Configures the paths to be processed|yaml array containing 0 to n <<_hostPath,HostPath>> objects|{mandatory}|-
 |===
 
 [#_hostPath]
-==== Type `HostPath`
+=== Type `HostPath`
 
-The type `HostPath` configures the path mapping applied to the ingress configuration (e.g. which path is routed to which backend service). It contains the following attributes:
+The `HostPath` type configures the path mapping applied to the ingress configuration (e.g., which path is routed to which backend service). It contains the following attributes:
 
 [cols="1,3,1,1,1",options="header"]
 |===
 |Attribute |Description |Type |Mandatory |Default Value
-|path|the path to be processed|string|{mandatory}|-
-|pathType|the https://kubernetes.io/docs/concepts/services-networking/ingress/#path-types[type of the path]|https://kubernetes.io/docs/concepts/services-networking/ingress/#path-types[path type]|{mandatory}|-
+|path|Path to be processed|string|{mandatory}|-
+|pathType|https://kubernetes.io/docs/concepts/services-networking/ingress/#path-types[Type of the path]|https://kubernetes.io/docs/concepts/services-networking/ingress/#path-types[path type]|{mandatory}|-
 |===
 
 [#_tlsDefinition]
-==== Type `TLSDefinition`
+=== Type `TLSDefinition`
 
-The type `TLSDefinition` configures which TLS secret should be used for the assigned host(s). It contains the following attributes:
+The `TLSDefinition` type configures which TLS secret should be used for the assigned host(s). It contains the following attributes:
 
 [cols="1,3,1,1,1",options="header"]
 |===
 |Attribute |Description |Type |Mandatory |Default Value
-|secretName|name of secret|string|{mandatory}|-
-|hosts|lists the hosts that should use the certificate|yaml array containing 0 to n host names|{mandatory}|-
+|secretName|Name of secret|string|{mandatory}|-
+|hosts|Lists the hosts that should use the certificate|yaml array containing 0 to n host names|{mandatory}|-
 |===
 
 === Example

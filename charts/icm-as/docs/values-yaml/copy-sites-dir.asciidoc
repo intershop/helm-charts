@@ -8,20 +8,20 @@
 
 _@Target Audience: Developer, Tester, DevOps_
 
-=== Description
+== Description
 
-Allows to have files copied from a directory into the sites directory/volume of the `icm-as` container. This is
+Allows files to be copied from a directory into the sites directory/volume of the `icm-as` container. This is
 done by an https://kubernetes.io/docs/concepts/workloads/pods/init-containers/[init container] using the `icm-as` image that runs before the `icm-as` container starts.
 The `copySitesDir` section contains the following attributes:
 
 [cols="1,3,1,1,1",options="header"]
 |===
 |Attribute |Description |Type |Mandatory|Default Value
-|enabled|enable/disable this feature|boolean|{optional}|`false`
-|fromDir|source folder of the files/folder to be copied|absolute path|{mandatory}|-
-|resultDir|folder for a `sites.txt` containing all the files inside of the `sites` volume|absolute path|{mandatory}|-
-|chmodUser|user name/uid to be applied to all the files inside of the sites volume|user name/uid|{mandatory}|-
-|chmodGroup|group name/gid to be applied to all the files inside of the sites volume|group name/gid|{mandatory}|-
+|enabled|Enable/disable this feature|boolean|{optional}|`false`
+|fromDir|Source folder of the files/folder to be copied|absolute path|{mandatory}|-
+|resultDir|Folder for a `sites.txt` containing all the files inside of the `sites` volume|absolute path|{mandatory}|-
+|chmodUser|User name/uid to be applied to all the files inside of the sites volume|user name/uid|{mandatory}|-
+|chmodGroup|Group name/gid to be applied to all the files inside of the sites volume|group name/gid|{mandatory}|-
 |===
 
 === Example

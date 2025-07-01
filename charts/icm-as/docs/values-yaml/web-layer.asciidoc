@@ -6,37 +6,37 @@
 :optional: image:../images/optional.webp[]
 :conditional: image:../images/conditional.webp[]
 
-=== Description
+== Description
 
-Configures how the `icm-as` processes requests
+Configures how the `icm-as` processes requests:
 
-* on its own (without the `webadapter`).
-* using the `webadapter`
+* On its own (without the `webadapter`)
+* Using the `webadapter`
 
 The following table lists the attributes of the `webLayer` section:
 
 [CAUTION]
 ====
-Enabling the `webLayer` only makes sense if the link:ingress.asciidoc[`ingress`] is also enabled. Otherwise, the `icm-as` will not be able to process the requests as expected.
+It only makes sense to enable the `webLayer` if the link:ingress.asciidoc[`ingress`] is also enabled. Otherwise, `icm-as` will not be able to process the requests as expected.
 ====
 
 [cols="1,3,1,1,1",options="header"]
 |===
 |Attribute |Description |Type |Mandatory |Default Value
-|enabled|enables/disables the `webLayer`|boolean|{optional}|`false`
-|redis|enablement and configuration of a https://redis.io/[redis]-cache|<<_redis,Redis>>|{optional}|`redis.enabled=false`
+|enabled|Enables/disables the `webLayer`|boolean|{optional}|`false`
+|redis|Enablement and configuration of a https://redis.io/[redis]-cache|<<_redis,Redis>>|{optional}|`redis.enabled=false`
 |===
 
 [#_redis]
-==== Type `Redis`
+=== Type `Redis`
 
-The type `Redis` enables/disables and configures a https://redis.io/[redis]-cache client to be used to connect to a https://redis.io/[redis]-server which is used to cache HTTP responses. It contains the following attributes:
+The `Redis` type enables/disables and configures a https://redis.io/[redis]-cache client to be used to connect to a https://redis.io/[redis]-server which is used to cache HTTP responses. It contains the following attributes:
 
 [cols="1,3,1,1,1",options="header"]
 |===
 |Attribute |Description |Type |Mandatory |Default Value
-|enabled|enable/disable the redis|boolean|{optional}|`false`
-|config|configures the https://redisson.pro/docs/configuration/#using-yaml[redis client] inside the `icm-as`|https://redisson.pro/docs/configuration/#using-yaml[redis client config]|{optional}|[.placeholder]#see below#
+|enabled|Enable/disable the redis|boolean|{optional}|`false`
+|config|Configures the https://redisson.pro/docs/configuration/#using-yaml[redis client] inside the `icm-as`|https://redisson.pro/docs/configuration/#using-yaml[redis client config]|{optional}|[.placeholder]#see below#
 |===
 
 [source,yaml]

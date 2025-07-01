@@ -6,7 +6,7 @@
 :optional: image:../images/optional.webp[]
 :conditional: image:../images/conditional.webp[]
 
-=== Description
+== Description
 
 Configures the operational context (aka _environment_) the ICM is running in. The following attributes are available:
 

@@ -8,7 +8,7 @@
 
 _@Target Audience: Developer, Test_
 
-=== Description
+== Description
 
 Enables and configures the deployment of a separate pod running an MSSQL database. The following table lists the attributes of the `mssql` section:
 
@@ -34,7 +34,7 @@ When enabling the deployment of the MSSQL database, the configuration made in th
 ====
 
 [#_storages]
-==== `Storages`
+=== `Storages`
 
 The MSSQL database requires one storage for its _normal_ data and one for its backup data. So the `Storages` type contains the following attributes:
 
@@ -46,9 +46,9 @@ The MSSQL database requires one storage for its _normal_ data and one for its ba
 |===
 
 [#_imageType]
-==== Type `Image`
+=== Type `Image`
 
-The type `Image` configures the Docker image to be used for the MSSQL container. It contains the following attributes:
+The `Image` type configures the Docker image to be used for the MSSQL container. It contains the following attributes:
 
 [cols="1,3,1,1,1",options="header"]
 |===
@@ -62,9 +62,9 @@ In contrast to other image configurations, this configuration does not allow to 
 ====
 
 [#_secretKeyRef]
-==== Type `SecretKeyRef`
+=== Type `SecretKeyRef`
 
-The type `SecretKeyRef` contains the following attributes to reference a value inside of a Kubernetes secret:
+The `SecretKeyRef` type contains the following attributes to reference a value inside of a Kubernetes secret:
 
 [cols="1,3,1,1,1",options="header"]
 |===
@@ -119,7 +119,7 @@ image:
       path: <local mssql backup folder>
 ----
 
-==== Example
+=== Example
 
 The following example uses most of the default values:
 

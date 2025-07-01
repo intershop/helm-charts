@@ -6,13 +6,13 @@
 :optional: image:../images/optional.webp[]
 :conditional: image:../images/conditional.webp[]
 
-=== Description
+== Description
 
 Configures the https://kubernetes.io/docs/tasks/configure-pod-container/security-context/[security context] to be used by the `icm-as-server` and `jobserver` pods. The attributes of the `podSecurityContext` section are defined by https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.33/#podsecuritycontext-v1-core. The attribute values are used as is for the `securityContext`s of the `icm-as-server` and the `jobserver` pods.
 
 [NOTE]
 ====
-There are 2 special attributes: `runAsUser` and `runAsGroup`. These are additionally applied to all volumes that use the storage type <<persistence.asciidoc#_azurefilesType, azurefiles>>.
+There are two special attributes: `runAsUser` and `runAsGroup`. These are additionally applied to all volumes that use the storage type <<persistence.asciidoc#_azurefilesType, azurefiles>>.
 ====
 
 === Default

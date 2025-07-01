@@ -6,13 +6,12 @@
 :optional: image:../images/optional.webp[]
 :conditional: image:../images/conditional.webp[]
 
+== Description
 
-=== Description
+Allows to define environment variables for `icm-as-server` and `jobserver` containers. The environment variables are defined as a yaml object containing attributes that specify the variable name and value. The attribute's name is used as the environment variable's name, and the attribute's value is used as the environment variable's value. These environment variables control the behavior of the Intershop Commerce Management Application Server at different levels:
 
-Allows to define environment variables for `icm-as-server` and `jobserver` containers. The environment variables are defined as a yaml object containing attributes that define the variable's name and value. The attribute's name itself is used as the environment variable's name and the value as its value. These environment variables control the behavior of the Intershop Commerce Management Application Server on different levels:
-
-* startup of the container
-* runtime configuration of the application server
+* Startup of the container
+* Runtime configuration of the application server
 
 [TIP]
 ====
@@ -29,7 +28,7 @@ environment:
   INTERSHOP_WEBSERVERSECUREURL: https://my-host.intershop.com:443 <3>
 ----
 
-This example defines 3 environment variables:
+This example defines three environment variables:
 
 <1> CARTRIDGE_LIST: `ft_icm_as`
 <2> INTERSHOP_WEBSERVERURL: `http://my-host.intershop.com:80`

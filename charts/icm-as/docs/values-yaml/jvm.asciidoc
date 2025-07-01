@@ -8,7 +8,7 @@
 
 _@Target Audience: Developer, Test_
 
-=== Description
+== Description
 
 Configures the https://eclipse.dev/openj9/docs/cmdline_specifying/[command line options for the JVM] of the `icm-as-server`. The following table lists the attributes of the `jvm` section:
 
@@ -19,9 +19,9 @@ Configures the https://eclipse.dev/openj9/docs/cmdline_specifying/[command line 
 |===
 
 [#_debug]
-==== Type `Debug`
+=== Type `Debug`
 
-The type `Debug` enables/disables JVM debugging. It contains the following attributes:
+The `Debug` type enables/disables JVM debugging. It contains the following attributes:
 
 [cols="1,3,1,1,1",options="header"]
 |===
@@ -44,7 +44,7 @@ debug:
   enabled: false
 ----
 
-==== Example
+=== Example
 [source,yaml]
 ----
 jvm:
