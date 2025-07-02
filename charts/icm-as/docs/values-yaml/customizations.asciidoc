@@ -1,4 +1,4 @@
-= Documentation about the `values.yaml` attributes belonging to section `customizations`
+= `values.yaml` Attributes in Section `customizations`
 // GitHub issue: https://github.com/github/markup/issues/1095
 
 :icons: font

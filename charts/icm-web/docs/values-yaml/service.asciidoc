@@ -1,4 +1,4 @@
-= Documentation about the `values.yaml` attributes belonging to section `service`
+= `values.yaml` Attributes in Section `service`
 
 :icons: font
 

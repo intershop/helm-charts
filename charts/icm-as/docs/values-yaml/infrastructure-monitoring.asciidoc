@@ -1,4 +1,4 @@
-= Documentation about the `values.yaml` attributes belonging to section `infrastructureMonitoring`
+= `values.yaml` Attributes in Section `infrastructureMonitoring`
 
 :icons: font
 

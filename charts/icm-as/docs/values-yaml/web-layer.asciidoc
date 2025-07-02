@@ -1,4 +1,4 @@
-= Documentation about the `values.yaml` attributes belonging to section `webLayer`
+= `values.yaml` Attributes in Section `webLayer`
 
 :icons: font
 

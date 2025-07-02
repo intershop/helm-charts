@@ -1,4 +1,4 @@
-= Documentation about the `values.yaml` attributes belonging to section `podBinding`
+= `values.yaml` Attributes in Section `podBinding`
 
 :icons: font
 

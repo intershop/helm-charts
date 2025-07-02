@@ -1,4 +1,4 @@
-= Documentation about the `values.yaml` attributes belonging to section `database`
+= `values.yaml` Attributes in Section `database`
 
 :icons: font
 

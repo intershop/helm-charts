@@ -1,4 +1,4 @@
-= Documentation about the `values.yaml` attributes belonging to section `newrelic`
+= `values.yaml` Attributes in Section `newrelic`
 
 :icons: font
 

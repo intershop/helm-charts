@@ -1,4 +1,4 @@
-= Documentation about the `values.yaml` attributes belonging to section `job`
+= `values.yaml` Attributes in Section `job`
 
 :icons: font
 

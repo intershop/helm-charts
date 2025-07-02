@@ -1,4 +1,4 @@
-= Documentation about the `values.yaml` attributes belonging to no particular section
+= `values.yaml` Attributes Belonging to No Particular Section
 
 :icons: font
 

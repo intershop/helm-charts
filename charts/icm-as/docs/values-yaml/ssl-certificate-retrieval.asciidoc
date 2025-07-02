@@ -1,4 +1,4 @@
-= Documentation about the `values.yaml` attributes belonging to section `sslCertificateRetrieval`
+= `values.yaml` Attributes in Section `sslCertificateRetrieval`
 
 :icons: font
 

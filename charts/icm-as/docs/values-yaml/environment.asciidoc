@@ -1,4 +1,4 @@
-= Documentation about the `values.yaml` attributes belonging to section `environment`
+= `values.yaml` Attributes in Section `environment`
 
 :icons: font
 

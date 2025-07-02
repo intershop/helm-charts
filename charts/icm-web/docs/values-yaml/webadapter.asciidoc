@@ -1,11 +1,10 @@
-= Documentation about the `values.yaml` attributes belonging to section `webadapter`
+= `values.yaml` Attributes in Section `webadapter`
 
 :icons: font
 
 :mandatory: image:../images/mandatory.webp[]
 :optional: image:../images/optional.webp[]
 :conditional: image:../images/conditional.webp[]
-
 
 == Description
 

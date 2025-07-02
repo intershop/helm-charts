@@ -1,4 +1,4 @@
-= Documentation about the `values.yaml` attributes belonging to section `podSecurityContext`
+= `values.yaml` Attributes in Section `podSecurityContext`
 
 :icons: font
 

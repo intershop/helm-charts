@@ -1,4 +1,4 @@
-= Documentation about the `values.yaml` attributes belonging to section `image`
+= `values.yaml` Attributes in Section `image`
 
 :icons: font
 

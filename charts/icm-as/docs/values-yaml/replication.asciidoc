@@ -1,4 +1,4 @@
-= Documentation about the `values.yaml` attributes belonging to section `replication`
+= `values.yaml` Attributes in Section `replication`
 
 :icons: font
 

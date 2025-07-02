@@ -1,4 +1,4 @@
-= Documentation about the `values.yaml` attributes belonging to section `resources`
+= `values.yaml` Attributes in Section `resources`
 
 :mandatory: image:../images/mandatory.webp[]
 :optional: image:../images/optional.webp[]

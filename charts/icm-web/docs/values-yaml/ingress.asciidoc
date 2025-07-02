@@ -1,4 +1,4 @@
-= Documentation about the `values.yaml` attributes belonging to section `ingress`
+= `values.yaml` Attributes in Section `ingress`
 
 :icons: font
 

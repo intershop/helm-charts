@@ -1,4 +1,4 @@
-= Documentation about the `values.yaml` attributes belonging to section `probes`
+= `values.yaml` Attributes in Section `probes`
 
 :icons: font
 

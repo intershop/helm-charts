@@ -1,4 +1,4 @@
-= Documentation about the `values.yaml` attributes belonging to section `jvm`
+= `values.yaml` Attributes in Section `jvm`
 
 :icons: font
 

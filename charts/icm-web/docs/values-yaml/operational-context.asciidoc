@@ -1,4 +1,4 @@
-= Documentation about the `values.yaml` attributes belonging to section `operationalContext`
+= `values.yaml` Attributes in Section `operationalContext`
 
 :icons: font
 
