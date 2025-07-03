@@ -1,4 +1,18 @@
 
+<a name="icm-as-2.9.1"></a>
+## [icm-as-2.9.1](https://github.com/intershop/helm-charts/compare/icm-as-2.9.0...icm-as-2.9.1)
+
+> 2025-06-10
+
+### Chore
+
+* bump versions of icm-as:patch
+
+### Fix
+
+* **icm:** consume infrastructure-probing:3.0.0 ([#1018](https://github.com/intershop/helm-charts/issues/1018))
+
+
 <a name="icm-as-2.9.0"></a>
 ## [icm-as-2.9.0](https://github.com/intershop/helm-charts/compare/icm-as-2.8.5...icm-as-2.9.0)
 
@@ -6,7 +20,8 @@
 
 ### Chore
 
-* Bump versions of icm-as:minor
+* generated changelog+release notes for icm-as:minor
+* bump versions of icm-as:minor
 
 ### Feat
 
