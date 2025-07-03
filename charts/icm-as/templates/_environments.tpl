@@ -62,7 +62,7 @@ env:
 {{ include "icm-as.envDatabasePassword" (list "INTERSHOP_JDBC_PASSWORD" .Values.mssql.passwordSecretKeyRef .Values.mssql.password) -}}
 {{- else }}
 - name: INTERSHOP_DATABASETYPE
-  value: "{{ .Values.database.type }}"
+  value: "{{ .Values.database.type | default "mssql" }}"
 - name: INTERSHOP_JDBC_URL
   value: "{{ .Values.database.jdbcURL }}"
 - name: INTERSHOP_JDBC_USER
@@ -253,9 +253,16 @@ expecting to get called like:
 {{- /* secretKeyRef has precedence over plainPassword */ -}}
 - name: {{ $envName }}
 {{- if $secretKeyRef }}
+  {{- if not ($secretKeyRef.name) }}
+    {{- fail "Error: missing value at database.jdbcPasswordSecretKeyRef.name" }}
+  {{- end }}
+  {{- if not ($secretKeyRef.key) }}
+    {{- fail "Error: missing value at database.jdbcPasswordSecretKeyRef.key" }}
+  {{- end }}
   valueFrom:
     secretKeyRef:
-{{- toYaml $secretKeyRef | nindent 6 }}
+      name: {{ $secretKeyRef.name | quote }}
+      key: {{ $secretKeyRef.key | quote }}
 {{- else }}
   value: "{{ $plainPassword }}"
 {{- end }}

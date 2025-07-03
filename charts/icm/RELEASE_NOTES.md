@@ -6,7 +6,7 @@
 
 ### Chore
 
-* bump versions of icm:patch
+* Bump versions of icm:patch
 
 ### Fix
 

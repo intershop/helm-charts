@@ -6,9 +6,9 @@
 
 ### Chore
 
-* bump versions of icm:patch icm-as:patch icm-replication:patch
+* Bump versions of icm:patch icm-as:patch icm-replication:patch
 
 ### Fix
 
-* version comparision for replication fixed ([#974](https://github.com/intershop/helm-charts/issues/974))
+* Version comparision for replication fixed ([#974](https://github.com/intershop/helm-charts/issues/974))
 

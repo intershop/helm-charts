@@ -19,6 +19,7 @@ podAnnotations: {}
 #  myAnnotation: true
 
 # define pod binding if required
+# @Deprecated since 2.9.2 (https://github.com/Azure/aad-pod-identity/issues/1349) replaced by workload identity (https://azure.github.io/azure-workload-identity/docs/)
 podBinding:
   enabled: false
   binding: <name-of-the-binding>
@@ -35,10 +36,10 @@ image:
 
 ## define a secret for a container registry
 dockerSecret:
-  enabled: false
+  enabled: true
   name: "dockerhub"
-  username: "<your registry username>"
-  password: "<your registry password>"
+  username: "kiese"
+  password: "kiesepw"
 
 ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace
 ## or by the above dockerSecrets section.

@@ -1,0 +1,35 @@
+= Configuring icm-web Using the `values.yaml` File
+
+:icons: font
+
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
+
+
+== Target Audience
+
+This document is intended for users of the Intershop Commerce Management Web Adapter (icm-web) Helm Chart who want to understand how to configure the chart using the `values.yaml` file. This explicitly includes developers, system administrators, and DevOps engineers who are responsible for deploying and managing the Intershop Commerce Management Web Adapter in a Kubernetes environment.
+
+If a part of this document only targets a specific audience, it is explicitly marked as such.
+
+== Sections Overview
+
+The following table gives a short overview about the different sections (sorted alphabetically):
+
+[cols="1,3",options="header"]
+|===
+|Section |Topic
+|link:values-yaml/no-section.asciidoc[+<none>+]|Attributes without any section
+|link:values-yaml/agent.asciidoc[agent]|Web Adapter agent (`icm-web-waa`) configuration
+|link:values-yaml/app-server-connection.asciidoc[appServerConnection]|Connection to the `icm-as-server` pods
+|link:values-yaml/environment.asciidoc[environment]|Environment variables
+|link:values-yaml/image-pull-secrets.asciidoc[imagePullSecrets]|Image pull secrets
+|link:values-yaml/ingress.asciidoc[ingress]|Ingress configuration
+|link:values-yaml/operational-context.asciidoc[operationalContext]|Operational context configuration
+|link:values-yaml/persistence.asciidoc[persistence]|Persistence / volumes configuration
+|link:values-yaml/pod-security-context.asciidoc[podSecurityContext]|Pod security context
+|link:values-yaml/resources.asciidoc[resources]|Configures the resource definitions (requests, limits) for the icm-as-server and the jobserver containers
+|link:values-yaml/service.asciidoc[service]|Service configuration
+|link:values-yaml/webadapter.asciidoc[webadapter]|Web Adapter (`icm-web-wa`) configuration
+|===

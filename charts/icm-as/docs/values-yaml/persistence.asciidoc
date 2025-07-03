@@ -1,0 +1,319 @@
+= `values.yaml` Attributes in Section `persistence`
+
+:icons: font
+
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
+
+_@Target Audience Developer, Test_
+
+== Description
+
+Configures the used file system storages. The following table lists the attributes of the `persistence` section:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|sites|Configures the storage for the `sites` volume|<<_persistenceType,Persistence>>|{optional}|_<<_sitesDefault,++<++sites default++>++>>_
+|encryption|Configures the storage for the `encryption` volume|<<_persistenceType,Persistence>>|{optional}|_<<_encryptionDefault,++<++encryption default++>++>>_
+|jgroups|Configures the storage for the `jgroups` volume|<<_persistenceType,Persistence>>|{optional}|_<<_jgroupsDefault,++<++jgroups default++>++>>_
+|customdata|Configures a storage for some custom data|<<_customdataType,Customdata>>|{optional}|_<<_customdataDefault,++<++customcata default++>++>>_
+|===
+
+[#_persistenceType]
+=== Type `Persistence`
+
+The `Persistence` type configures the storage for a particular volume. It supports a list of different storage types:
+
+[cols="1,3,1",options="header"]
+|===
+|Type |Description| Attributes
+|emptyDir|Use an empty (volatile) directory that has the same lifecycle as the pod (lost on restart)|see <<_emptyDirType,Empty Dir>>
+|cluster|Use an existing storage class and let the cluster decide how to actually store the data. Most often a https://kubernetes.io/docs/concepts/storage/persistent-volumes/[persistent volume] is provisioned on demand.|see <<_clusterType,Cluster>>
+|nfs|Use an NFS server to store the data|see <<_nfsType,NFS>>
+|azurefiles|Use an Azure Files share to store the data|see <<_azurefilesType,AzureFiles>>
+|static|Use a pre-existing persistent volume to store the data|see <<_staticType,Static>>
+|existingClaim|Use an existing https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims[persistent volume claim (PFC)] to store the data|see <<_existingClaimType,ExistingClaim>>
+|local|Use a local file system path to store the data (*development only*)|see <<_localType,Local>>
+|===
+
+The `Persistence` type contains exactly 1 subsection according to the selected type (one of the types listed above). Additionally, it contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|size|Size of the persistent volume|Format compatible to https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/[K8s quantity values]|{optional}|[.placeholder]#depends on the volume#
+|type|Defines the storage type|enum {`cluster`, `nfs`, `azurefiles`, `static`, `existingClaim`, `local`}|{optional}|[.placeholder]#depends on the volume#
+|===
+
+[#_emptyDirType]
+=== Type `EmptyDir`
+
+Uses an empty (volatile) directory that has the same lifecycle as the pod (lost on restart). It contains no attributes at all. So using it is as simple as:
+
+[source,yaml]
+----
+sites:
+  size: 1Gi
+  type: emptyDir
+----
+
+[#_clusterType]
+=== Type `Cluster`
+
+Uses an existing storage class and lets the cluster decide how to actually store the data. It contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|storageClass|Configures the storage class to be used|<<_storageClassType,StorageClass>>|{mandatory}|_<<_storageClassDefault,++<++see storageClass default++>++>>_
+|===
+
+[TIP]
+====
+The `Cluster` type often is referenced as *dynamic* provisioning, because the storage class is used to dynamically provision a persistent volume (PV) on demand.
+====
+
+[#_storageClassType]
+==== Type `StorageClass`
+Configures the storage class to be used. It contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|existingClass|Name of an existing storage class|string|{conditional} if `create=false`|-
+|create|If `true`, the storage class to be used is created|boolean|{conditional} if `existingClass` is not set|`false`
+|mountOptions|The https://kubernetes.io/docs/concepts/storage/storage-classes/#mount-options[mount options] to be used|yaml array|{optional} but only relevant if `create=true`|[.placeholder]#empty#
+|skuName|Defines the storage classes' parameter `skuName`|string|{optional} but only relevant if `create=true`|-
+|===
+
+=== Example
+[source,yaml]
+----
+cluster:
+  storageClass:
+    create: true <1>
+    skuName: Standard_LRS <2>
+    mountOptions: <3>
+    - uid=150
+    - gid=150
+    - dir_mode=0777
+    - file_mode=0777
+    - mfsymlinks
+    - cache=strict
+    - actimeo=30
+----
+
+<1> Create the storage class
+<2> Use `skuName=Standard_LRS` (only relevant for Azure storage classes)
+<3> Use several mount options
+
+[#_nfsType]
+=== Type `NFS`
+
+Uses an NFS server to store the data. It contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|server|IP or hostname of the NSF server|string|{mandatory}|-
+|path|Path of the NSF share|path|{mandatory}|-
+|===
+
+=== Example
+[source,yaml]
+----
+nfs:
+  server: storage.my-icm.com
+  path: /icm/sites
+----
+
+[#_azurefilesType]
+=== Type `AzureFiles`
+
+Uses an Azure Files share to store the data. It contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|shareName|Name of the Azure Files share|string|{mandatory}|-
+|secretName|Name of the Kubernetes secret that contains the credentials for the access to the Azure Files https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview[storage account]|path|{mandatory}|-
+|===
+
+[NOTE]
+====
+The storage account to be used and the file share inside must be created before deploying the chart.
+====
+
+=== Example
+[source,yaml]
+----
+azurefiles:
+  shareName: icm-as-share
+  secretName: icm-as-share-secret
+----
+
+[#_staticType]
+=== Type `Static`
+
+Uses an Azure Files share to store the data. It contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|name|Name of the persistent volume (PV) to be used|string|{mandatory}|-
+|storageClass|Name of the storage class to be used|string|{mandatory}|-
+|===
+
+[TIP]
+====
+The `Static` type is often referenced as *static* provisioning, because the persistent volume (PV) already exists and the chart simply uses it.
+====
+
+=== Example
+[source,yaml]
+----
+static:
+  # name of persistent volume to be used
+  name: my-sites-pv
+  # storage class of the persistent volume to be used
+  storageClass: azurefile-icm
+----
+
+[#_existingClaimType]
+=== Type `ExistingClaim`
+
+Uses an existing https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims[persistent volume claim (PFC)] to store the data. It does not contain any attributes because it directly references the existing claim by its name. To use it:
+
+=== Example
+[source,yaml]
+----
+existingClaim: my-sites-pvc
+----
+
+[#_localType]
+=== Type `Local`
+
+_@Target Audience: Developer, Tester_
+
+Uses a local file system path to store the data. It contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|path|The path to the local directory to be used|absolute path|{mandatory}|-
+|===
+
+[TIP]
+====
+The value of the `path` attribute depends heavily on the installed Kubernetes cluster. For Docker Desktop on Windows, it appears as `/run/desktop/mnt/host/<drive-letter>/<path>` (assuming Docker Desktop uses https://learn.microsoft.com/de-de/windows/wsl/[WSL]).
+====
+
+=== Example
+[source,yaml]
+----
+  local:
+    path: /run/desktop/mnt/host/d/sites-folder
+----
+
+[#_customdataType]
+=== Type `Customdata`
+
+_@Target Audience: Developer, Tester_
+
+The `Customdata` type configures a storage for some custom data. It contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|enabled|Enables/disables the custom data volume|boolean|{optional}|`false`
+|existingClaim|The name of a persistent volume claim (PVC) to be used|string|{optional}|`icm-as-cluster-customData-pvc`
+|mountPoint|The mount point inside the container to be used|path|{optional}|`/data`
+|===
+
+=== Example
+[source,yaml]
+----
+customdata:
+  enabled: true <1>
+  existingClaim: my-custom-data-pvc <2>
+  mountPoint: /custom/data <3>
+----
+
+<1> Enable the custom data volume
+<2> Use the existing persistent volume claim `my-custom-data-pvc`
+<3> Mount the custom data volume to `/custom/data` inside the container
+
+=== Defaults
+
+[#_sitesDefault]
+.Default `sites`
+[source,yaml]
+----
+sites:
+  size: 1Gi
+  type: local
+  local:
+    path: <local sites folder>
+----
+
+[WARNING]
+====
+This default `sites` volume configuration is only suitable for development and testing purposes.
+====
+
+[#_encryptionDefault]
+.Default `encryption`
+[source,yaml]
+----
+encryption:
+  size: 1Gi
+  type: local
+  local:
+    path: <local sites folder>
+----
+
+[WARNING]
+====
+This default `encryption` volume configuration is only suitable for development and testing purposes.
+====
+
+[#_jgroupsDefault]
+.Default `jgroups`
+[source,yaml]
+----
+jgroups:
+  size: 1Gi
+  type: emptyDir
+----
+
+[#_storageClassDefault]
+.Default `storageClass` of type `Cluster`
+[source,yaml]
+----
+cluster:
+  storageClass:
+    create: false
+    existingClass: ""
+----
+
+[WARNING]
+====
+This default `jgroups` volume configuration is only suitable for development and testing purposes (the link:jgroups.asciidoc[JGroups] volume must be shared between all `icm-as-server` pods).
+====
+
+[#_customdataDefault]
+.Default `customdata`
+[source,yaml]
+----
+customdata:
+  enabled: false
+  existingClaim: icm-as-cluster-customData-pvc
+  mountPoint: /data
+----
+
+[NOTE]
+====
+_@Target Audience: Developer, Test_
+====

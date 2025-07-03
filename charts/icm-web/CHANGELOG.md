@@ -6,7 +6,7 @@
 
 ### Chore
 
-* bump versions of icm-as:patch icm-web:patch
+* Bump versions of icm-as:patch icm-web:patch
 
 
 <a name="icm-web-0.14.2"></a>
@@ -16,8 +16,8 @@
 
 ### Chore
 
-* generated changelog+release notes for icm-web:patch
-* bump versions of icm-web:patch
+* Generated changelog+release notes for icm-web:patch
+* Bump versions of icm-web:patch
 
 ### Fix
 
@@ -31,12 +31,12 @@
 
 ### Chore
 
-* generated changelog+release notes for icm-as:patch icm-web:patch
-* bump versions of icm-as:patch icm-web:patch
+* Generated changelog+release notes for icm-as:patch icm-web:patch
+* Bump versions of icm-as:patch icm-web:patch
 
 ### Fix
 
-* some optimizations to configMapMounts ([#928](https://github.com/intershop/helm-charts/issues/928))
+* Some optimizations to configMapMounts ([#928](https://github.com/intershop/helm-charts/issues/928))
 
 
 <a name="icm-web-0.14.0"></a>
@@ -46,12 +46,12 @@
 
 ### Chore
 
-* generated changelog+release notes for icm:minor icm-as:minor icm-web:minor
-* bump versions of icm:minor icm-as:minor icm-web:minor
+* Generated changelog+release notes for icm:minor icm-as:minor icm-web:minor
+* Bump versions of icm:minor icm-as:minor icm-web:minor
 
 ### Feat
 
-* configuration of volumemounts for existing configmaps ([#921](https://github.com/intershop/helm-charts/issues/921))
+* Configuration of volumemounts for existing configmaps ([#921](https://github.com/intershop/helm-charts/issues/921))
 
 
 <a name="icm-web-0.13.3"></a>
@@ -61,8 +61,8 @@
 
 ### Chore
 
-* generated changelog+release notes for icm-as:minor icm-web:patch
-* bump versions of icm-as:minor icm-web:patch
+* Generated changelog+release notes for icm-as:minor icm-web:patch
+* Bump versions of icm-as:minor icm-web:patch
 
 ### Fix
 
@@ -76,12 +76,12 @@
 
 ### Chore
 
-* generated changelog+release notes for icm-as:minor icm-web:patch
-* bump versions of icm-as:minor icm-web:patch
+* Generated changelog+release notes for icm-as:minor icm-web:patch
+* Bump versions of icm-as:minor icm-web:patch
 
 ### Fix
 
-* update WAA to 5.1.0 and adapt resource defaults ([#831](https://github.com/intershop/helm-charts/issues/831))
+* Update WAA to 5.1.0 and adapt resource defaults ([#831](https://github.com/intershop/helm-charts/issues/831))
 
 
 <a name="icm-web-0.13.1"></a>
@@ -91,8 +91,8 @@
 
 ### Chore
 
-* generated changelog+release notes for icm-web:patch
-* bump versions of icm-web:patch
+* Generated changelog+release notes for icm-web:patch
+* Bump versions of icm-web:patch
 
 
 <a name="icm-web-0.13.0"></a>
@@ -102,8 +102,8 @@
 
 ### Chore
 
-* generated changelog+release notes for icm-web:minor
-* bump versions of icm-web:minor
+* Generated changelog+release notes for icm-web:minor
+* Bump versions of icm-web:minor
 
 
 <a name="icm-web-0.12.1"></a>
@@ -113,12 +113,12 @@
 
 ### Chore
 
-* generated changelog+release notes for icm-as:minor icm-web:patch
-* bump versions of icm-as:minor icm-web:patch
+* Generated changelog+release notes for icm-as:minor icm-web:patch
+* Bump versions of icm-as:minor icm-web:patch
 
 ### Fix
 
-* fix ingress annotation conflict in icm-web chart ([#834](https://github.com/intershop/helm-charts/issues/834))
+* Fix ingress annotation conflict in icm-web chart ([#834](https://github.com/intershop/helm-charts/issues/834))
 
 
 <a name="icm-web-0.12.0"></a>
@@ -128,8 +128,8 @@
 
 ### Chore
 
-* generated changelog+release notes for icm-as:minor icm-web:minor
-* bump versions of icm-as:minor icm-web:minor
+* Generated changelog+release notes for icm-as:minor icm-web:minor
+* Bump versions of icm-as:minor icm-web:minor
 
 ### Feat
 
@@ -144,8 +144,8 @@
 
 ### Chore
 
-* generated changelog+release notes for icm-web:minor
-* bump versions of icm-web:minor
+* Generated changelog+release notes for icm-web:minor
+* Bump versions of icm-web:minor
 
 ### Feat
 
@@ -159,8 +159,8 @@
 
 ### Chore
 
-* generated changelog+release notes for icm-web:minor
-* bump versions of icm-web:minor
+* Generated changelog+release notes for icm-web:minor
+* Bump versions of icm-web:minor
 
 ### Feat
 
@@ -174,8 +174,8 @@
 
 ### Chore
 
-* generated changelog+release notes for icm:patch icm-as:patch icm-replication:patch icm-web:patch
-* bump versions of icm:patch icm-as:patch icm-replication:patch icm-web:patch
+* Generated changelog+release notes for icm:patch icm-as:patch icm-replication:patch icm-web:patch
+* Bump versions of icm:patch icm-as:patch icm-replication:patch icm-web:patch
 * Consume WebAdapterAgent 4.0.1
 * Consume WebAdapter 2.5.0
 
@@ -192,19 +192,19 @@
 
 ### Chore
 
-* generated changelog+release notes for icm-web:minor
-* bump versions of icm-web:minor
-* further release process automation ([#462](https://github.com/intershop/helm-charts/issues/462))
+* Generated changelog+release notes for icm-web:minor
+* Bump versions of icm-web:minor
+* Further release process automation ([#462](https://github.com/intershop/helm-charts/issues/462))
 
 ### Ci
 
-* automate release process ([#393](https://github.com/intershop/helm-charts/issues/393)) ([#395](https://github.com/intershop/helm-charts/issues/395))
+* Automate release process ([#393](https://github.com/intershop/helm-charts/issues/393)) ([#395](https://github.com/intershop/helm-charts/issues/395))
 
 ### Feat
 
 * ICM-WA probes
-* support secrets store csi v1  ([#384](https://github.com/intershop/helm-charts/issues/384)) ([#400](https://github.com/intershop/helm-charts/issues/400))
-* writes WA-logs to external storage ([#382](https://github.com/intershop/helm-charts/issues/382)) ([#383](https://github.com/intershop/helm-charts/issues/383))
+* Support secrets store csi v1  ([#384](https://github.com/intershop/helm-charts/issues/384)) ([#400](https://github.com/intershop/helm-charts/issues/400))
+* Writes WA-logs to external storage ([#382](https://github.com/intershop/helm-charts/issues/382)) ([#383](https://github.com/intershop/helm-charts/issues/383))
 
 
 <a name="icm-web-0.8.0"></a>
@@ -214,7 +214,7 @@
 
 ### Feat
 
-* writes WA-logs to external storage ([#382](https://github.com/intershop/helm-charts/issues/382)) ([#383](https://github.com/intershop/helm-charts/issues/383))
+* Writes WA-logs to external storage ([#382](https://github.com/intershop/helm-charts/issues/382)) ([#383](https://github.com/intershop/helm-charts/issues/383))
 
 
 <a name="icm-web-0.7.6"></a>
@@ -230,7 +230,7 @@
 
 ### Fix
 
-* use securityGroup configuration for azure file ([#310](https://github.com/intershop/helm-charts/issues/310))
+* Use securityGroup configuration for azure file ([#310](https://github.com/intershop/helm-charts/issues/310))
 
 
 <a name="icm-web-0.7.4"></a>
@@ -288,7 +288,7 @@
 
 ### Fix
 
-* there is no resource enablement
+* There is no resource enablement
 
 
 <a name="icm-web-0.2.4"></a>
@@ -308,7 +308,7 @@
 
 ### Feat
 
-* cluster persistence owner shall be 150 (intershop) ([#116](https://github.com/intershop/helm-charts/issues/116))
+* Cluster persistence owner shall be 150 (intershop) ([#116](https://github.com/intershop/helm-charts/issues/116))
 
 
 <a name="icm-web-0.2.2"></a>
@@ -318,8 +318,8 @@
 
 ### Fix
 
-* fix nfs persistence definition ([#112](https://github.com/intershop/helm-charts/issues/112))
-* fix lint test for icm-charts ([#99](https://github.com/intershop/helm-charts/issues/99))
+* Fix nfs persistence definition ([#112](https://github.com/intershop/helm-charts/issues/112))
+* Fix lint test for icm-charts ([#99](https://github.com/intershop/helm-charts/issues/99))
 
 
 <a name="icm-web-0.2.1"></a>
@@ -329,19 +329,19 @@
 
 ### Feat
 
-* set release versions ([#91](https://github.com/intershop/helm-charts/issues/91))
-* add configurations to helm chart ([#77](https://github.com/intershop/helm-charts/issues/77)) ([#78](https://github.com/intershop/helm-charts/issues/78))
+* Set release versions ([#91](https://github.com/intershop/helm-charts/issues/91))
+* Add configurations to helm chart ([#77](https://github.com/intershop/helm-charts/issues/77)) ([#78](https://github.com/intershop/helm-charts/issues/78))
 
 ### Fix
 
-* fix several lint issues ([#99](https://github.com/intershop/helm-charts/issues/99))
-* fix local lint test for icm-web ([#99](https://github.com/intershop/helm-charts/issues/99))
-* use PageCache PVC ([#87](https://github.com/intershop/helm-charts/issues/87)) ([#88](https://github.com/intershop/helm-charts/issues/88))
-* storageClassName shall be azurefiles ([#83](https://github.com/intershop/helm-charts/issues/83)) ([#84](https://github.com/intershop/helm-charts/issues/84))
+* Fix several lint issues ([#99](https://github.com/intershop/helm-charts/issues/99))
+* Fix local lint test for icm-web ([#99](https://github.com/intershop/helm-charts/issues/99))
+* Use PageCache PVC ([#87](https://github.com/intershop/helm-charts/issues/87)) ([#88](https://github.com/intershop/helm-charts/issues/88))
+* StorageClassName shall be azurefiles ([#83](https://github.com/intershop/helm-charts/issues/83)) ([#84](https://github.com/intershop/helm-charts/issues/84))
 
 ### Release
 
-* all icm charts ([#81](https://github.com/intershop/helm-charts/issues/81))
+* All icm charts ([#81](https://github.com/intershop/helm-charts/issues/81))
 
 
 <a name="icm-web-0.1.35"></a>
@@ -375,7 +375,7 @@
 
 ### ICM
 
-* do not use tags in webserver chart ([#43](https://github.com/intershop/helm-charts/issues/43))
+* Do not use tags in webserver chart ([#43](https://github.com/intershop/helm-charts/issues/43))
 
 
 <a name="icm-web-0.1.30"></a>
