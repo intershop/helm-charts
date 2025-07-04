@@ -1,25 +1,71 @@
-= Configuring Custom TLS Certificates and Deploying ICM with Replication
+= How To
 :icons: font
 
 == Make a Custom TLS Certificate Available to the `icm-as-appserver`-container's JVM
 
 . Follow the link to create a secret in the K8s cluster using a certificate stored inside an Azure Key Vault: https://support.intershop.com/kb/index.php/Display/X31381[Guide - Secret Store Process].
+The definition of the `SecretProviderClass` would then look like:
++
+[source,yaml]
+----
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: csi-${namespace}-secret-store <1>
+  namespace: ${namespace} <2>
+spec:
+  provider: azure
+  parameters:
+    tenantId: "${secret_store_tenant_id}" <3>
+    keyvaultName: "${secret_store_keyvault_name}" <4>
+    clientID: "${secret_store_client_id}" <5>
+
+    # Objects to map from the Key Vault into Kubernetes secrets
+    objects: |
+      array:
+        - |
+          objectName: nameOfTheKeyvaultCertificate <6>
+          objectType: secret <7>
+          objectVersion: "" <8>
+
+  secretObjects: # Mapping of Key Vault objects into Kubernetes secrets
+    - secretName: nameOfTheK8sSecret <9>
+      type: Opaque
+      data:
+        - objectName: nameOfTheKeyvaultCertificate <10>
+          key: value
+----
++
+<1> variable `namespace` is provided by the namespace preparation as a config map entry
+<2> variable `namespace` is provided by the namespace preparation as a config map entry
+<3> directory id of the Azure EntryID tenant the Key Vault belongs to (provided by the namespace preparation as a config map entry)
+<4> name of the Key Vault (provided by the namespace preparation as a config map entry)
+<5> ID of the managed identity (provided by the namespace preparation as a config map entry)
+<6> name of the certificate inside the Key Vault
+<7> name of the certificate inside the Key Vault (same as 6)
+<8> always leave empty
+<9> name of the Kubernetes secret to be created
+<10> name of the certificate inside the Key Vault (same as 6)
+
+
 . Add an entry inside the link:values-yaml/secret-mounts.asciidoc[secretMounts] section:
 
-   * Reference the secret created following the guide from step 1.
-   * Set `type` to `certificate`.
-   * Set `key` to `tls.crt` or omit the `key`.
+   * Reference the secret created following the guide from step 1
+   * Set `type` to `certificate`
+   * Set `key` to `tls.crt` or omit the `key`
    * Set `targetFile` to a valid file name using the file extension `.crt`
 
++
 [source,yaml]
 ----
 secretMounts:
-  - secretName: nameOfTheSecret
+  - secretName: nameOfTheK8sSecret
     type: certificate
     key: tls.crt
     targetFile: my-certificate-file.crt
 ----
 
++
 [NOTE]
 ====
 The certificate will then be imported into the truststore of the JVM using the alias built from the base file name `my-certificate-file`.

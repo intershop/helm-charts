@@ -138,12 +138,12 @@ Creates the environment secretMounts section
 {{- if and (eq $mount.type "certificate") ($mount.targetFile) }}
   {{- $secretMountsRequireCertImport = true -}}
 {{- end -}}
+{{- end -}} {{/*range $index, $mount := .Values.secretMounts*/}}
 {{- if eq $secretMountsRequireCertImport true }}
 - name: USE_SYSTEM_CA_CERTS
   value: "1"
-{{- end -}}
-{{- end -}}
-{{- end -}}
+{{- end -}} {{/*if eq $secretMountsRequireCertImport true*/}}
+{{- end -}} {{/*define "icm-as.envSecretMounts"*/}}
 
 {{/*
 Creates the environment replication section
