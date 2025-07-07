@@ -155,7 +155,7 @@ Image spec
 */}}
 {{- define "icm-as.image" -}}
 image: "{{ .Values.image.repository }}{{ if not (contains ":" .Values.image.repository) }}:{{ .Values.image.tag | default .Chart.AppVersion }}{{ end }}"
-imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+imagePullPolicy: "{{ .Values.image.pullPolicy | default "IfNotPresent" }}"
 {{- end -}}
 
 {{/*

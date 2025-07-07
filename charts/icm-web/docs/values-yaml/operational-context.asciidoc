@@ -1,0 +1,14 @@
+= `values.yaml` Attributes in Section `operationalContext`
+
+:icons: font
+
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
+
+
+== Description
+
+Configures the operational context (aka _environment_) the ICM is running in.
+
+The operational context is explained in detail for the `icm-as` Helm Chart, see link:../../../icm-as/docs/values-yaml/operational-context.asciidoc[here].

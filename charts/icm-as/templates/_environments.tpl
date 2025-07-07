@@ -62,7 +62,7 @@ env:
 {{ include "icm-as.envDatabasePassword" (list "INTERSHOP_JDBC_PASSWORD" .Values.mssql.passwordSecretKeyRef .Values.mssql.password) -}}
 {{- else }}
 - name: INTERSHOP_DATABASETYPE
-  value: "{{ .Values.database.type }}"
+  value: "{{ .Values.database.type | default "mssql" }}"
 - name: INTERSHOP_JDBC_URL
   value: "{{ .Values.database.jdbcURL }}"
 - name: INTERSHOP_JDBC_USER
@@ -138,12 +138,12 @@ Creates the environment secretMounts section
 {{- if and (eq $mount.type "certificate") ($mount.targetFile) }}
   {{- $secretMountsRequireCertImport = true -}}
 {{- end -}}
+{{- end -}} {{/*range $index, $mount := .Values.secretMounts*/}}
 {{- if eq $secretMountsRequireCertImport true }}
 - name: USE_SYSTEM_CA_CERTS
   value: "1"
-{{- end -}}
-{{- end -}}
-{{- end -}}
+{{- end -}} {{/*if eq $secretMountsRequireCertImport true*/}}
+{{- end -}} {{/*define "icm-as.envSecretMounts"*/}}
 
 {{/*
 Creates the environment replication section
@@ -253,9 +253,16 @@ expecting to get called like:
 {{- /* secretKeyRef has precedence over plainPassword */ -}}
 - name: {{ $envName }}
 {{- if $secretKeyRef }}
+  {{- if not ($secretKeyRef.name) }}
+    {{- fail "Error: missing value at database.jdbcPasswordSecretKeyRef.name" }}
+  {{- end }}
+  {{- if not ($secretKeyRef.key) }}
+    {{- fail "Error: missing value at database.jdbcPasswordSecretKeyRef.key" }}
+  {{- end }}
   valueFrom:
     secretKeyRef:
-{{- toYaml $secretKeyRef | nindent 6 }}
+      name: {{ $secretKeyRef.name | quote }}
+      key: {{ $secretKeyRef.key | quote }}
 {{- else }}
   value: "{{ $plainPassword }}"
 {{- end }}

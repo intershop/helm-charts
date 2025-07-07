@@ -1,0 +1,131 @@
+= `values.yaml` Attributes Belonging to No Particular Section
+
+:icons: font
+
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
+
+
+== Description
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory|Default Value
+|<<_example_nameOverride,fullnameOverride>>|Overrides the names/prefix of the several deployed resources which normally is calculated from chart and release name|string|{optional}|[.placeholder]#empty string#
+|<<_example_nameOverride,nameOverride>>|Overrides the name used for label `app.kubernetes.io/name` which normally is calculated from chart name|string|{optional}|[.placeholder]#empty string#
+|<<_example_nodeSelector,nodeSelector>>|https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector[Node selector configuration]|yaml object|{optional}|`{}`
+|===
+
+== Examples
+
+[NOTE]
+====
+The following examples use `my-icm-web` as the release name.
+====
+
+[#_example_nameOverride]
+=== nameOverride and fullnameOverride
+Without configuring `nameOverride` and `fullnameOverride`, all relevant names are generated from the release and chart name. So the 'icm-as-appserver' deployment looks like this:
+
+[source,yaml]
+----
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-icm-web-wa
+  labels:
+    app: my-icm-web-wa
+----
+
+`nameOverride` can now be used to customize parts of this:
+[source,yaml]
+----
+nameOverride: my-custom-icm-as
+----
+Therefore, the deployment will look like:
+[source,yaml]
+----
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-icm-web-my-custom-icm-as-wa
+  labels:
+    app: my-icm-web-my-custom-icm-as-wa
+----
+
+Other resources like the `icm-web` https://kubernetes.io/docs/concepts/services-networking/service/[service] will also use this name:
+[source,yaml]
+----
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-icm-web-my-custom-icm-as-wa
+  labels:
+    app: my-icm-web-my-custom-icm-as-wa
+    release: my-icm-web-my-custom-icm-as
+----
+
+`fullnameOverride` can be used to get full control over the names:
+[source,yaml]
+----
+nameOverride: my-custom-icm-as
+fullnameOverride: your-custom-icm-as
+----
+Therefore, the deployment will look like:
+[source,yaml]
+----
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: your-custom-icm-as-wa
+  labels:
+    app: your-custom-icm-as-wa
+----
+
+Other resources like the `icm-web` https://kubernetes.io/docs/concepts/services-networking/service/[service] will also use this fullname:
+[source,yaml]
+----
+apiVersion: v1
+kind: Service
+metadata:
+  name: your-custom-icm-as-wa
+  labels:
+    app: your-custom-icm-as-wa
+    release: your-custom-icm-as
+----
+
+[#_example_nodeSelector]
+=== nodeSelector
+_@Target Audience: DevOps, Ops_
+
+Configuring `nodeSelector` like this:
+[source,yaml]
+----
+nodeSelector:
+  label0: value0
+  ...
+  labeln: valuen
+----
+will result in the `icm-web` pods being scheduled on nodes that have all the configured labels. The deployment will look like this:
+
+[source,yaml]
+----
+apiVersion: apps/v1
+kind: Deployment
+...
+spec:
+  ...
+  template:
+    ...
+    spec:
+      nodeSelector:
+        label0: value0
+        ...
+        labeln: valuen
+----
+
+[CAUTION]
+====
+When node selectors are used, the attribute `webadapter.schedulePodsPreferredEvenlyAcrossNodes` is ignored so the node selection rules defined by `nodeSelector` are applied.
+====

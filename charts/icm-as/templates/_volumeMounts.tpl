@@ -51,14 +51,15 @@ volumeMounts:
 {{- $mountPath := "" }}
 {{- if $mount.targetFile }}
 {{- if eq $type "secret" }}
-  {{- $mountPath = "/secrets" }}
+  {{- $mountPath = printf "/secrets/%s" $mount.targetFile }}
 {{- else if eq $type "certificate" }}
-  {{- $mountPath = "/certificates" }}
+  {{- $mountPath = printf "/certificates/%s" $mount.targetFile }}
 {{- else }}
   {{- fail (printf "Error: invalid value '%s' at secretMounts[%d].type, must be one of (secret,certificate), default=secret." $type $index) -}}
 {{- end }}
 - name: secretmount-{{ $index }}
   mountPath: {{ $mountPath | quote }}
+  subPath: {{ $mount.targetFile | quote }}
   readOnly: true
 {{- end }} {{/*if $mount.targetFile*/}}
 {{- end }} {{/*range*/}}
