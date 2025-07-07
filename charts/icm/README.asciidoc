@@ -1,0 +1,117 @@
+= Helm Chart Intershop Commerce Management - ICM
+
+This is the ICM helm chart.
+
+== Prerequisites
+
+* Helm
+* kubectl
+* Kubernetes 1.14+
+
+== Chart Details
+
+This chart will do the following:
+
+* Deploy an ICM Application Server using the link:../icm-as/README.md[intershop/icm-as] chart
+* Deploy an ICM Web Adapter and Web Adapter Agent using the link:../icm-web/README.md[intershop/icm-web] chart
+
+== Installing the Chart
+
+=== Add the Intershop Helm Repository
+
+Before installing Intershop Helm charts, you need to add the https://intershop.github.io/helm-charts[Intershop helm-charts repository] to your Helm client:
+
+[source,bash]
+----
+helm repo add intershop https://intershop.github.io/helm-charts
+helm repo update
+----
+
+=== Install Chart via Repository
+
+To install the chart with the release name `icm`, execute the following:
+
+[source,bash]
+----
+helm install my-release intershop/icm --values=values.yaml --namespace icm
+----
+
+=== Install Chart via Cloned helm-charts Repository
+
+[source,bash]
+----
+cd charts
+helm dependency update icm
+helm install my-release ./icm --values=values.yaml --namespace icm
+----
+
+== Development
+
+The base development branch for this chart is `develop/icm`. Before creating a feature/bugfix branch and pull request, an issue must be created. The name should start with "ICM: <your description>". If the feature/bugfix branch is taken, it is possible that `develop/icm` may change over time. In that case, the changes would need to be merged into the feature/bugfix branch.
+Note that feature and bugfix branches have a naming convention: `feature/icm/<issue number>-<descriptive name>` or `bugfix/icm/<issue number>-<descriptive name>`.
+
+=== Circular Dependency
+
+The Helm chart for this Intershop project has a circular dependency. Changes in the underlying project also require updates to the Helm chart.
+ To secure the version compatibility integration tests are done on pull requests before merging into the `main` branch.
+
+Some notes on this:
+* The `appVersion` in the `Chart.yaml` determines the compatible version of the current chart.
+* The integration tests require published images on https://hub.docker.com/orgs/intershophub/repositories[intershophub].
+* There might be changes in the underlying project that are not published as an image, but chart changes are also required.
+ * Then, either published dev-releases are needed, or the feature branch cannot be merged until an existing published release exists.
+ * It is possible to do alpha/beta releases of Helm charts, which could be used to test the base changes before publishing an image.
+
+== Testing the Chart
+
+=== helm-unit
+
+There are helm-unit tests to support development and ensure functionality.
+
+Prerequisites are:
+
+* https://github.com/helm-unittest/helm-unittest[helm-unittest]
+[source,bash]
+----
+helm unittest --output-file unit.xml --output-type JUnit charts/icm
+----
+
+=== ct lint &amp; install
+
+Prerequisites are:
+
+* https://github.com/kubernetes-sigs/kind[kind cluster]
+* Install cluster: `kind create cluster --config icm.yaml`
+[source,bash]
+----
+docker run -it --network host --workdir=/data --volume <my kube config>:/root/.kube/config:ro --volume
+$(pwd):/data quay.io/helmpack/chart-testing:v3.8.0 ct lint --config ct_icm.yaml
+----
+
+== Testing ICM
+
+This helm chart also allows you to execute Intershop HtmlUnit tests via a testrunner.
+
+=== Execute Locally
+
+There are already preconfigured value-files for local test execution, orchestrated by a bash script.
+Follow these steps to execute a test:
+
+. Be sure that each included chart is up-to-date:
++
+[source,bash]
+----
+helm dependency update ../icm-as
+helm dependency update .
+----
+
+. Create the necessary k8s secrets for icm-web and icm-as (e.g., `kubectl create secret docker-registry dockerhub --docker-username=<your username> --docker-password=<your password> --docker-email=<your email>`)
+. Run: `./start-test-local.sh` and follow the instructions.
+
+=== Local Execution Guide
+
+For detailed instructions on local execution, see link:docs/local-execution.asciidoc[Local Execution Guide].
+
+== Detailed documentation
+
+* link:docs/values-yaml/[values.yaml] documentation

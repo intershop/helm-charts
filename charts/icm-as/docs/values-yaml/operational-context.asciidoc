@@ -1,0 +1,51 @@
+= `values.yaml` Attributes in Section `operationalContext`
+
+:icons: font
+
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
+
+== Description
+
+Configures the operational context (aka _environment_) the ICM is running in. The following attributes are available:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|customerId|the id of the customer|string|{mandatory}|`n_a` (default value for compatibility with older versions)
+|environmentType|the type of the environment e.g.int,uat,prd|string|{optional}|`prd`
+|environmentName|the name of the environment (environment-type + some sort of id, e.g. int-01)|string|{optional}|[.placeholder]#value of `environmentType`#
+|===
+
+Using these attribute and some additional information from section link:replication.asciidoc[`replication`] the `operationalContextName` is calculated as follows:
+
+[.placeholder]#`customerId`#-[.placeholder]#`environmentName`#-[.placeholder]#`stagingType`#
+
+with `stagingType` calculated as follows:
+
+----
+if replication.enabled=true then
+  if replication.role=source then
+    stagingType=edit
+  else
+    stagingType=live
+else
+  stagingType=standalone
+----
+
+=== Example
+
+[source,yaml]
+----
+operationalContext:
+  customerId: "myshop"
+  environmentType: "uat"
+  environmentName: "uat-01"
+
+replication:
+  enabled: true
+  role: source
+----
+
+This example would result in the `operationalContextName` being `myshop-uat-01-edit`.

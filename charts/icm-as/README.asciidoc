@@ -1,0 +1,110 @@
+= Helm Chart Intershop Commerce Management - Application Server
+
+Installs the ICM application server independently.
+
+== Prerequisites Details
+
+* Helm
+* kubectl
+* Kubernetes 1.14+
+
+== Chart Details
+
+This chart will do the following:
+
+* Deploy an ICM Application Server
+
+== Installing the Chart
+
+=== Docker Pull Secret
+
+Create a secret for the Docker registry from which the images are coming. The secret's name must match the configured secret under `image.secret` within the application deployment. The default secret name is `dockerhub`.
+
+[source,bash]
+----
+kubectl create secret docker-registry <yourDockerRegistryName> --docker-server=<yourDockerRegistryServer> --docker-username=<yourUsername> --docker-password=<yourPassword> --docker-email=<yourEmail>
+----
+
+=== Persistence
+
+==== Sites
+
+`local`, `cluster`, `azurefiles`, `nfs`, `existingClaim` are possible persistence options.
+The default is `local`, where `persistence.sites.local.path` must be set to a valid local folder.
+
+==== jGroups
+
+`local`, `cluster`, `azurefiles`, `nfs`, `existingClaim` are possible persistence options.
+The default is `emptyDir`.
+
+=== Database
+
+The necessary database connection can be configured in the `database` section. The chart also supports deploying a (containerized) MSSQL database. If enabled, the deployed MSSQL database is used instead of the one configured in the `database` section.
+
+=== Replication/Staging
+
+The section `replication` supports a replication/staging scenario. To use this feature, deploy two separate icm-as (+ icm-web), one for the source (_edit_) system and one for the target (_live_) system.
+
+=== Add the Intershop Helm Repository
+
+Before installing Intershop Helm charts, add the https://intershop.github.io/helm-charts[Intershop helm-charts repository] to your Helm client.
+
+[source,bash]
+----
+helm repo add intershop https://intershop.github.io/helm-charts
+helm repo update
+----
+
+=== Install Chart
+
+To install the chart with the release name `icm-as`:
+
+[source,bash]
+----
+helm install my-release intershop/icm-as --values=values.yaml --namespace icm-as
+----
+
+==== Job Server
+
+If `job.enable==true`, the job server functionality of the application server is activated and a child chart link:../icm-job/README.md[icm-job] is deployed.
+During development you might need to update the dependencies:
+
+[source,bash]
+----
+helm dependencies update .
+----
+
+=== Testing
+
+==== helm-unit
+
+There are helm-unit tests to support development and ensure functionality.
+
+Prerequisites are:
+
+* https://github.com/helm-unittest/helm-unittest[helm-unittest]
+
+Please check the unit tests before pushing changes.
+
+[source,bash]
+----
+helm unittest charts/icm-as
+----
+
+==== ct lint &amp; install
+
+Prerequisites are:
+
+* Install https://github.com/kubernetes-sigs/kind[kind cluster]: `kind create cluster --config icm-as.yaml`
+* Execute ct lint:
+
+[source,bash]
+----
+docker run -it --network host --workdir=/data --volume <my kube config>:/root/.kube/config:ro --volume
+$(pwd):/data quay.io/helmpack/chart-testing:v3.8.0 ct lint --config ct_icm-as.yaml
+----
+
+== Detailed Documentation
+
+* link:docs/values-yaml.asciidoc[values.yaml] documentation
+* link:docs/how-to.asciidoc/[How to …] reach a certain goal
