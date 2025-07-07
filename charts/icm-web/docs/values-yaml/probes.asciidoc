@@ -1,0 +1,74 @@
+= `values.yaml` Attributes in Section `probes`
+
+:icons: font
+
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
+
+
+== Description
+
+Configures the readiness, liveness and startup https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/[probes] for the `icm-web-wa` container. The following table lists the attributes of the `probes` section:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|startup|Configures the startup probe|<<_probeType,Probe>>|{optional}|_<<_startupDefault,++<++startup default++>++>>_
+|liveness|Configures the liveness probe|<<_probeType,Probe>>|{optional}|_<<_livenessDefault,++<++liveness default++>++>>_
+|readiness|Configures the readiness probe|<<_probeType,Probe>>|{optional}|_<<_readinessDefault,++<++readiness default++>++>>_
+|===
+
+[#_probeType]
+=== Type `Probe`
+
+The `Probe` type configures the relevant values for a probe and contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|failureThreshold|Number of consecutive failures before the probe is considered failed|int|{optional}|[.placeholder]#depends on probe type#
+|initialDelaySeconds|Number of seconds to wait before starting the probe|int|{optional}|[.placeholder]#depends on probe type#
+|periodSeconds|Number of seconds between each probe|int|{optional}|[.placeholder]#depends on probe type#
+|timeoutSeconds|Number of seconds after which the probe times out|int|{optional}|[.placeholder]#depends on probe type#
+|===
+
+[CAUTION]
+====
+When deploying the ICM with an empty database or anticipating significant database migration efforts, ensure that the `startup` probe is configured properly to allow the ICM to start up correctly.  Otherwise, Kubernetes may restart the pod before the `dbPrepare` process finishes.
+====
+
+== Defaults
+
+[#_startupDefault]
+.Default `startup`
+[source,yaml]
+----
+startup:
+  failureThreshold: 6
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  timeoutSeconds: 1
+----
+
+[#_livenessDefault]
+.Default `liveness`
+[source,yaml]
+----
+liveness:
+  failureThreshold: 3
+  initialDelaySeconds: 0
+  periodSeconds: 10
+  timeoutSeconds: 1
+----
+
+[#_readinessDefault]
+.Default `readiness`
+[source,yaml]
+----
+readiness:
+  failureThreshold: 3
+  initialDelaySeconds: 0
+  periodSeconds: 5
+  timeoutSeconds: 1
+----

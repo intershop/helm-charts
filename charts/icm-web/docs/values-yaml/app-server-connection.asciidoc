@@ -1,0 +1,37 @@
+= `values.yaml` Attributes in Section `appServerConnection`
+
+:icons: font
+
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
+
+
+== Description
+
+All `icm-web-wa` pods must send requests to the deployed `icm-as-server` pods. These pods can be accessed using the appropriate service. Therefore, the `icm-web-wa` needs to know the name of the service and the port used.
+
+The `appServerConnection` section contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|serviceName|Name of the service|string|{optional}|`icm-as`
+|port|Management (`mgnt`) port|string|{optional}|`7744`
+|===
+
+[TIP]
+====
+See the `icm-as` chart for details about the link:../../../icm-as/docs/values-yaml/no-section.asciidoc#_example_icmAsServiceNaming[service naming].
+====
+
+== Example
+
+[source,yaml]
+----
+appServerConnection:
+  serviceName: icm-as
+  port: 7744
+----
+
+This configures the `icm-web-wa` to connect to the service `icm-as` on port `7744`.
