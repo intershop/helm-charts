@@ -1,0 +1,102 @@
+= How To
+:icons: font
+
+== Make a Custom TLS Certificate Available to the `icm-as-appserver`-container's JVM
+
+. Follow the link to create a secret in the K8s cluster using a certificate stored inside an Azure Key Vault: https://support.intershop.com/kb/index.php/Display/X31381[Guide - Secret Store Process].
+The definition of the `SecretProviderClass` would then look like:
++
+[source,yaml]
+----
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: csi-${namespace}-secret-store <1>
+  namespace: ${namespace} <2>
+spec:
+  provider: azure
+  parameters:
+    tenantId: "${secret_store_tenant_id}" <3>
+    keyvaultName: "${secret_store_keyvault_name}" <4>
+    clientID: "${secret_store_client_id}" <5>
+
+    # Objects to map from the Key Vault into Kubernetes secrets
+    objects: |
+      array:
+        - |
+          objectName: nameOfTheKeyvaultCertificate <6>
+          objectType: secret <7>
+          objectVersion: "" <8>
+
+  secretObjects: # Mapping of Key Vault objects into Kubernetes secrets
+    - secretName: nameOfTheK8sSecret <9>
+      type: Opaque
+      data:
+        - objectName: nameOfTheKeyvaultCertificate <10>
+          key: value
+----
++
+<1> variable `namespace` is provided by the namespace preparation as a config map entry
+<2> variable `namespace` is provided by the namespace preparation as a config map entry
+<3> directory id of the Azure EntryID tenant the Key Vault belongs to (provided by the namespace preparation as a config map entry)
+<4> name of the Key Vault (provided by the namespace preparation as a config map entry)
+<5> ID of the managed identity (provided by the namespace preparation as a config map entry)
+<6> name of the certificate inside the Key Vault
+<7> name of the certificate inside the Key Vault (same as 6)
+<8> always leave empty
+<9> name of the Kubernetes secret to be created
+<10> name of the certificate inside the Key Vault (same as 6)
+
+
+. Add an entry inside the link:values-yaml/secret-mounts.asciidoc[secretMounts] section:
+
+   * Reference the secret created following the guide from step 1
+   * Set `type` to `certificate`
+   * Set `key` to `tls.crt` or omit the `key`
+   * Set `targetFile` to a valid file name using the file extension `.crt`
+
++
+[source,yaml]
+----
+secretMounts:
+  - secretName: nameOfTheK8sSecret
+    type: certificate
+    key: tls.crt
+    targetFile: my-certificate-file.crt
+----
+
++
+[NOTE]
+====
+The certificate will then be imported into the truststore of the JVM using the alias built from the base file name `my-certificate-file`.
+====
+
+== Deploy an ICM Using Replication/Staging
+
+=== Prerequisites
+
+There is an ICM deployed *without* replication enabled (this system is referred to as the `source` (_edit_) server).
+
+=== Steps
+
+. Enable replication and configure the involved systems:
+  .. Set `replication.enabled` to `true`.
+  .. Set `replication.role` to `source`.
+  .. Configure the `replication.source` and `replication.targets` attributes accordingly (target systems do not need to be up and running at this point).
+  .. Ensure that the startup probe is configured to wait until the database is prepared for replication (`probes.startupProbe.initialDelaySeconds` is set properly - exact value depends on the database size).
+. Deploy the (source) ICM.
+. Wait until the ICM is up and running (the database gets prepared for replication during startup).
+. Transfer the database content from the source database into the target database:
+  .. Transfer data, for instance, using backup + restore.
+  .. Ensure the configured target users also have access to the source database (direct access or via database link).
+. Transfer the sites content from the source `sites` volume into the target `sites` volume (e.g. using Azure's `az` command).
+. Prepare a second `values.yaml` file for the target system:
+  .. Set `replication.enabled` to `true`.
+  .. Set `replication.role` to `target`.
+  .. Copy the configuration of `replication.source` and `replication.targets` from the source system's `values.yaml` file.
+. Deploy the (target) ICM (using the second `values.yaml` file).
+
+[TIP]
+====
+See the link:values-yaml/replication.asciidoc[replication] section for details about the replication configuration and link:values-yaml/probes.asciidoc[probes] section for details about the probes configuration.
+====

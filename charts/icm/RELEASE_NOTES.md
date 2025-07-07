@@ -1,14 +1,14 @@
 
-<a name="icm-2.14.1"></a>
-## [icm-2.14.1](https://github.com/intershop/helm-charts/compare/icm-2.14.0...icm-2.14.1)
+<a name="icm-2.14.3"></a>
+## [icm-2.14.3](https://github.com/intershop/helm-charts/compare/icm-2.14.2...icm-2.14.3)
 
-> 2025-06-10
+> 2025-07-07
 
 ### Chore
 
-* bump versions of icm:patch
+* bump versions of icm:patch icm-as:patch icm-replication:patch icm-web:patch
 
-### Fix
+### Doc
 
-* **icm:** prevent CVE-2025-1974 ([#1006](https://github.com/intershop/helm-charts/issues/1006))
+* **icm:** document icm chart ([#1021](https://github.com/intershop/helm-charts/issues/1021))
 

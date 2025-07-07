@@ -1,0 +1,145 @@
+= `values.yaml` Attributes in Section `infrastructureMonitoring`
+
+:icons: font
+
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
+
+_@Target Audience: Developer, Tester, DevOps, Ops_
+
+== Description
+
+Configures the monitoring of infrastructure components relevant to `icm-as`. When enabled, a sidecar container is deployed that regularly executes probes. The gathered data is then provided as https://prometheus.io/[Prometheus] metrics, which are collected by https://newrelic.com/[New Relic].
+The following table lists the attributes of the `infrastructureMonitoring` section:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|enabled|Enable/disable the `infrastructureMonitoring`. If disabled the sidecar is not deployed at all.|Boolean|{optional}|`true`
+|image|Configures the Docker image to be used for the sidecar|<<_image,Image>>|{optional}|_<<_imageDefault,++<++see type definition++>++>>_
+|databaseLatency|Configures the database latency monitoring|<<_databaseLatency,DatabaseLatency>>|{optional}|_<<_databaseLatencyDefault,++<++see type definition++>++>>_
+|sitesLatency|Configures the sites (volume) latency monitoring|<<_sitesLatency,SitesLatency>>|{optional}|_<<_sitesLatencyDefault,++<++see type definition++>++>>_
+|sitesReadThroughput|Configures the sites (volume) read throughput monitoring|<<_sitesReadThroughput,SitesReadThroughput>>|{optional}|_<<_sitesReadThroughputDefault,++<++see type definition++>++>>_
+|sitesWriteThroughput|Configures the sites (volume) write throughput monitoring|<<_sitesWriteThroughput,SitesWriteThroughput>>|{optional}|_<<_sitesWriteThroughputDefault,++<++see type definition++>++>>_
+|===
+
+[#_image]
+=== Type `Image`
+
+The `Image` type configures the Docker image to be used for the sidecar. It contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|repository|https://kubernetes.io/docs/concepts/containers/images/#image-names[image] to be used.|Image reference|{optional}|`intershophub/infrastructure-probing:3.0.0`
+|pullPolicy|https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy[image pull policy]|Enum {`IfNotPresent`, `Always`, `Never`}|{optional}|`IfNotPresent`
+|===
+
+[#_imageDefault]
+.Default `Image`
+[source,yaml]
+----
+image:
+  pullPolicy: IfNotPresent
+  repository: "intershophub/infrastructure-probing:3.0.0"
+----
+
+[#_databaseLatency]
+==== Type `DatabaseLatency`
+
+The `DatabaseLatency` type configures the database latency monitoring. To monitor latency, the sidecar container executes small queries using the configured (`icm-as`) link:database.asciidoc[database]. It contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|enabled|Enable/disable the `DatabaseLatency` monitoring|Boolean|{optional}|`true`
+|interval|The interval for the latency queries|String with pattern compatible to `java.time.Duration#parse`|{optional}|`60S`
+|===
+
+[#_databaseLatencyDefault]
+.Default `DatabaseLatency`
+[source,yaml]
+----
+databaseLatency:
+  enabled: true
+  interval: 60S
+----
+
+[#_sitesLatency]
+=== Type `SitesLatency`
+
+The `SitesLatency` type configures the sites (volume) latency monitoring. To monitor latency, the sidecar container executes `file exists` queries on the file system of the sites volume (see link:persistence.asciidoc[persistence]). It contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|enabled|Enable/disable the `SitesLatency` monitoring.|Boolean|{optional}|`true`
+|interval|The interval for the latency queries|String with pattern compatible to `java.time.Duration#parse`|{optional}|`60S`
+|path|The path to be used for the latency queries|Absolute path|{optional}|`/intershop/sites/root`
+|===
+
+[#_sitesLatencyDefault]
+.Default `SitesLatency`
+[source,yaml]
+----
+sitesLatency:
+  enabled: true
+  interval: 60S
+  path: /intershop/sites/root
+----
+
+[#_sitesReadThroughput]
+=== Type `SitesReadThroughput`
+
+The `SitesReadThroughput` type configures the sites (volume) read throughput monitoring. Rather than monitoring the current throughput, it monitors how much data can be read in a certain amount of time. To monitor the read throughput, the sidecar container reads a defined file from the file system of the sites volume (see link:persistence.asciidoc[persistence]). It contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|enabled|Enable/disable the `SitesReadThroughput` monitoring.|Boolean|{optional}|`false`
+|interval|The interval for the read attempts|String with pattern compatible to `java.time.Duration#parse`|{optional}|`60S`
+|path|The path to be used for the read throughput monitoring|Absolute path|{optional}|`/intershop/sites/.readThroughputProbing`
+|fileSize|Size of the file|Format compatible to https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/[K8s quantity values]|{optional}|`5 Mi`
+|===
+
+[#_sitesReadThroughputDefault]
+.Default `SitesReadThroughput`
+[source,yaml]
+----
+sitesReadThroughput:
+  enabled: false
+  interval: 60S
+  path: /intershop/sites/.readThroughputProbing
+  fileSize: 5 Mi
+----
+
+[NOTE]
+====
+The sidecar container creates the used file during startup if it does not already exist.
+====
+
+[#_sitesWriteThroughput]
+=== Type `SitesWriteThroughput`
+
+The `SitesWriteThroughput` type configures the sites (volume) write throughput monitoring. Not the current throughput is monitored but how much data can be written in a certain amount of time. To monitor the write throughput the sidecar container writes a defined file to the file system of the sites volume (see link:persistence.asciidoc[persistence]). It contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|enabled|Enable/disable the `SitesWriteThroughput` monitoring.|Boolean|{optional}|`false`
+|interval|The interval for the write attempts|String with pattern compatible to `java.time.Duration#parse`|{optional}|`60S`
+|path|The path to be used for the write throughput monitoring|Absolute path|{optional}|`/intershop/sites/.writeThroughputProbing`
+|fileSize|Size of the file|Format compatible to https://kubernetes.io/docs/reference/kubernetes-api/common-definitions/quantity/[K8s quantity values]|{optional}|`5 Mi`
+|===
+
+[#_sitesWriteThroughputDefault]
+.Default `SitesWriteThroughput`
+[source,yaml]
+----
+sitesWriteThroughput:
+  enabled: false
+  interval: 60S
+  path: /intershop/sites/.writeThroughputProbing
+  fileSize: 5 Mi
+----

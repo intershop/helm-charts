@@ -1,0 +1,51 @@
+= `values.yaml` Attributes in Section `database`
+
+:icons: font
+
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
+
+== Description
+
+Configures the database connection to be used by the `icm-as` appserver. The following attributes are available:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|type|Type/vendor of the database|enum {`mssql`, `oracle`}|{optional}|`mssql`
+|jdbcURL|JDBC URL pointing to the database|JDBC URL|{mandatory}|-
+|jdbcUser|Database user|string|{mandatory}|-
+|jdbcPassword|Database password|string|{conditional} mandatory if `jdbcPasswordSecretKeyRef` is not set |-
+|jdbcPasswordSecretKeyRef|Secret key reference pointing to a secret containing the database password. *Takes precedence over `jdbcPassword`.* |<<_secretKeyRef,SecretKeyRef>>|{conditional} mandatory if `jdbcPassword` is not set |-
+|===
+
+[#_secretKeyRef]
+=== Type `SecretKeyRef`
+
+The `SecretKeyRef` type contains the following attributes for referencing a value inside a Kubernetes secret:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|name|name of the secret|string|{mandatory}|-
+|key|Key inside the secret pointing to the referenced value|string|{mandatory}|-
+|===
+
+=== Example
+
+[source,yaml]
+----
+database:
+  type: "mssql"
+  jdbcURL: "jdbc:sqlserver://host.privatelink.database.windows.net:1433;database=icm-as;" <1>
+  jdbcUser: "icm-as" <2>
+  jdbcPasswordSecretKeyRef:
+    name: icm-database <3>
+    key: password
+----
+This example configures the `icm-as` appserver to use a Microsoft SQL database:
+
+<1> JDBC URL: `jdbc:sqlserver://host.privatelink.database.windows.net:1433;database=icm-as;`
+<2> Database user: `icm-as`
+<3> Database password: taken from the secret `icm-database`
