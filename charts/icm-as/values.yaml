@@ -36,10 +36,10 @@ image:
 
 ## define a secret for a container registry
 dockerSecret:
-  enabled: true
+  enabled: false
   name: "dockerhub"
-  username: "kiese"
-  password: "kiesepw"
+  username: "<your registry username>"
+  password: "<your registry password>"
 
 ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace
 ## or by the above dockerSecrets section.
