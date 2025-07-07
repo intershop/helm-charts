@@ -1,4 +1,28 @@
 
+<a name="icm-2.14.3"></a>
+## [icm-2.14.3](https://github.com/intershop/helm-charts/compare/icm-2.14.2...icm-2.14.3)
+
+> 2025-07-07
+
+### Chore
+
+* bump versions of icm:patch icm-as:patch icm-replication:patch icm-web:patch
+
+### Doc
+
+* **icm:** document icm chart ([#1021](https://github.com/intershop/helm-charts/issues/1021))
+
+
+<a name="icm-2.14.2"></a>
+## [icm-2.14.2](https://github.com/intershop/helm-charts/compare/icm-2.14.1...icm-2.14.2)
+
+> 2025-06-11
+
+### Chore
+
+* bump versions of icm-as:patch
+
+
 <a name="icm-2.14.1"></a>
 ## [icm-2.14.1](https://github.com/intershop/helm-charts/compare/icm-2.14.0...icm-2.14.1)
 
@@ -6,7 +30,8 @@
 
 ### Chore
 
-* Bump versions of icm:patch
+* generated changelog+release notes for icm:patch
+* bump versions of icm:patch
 
 ### Fix
 
@@ -20,7 +45,7 @@
 
 ### Chore
 
-* Bump versions of icm-as:minor
+* bump versions of icm-as:minor
 
 
 <a name="icm-2.13.11"></a>
@@ -30,8 +55,8 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:patch
-* Bump versions of icm:patch
+* generated changelog+release notes for icm:patch
+* bump versions of icm:patch
 
 ### Docs
 
@@ -45,8 +70,8 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:patch
-* Bump versions of icm:patch
+* generated changelog+release notes for icm:patch
+* bump versions of icm:patch
 
 ### Docs
 
@@ -60,12 +85,12 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:patch icm-as:patch icm-replication:patch
-* Bump versions of icm:patch icm-as:patch icm-replication:patch
+* generated changelog+release notes for icm:patch icm-as:patch icm-replication:patch
+* bump versions of icm:patch icm-as:patch icm-replication:patch
 
 ### Fix
 
-* Version comparision for replication fixed ([#974](https://github.com/intershop/helm-charts/issues/974))
+* version comparision for replication fixed ([#974](https://github.com/intershop/helm-charts/issues/974))
 
 
 <a name="icm-2.13.8"></a>
@@ -75,7 +100,7 @@
 
 ### Chore
 
-* Bump versions of icm-as:patch
+* bump versions of icm-as:patch
 
 
 <a name="icm-2.13.7"></a>
@@ -85,8 +110,8 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:patch icm-replication:patch
-* Bump versions of icm:patch icm-replication:patch
+* generated changelog+release notes for icm:patch icm-replication:patch
+* bump versions of icm:patch icm-replication:patch
 
 ### Fix
 
@@ -100,8 +125,8 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:patch
-* Bump versions of icm:patch
+* generated changelog+release notes for icm:patch
+* bump versions of icm:patch
 
 ### Doc
 
@@ -131,7 +156,7 @@
 
 ### Chore
 
-* Bump versions of icm-as:patch icm-web:patch
+* bump versions of icm-as:patch icm-web:patch
 
 
 <a name="icm-2.13.2"></a>
@@ -141,7 +166,7 @@
 
 ### Chore
 
-* Bump versions of icm-web:patch
+* bump versions of icm-web:patch
 
 
 <a name="icm-2.13.1"></a>
@@ -151,7 +176,7 @@
 
 ### Chore
 
-* Bump versions of icm-as:patch icm-web:patch
+* bump versions of icm-as:patch icm-web:patch
 
 
 <a name="icm-2.13.0"></a>
@@ -161,12 +186,12 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:minor icm-as:minor icm-web:minor
-* Bump versions of icm:minor icm-as:minor icm-web:minor
+* generated changelog+release notes for icm:minor icm-as:minor icm-web:minor
+* bump versions of icm:minor icm-as:minor icm-web:minor
 
 ### Feat
 
-* Configuration of volumemounts for existing configmaps ([#921](https://github.com/intershop/helm-charts/issues/921))
+* configuration of volumemounts for existing configmaps ([#921](https://github.com/intershop/helm-charts/issues/921))
 
 
 <a name="icm-2.12.0"></a>
@@ -176,7 +201,7 @@
 
 ### Chore
 
-* Bump versions of icm-as:minor icm-web:patch
+* bump versions of icm-as:minor icm-web:patch
 
 
 <a name="icm-2.11.0"></a>
@@ -186,7 +211,7 @@
 
 ### Chore
 
-* Bump versions of icm-as:minor
+* bump versions of icm-as:minor
 
 
 <a name="icm-2.10.1"></a>
@@ -196,8 +221,8 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:patch icm-as:patch
-* Bump versions of icm:patch icm-as:patch
+* generated changelog+release notes for icm:patch icm-as:patch
+* bump versions of icm:patch icm-as:patch
 
 ### Docs
 
@@ -211,7 +236,7 @@
 
 ### Chore
 
-* Bump versions of icm-as:minor
+* bump versions of icm-as:minor
 
 
 <a name="icm-2.9.1"></a>
@@ -221,7 +246,7 @@
 
 ### Chore
 
-* Bump versions of icm-as:patch
+* bump versions of icm-as:patch
 
 
 <a name="icm-2.9.0"></a>
@@ -231,7 +256,7 @@
 
 ### Chore
 
-* Bump versions of icm-as:minor icm-web:patch
+* bump versions of icm-as:minor icm-web:patch
 
 
 <a name="icm-2.8.1"></a>
@@ -241,7 +266,7 @@
 
 ### Chore
 
-* Bump versions of icm-web:patch
+* bump versions of icm-web:patch
 
 
 <a name="icm-2.8.0"></a>
@@ -251,7 +276,7 @@
 
 ### Chore
 
-* Bump versions of icm-web:minor
+* bump versions of icm-web:minor
 
 
 <a name="icm-2.7.0"></a>
@@ -261,7 +286,7 @@
 
 ### Chore
 
-* Bump versions of icm-as:minor icm-web:patch
+* bump versions of icm-as:minor icm-web:patch
 
 
 <a name="icm-2.6.0"></a>
@@ -271,8 +296,8 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:minor icm-as:minor icm-replication:minor
-* Bump versions of icm:minor icm-as:minor icm-replication:minor
+* generated changelog+release notes for icm:minor icm-as:minor icm-replication:minor
+* bump versions of icm:minor icm-as:minor icm-replication:minor
 
 ### Feat
 
@@ -286,7 +311,7 @@
 
 ### Chore
 
-* Bump versions of icm-as:patch
+* bump versions of icm-as:patch
 
 
 <a name="icm-2.5.1"></a>
@@ -296,8 +321,8 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:patch icm-replication:patch
-* Bump versions of icm:patch icm-replication:patch
+* generated changelog+release notes for icm:patch icm-replication:patch
+* bump versions of icm:patch icm-replication:patch
 
 ### Fix
 
@@ -311,7 +336,7 @@
 
 ### Chore
 
-* Bump versions of icm-as:minor icm-web:minor
+* bump versions of icm-as:minor icm-web:minor
 
 
 <a name="icm-2.4.0"></a>
@@ -321,8 +346,8 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:minor icm-replication:minor
-* Bump versions of icm:minor icm-replication:minor
+* generated changelog+release notes for icm:minor icm-replication:minor
+* bump versions of icm:minor icm-replication:minor
 
 ### Feat
 
@@ -336,7 +361,7 @@
 
 ### Chore
 
-* Bump versions of icm-web:minor
+* bump versions of icm-web:minor
 
 
 <a name="icm-2.2.2"></a>
@@ -346,7 +371,7 @@
 
 ### Chore
 
-* Bump versions of icm-as:patch
+* bump versions of icm-as:patch
 
 ### Fix
 
@@ -360,8 +385,8 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:patch icm-replication:patch
-* Bump versions of icm:patch icm-replication:patch
+* generated changelog+release notes for icm:patch icm-replication:patch
+* bump versions of icm:patch icm-replication:patch
 
 ### Fix
 
@@ -375,9 +400,9 @@
 
 ### Chore
 
-* Bump versions of icm-web:minor
-* Generated changelog+release notes for icm:patch icm-replication:patch
-* Bump versions of icm:patch icm-replication:patch
+* bump versions of icm-web:minor
+* generated changelog+release notes for icm:patch icm-replication:patch
+* bump versions of icm:patch icm-replication:patch
 
 
 <a name="icm-2.1.3"></a>
@@ -387,8 +412,8 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:patch icm-replication:patch
-* Bump versions of icm:patch icm-replication:patch
+* generated changelog+release notes for icm:patch icm-replication:patch
+* bump versions of icm:patch icm-replication:patch
 
 ### Fix
 
@@ -402,8 +427,8 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:patch
-* Bump versions of icm:patch
+* generated changelog+release notes for icm:patch
+* bump versions of icm:patch
 
 ### Fix
 
@@ -417,12 +442,12 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:patch icm-replication:patch
-* Bump versions of icm:patch icm-replication:patch
+* generated changelog+release notes for icm:patch icm-replication:patch
+* bump versions of icm:patch icm-replication:patch
 
 ### Fix
 
-* Remove csi volume mount ([#709](https://github.com/intershop/helm-charts/issues/709))
+* remove csi volume mount ([#709](https://github.com/intershop/helm-charts/issues/709))
 
 
 <a name="icm-2.1.0"></a>
@@ -432,8 +457,8 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:minor icm-replication:minor
-* Bump versions of icm:minor icm-replication:minor
+* generated changelog+release notes for icm:minor icm-replication:minor
+* bump versions of icm:minor icm-replication:minor
 
 ### Feat
 
@@ -447,8 +472,8 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:patch icm-replication:patch
-* Bump versions of icm:patch icm-replication:patch
+* generated changelog+release notes for icm:patch icm-replication:patch
+* bump versions of icm:patch icm-replication:patch
 
 ### Fix
 
@@ -468,8 +493,8 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:patch icm-as:patch icm-replication:patch icm-web:patch
-* Bump versions of icm:patch icm-as:patch icm-replication:patch icm-web:patch
+* generated changelog+release notes for icm:patch icm-as:patch icm-replication:patch icm-web:patch
+* bump versions of icm:patch icm-as:patch icm-replication:patch icm-web:patch
 * Consume WebAdapterAgent 4.0.1
 * Consume WebAdapter 2.5.0
 
@@ -481,8 +506,8 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:major icm-as:major icm-replication:major
-* Bump versions of icm:major icm-as:major icm-replication:major
+* generated changelog+release notes for icm:major icm-as:major icm-replication:major
+* bump versions of icm:major icm-as:major icm-replication:major
 
 ### Feat
 
@@ -496,12 +521,12 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:minor icm-as:minor icm-replication:minor
-* Bump versions of icm:minor icm-as:minor icm-replication:minor
+* generated changelog+release notes for icm:minor icm-as:minor icm-replication:minor
+* bump versions of icm:minor icm-as:minor icm-replication:minor
 
 ### Feat
 
-* Add scripts for azure test execution ([#642](https://github.com/intershop/helm-charts/issues/642))
+* add scripts for azure test execution ([#642](https://github.com/intershop/helm-charts/issues/642))
 * **icm:** use weblayer configuration during end2end tests ([#454](https://github.com/intershop/helm-charts/issues/454))
 
 
@@ -512,7 +537,7 @@
 
 ### Chore
 
-* Bump versions of icm-web:minor
+* bump versions of icm-web:minor
 
 
 <a name="icm-1.11.1"></a>
@@ -522,8 +547,8 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:patch icm-replication:patch
-* Bump versions of icm:patch icm-replication:patch
+* generated changelog+release notes for icm:patch icm-replication:patch
+* bump versions of icm:patch icm-replication:patch
 
 ### Fix
 
@@ -537,8 +562,8 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:minor icm-replication:minor
-* Bump versions of icm:minor icm-replication:minor
+* generated changelog+release notes for icm:minor icm-replication:minor
+* bump versions of icm:minor icm-replication:minor
 
 ### Feat
 
@@ -568,8 +593,8 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:patch icm-replication:patch
-* Bump versions of icm:patch icm-replication:patch
+* generated changelog+release notes for icm:patch icm-replication:patch
+* bump versions of icm:patch icm-replication:patch
 
 
 <a name="icm-1.10.1"></a>
@@ -579,8 +604,8 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:patch icm-replication:patch
-* Bump versions of icm:patch icm-replication:patch
+* generated changelog+release notes for icm:patch icm-replication:patch
+* bump versions of icm:patch icm-replication:patch
 
 
 <a name="icm-1.10.0"></a>
@@ -590,8 +615,8 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:patch icm-as:minor icm-replication:patch
-* Bump versions of icm:patch icm-as:minor icm-replication:patch
+* generated changelog+release notes for icm:patch icm-as:minor icm-replication:patch
+* bump versions of icm:patch icm-as:minor icm-replication:patch
 
 ### Fix
 
@@ -605,7 +630,7 @@
 
 ### Chore
 
-* Bump versions of icm-as:minor
+* bump versions of icm-as:minor
 
 
 <a name="icm-1.8.0"></a>
@@ -615,8 +640,8 @@
 
 ### Chore
 
-* Generated changelog+release notes for icm:minor icm-as:minor
-* Bump versions of icm:minor icm-as:minor
+* generated changelog+release notes for icm:minor icm-as:minor
+* bump versions of icm:minor icm-as:minor
 
 ### Feat
 
@@ -630,7 +655,7 @@
 
 ### Chore
 
-* Bump versions of icm-as:patch
+* bump versions of icm-as:patch
 
 
 <a name="icm-1.7.0"></a>
@@ -640,8 +665,8 @@
 
 ### Chore
 
-* Bump versions of icm-as:minor icm-job:minor
-* Further release process automation ([#462](https://github.com/intershop/helm-charts/issues/462))
+* bump versions of icm-as:minor icm-job:minor
+* further release process automation ([#462](https://github.com/intershop/helm-charts/issues/462))
 
 
 <a name="icm-1.6.0"></a>
@@ -651,7 +676,7 @@
 
 ### Chore
 
-* Bump versions icm-as:minor and dependent charts
+* bump versions icm-as:minor and dependent charts
 
 
 <a name="icm-1.5.0"></a>
@@ -661,16 +686,16 @@
 
 ### Chore
 
-* Bump versions icm-as:minor and dependent charts
+* bump versions icm-as:minor and dependent charts
 
 ### Ci
 
-* Automate release process ([#393](https://github.com/intershop/helm-charts/issues/393)) ([#395](https://github.com/intershop/helm-charts/issues/395))
-* Automate release process ([#393](https://github.com/intershop/helm-charts/issues/393)) ([#395](https://github.com/intershop/helm-charts/issues/395))
+* automate release process ([#393](https://github.com/intershop/helm-charts/issues/393)) ([#395](https://github.com/intershop/helm-charts/issues/395))
+* automate release process ([#393](https://github.com/intershop/helm-charts/issues/393)) ([#395](https://github.com/intershop/helm-charts/issues/395))
 
 ### Feat
 
-* Increase persistence sites capability for ISTE tests ([#90052](https://github.com/intershop/helm-charts/issues/90052))
+* increate persistence sites capability for ISTE tests ([#90052](https://github.com/intershop/helm-charts/issues/90052))
 * **icm:** redis configuration ([#335](https://github.com/intershop/helm-charts/issues/335)) ([#349](https://github.com/intershop/helm-charts/issues/349))
 
 
@@ -681,7 +706,7 @@
 
 ### Chore
 
-* Update requirements.yaml
+* update requirements.yaml
 
 ### Feat
 
@@ -877,8 +902,8 @@
 
 ### Fix
 
-* Relication configmap ([#106](https://github.com/intershop/helm-charts/issues/106)) ([#107](https://github.com/intershop/helm-charts/issues/107))
-* Fix lint test for icm-charts ([#99](https://github.com/intershop/helm-charts/issues/99))
+* relication configmap ([#106](https://github.com/intershop/helm-charts/issues/106)) ([#107](https://github.com/intershop/helm-charts/issues/107))
+* fix lint test for icm-charts ([#99](https://github.com/intershop/helm-charts/issues/99))
 
 
 <a name="icm-0.3.1"></a>
@@ -888,17 +913,17 @@
 
 ### Feat
 
-* Set release versions ([#91](https://github.com/intershop/helm-charts/issues/91))
+* set release versions ([#91](https://github.com/intershop/helm-charts/issues/91))
 
 ### Fix
 
-* Replace placeholders to set local folders ([#99](https://github.com/intershop/helm-charts/issues/99))
-* Fix several lint issues ([#99](https://github.com/intershop/helm-charts/issues/99))
-* Use PageCache PVC ([#87](https://github.com/intershop/helm-charts/issues/87)) ([#88](https://github.com/intershop/helm-charts/issues/88))
+* replace placeholders to set local folders ([#99](https://github.com/intershop/helm-charts/issues/99))
+* fix several lint issues ([#99](https://github.com/intershop/helm-charts/issues/99))
+* use PageCache PVC ([#87](https://github.com/intershop/helm-charts/issues/87)) ([#88](https://github.com/intershop/helm-charts/issues/88))
 
 ### Release
 
-* All icm charts ([#81](https://github.com/intershop/helm-charts/issues/81))
+* all icm charts ([#81](https://github.com/intershop/helm-charts/issues/81))
 
 
 <a name="icm-0.2.17"></a>
@@ -939,7 +964,7 @@
 ### ICM
 
 * Fix version tags on repository issue ([#45](https://github.com/intershop/helm-charts/issues/45))
-* Do not use tags in webserver chart ([#43](https://github.com/intershop/helm-charts/issues/43))
+* do not use tags in webserver chart ([#43](https://github.com/intershop/helm-charts/issues/43))
 
 
 <a name="icm-0.2.11"></a>
@@ -955,7 +980,7 @@
 
 ### Fix
 
-* Roll out port mapping fix ([#29](https://github.com/intershop/helm-charts/issues/29)) ([#34](https://github.com/intershop/helm-charts/issues/34)) ([#35](https://github.com/intershop/helm-charts/issues/35))
+* roll out port mapping fix ([#29](https://github.com/intershop/helm-charts/issues/29)) ([#34](https://github.com/intershop/helm-charts/issues/34)) ([#35](https://github.com/intershop/helm-charts/issues/35))
 
 
 <a name="icm-0.2.9"></a>
@@ -969,8 +994,8 @@
 
 ### Refactor
 
-* Requirements.yml not needed anymore ([#21](https://github.com/intershop/helm-charts/issues/21))
-* Use local dependencies ([#19](https://github.com/intershop/helm-charts/issues/19))
+* requirements.yml not needed anymore ([#21](https://github.com/intershop/helm-charts/issues/21))
+* use local dependencies ([#19](https://github.com/intershop/helm-charts/issues/19))
 
 
 <a name="icm-0.2.8"></a>
