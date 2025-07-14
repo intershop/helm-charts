@@ -1,0 +1,12 @@
+= `values.yaml` Attributes in Section `podBinding`
+
+:icons: font
+
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
+
+[WARNING]
+====
+Pod binding which uses pod identity is https://github.com/Azure/aad-pod-identity/issues/1349[deprecated] and replaced by https://azure.github.io/azure-workload-identity/docs/[workload identity].
+====

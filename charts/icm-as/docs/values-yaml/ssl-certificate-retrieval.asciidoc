@@ -1,0 +1,14 @@
+= `values.yaml` Attributes in Section `sslCertificateRetrieval`
+
+:icons: font
+
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
+
+_@Deprecated since 2.9.0, use link:secret-mounts.asciidoc[secretMounts] and https://support.intershop.com/kb/index.php/Display/X31381[Guide - Secret Store Process] instead_
+
+[WARNING]
+====
+The section `sslCertificateRetrieval` is deprecated because it used link:pod-binding.asciidoc[podBinding] which is also deprecated.
+====

@@ -1,0 +1,14 @@
+= `values.yaml` Attributes in Section `environment`
+
+:icons: font
+
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
+
+
+== Description
+
+Allows to define environment variables for `icm-web-wa` and `icm-web-waa` containers. These variables are defined as a yaml object containing attributes that specify the variable's name and value. The attribute name is used as the environment variable name, and the attribute value is used as the environment variable value.
+
+The environment variables are explained in detail for the `icm-as` Helm Chart, see link:../../../icm-as/docs/values-yaml/environment.asciidoc[here].
