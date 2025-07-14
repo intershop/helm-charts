@@ -1,0 +1,40 @@
+= `values.yaml` Attributes in Section `jgroups`
+
+:icons: font
+
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
+
+_@Target Audience: Developer, Tester, DevOps, Ops_
+
+== Description
+
+Configures which discovery technology is used by http://www.jgroups.org/[JGroups] to find all the `icm-as-server` pods that belong to a cluster. The following table lists the attributes of the `jgroups` section (attributes for _playground_ discovery technology are omitted here):
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|discovery|Configures which discovery technology is used|enum {`file_ping`,
+`kube_ping`,
+`azure_ping` (_playground_),
+`dns_ping` (_playground_)}|{optional}|`file_ping`
+|location|If `discovery=file_ping`, this attribute configures where JGroups creates the necessary files (needs to be a file system shared between all `icm-as-server` pods)|path|{optional}|`/intershop/jgroups-share`
+|clusterLabel|If `discovery=kube_ping`, this attribute configures the label of the `icm-as-server` cluster - all pods using this label belong to the same cluster|string|{optional}|[.placeholder]#release name#
+|portRange|If `discovery=kube_ping`, this attribute configures the ports range used be JGroups|int|{optional}|`5`
+|===
+
+[NOTE]
+====
+If `discovery=kube_ping`, the `icm-as-server` containers require access to the Kubernetes API. This can be done by deploying a link:service-account.asciidoc[serviceAccount].
+====
+
+=== Example
+[source,yaml]
+----
+jgroups:
+  discovery: file_ping <1>
+----
+
+<1> Just use `file_ping` with default values.
+

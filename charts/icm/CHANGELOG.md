@@ -1,4 +1,28 @@
 
+<a name="icm-2.14.3"></a>
+## [icm-2.14.3](https://github.com/intershop/helm-charts/compare/icm-2.14.2...icm-2.14.3)
+
+> 2025-07-07
+
+### Chore
+
+* bump versions of icm:patch icm-as:patch icm-replication:patch icm-web:patch
+
+### Doc
+
+* **icm:** document icm chart ([#1021](https://github.com/intershop/helm-charts/issues/1021))
+
+
+<a name="icm-2.14.2"></a>
+## [icm-2.14.2](https://github.com/intershop/helm-charts/compare/icm-2.14.1...icm-2.14.2)
+
+> 2025-06-11
+
+### Chore
+
+* bump versions of icm-as:patch
+
+
 <a name="icm-2.14.1"></a>
 ## [icm-2.14.1](https://github.com/intershop/helm-charts/compare/icm-2.14.0...icm-2.14.1)
 
@@ -6,6 +30,7 @@
 
 ### Chore
 
+* generated changelog+release notes for icm:patch
 * bump versions of icm:patch
 
 ### Fix
