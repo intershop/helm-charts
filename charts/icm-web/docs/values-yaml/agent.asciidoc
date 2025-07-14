@@ -1,0 +1,28 @@
+= `values.yaml` Attributes in Section `agent`
+
+:icons: font
+
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
+
+== Description
+
+Configures the `webadapteragent`. The `agent` section contains several attributes that have already been described in the `icm-as` Helm Chart documentation. The following list contains these attributes:
+
+* link:../../../icm-as/docs/values-yaml/no-section.asciidoc#_example_deploymentAnnotations[deploymentAnnotations]
+* link:../../../icm-as/docs/values-yaml/no-section.asciidoc#_example_deploymentLabels[deploymentLabels]
+* link:../../../icm-as/docs/values-yaml/image.asciidoc[image]
+* link:../../../icm-as/docs/values-yaml/newrelic.asciidoc[newrelic]
+* link:../../../icm-as/docs/values-yaml/no-section.asciidoc#_example_podAnnotations_podLabels[podAnnotations and podLabels]
+* link:../../../icm-as/docs/values-yaml/pod-binding.asciidoc[podBinding]
+* link:../../../icm-as/docs/values-yaml/no-section.asciidoc#_example_replicaCount[replicaCount]
+* link:../../../icm-as/docs/values-yaml/no-section.asciidoc#_example_updateStrategy[updateStrategy]
+
+There is one attribute that is specific to the `webadapteragent`:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|enabled|Enables/disables the `webadapteragent`|boolean|{optional}|`true`
+|===

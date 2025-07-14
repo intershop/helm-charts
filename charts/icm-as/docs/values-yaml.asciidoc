@@ -1,0 +1,49 @@
+= Configuration Using the `values.yaml` File
+
+:icons: font
+
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
+
+== Target Audience
+
+This document is intended for users of the Intershop Commerce Management Application Server (icm-as) Helm Chart who want to configure the chart using the `values.yaml` file. This explicitly includes developers, system administrators, and DevOps engineers who are responsible for deploying and managing the Intershop Commerce Management Application Server in a Kubernetes environment.
+
+If parts of this document target a specific audience, they are explicitly marked as such.
+
+== Sections Overview
+
+The following table gives a short overview about the different sections (sorted alphabetically):
+
+[cols="1,3",options="header"]
+|===
+|Section |Topic
+|link:values-yaml/no-section.asciidoc[+<none>+]|Attributes without any section
+|link:values-yaml/copy-sites-dir.asciidoc[copySitesDir]|Copy sites directory
+|link:values-yaml/customizations.asciidoc[customizations]|Customizations to be deployed
+|link:values-yaml/database.asciidoc[database]|Database configuration
+|link:values-yaml/docker-secret.asciidoc[dockerSecret]|Deployment of a docker registry secret
+|link:values-yaml/environment.asciidoc[environment]|Environment variables
+|link:values-yaml/image.asciidoc[image]|`icm-as-server` image configuration
+|link:values-yaml/image-pull-secrets.asciidoc[imagePullSecrets]|Image pull secrets
+|link:values-yaml/ingress.asciidoc[ingress]|Ingress configuration
+|link:values-yaml/infrastructure-monitoring.asciidoc[infrastructureMonitoring]|Infrastructure monitoring configuration
+|link:values-yaml/job.asciidoc[job]|Job server configuration
+|link:values-yaml/jgroups.asciidoc[jgroups]|jgroups configuration
+|link:values-yaml/jvm.asciidoc[jvm]|`icm-as-server` JVM configuration
+|link:values-yaml/mssql.asciidoc[mssql]|Deployment of an MSSQL database inside a separate pod
+|link:values-yaml/newrelic.asciidoc[newrelic]|New Relic configuration
+|link:values-yaml/operational-context.asciidoc[operationalContext]|Operational context configuration
+|link:values-yaml/persistence.asciidoc[persistence]|Persistence / volumes configuration
+|link:values-yaml/pod-binding.asciidoc[podBinding]|Pod binding / pod identity configuration
+|link:values-yaml/pod-security-context.asciidoc[podSecurityContext]|Pod security context
+|link:values-yaml/probes.asciidoc[probes]|Probes configuration (startup, liveness, readiness)
+|link:values-yaml/replication.asciidoc[replication]|Replication/staging configuration
+|link:values-yaml/secrets.asciidoc[secrets]|Secrets to be made available as environment variables
+|link:values-yaml/secret-mounts.asciidoc[secretMounts]|Kubernetes secrets to be mounted as files / environment variables
+|link:values-yaml/service-account.asciidoc[serviceAccount]|Service account to be deployed
+|link:values-yaml/ssl-certificate-retrieval.asciidoc[sslCertificateRetrieval]|SSL/TLS certificate retrieval
+|link:values-yaml/test-connection.asciidoc[testConnection]|Test connection configuration
+|link:values-yaml/web-layer.asciidoc[webLayer]|Web layer (webadapter-replacement) configuration
+|===
