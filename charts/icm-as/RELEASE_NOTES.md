@@ -1,19 +1,14 @@
 
-<a name="icm-as-2.9.2"></a>
-## [icm-as-2.9.2](https://github.com/intershop/helm-charts/compare/icm-as-2.9.1...icm-as-2.9.2)
+<a name="icm-as-2.10.0"></a>
+## [icm-as-2.10.0](https://github.com/intershop/helm-charts/compare/icm-as-2.9.2...icm-as-2.10.0)
 
-> 2025-07-07
+> 2025-07-17
 
 ### Chore
 
-* bump versions of icm:patch icm-as:patch icm-replication:patch icm-web:patch
+* bump versions of icm:minor icm-as:minor icm-job-test:minor icm-replication:minor
 
-### Doc
+### Feat
 
-* **icm:** document icm chart ([#1021](https://github.com/intershop/helm-charts/issues/1021))
-
-### Fix
-
-* **icm:** allow to mount more than 1 certificate ([#1027](https://github.com/intershop/helm-charts/issues/1027))
-* **icm:** allow to mount more than 1 certificate ([#1027](https://github.com/intershop/helm-charts/issues/1027))
+* **icm:** introduce new icm-job-test chart ([#1037](https://github.com/intershop/helm-charts/issues/1037))
 

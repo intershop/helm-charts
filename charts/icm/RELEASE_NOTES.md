@@ -1,14 +1,14 @@
 
-<a name="icm-2.14.3"></a>
-## [icm-2.14.3](https://github.com/intershop/helm-charts/compare/icm-2.14.2...icm-2.14.3)
+<a name="icm-2.15.0"></a>
+## [icm-2.15.0](https://github.com/intershop/helm-charts/compare/icm-2.14.3...icm-2.15.0)
 
-> 2025-07-07
+> 2025-07-17
 
 ### Chore
 
-* bump versions of icm:patch icm-as:patch icm-replication:patch icm-web:patch
+* bump versions of icm:minor icm-as:minor icm-job-test:minor icm-replication:minor
 
-### Doc
+### Feat
 
-* **icm:** document icm chart ([#1021](https://github.com/intershop/helm-charts/issues/1021))
+* **icm:** introduce new icm-job-test chart ([#1037](https://github.com/intershop/helm-charts/issues/1037))
 

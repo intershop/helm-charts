@@ -1,6 +1,6 @@
 
-<a name="icm-replication-2.15.0"></a>
-## [icm-replication-2.15.0](https://github.com/intershop/helm-charts/compare/icm-replication-2.14.3...icm-replication-2.15.0)
+<a name="icm-job-test-1.1.0"></a>
+## icm-job-test-1.1.0
 
 > 2025-07-17
 
