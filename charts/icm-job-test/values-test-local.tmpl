@@ -1,0 +1,133 @@
+icm:
+  test:
+    enabled: true
+
+  icm-as:
+    nodeSelector:
+      agentpool: agentpool2
+    podAnnotations:
+      # as long as there are no long running job pods we need this annotation for icm-as
+      "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
+    image:
+      repository: "${ICM_TEST_IMAGE}"
+    customCommand:
+      - "/bin/sh"
+      - "-c"
+      - |
+        # workaround to keep java in the path
+        export ROOTPATH=$PATH
+
+        mkdir -p $HELM_DIRECTORY/server-logs
+        chown ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_USER} $HELM_DIRECTORY/server-logs
+        su ${SERVER_DIRECTORY_USER} <<'EOF'
+          export PATH=$ROOTPATH
+          timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
+          sh /intershop/bin/intershop.sh appserver  2>&1 | tee outfile $HELM_DIRECTORY/server-logs/as${timestamp}.log
+        EOF
+    podSecurityContext:
+      runAsUser: 0
+      runAsNonRoot: false
+    copySitesDir:
+     enabled: true
+     fromDir: ${WORKSPACE_DIRECTORY}/../../../sites
+     resultDir: ${RESULT_DIRECTORY}
+     chmodUser: ${SERVER_DIRECTORY_USER}
+     chmodGroup: ${SERVER_DIRECTORY_GROUP}
+    database:
+      type: "${DATABASE_TYPE}"
+      jdbcURL: "${DATABASE_CONNECTION_STRING}"
+      jdbcUser: "${DATABASE_USER}"
+      jdbcPassword: "${DATABASE_USER}"
+    environment:
+      CARTRIDGE_LIST: "ft_e2e_test"
+
+      SERVER_DIRECTORY: "${SERVER_DIRECTORY}"
+      HELM_DIRECTORY: "${HELM_DIRECTORY}"
+      CONFIG_DIRECTORY: "${CONFIG_DIRECTORY}"
+      RESULT_DIRECTORY: "${RESULT_DIRECTORY}"
+      WORKSPACE_DIRECTORY: "${WORKSPACE_DIRECTORY}"
+      SERVER_DIRECTORY_GROUP: "${SERVER_DIRECTORY_GROUP}"
+      SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
+
+      INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}.${DNS_ZONE_NAME}:80/"
+      INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}.${DNS_ZONE_NAME}:443/"
+
+      INTERSHOP_ENCRYPTION_STRICTMODE_ENABLED: "false"
+
+      SMTPMAILSERVICE_DEFAULTSMTPMAILSERVICE_MAIL_SMTP_HOSTNAMES: "${HELM_JOB_NAME}-mailhog"
+      SMTPMAILSERVICE_DEFAULTSMTPMAILSERVICE_MAIL_SMTP_PORT: "1025"
+      MAIL_SMTP_HOST: "${HELM_JOB_NAME}-mailhog"
+      MAIL_SMTP_PORT: "1025"
+      MAIL_CLIENT_API_PORT: "8025"
+      MAIL_SMTP_MAILHOG_ENABLED: "true"
+    persistence:
+      sites:
+        size: 2Gi
+        type: cluster
+        cluster:
+          storageClass:
+            existingClass: azurefile
+      encryption:
+        type: emptyDir
+      customdata:
+        enabled: true
+        existingClaim: icm-nfs
+    newrelic:
+      enabled: true
+      appName: "${HELM_JOB_NAME}-icm-as"
+      license_key: "${NEWRELIC_LICENSE_KEY}"
+  icm-as:
+    nodeSelector: null
+    infrastructureMonitoring:
+      enabled: false
+    imagePullSecrets:
+    - "${ICM_AS_PULL_SECRET}"
+    persistence:
+      sites:
+        size: 2Gi
+        type: local
+        local:
+          path: ${LOCAL_MOUNT_BASE}/sites
+      customdata:
+        enabled: true
+        existingClaim: ${HELM_JOB_NAME}-local-testdata-pvc
+        mountPoint: /data
+    mssql:
+      enabled: true
+      acceptEula: "Y"
+      persistence:
+        data:
+          size: 1Gi
+          type: local
+          local:
+            path: ${LOCAL_MOUNT_BASE}/mssql/data
+        backup:
+          size: 1Gi
+          type: local
+          local:
+            path: ${LOCAL_MOUNT_BASE}/mssql/backup
+
+  icm-web:
+    nodeSelector: null
+    persistence:
+      customdata:
+        enabled: true
+        existingClaim: ${HELM_JOB_NAME}-local-testdata-pvc
+
+  ingress-nginx:
+    controller:
+      nodeSelector: null
+
+  mailhog:
+    nodeSelector: null
+
+  testrunner:
+    nodeSelector: null
+    imagePullSecrets:
+    - "${ICM_AS_PULL_SECRET}"
+    persistence:
+      testdata:
+        size: 1Gi
+        type: local
+        local:
+          dir: ${LOCAL_MOUNT_BASE}/testdata

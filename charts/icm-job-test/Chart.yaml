@@ -1,0 +1,13 @@
+apiVersion: v2
+description: Intershop Commerce Management - ICM Job Server Test Chart
+# name and version must be in this exact order, otherwise bump2version won't work
+name: icm-job-test
+version: 1.0.0
+annotations:
+  requestedMemoryQuota: 8000Mi
+  requestedCpuQuotaInMinutes: "2200"
+dependencies:
+  - name: icm
+    version: 2.14.3
+    repository: file://../icm
+
