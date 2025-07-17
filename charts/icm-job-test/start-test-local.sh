@@ -4,9 +4,9 @@ set -eu pipefail
 
 set -o allexport
 source start-test-local_vars.sh
-read -e -p 'Helm chart name: ' -i 'icm-test' HELM_JOB_NAME
+read -e -p 'Helm chart name: ' -i 'icm-job-test' HELM_JOB_NAME
 
-DEFAULT_TESTSUITE='tests.remote.com.intershop.cms.suite.PageListingTestSuite'
+DEFAULT_TESTSUITE='tests.remote.com.intershop.product.suite.Product134TestSuite'
 TESTSUITE="${TESTSUITE:-$DEFAULT_TESTSUITE}"
 read -e -p 'Testsuite: ' -i "$TESTSUITE" TESTSUITE || { echo "Error reading input"; exit 1; }
 

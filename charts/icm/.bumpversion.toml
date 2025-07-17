@@ -1,5 +1,5 @@
 [tool.bumpversion]
-current_version = "2.14.3"
+current_version = "2.14.4"
 
 [[tool.bumpversion.files]]
 filename = "Chart.yaml"
@@ -8,5 +8,10 @@ replace = "name: icm\nversion: {new_version}"
 
 [[tool.bumpversion.files]]
 filename = "../icm-replication/Chart.yaml"
+search = "name: icm\n    version: {current_version}"
+replace = "name: icm\n    version: {new_version}"
+
+[[tool.bumpversion.files]]
+filename = "../icm-job-test/Chart.yaml"
 search = "name: icm\n    version: {current_version}"
 replace = "name: icm\n    version: {new_version}"
