@@ -66,7 +66,7 @@ helm install my-release intershop/icm-as --values=values.yaml --namespace icm-as
 
 ==== Job Server
 
-If `job.enable==true`, the job server functionality of the application server is activated and a child chart link:../icm-job/README.md[icm-job] is deployed.
+If `job.enabled==true`, the job server functionality of the application server is activated and a child chart link:../icm-job/README.md[icm-job] is deployed.
 During development you might need to update the dependencies:
 
 [source,bash]
