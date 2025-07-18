@@ -1,6 +1,6 @@
 
-<a name="icm-as-2.9.3"></a>
-## [icm-as-2.9.3](https://github.com/intershop/helm-charts/compare/icm-as-2.9.2...icm-as-2.9.3)
+<a name="icm-job-test-1.0.1"></a>
+## icm-job-test-1.0.1
 
 > 2025-07-17
 

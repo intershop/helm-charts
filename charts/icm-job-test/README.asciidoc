@@ -1,0 +1,71 @@
+= Helm Chart Intershop Commerce Management - Job Server Test
+
+This chart is able to test the job server functionality.
+
+== Prerequisites Details
+
+* Helm
+* kubectl
+* Kubernetes 1.14+
+
+== Chart Details
+
+This chart will do the following:
+
+* Deploy an ICM Application Server using the link:../icm-as/README.md[intershop/icm-as] chart
+* Deploy an ICM Web Adapter and Web Adapter Agent using the link:../icm-web/README.md[intershop/icm-web] chart
+
+== Installing the Chart
+
+=== Docker Pull Secret
+
+Create a secret for the Docker registry from which the images are coming. The secret's name must match the configured secret under `image.secret` within the application deployment. The default secret name is `dockerhub`.
+
+[source,bash]
+----
+kubectl create secret docker-registry <yourDockerRegistryName> --docker-server=<yourDockerRegistryServer> --docker-username=<yourUsername> --docker-password=<yourPassword> --docker-email=<yourEmail>
+----
+
+=== Persistence
+
+==== Sites
+
+`local`, `cluster`, `azurefiles`, `nfs`, `existingClaim` are possible persistence options.
+The default is `local`, where `persistence.sites.local.path` must be set to a valid local folder.
+
+==== jGroups
+
+`local`, `cluster`, `azurefiles`, `nfs`, `existingClaim` are possible persistence options.
+The default is `emptyDir`.
+
+=== Database
+
+The necessary database connection can be configured in the `database` section. The chart also supports deploying a (containerized) MSSQL database. If enabled, the deployed MSSQL database is used instead of the one configured in the `database` section.
+
+=== Add the Intershop Helm Repository
+
+Before installing Intershop Helm charts, add the https://intershop.github.io/helm-charts[Intershop helm-charts repository] to your Helm client.
+
+[source,bash]
+----
+helm repo add intershop https://intershop.github.io/helm-charts
+helm repo update
+----
+
+=== Install Chart
+
+To install the chart with the release name `icm-job-test`:
+
+[source,bash]
+----
+helm install icm-job-test intershop/icm-job-test --values=values.yaml
+----
+
+=== Install Chart via Cloned helm-charts Repository
+
+[source,bash]
+----
+cd charts
+helm dependency update icm
+helm install my-release ./icm --values=values.yaml --namespace icm
+----
