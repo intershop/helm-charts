@@ -9,8 +9,8 @@ WORKSPACE_DIRECTORY="/data"
 
 NODENAME="true"
 
-ICM_WEBSERVER_IMAGE="intershophub/icm-webadapter:2.4.6"
-ICM_WEBADAPTER_AGENT_IMAGE="intershophub/icm-webadapteragent:4.0.0"
+ICM_WEBSERVER_IMAGE="intershophub/icm-webadapter:2.6.0"
+ICM_WEBADAPTER_AGENT_IMAGE="intershophub/icm-webadapteragent:4.0.1"
 SERVER_DIRECTORY_GROUP="intershop"
 SERVER_DIRECTORY_USER="intershop"
 DNS_ZONE_NAME="test.intershop.com"
