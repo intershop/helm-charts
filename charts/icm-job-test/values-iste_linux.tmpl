@@ -1,0 +1,321 @@
+icm:
+  test:
+    enabled: true
+
+  icm-as:
+    nodeSelector:
+      agentpool: agentpool2
+    podAnnotations:
+      # as long as there are no long running job pods we need this annotation for icm-as
+      "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
+    image:
+      repository: "${ICM_TEST_IMAGE}"
+    job:
+      enabled: true
+    customCommand:
+      - "/bin/sh"
+      - "-c"
+      - |
+        # workaround to keep java in the path
+        export ROOTPATH=$PATH
+
+        mkdir -p $HELM_DIRECTORY/server-logs
+        chown ${SERVER_DIRECTORY_USER}:${SERVER_DIRECTORY_USER} $HELM_DIRECTORY/server-logs
+        su ${SERVER_DIRECTORY_USER} <<'EOF'
+          export PATH=$ROOTPATH
+          timestamp=$(date '+%Y-%m-%d_%H_%M_%S')
+          sh /intershop/bin/intershop.sh appserver  2>&1 | tee outfile $HELM_DIRECTORY/server-logs/as${timestamp}.log
+        EOF
+    podSecurityContext:
+      runAsUser: 0
+      runAsNonRoot: false
+    copySitesDir:
+     enabled: true
+     fromDir: ${WORKSPACE_DIRECTORY}/../../../sites
+     resultDir: ${RESULT_DIRECTORY}
+     chmodUser: ${SERVER_DIRECTORY_USER}
+     chmodGroup: ${SERVER_DIRECTORY_GROUP}
+    database:
+      type: "${DATABASE_TYPE}"
+      jdbcURL: "${DATABASE_CONNECTION_STRING}"
+      jdbcUser: "${DATABASE_USER}"
+      jdbcPassword: "${DATABASE_USER}"
+    environment:
+      CARTRIDGE_LIST: "ft_e2e_test"
+
+      SERVER_DIRECTORY: "${SERVER_DIRECTORY}"
+      HELM_DIRECTORY: "${HELM_DIRECTORY}"
+      CONFIG_DIRECTORY: "${CONFIG_DIRECTORY}"
+      RESULT_DIRECTORY: "${RESULT_DIRECTORY}"
+      WORKSPACE_DIRECTORY: "${WORKSPACE_DIRECTORY}"
+      SERVER_DIRECTORY_GROUP: "${SERVER_DIRECTORY_GROUP}"
+      SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
+
+      INTERSHOP_WEBSERVERURL: "http://${HELM_JOB_NAME}.${DNS_ZONE_NAME}:80/"
+      INTERSHOP_WEBSERVERSECUREURL: "https://${HELM_JOB_NAME}.${DNS_ZONE_NAME}:443/"
+
+      INTERSHOP_ENCRYPTION_STRICTMODE_ENABLED: "false"
+
+      SMTPMAILSERVICE_DEFAULTSMTPMAILSERVICE_MAIL_SMTP_HOSTNAMES: "${HELM_JOB_NAME}-mailhog"
+      SMTPMAILSERVICE_DEFAULTSMTPMAILSERVICE_MAIL_SMTP_PORT: "1025"
+      MAIL_SMTP_HOST: "${HELM_JOB_NAME}-mailhog"
+      MAIL_SMTP_PORT: "1025"
+      MAIL_CLIENT_API_PORT: "8025"
+      MAIL_SMTP_MAILHOG_ENABLED: "true"
+    persistence:
+      sites:
+        size: 2Gi
+        type: cluster
+        cluster:
+          storageClass:
+            existingClass: azurefile
+      encryption:
+        type: emptyDir
+      customdata:
+        enabled: true
+        existingClaim: icm-nfs
+    newrelic:
+      enabled: true
+      appName: "${HELM_JOB_NAME}-icm-as"
+      license_key: "${NEWRELIC_LICENSE_KEY}"
+
+  icm-web:
+    nodeSelector:
+      agentpool: agentpool2
+    resources:
+      agent:
+        limits:
+          memory: 200Mi
+        requests:
+          memory: 200Mi
+    webadapter:
+      podAnnotations:
+        # as long as there is no new cache system we need this annotation for icm-web
+        "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
+      image:
+        repository: "${ICM_WEBSERVER_IMAGE}"
+    agent:
+      image:
+        repository: "${ICM_WEBADAPTER_AGENT_IMAGE}"
+    environment:
+      HELM_DIRECTORY: "${HELM_DIRECTORY}"
+      SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
+      SERVER_DIRECTORY_GROUP: "${SERVER_DIRECTORY_GROUP}"
+    service:
+      httpPort: 8080
+      httpsPort: 8443
+    persistence:
+      pagecache:
+        type: emptyDir
+      customdata:
+        enabled: true
+        existingClaim: icm-nfs
+    ingress:
+      enabled: true
+      className: "ingress-class-${HELM_JOB_NAME}"
+      annotations:
+        service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+        nginx.ingress.kubernetes.io/affinity: cookie
+        nginx.ingress.kubernetes.io/affinity-mode: persistent
+        nginx.ingress.kubernetes.io/session-cookie-name: stid
+        nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+        nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+        nginx.ingress.kubernetes.io/proxy-body-size: "100M"
+      hosts:
+      - host: "${HELM_JOB_NAME}.${DNS_ZONE_NAME}"
+        paths:
+        - path: /
+          pathType: Prefix
+      tls:
+      - secretName: ingress-tls-csi
+        hosts:
+        - "${HELM_JOB_NAME}.${DNS_ZONE_NAME}"
+
+  ingress-nginx:
+    enabled: true
+    controller:
+      kind: Deployment
+      ingressClassByName: "true"
+      ingressClassResource:
+        name: "ingress-class-${HELM_JOB_NAME}"
+        controllerValue: "k8s.io/ingress-${HELM_JOB_NAME}"
+      ingressClass: "ingress-class-${HELM_JOB_NAME}"
+      admissionWebhooks:
+        enabled: false
+      nodeSelector:
+        agentpool: agentpool2
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: release
+                operator: In
+                values:
+                - ${HELM_JOB_NAME}-icm-web
+            topologyKey: kubernetes.io/hostname
+      service:
+        external:
+          enabled: "false"
+        internal:
+          enabled: "true"
+          annotations:
+            service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+        externalTrafficPolicy: Local
+      publishService:
+        enabled: "true"
+      config:
+        proxy-read-timeout: "360"
+        proxy-send-timeout: "360"
+        proxy-connect-timeout: "360"
+        disable-access-log: "true"
+      resources:
+        requests:
+          cpu: 100m
+          memory: 90Mi
+        limits:
+          cpu: 200m
+          memory: 300Mi
+
+    defaultBackend:
+      enabled: false
+
+  mailhog:
+    enabled: true
+    nodeSelector:
+      agentpool: agentpool2
+    resources:
+      requests:
+        memory: 100Mi
+        cpu: 100m
+      limits:
+        memory: 100Mi
+        cpu: 100m
+    spec:
+      template:
+        spec:
+          containers:
+            livenessProbe:
+              initialDelaySeconds: 60
+              tcpPort:
+                port: 1025
+              timeoutSeconds: 10
+            readinessProbe:
+              tcpPort:
+                port: 1025
+
+  testrunner:
+    initContainerDomainName: "${HELM_JOB_NAME}.${DNS_ZONE_NAME}"
+    nodeSelector:
+      agentpool: agentpool2
+    image:
+      repository: "${ICM_TEST_IMAGE}"
+      command: |
+        set -x
+        mkdir -p ${HELM_DIRECTORY}/result
+        chown -R 150:150 ${HELM_DIRECTORY}/result
+        chmod 777 ${HELM_DIRECTORY}/result
+
+        mkdir ${HELM_DIRECTORY}/pagedumps
+        chown -R 150:150 ${HELM_DIRECTORY}/pagedumps
+        chmod 777 ${HELM_DIRECTORY}/pagedumps
+
+        mkdir -p ${HELM_DIRECTORY}/shared_impex
+        chown -R 150:150 ${HELM_DIRECTORY}/result
+        chmod 777 ${HELM_DIRECTORY}/shared_impex
+
+        # be able to zip pagedumps folder
+        apt-get -qq update
+        apt-get -qq install -y zip
+
+        # workaround to keep java in the path
+        export ROOTPATH=$PATH
+
+        # startup
+        su ${SERVER_DIRECTORY_USER} <<'EOF'
+          set -x
+          export PATH=$ROOTPATH
+          logfile=${RESULT_DIRECTORY}/istestrunner.log
+          sh /intershop/bin/testrunner.sh -s=${TESTSUITE} -o=${RESULT_DIRECTORY} 2>&1 | tee outfile $logfile &
+          main_pid=$!
+
+          prev_size=0
+          update_modified_date() {
+            while kill -0 $main_pid 2>/dev/null; do
+              sleep 120
+              curr_size=$(stat -c%s "$logfile")
+              if [ "$curr_size" -ne "$prev_size" ]; then
+                touch $logfile
+                sync
+                prev_size=$curr_size
+              fi
+            done
+          }
+          update_modified_date &
+          wait $main_pid
+          PROCESS_ERROR_LEVEL=$?
+
+          TEST_EXECUTION_RESULT_STATUS="failed"
+          if [ "${PROCESS_ERROR_LEVEL}" -eq 0 ];
+          then
+            zip -qr ${RESULT_DIRECTORY}/pagedumps.zip ${HELM_DIRECTORY}/pagedumps
+            rm -Rf ${HELM_DIRECTORY}/pagedumps
+            TEST_EXECUTION_RESULT_STATUS="success"
+          else
+            top -b -n 1 > ${RESULT_DIRECTORY}/top.txt
+          fi
+          echo "result: ${TEST_EXECUTION_RESULT_STATUS}" > ${RESULT_DIRECTORY}/finished.yml
+          echo "result-datetime: $(date)" >> ${RESULT_DIRECTORY}/finished.yml
+          exit $PROCESS_ERROR_LEVEL
+        EOF
+    podSecurityContext:
+      runAsUser: 0
+    environment:
+      CARTRIDGE_LIST: "app_bo_test"
+
+      HELM_DIRECTORY: "${HELM_DIRECTORY}"
+      RESULT_DIRECTORY: "${RESULT_DIRECTORY}"
+
+      TESTSUITE: "${TESTSUITE}"
+      HOST: "${HELM_JOB_NAME}.${DNS_ZONE_NAME}"
+
+      APPSERVERNAME: "${HELM_JOB_NAME}-icm-as"
+
+      MAIL_SMTP_HOST: "${HELM_JOB_NAME}-mailhog"
+      MAIL_SMTP_PORT: "1025"
+      MAIL_CLIENT_API_PORT: "8025"
+      MAIL_SMTP_MAILHOG_ENABLED: "true"
+
+      PORT_HTTP: 80
+      PORT_HTTPS: 443
+      SERVLETENGINE_PORT: 7743
+
+      SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
+
+      DEFAULT_PAGEDUMP_DIRECTORY: ${HELM_DIRECTORY}/pagedumps
+      REMOVE_SUCCESSFUL_PAGEDUMPS: 'true'
+      SHARED_IMPEX: ${HELM_DIRECTORY}/shared_impex
+    resources:
+      requests:
+        cpu: 800m
+        memory: 2Gi
+      limits:
+        cpu: 800m
+        memory: 2Gi
+    initContainer:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 250Mi
+        limits:
+          cpu: 100m
+          memory: 250Mi
+    replicaCount: 1
+    persistence:
+      testdata:
+        size: 1Gi
+        type: existingClaim
+        existingClaim: icm-nfs
+    jvm:
+      options:
+      additionalOptions:
