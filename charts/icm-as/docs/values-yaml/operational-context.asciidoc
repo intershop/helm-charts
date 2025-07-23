@@ -15,7 +15,7 @@ Configures the operational context (aka _environment_) the ICM is running in. Th
 |Attribute |Description |Type |Mandatory |Default Value
 |customerId|the id of the customer|string|{mandatory}|`n_a` (default value for compatibility with older versions)
 |environmentType|the type of the environment e.g.int,uat,prd|string|{optional}|`prd`
-|environmentName|defines the system enviromnent variable "ENVIRONMENT",
+|environmentName|defines the system environment variable "ENVIRONMENT",
 (see SMC, Monitoring > Application Server > Configuration Values, scope: cluster, key "environment")
 
 Proposed values:

@@ -12,7 +12,7 @@ operationalContext:
   customerId: "n_a"
   # type of the environment (one of {int,uat,prd}, default=prd)
   environmentType: prd
-  # defines the system enviromnent variable "ENVIRONMENT",
+  # defines the system environment variable "ENVIRONMENT",
   # (see SMC, Monitoring > Application Server > Configuration Values, scope: cluster, key "environment")
   # Proposed values:
   # * development   (for local dev systems)
