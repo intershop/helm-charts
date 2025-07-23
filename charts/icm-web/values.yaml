@@ -12,8 +12,14 @@ operationalContext:
   customerId: "n_a"
   # type of the environment (one of {int,uat,prd}, default=prd)
   environmentType: prd
-  # name of the environment (environment-type + some sort of id, e.g. int-01, default=<environmentType>)
-  environmentName: prd
+  # defines the system enviromnent variable "ENVIRONMENT",
+  # (see SMC, Monitoring > Application Server > Configuration Values, scope: cluster, key "environment")
+  # Proposed values:
+  # * development   (for local dev systems)
+  # * integration   (for all systems with environmentType: int)
+  # * preproduction (for all systems with environmentType: uat)
+  # * production    (for all systems with environmentType: prd)
+  environmentName: production
   # if this is a staging environment define the system type (one of {standalone,live,edit}, default=standalone)
   stagingType: standalone
 

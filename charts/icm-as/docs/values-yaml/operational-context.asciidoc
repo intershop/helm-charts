@@ -15,7 +15,15 @@ Configures the operational context (aka _environment_) the ICM is running in. Th
 |Attribute |Description |Type |Mandatory |Default Value
 |customerId|the id of the customer|string|{mandatory}|`n_a` (default value for compatibility with older versions)
 |environmentType|the type of the environment e.g.int,uat,prd|string|{optional}|`prd`
-|environmentName|the name of the environment (environment-type + some sort of id, e.g. int-01)|string|{optional}|[.placeholder]#value of `environmentType`#
+|environmentName|defines the system enviromnent variable "ENVIRONMENT",
+(see SMC, Monitoring > Application Server > Configuration Values, scope: cluster, key "environment")
+
+Proposed values:
+
+* development   (for local dev systems)
+* integration   (for all systems with environmentType: int)
+* preproduction (for all systems with environmentType: uat)
+* production    (for all systems with environmentType: prd)|string|{optional}|[.placeholder]#value of `environmentType`#
 |===
 
 Using these attribute and some additional information from section link:replication.asciidoc[`replication`] the `operationalContextName` is calculated as follows:
