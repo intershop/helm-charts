@@ -35,23 +35,6 @@ env:
 - name: DEBUG_ICM
   value: "true"
 {{- end }}
-{{- if .Values.newrelic.enabled }}
-- name: ENABLE_NEWRELIC
-{{- if .Values.newrelic.apm.enabled }}
-  value: "true"
-{{- else }}
-  value: "false"
-{{- end }}
-- name: NEW_RELIC_LICENSE_KEY
-{{- /* licenseKeySecretKeyRef has precedence over license_key */ -}}
-{{- if .Values.newrelic.licenseKeySecretKeyRef }}
-  valueFrom:
-    secretKeyRef:
-{{- toYaml .Values.newrelic.licenseKeySecretKeyRef | nindent 6 }}
-{{- else }}
-  value: "{{ .Values.newrelic.license_key }}"
-{{- end }}
-{{- end }}
 {{- if .Values.mssql.enabled }}
 - name: INTERSHOP_DATABASETYPE
   value: mssql
@@ -101,6 +84,29 @@ Purpose is to filter out any duplicated environment assignment when set both on 
 {{- if .Values.webLayer.redis.enabled }}
 - name: INTERSHOP_PAGECACHE_REDIS_ENABLED
   value: "true"
+{{- end }}
+{{- end -}}
+
+{{/*
+Creates the environment newrelic section
+*/}}
+{{- define "icm-as.envNewrelic" -}}
+{{- if .Values.newrelic.enabled }}
+- name: ENABLE_NEWRELIC
+{{- if .Values.newrelic.apm.enabled }}
+  value: "true"
+{{- else }}
+  value: "false"
+{{- end }}
+- name: NEW_RELIC_LICENSE_KEY
+{{- /* licenseKeySecretKeyRef has precedence over license_key */ -}}
+{{- if .Values.newrelic.licenseKeySecretKeyRef }}
+  valueFrom:
+    secretKeyRef:
+{{- toYaml .Values.newrelic.licenseKeySecretKeyRef | nindent 6 }}
+{{- else }}
+  value: "{{ .Values.newrelic.license_key }}"
+{{- end }}
 {{- end }}
 {{- end -}}
 
@@ -224,6 +230,7 @@ Job-specific-environment
   value: "true"
 - name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
   value: {{ .jobServerGroup }}
+{{- include "icm-as.envNewrelic" . }}
 {{- include "icm-as.envSecrets" . }}
 {{- include "icm-as.envSecretMounts" . }}
 {{- end -}}
@@ -237,6 +244,7 @@ AppServer-specific-environment
 - name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
   value: "BOS,WFS"
 {{- end }}
+{{- include "icm-as.envNewrelic" . }}
 {{- include "icm-as.envSecrets" . }}
 {{- include "icm-as.envSecretMounts" . }}
 {{- end -}}
