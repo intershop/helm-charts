@@ -8868,6 +8868,21 @@ entries:
       requestedCpuQuotaInMinutes: "2200"
       requestedMemoryQuota: 8000Mi
     apiVersion: v2
+    created: "2025-08-13T07:24:20.243430855Z"
+    dependencies:
+    - name: icm
+      repository: file://../icm
+      version: 2.14.5
+    description: Intershop Commerce Management - ICM Job Server Test Chart
+    digest: 0c9e001b9afe90a5e55b8c1e618fa7e84f82fb01cb5cf1511ceaae97a705cd3a
+    name: icm-job-test
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-job-test-1.0.3/icm-job-test-1.0.3.tgz
+    version: 1.0.3
+  - annotations:
+      requestedCpuQuotaInMinutes: "2200"
+      requestedMemoryQuota: 8000Mi
+    apiVersion: v2
     created: "2025-07-18T08:12:03.776680637Z"
     dependencies:
     - name: icm
@@ -13733,4 +13748,4 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.2.3/pwa-main-0.2.3.tgz
     version: 0.2.3
-generated: "2025-07-18T08:12:04.020686214Z"
+generated: "2025-08-13T07:24:20.245296825Z"
