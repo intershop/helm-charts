@@ -62,12 +62,21 @@ icm:
       MAIL_SMTP_PORT: "1025"
       MAIL_CLIENT_API_PORT: "8025"
       MAIL_SMTP_MAILHOG_ENABLED: "true"
+
+      CLUSTERID: "fae2f48e6be649e7b88f8c096d9ba054"
     persistence:
       sites:
         size: 2Gi
         type: cluster
         cluster:
           storageClass:
+            existingClass: azurefile
+      jgroups:
+        size: 1Gi
+        type: cluster
+        cluster:
+          storageClass:
+            create: false
             existingClass: azurefile
       encryption:
         type: emptyDir
