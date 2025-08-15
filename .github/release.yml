@@ -1,4 +1,5 @@
 changelog:
   exclude:
     labels:
+      - chore
       - ignore-for-release-notes
