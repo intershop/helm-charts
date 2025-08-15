@@ -21,23 +21,21 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        fetch-depth: 0
-    - name: Create integration branch
+        # fetch the 100 most recent commits
+        fetch-depth: 100
+    - name: Merge main into develop/${{ matrix.branch }}
       shell: bash
       run: |
-        INTEGRATE="feature/${{ matrix.branch }}/integrate-main"
-        # delete previous if exists
-        git branch --delete $INTEGRATE || true
-        git branch $INTEGRATE
-        git checkout $INTEGRATE
-        # force push to override a previously existing branch, if it exists
-        git push --force --set-upstream origin $INTEGRATE
-    - name: Create PR if necessary
-      shell: bash
-      run: |
-        SUBJECT="chore: integrate main to develop/${{ matrix.branch }}"
-        BODY="Automated Sync PR"
-        # this may fail if a PR already exists, this is ignored
-        gh pr create --base "develop/${{ matrix.branch }}" --title "$SUBJECT" --body "$BODY" --label ignore-for-release-notes || true
+        # sets the user for the merge to be the GitHub actions bot
+        git config user.name 'github-actions[bot]'
+        git config user.email 'github-actions[bot]@users.noreply.github.com'
+
+        git fetch origin main
+        git fetch origin develop/${{ matrix.branch }}
+
+        git checkout -B develop/${{ matrix.branch }} origin/develop/${{ matrix.branch }}
+
+        git merge -m "chore: integrate main to develop/${{ matrix.branch }}" origin/main
+        git push origin develop/${{ matrix.branch }}
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
