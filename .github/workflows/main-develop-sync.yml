@@ -36,6 +36,7 @@ jobs:
         git checkout develop/${{ matrix.branch }}
         git merge origin/main --no-edit
     - name: Create PR from feature/${{ matrix.branch }}/integrate-main to develop/${{ matrix.branch }}
+      id: create_pr
       uses: peter-evans/create-pull-request@v6
       with:
         token: ${{ secrets.PR_CREATOR_TOKEN }}
@@ -46,7 +47,5 @@ jobs:
         draft: false
     - name: Enable auto-merge on PR
       run: |
-        gh pr merge ${{ steps.create_pr.outputs.pull_request_number }} \
+        gh pr merge ${{ steps.create_pr.outputs.pull-request-number }} \
         --auto --merge
-    env:
-      GH_TOKEN: ${{ secrets.PR_CREATOR_TOKEN }}
