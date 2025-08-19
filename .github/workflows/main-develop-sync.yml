@@ -23,19 +23,30 @@ jobs:
       with:
         # fetch the 100 most recent commits
         fetch-depth: 100
-    - name: Merge main into develop/${{ matrix.branch }}
-      shell: bash
+    - name: Prepare integration branch with merged changes
       run: |
-        # sets the user for the merge to be the GitHub actions bot
-        git config user.name 'github-actions[bot]'
-        git config user.email 'github-actions[bot]@users.noreply.github.com'
-
-        git fetch origin main
-        git fetch origin develop/${{ matrix.branch }}
-
-        git checkout -B develop/${{ matrix.branch }} origin/develop/${{ matrix.branch }}
-
-        git merge -m "chore: integrate main to develop/${{ matrix.branch }}" origin/main
-        git push origin develop/${{ matrix.branch }}
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        INTEGRATE="feature/${{ matrix.branch }}/integrate-main"
+        git fetch --all
+        # Delete local branch if exists
+        git branch -D $INTEGRATE || true
+        # Delete remote branch if exists
+        git push origin --delete $INTEGRATE || true
+        git checkout develop/${{ matrix.branch }}
+        git merge origin/main --no-edit
+    - name: Create PR from feature/${{ matrix.branch }}/integrate-main to develop/${{ matrix.branch }}
+      uses: peter-evans/create-pull-request@v6
+      with:
+        token: ${{ secrets.PR_CREATOR_TOKEN }}
+        base: develop/${{ matrix.branch }}
+        branch: feature/${{ matrix.branch }}/integrate-main
+        title: "chore: integrate main to develop/${{ matrix.branch }}"
+        body: "Automated PR to sync main into develop/${{ matrix.branch }}"
+        draft: false
+    - name: Enable auto-merge on PR
+      run: |
+        gh pr merge ${{ steps.create_pr.outputs.pull_request_number }} \
+        --auto --squash
+    env:
+      GH_TOKEN: ${{ secrets.PR_CREATOR_TOKEN }}
