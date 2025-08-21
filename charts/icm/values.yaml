@@ -7,8 +7,8 @@ icm-as:
     "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
 
   image:
-#    repository: intershophub/icm-as
-#    tag: :11.0.12-dev1
+  #    repository: intershophub/icm-as
+  #    tag: :11.0.12-dev1
 
   ## define a secret for a container registry
   dockerSecret:
@@ -18,7 +18,7 @@ icm-as:
     password: "<your registry password>"
 
   imagePullSecrets:
-  - "dockerhub"
+    - "dockerhub"
   replicaCount: 1
 
   # environment variables to be propagated to the icm-as-container
@@ -83,7 +83,7 @@ icm-as:
 #      databaseUser: <sourceDatabaseUser>
 #      databaseName: <sourceDatabaseName>
 
-    # Configuration for all target systems that participates in replication
+# Configuration for all target systems that participates in replication
 #    targets:
 #      # create multiple target systems - please avoid characters like '.', '-' or '_' in the chosen name/key
 #      live1:
@@ -102,22 +102,17 @@ icm-as:
 icm-web:
   enabled: true
   imagePullSecrets:
-  - "dockerhub"
+    - "dockerhub"
   webadapter:
     replicaCount: 1
     podAnnotations:
       # as long as there is no new cache system we need this annotation for icm-web
       "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
-    image:
-      repository: intershophub/icm-webadapter:2.5.0
-      secret: dockerhub
 
   agent:
     # in some REST-based environment the webadapteragent isn't mandatory
     enabled: true
     replicaCount: 1
-    image:
-      repository: intershophub/icm-webadapteragent:4.0.1
   persistence:
     pagecache:
       type: emptyDir
@@ -130,7 +125,6 @@ mailhog:
 
 test:
   enabled: false
-
 
 # For redis deployment using a single master (and possibly multiple read replicas). May use redis sentinel.
 # The whole dataset must fit into the single master node.
