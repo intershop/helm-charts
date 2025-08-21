@@ -16,7 +16,7 @@ tests:
     asserts:
       - equal:
           path: metadata.labels.operational-context
-          value: "n_a-prd-standalone"
+          value: "n_a-production-standalone"
       - equal:
           path: metadata.labels.environment-type
           value: "prd"
