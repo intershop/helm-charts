@@ -4,6 +4,11 @@ on:
   push:
     branches:
     - main
+
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  
 jobs:
   sync:
     strategy:
@@ -34,7 +39,18 @@ jobs:
         # Delete remote branch if exists
         git push origin --delete $INTEGRATE || true
         git checkout develop/${{ matrix.branch }}
-        git merge origin/main --no-edit
+
+        # Attempt to merge main into develop
+        # If a conflict occurs, print guidance and fail gracefully
+        if ! git merge origin/main --no-edit; then
+          echo "::error::Merge conflict detected when merging origin/main into develop/${{ matrix.branch }}."
+          echo "Please resolve the conflict manually:"
+          echo "1. Checkout develop/${{ matrix.branch }} locally."
+          echo "2. Merge origin/main and resolve conflicts."
+          echo "3. Push the resolved branch to origin."
+          echo "4. Re-trigger this workflow."
+          exit 1
+        fi
     - name: Create PR from feature/${{ matrix.branch }}/integrate-main to develop/${{ matrix.branch }}
       id: create_pr
       uses: peter-evans/create-pull-request@v6
@@ -45,7 +61,25 @@ jobs:
         title: "chore: integrate main to develop/${{ matrix.branch }}"
         body: "Automated PR to sync main into develop/${{ matrix.branch }}"
         draft: false
+    - name: Verify PR was successfully created
+      id: verify_pr
+      run: |
+        if [ -z "${{ steps.create_pr.outputs.pull-request-number }}" ]; then
+          echo "::error::Pull request was not created. Please check the previous step for errors."
+          echo "verified=false" >> $GITHUB_OUTPUT
+          exit 1
+        fi
+
+        # checks if the pr was actually created on GitHub
+        # redirects any output of the command to /dev/null so it doesn't show up in the logs
+        if gh pr view ${{ steps.create_pr.outputs.pull-request-number }} --json number > /dev/null 2>&1; then
+          echo "verified=true" >> $GITHUB_OUTPUT
+        else
+          echo "::error::Pull request was not created. Please check the previous step for errors."
+          echo "verified=false" >> $GITHUB_OUTPUT
+        fi
     - name: Enable auto-merge on PR
+      if: ${{ steps.verify_pr.outputs.verified == 'true' }}
       run: |
         gh pr merge ${{ steps.create_pr.outputs.pull-request-number }} \
         --auto --merge
