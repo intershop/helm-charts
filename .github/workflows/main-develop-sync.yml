@@ -4,6 +4,11 @@ on:
   push:
     branches:
     - main
+
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  
 jobs:
   sync:
     strategy:
@@ -78,5 +83,3 @@ jobs:
       run: |
         gh pr merge ${{ steps.create_pr.outputs.pull-request-number }} \
         --auto --merge
-env:
-  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
