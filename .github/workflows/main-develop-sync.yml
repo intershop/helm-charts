@@ -4,6 +4,11 @@ on:
   push:
     branches:
     - main
+
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  
 jobs:
   sync:
     strategy:
@@ -21,23 +26,62 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        fetch-depth: 0
-    - name: Create integration branch
-      shell: bash
+        # fetch the 100 most recent commits
+        fetch-depth: 100
+    - name: Prepare integration branch with merged changes
       run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
         INTEGRATE="feature/${{ matrix.branch }}/integrate-main"
-        # delete previous if exists
-        git branch --delete $INTEGRATE || true
-        git branch $INTEGRATE
-        git checkout $INTEGRATE
-        # force push to override a previously existing branch, if it exists
-        git push --force --set-upstream origin $INTEGRATE
-    - name: Create PR if necessary
-      shell: bash
+        git fetch --all
+        # Delete local branch if exists
+        git branch -D $INTEGRATE || true
+        # Delete remote branch if exists
+        git push origin --delete $INTEGRATE || true
+        git checkout develop/${{ matrix.branch }}
+
+        # Attempt to merge main into develop
+        # If a conflict occurs, print guidance and fail gracefully
+        if ! git merge origin/main --no-edit; then
+          echo "::error::Merge conflict detected when merging origin/main into develop/${{ matrix.branch }}."
+          echo "Please resolve the conflict manually:"
+          echo "1. Checkout develop/${{ matrix.branch }} locally."
+          echo "2. Merge origin/main and resolve conflicts."
+          echo "3. Push the resolved branch to origin."
+          echo "4. Re-trigger this workflow."
+          exit 1
+        fi
+    - name: Create PR from feature/${{ matrix.branch }}/integrate-main to develop/${{ matrix.branch }}
+      id: create_pr
+      uses: peter-evans/create-pull-request@v6
+      with:
+        token: ${{ secrets.PR_CREATOR_TOKEN }}
+        base: develop/${{ matrix.branch }}
+        branch: feature/${{ matrix.branch }}/integrate-main
+        title: "chore: integrate main to develop/${{ matrix.branch }}"
+        body: "Automated PR to sync main into develop/${{ matrix.branch }}"
+        draft: false
+    - name: Verify PR was successfully created
+      id: verify_pr
       run: |
-        SUBJECT="chore: integrate main to develop/${{ matrix.branch }}"
-        BODY="Automated Sync PR"
-        # this may fail if a PR already exists, this is ignored
-        gh pr create --base "develop/${{ matrix.branch }}" --title "$SUBJECT" --body "$BODY" --label ignore-for-release-notes || true
+        if [ -z "${{ steps.create_pr.outputs.pull-request-number }}" ]; then
+          echo "::error::Pull request was not created. Please check the previous step for errors."
+          echo "verified=false" >> $GITHUB_OUTPUT
+          exit 1
+        fi
+
+        # checks if the pr was actually created on GitHub
+        # redirects any output of the command to /dev/null so it doesn't show up in the logs
+        if gh pr view ${{ steps.create_pr.outputs.pull-request-number }} --json number > /dev/null 2>&1; then
+          echo "verified=true" >> $GITHUB_OUTPUT
+        else
+          echo "::error::Pull request was not created. Please check the previous step for errors."
+          echo "verified=false" >> $GITHUB_OUTPUT
+        fi
+    - name: Enable auto-merge on PR
+      if: ${{ steps.verify_pr.outputs.verified == 'true' }}
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.PR_CREATOR_TOKEN }}
+      run: |
+        gh pr merge ${{ steps.create_pr.outputs.pull-request-number }} \
+        --auto --merge
