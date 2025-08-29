@@ -1,0 +1,19 @@
+{{- if .Values.test.enabled }}
+{{- if eq .Values.testrunner.persistence.testdata.type "local" }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ template "icm-chart.fullname" . }}-local-testdata-pv
+  labels:
+    type: local
+spec:
+  storageClassName: standard
+  capacity:
+    storage: {{ .Values.testrunner.persistence.testdata.size }}
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Delete
+  hostPath:
+    path: "{{ .Values.testrunner.persistence.testdata.local.dir }}"
+{{ end }}
+{{ end }}
