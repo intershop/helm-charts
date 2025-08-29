@@ -2,17 +2,18 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "icm-chart.fullname" . }}-testrunner
+  name: {{ template "icm-test.fullname" . }}-testrunner
   labels:
-    app: {{ template "icm-chart.fullname" . }}-testrunner
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    helm.sh/chart: {{ include "icm-test.chart" . }}
+    app.kubernetes.io/name: {{ template "icm-test.fullname" . }}-testrunner
+    app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
   backoffLimit: 0
   template:
     metadata:
       labels:
-        app: {{ template "icm-chart.fullname" . }}-testrunner
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ template "icm-test.fullname" . }}-testrunner
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       {{- if .Values.testrunner.affinity}}
       affinity:
@@ -54,8 +55,8 @@ spec:
         - name: {{ $key }}
           value: {{ $value | quote }}
         {{- end }}
-        {{- include "icm-chart.testrunner.featuredJVMArguments" . | nindent 8 }}
-        {{- include "icm-chart.testrunner.additionalJVMArguments" . | nindent 8 }}
+        {{- include "icm-test.testrunner.featuredJVMArguments" . | nindent 8 }}
+        {{- include "icm-test.testrunner.additionalJVMArguments" . | nindent 8 }}
         resources:
 {{ toYaml .Values.testrunner.resources | indent 12 }}
         volumeMounts:
@@ -106,7 +107,7 @@ spec:
       - name: testdata-volume
         {{- if eq .Values.testrunner.persistence.testdata.type "local" }}
         persistentVolumeClaim:
-          claimName: "{{ template "icm-chart.fullname" . }}-local-testdata-pvc"
+          claimName: "{{ template "icm-test.fullname" . }}-local-testdata-pvc"
         {{- else if eq .Values.testrunner.persistence.testdata.type "existingClaim" }}
         persistentVolumeClaim:
           claimName: "{{ .Values.testrunner.persistence.testdata.existingClaim }}"
