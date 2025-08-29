@@ -1,0 +1,51 @@
+= Configuration of an Azure Storage Account for the Test Execution
+
+This document describes how to configure an Azure Storage Account to be used for the ICM Test execution.
+
+== Prerequisites
+
+* Azure CLI (https://learn.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
+* Access to an Azure subscription
+
+== Steps
+
+=== 1. Create the Storage Account
+
+In order to create the storage account, you first need to have a resource group. If you don't have one yet, you can create one using the following command:
+
+[source,bash]
+az group create --name <group-name> --location <location>
+
+You can now create the storage account within that resource group using this command:
+
+[source,bash]
+az storage account create --name <storage-account-name> --resource-group <group-name> --location <location> --sku Standard_LRS
+
+This can of course also be done via the link:https://portal.azure.com/[Azure Portal].
+
+=== 2. Create File Shares
+
+Now, create the necessary file shares within the storage account:
+
+[source,bash]
+az storage share create --name icm-sites --account-name <storage-account-name>
+az storage share create --name iste-mssql-backup --account-name <storage-account-name>
+az storage share create --name iste-mssql-data --account-name <storage-account-name>
+az storage share create --name iste-nfs --account-name <storage-account-name>
+
+=== 3. Copy files into the File Shares
+
+To get the test ready for execution, the file shares need to be populated with the necessary data. This can be done in several different ways:
+
+. Using the Azure Portal: You can upload files directly into the file shares using the Azure Portal.
+. Using the Azure CLI: You can use the `az storage file upload` command to upload files to the file shares.
+. Using Azure Storage Explorer: You can use the link:https://azure.microsoft.com/en-us/products/storage/storage-explorer[Azure Storage Explorer] tool to easily manage and upload files to your Azure Storage account.
+
+The file shares correspond to the files in your local persistent volumes folder in the following way:
+
+* icm-sites: <local-persistent-volumes-folder>/sites
+* iste-mssql-backup: <local-persistent-volumes-folder>/mssql/backup
+* iste-mssql-data: <local-persistent-volumes-folder>/mssql/data
+* iste-nfs: <local-persistent-volumes-folder>/testdata
+
+Your Azure Storage Account is now ready for use.
