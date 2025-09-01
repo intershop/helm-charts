@@ -48,8 +48,9 @@ kind: Deployment
 metadata:
   name: my-icm-as
   labels:
-    ...
-    app: my-icm-as
+    app.kubernetes.io/name: icm-as
+    app.kubernetes.io/instance: my-icm-as
+    app.kubernetes.io/component: api-server
 spec:
   replicas: 4
 ----
@@ -69,6 +70,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: my-icm-as
+  labels:
+    app.kubernetes.io/name: icm-as
+    app.kubernetes.io/instance: my-icm-as
+    app.kubernetes.io/component: api-server
   ...
 spec:
   ...
@@ -92,7 +97,7 @@ metadata:
   labels:
     app.kubernetes.io/name: icm-as
     app.kubernetes.io/instance: my-icm-as
-    app: my-icm-as
+    app.kubernetes.io/component: api-server
 ----
 
 `nameOverride` can now be used to customize parts of this:
@@ -110,7 +115,7 @@ metadata:
   labels:
     app.kubernetes.io/name: my-custom-icm-as
     app.kubernetes.io/instance: my-icm-as
-    app: my-icm-as-my-custom-icm-as
+    app.kubernetes.io/component: api-server
 ----
 
 Other resources like the `icm-as` https://kubernetes.io/docs/concepts/services-networking/service/[service] will also use this name:
@@ -121,7 +126,9 @@ kind: Service
 metadata:
   name: my-icm-as-my-custom-icm-as
   labels:
-    app: my-icm-as-my-custom-icm-as
+    app.kubernetes.io/name: my-custom-icm-as
+    app.kubernetes.io/instance: my-icm-as
+    app.kubernetes.io/component: api-server
 ----
 
 `fullnameOverride` can be used to get full control over the names:
@@ -140,7 +147,7 @@ metadata:
   labels:
     app.kubernetes.io/name: my-custom-icm-as
     app.kubernetes.io/instance: my-icm-as
-    app: your-custom-icm-as
+    app.kubernetes.io/component: api-server
 ----
 
 Other resources like the `icm-as` https://kubernetes.io/docs/concepts/services-networking/service/[service] will also use this fullname:
@@ -151,7 +158,9 @@ kind: Service
 metadata:
   name: your-custom-icm-as
   labels:
-    app: your-custom-icm-as
+    app.kubernetes.io/name: my-custom-icm-as
+    app.kubernetes.io/instance: my-icm-as
+    app.kubernetes.io/component: api-server
 ----
 
 [#_example_icmAsServiceNaming]

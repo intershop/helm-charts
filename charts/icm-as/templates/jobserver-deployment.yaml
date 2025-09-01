@@ -1,4 +1,5 @@
 {{- if .Values.job.enabled -}}
+{{- $ctx := dict "root" . "component" "job-server" -}}
 {{/* Build values based on main values merged with job specific ones */}}
 {{- $jobValues:= deepCopy . -}}
 {{- $jobValues := set $jobValues "Values" (merge .Values.job $jobValues.Values) -}}
@@ -20,8 +21,7 @@ metadata:
   name: {{ include "icm-as.fullname" $jobValues }}-job
   {{- include "icm-as.podData" $jobValues | nindent 2 }}
   labels:
-    app: icm-as-job
-    release: {{ include "icm-as.fullname" . }}
+    {{- include "icm-as.labels" $ctx | nindent 4 }}
     {{- include "icm-as.podLabels" $jobValues | nindent 4 }}
     {{- if include "icm-as.podBinding" $jobValues }}
       {{- include "icm-as.podBinding" $jobValues | nindent 8 }}
@@ -43,11 +43,12 @@ spec:
   jobTemplate:
     spec:
       template:
-        {{- if include "icm-as.serviceAccount.podLabels" . }}
         metadata:
           labels:
+            {{- include "icm-as.labels" $ctx | nindent 8 }}
+          {{- if include "icm-as.serviceAccount.podLabels" . }}
             {{- include "icm-as.serviceAccount.podLabels" . | nindent 12 -}}
-        {{- end }}
+          {{- end }}
         spec:
           {{- if include "icm-as.serviceAccount.podSpec" . -}}
             {{- include "icm-as.serviceAccount.podSpec" . | nindent 10 }}

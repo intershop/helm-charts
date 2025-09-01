@@ -1,8 +1,11 @@
 {{- if .Values.mssql.enabled -}}
+{{- $ctx := dict "root" . "component" "mssql" -}}
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "icm-as.fullname" . }}-mssql-service
+  labels:
+    {{- include "icm-as.labels" $ctx | nindent 4 }}
 spec:
   ports:
   - name: "mssql"
@@ -12,8 +15,7 @@ spec:
     port: 1434
     targetPort: 1434
   selector:
-    app: icm-as-mssql
-    release: {{ include "icm-as.fullname" . }}
+    {{- include "icm-as.selectorLabels" . | nindent 4 }}
 status:
   loadBalancer: {}
 {{- end }}

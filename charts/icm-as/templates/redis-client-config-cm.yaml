@@ -4,8 +4,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "icm-as.fullname" . }}-redis-client-config-yaml
   labels:
-    app: {{ template "icm-as.fullname" . }}-redis-client-config-yaml
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- include "icm-as.labels" . | nindent 4 }}
 data:
   {{- if .Values.webLayer.redis.config }}
   redis-client-config.yaml: |

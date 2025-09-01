@@ -5,7 +5,7 @@ metadata:
   name: {{ template "icm-as.fullname" . }}-nfs-sites-pv
   labels:
     type: nfs
-{{ include "icm-as.labels" . | indent 4 }}
+    {{- include "icm-web.labels" . | nindent 4 }}
 spec:
   capacity:
     storage: {{ .Values.persistence.sites.size }}

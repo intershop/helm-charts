@@ -35,20 +35,33 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "icm-web.labels" -}}
-helm.sh/chart: {{ include "icm-web.chart" . }}
+{{- $root := .root | default . -}}
+helm.sh/chart: {{ include "icm-web.chart" $root }}
+environment-name: "{{ include "icm-web.environmentName" $root }}"
+environment-type: "{{ include "icm-web.environmentType" $root }}"
+operational-context: {{ include "icm-web.operationalContextName" $root }}
 {{ include "icm-web.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/version: {{ $root.Chart.AppVersion | quote }}
+app.kubernetes.io/managed-by: {{ $root.Release.Service }}
 {{- end -}}
 
 {{/*
-Selector labels
+Selector labels (component optional)
 */}}
 {{- define "icm-web.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "icm-web.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
+{{- $root := .root | default . -}}
+app.kubernetes.io/name: {{ include "icm-web.name" $root }}
+app.kubernetes.io/instance: {{ $root.Release.Name }}
+{{- /* component: prefer .component, fallback to .Values.component */ -}}
+{{- $component := "" -}}
+{{- if hasKey . "component" -}}
+  {{- $component = .component -}}
+{{- else if and (hasKey $root.Values "component") $root.Values.component -}}
+  {{- $component = $root.Values.component -}}
+{{- end -}}
+{{- if $component }}
+app.kubernetes.io/component: {{ $component | quote }}
+{{- end }}
 {{- end -}}
 
 {{/*

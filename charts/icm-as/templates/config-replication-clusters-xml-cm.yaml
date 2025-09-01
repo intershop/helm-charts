@@ -5,8 +5,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "icm-as.fullname" . }}-replication-clusters-xml
   labels:
-    app: {{ template "icm-as.fullname" . }}-replication-clusters-xml
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- include "icm-as.labels" . | nindent 4 }}
 data:
   replication-clusters.xml:  |-
     <?xml version="1.0"?>

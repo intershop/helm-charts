@@ -1,18 +1,17 @@
 {{- if .Values.test.enabled }}
+{{- $ctx := dict "root" . "component" "testrunner" -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ template "icm-chart.fullname" . }}-testrunner
   labels:
-    app: {{ template "icm-chart.fullname" . }}-testrunner
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- include "icm-as.labels" $ctx | nindent 4 }}
 spec:
   backoffLimit: 0
   template:
     metadata:
       labels:
-        app: {{ template "icm-chart.fullname" . }}-testrunner
-        release: {{ .Release.Name }}
+        {{- include "icm-as.labels" $ctx | nindent 4 }}
     spec:
       {{- if .Values.testrunner.affinity}}
       affinity:

@@ -1,3 +1,4 @@
+{{- $ctx := dict "root" . "component" "webadapter" -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -7,11 +8,7 @@ metadata:
     {{- toYaml .Values.webadapter.deploymentAnnotations | trim | nindent 4 }}
   {{- end }}
   labels:
-    app: {{ include "icm-web.fullname" . }}-wa
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    environment-name: "{{ include "icm-web.environmentName" . }}"
-    environment-type: "{{ include "icm-web.environmentType" . }}"
-    operational-context: "{{ include "icm-web.operationalContextName" . }}"
+    {{- include "icm-web.labels" $ctx | nindent 4 }}
     {{- if .Values.webadapter.deploymentLabels }}
       {{- toYaml .Values.webadapter.deploymentLabels | trim | nindent 4 }}
     {{- end }}
@@ -26,8 +23,7 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      app: icm-wa
-      release: {{ include "icm-web.fullname" . }}
+      {{- include "icm-web.selectorLabels" $ctx | nindent 6 }}
   template:
     metadata:
     {{- if .Values.webadapter.podAnnotations }}
@@ -35,8 +31,7 @@ spec:
       {{- toYaml .Values.webadapter.podAnnotations | trim | nindent 8 }}
     {{- end }}
       labels:
-        app: icm-wa
-        release: {{ include "icm-web.fullname" . }}
+        {{- include "icm-web.labels" $ctx | nindent 8 }}
         {{- if .Values.webadapter.podLabels }}
           {{- toYaml .Values.webadapter.podLabels | trim | nindent 8 }}
         {{- end }}
