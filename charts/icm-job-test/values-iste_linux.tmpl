@@ -165,9 +165,9 @@ icm:
             topologyKey: kubernetes.io/hostname
       service:
         external:
-          enabled: "false"
+          enabled: false
         internal:
-          enabled: "true"
+          enabled: true
           annotations:
             service.beta.kubernetes.io/azure-load-balancer-internal: "true"
         externalTrafficPolicy: Local
