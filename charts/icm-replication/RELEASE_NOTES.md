@@ -1,14 +1,10 @@
 
-<a name="icm-replication-2.14.4"></a>
-## [icm-replication-2.14.4](https://github.com/intershop/helm-charts/compare/icm-replication-2.14.3...icm-replication-2.14.4)
+<a name="icm-replication-2.14.7"></a>
+## [icm-replication-2.14.7](https://github.com/intershop/helm-charts/compare/icm-replication-2.14.6...icm-replication-2.14.7)
 
-> 2025-07-17
+> 2025-09-02
 
-### Chore
+### Bug Fixes
 
-* bump versions of icm:patch icm-as:patch icm-job-test:patch icm-replication:patch
-
-### Fix
-
-* **icm:** introduce new icm-job-test chart ([#1037](https://github.com/intershop/helm-charts/issues/1037))
+* **icm:** disable external ingress service ([#1107](https://github.com/intershop/helm-charts/issues/1107))
 
