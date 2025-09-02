@@ -1,5 +1,5 @@
 {{- if .Values.infrastructureMonitoring.enabled }}
-{{- $ctx := dict "root" . "component" "api-server" -}}
+{{- $ctx := dict "root" . "component" "appserver" -}}
 apiVersion: v1
 kind: Service
 metadata:

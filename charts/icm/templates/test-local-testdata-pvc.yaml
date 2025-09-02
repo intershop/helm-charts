@@ -1,12 +1,9 @@
 {{- if .Values.test.enabled }}
 {{- if eq .Values.testrunner.persistence.testdata.type "local" }}
-{{- $ctx := dict "root" . "component" "testrunner" -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ template "icm-chart.fullname" . }}-local-testdata-pvc
-  labels:
-    {{- include "icm-as.labels" $ctx | nindent 4 }}
 spec:
   storageClassName: standard
   accessModes:

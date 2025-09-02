@@ -1,17 +1,19 @@
 {{- if .Values.test.enabled }}
-{{- $ctx := dict "root" . "component" "testrunner" -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ template "icm-chart.fullname" . }}-testrunner
   labels:
-    {{- include "icm-as.labels" $ctx | nindent 4 }}
+    helm.sh/chart: {{ include "icm-chart.chart" . }}
+    app.kubernetes.io/name: {{ template "icm-chart.fullname" . }}-testrunner
+    app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
   backoffLimit: 0
   template:
     metadata:
       labels:
-        {{- include "icm-as.labels" $ctx | nindent 4 }}
+        app.kubernetes.io/name: {{ template "icm-chart.fullname" . }}-testrunner
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       {{- if .Values.testrunner.affinity}}
       affinity:

@@ -1,4 +1,4 @@
-{{- $ctx := dict "root" . "component" "api-server" -}}
+{{- $ctx := dict "root" . "component" "appserver" -}}
 {{- if not .Values.serverName -}}
 {{- $values_ := set .Values "serverName" "appserver" -}}
 {{- end -}}

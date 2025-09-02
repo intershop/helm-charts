@@ -15,7 +15,7 @@ spec:
     port: 1434
     targetPort: 1434
   selector:
-    {{- include "icm-as.selectorLabels" . | nindent 4 }}
+    {{- include "icm-as.selectorLabels" $ctx | nindent 4 }}
 status:
   loadBalancer: {}
 {{- end }}

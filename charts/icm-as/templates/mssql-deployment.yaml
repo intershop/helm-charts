@@ -10,7 +10,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "icm-as.selectorLabels" $ctx | nindent 4 }}
+      {{- include "icm-as.selectorLabels" $ctx | nindent 6 }}
   template:
     metadata:
       labels:

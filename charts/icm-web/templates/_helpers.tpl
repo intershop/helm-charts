@@ -60,7 +60,7 @@ app.kubernetes.io/instance: {{ $root.Release.Name }}
   {{- $component = $root.Values.component -}}
 {{- end -}}
 {{- if $component }}
-app.kubernetes.io/component: {{ $component | quote }}
+app.kubernetes.io/component: {{ $component }}
 {{- end }}
 {{- end -}}
 

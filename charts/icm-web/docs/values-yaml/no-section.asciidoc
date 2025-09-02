@@ -87,7 +87,7 @@ metadata:
   labels:
     app.kubernetes.io/name: my-custom-icm-web
     app.kubernetes.io/instance: my-icm-web
-    app.kubernetes.io/component: api-server
+    app.kubernetes.io/component: appserver
 ----
 
 Other resources like the `icm-web` https://kubernetes.io/docs/concepts/services-networking/service/[service] will also use this fullname:
@@ -100,7 +100,7 @@ metadata:
   labels:
     app.kubernetes.io/name: my-custom-icm-web
     app.kubernetes.io/instance: my-icm-web
-    app.kubernetes.io/component: api-server
+    app.kubernetes.io/component: appserver
 ----
 
 [#_example_nodeSelector]
