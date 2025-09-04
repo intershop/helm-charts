@@ -26,10 +26,10 @@ tests:
           value: icm-as-0.8.15
       - equal:
           path: metadata.labels.environment-name
-          value: prd
+          value: production
       - equal:
           path: metadata.labels.operational-context
-          value: n_a-prd-standalone
+          value: n_a-production-standalone
       - equal:
           path: metadata.labels["app.kubernetes.io/name"]
           value: icm-as
@@ -74,7 +74,7 @@ tests:
           path: spec.template.spec.containers[0].env
           content:
             name: ENVIRONMENT
-            value: "prd"
+            value: "production"
       - contains:
           path: spec.template.spec.containers[0].env
           content:

@@ -169,7 +169,7 @@ tests:
           of: ConfigMap
       - matchRegex:
           path: data["newrelic.yml"]
-          pattern: '.*(app_name: "n_a-prd-standalone-icm-as").*'
+          pattern: '.*(app_name: "n_a-production-standalone-icm-as").*'
   - it: newrelic log metrics (on)
     release:
       name: icm-as

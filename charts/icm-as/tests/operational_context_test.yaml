@@ -13,7 +13,7 @@ tests:
     asserts:
       - equal:
           path: metadata.labels.operational-context
-          value: "n_a-prd-standalone"
+          value: "n_a-production-standalone"
 
   - it: replication operational context (edit)
     release:

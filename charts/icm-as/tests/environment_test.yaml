@@ -15,7 +15,7 @@ tests:
           path: spec.template.spec.containers[0].env
           content:
             name: ENVIRONMENT
-            value: "prd"
+            value: "production"
       - contains:
           path: spec.template.spec.containers[0].env
           content:
@@ -68,7 +68,7 @@ tests:
           path: spec.template.spec.containers[0].env
           content:
             name: ENVIRONMENT
-            value: "prd"
+            value: "production"
       - contains:
           path: spec.template.spec.containers[0].env
           content:
@@ -187,7 +187,7 @@ tests:
           path: spec.template.spec.containers[0].env
           content:
             name: ENVIRONMENT
-            value: "prd"
+            value: "production"
       - contains:
           path: spec.template.spec.containers[0].env
           content:
