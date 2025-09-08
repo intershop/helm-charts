@@ -90,5 +90,8 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}-agent
+          env:
+          - name: OTEL_SERVICE_NAME
+            value: {{ template "icm-web.fullname" . }}-waa
           {{- include "icm-waa.container" . | nindent 10 }}
 {{- end -}}
