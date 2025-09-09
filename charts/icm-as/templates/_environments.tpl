@@ -231,7 +231,7 @@ Job-specific-environment
 - name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
   value: {{ .jobServerGroup }}
 - name: OTEL_SERVICE_NAME
-  value: {{ include "icm-as.fullname" . }}-job
+  value: {{ include "icm-as.fullname" . }}-jobserver
 {{- include "icm-as.envNewrelic" . }}
 {{- include "icm-as.envSecrets" . }}
 {{- include "icm-as.envSecretMounts" . }}
@@ -247,7 +247,7 @@ AppServer-specific-environment
   value: "BOS,WFS"
 {{- end }}
 - name: OTEL_SERVICE_NAME
-  value: {{ include "icm-as.fullname" . }}-as
+  value: {{ include "icm-as.fullname" . }}-appserver
 {{- include "icm-as.envNewrelic" . }}
 {{- include "icm-as.envSecrets" . }}
 {{- include "icm-as.envSecretMounts" . }}

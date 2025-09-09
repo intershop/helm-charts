@@ -27,7 +27,7 @@ tests:
           value: icm-as
       - equal:
           path: spec.selector.matchLabels["app.kubernetes.io/instance"]
-          value: icm-as
+          value: custom-fullname-appserver
       - equal:
           path: spec.selector.matchLabels["app.kubernetes.io/component"]
           value: appserver
@@ -37,7 +37,7 @@ tests:
           value: icm-as
       - equal:
           path: spec.template.metadata.labels["app.kubernetes.io/instance"]
-          value: icm-as
+          value: custom-fullname-appserver
       - equal:
           path: spec.template.metadata.labels["app.kubernetes.io/component"]
           value: appserver

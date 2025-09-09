@@ -51,7 +51,6 @@ Selector labels (component optional)
 {{- define "icm-web.selectorLabels" -}}
 {{- $root := .root | default . -}}
 app.kubernetes.io/name: {{ include "icm-web.name" $root }}
-app.kubernetes.io/instance: {{ $root.Release.Name }}
 {{- /* component: prefer .component, fallback to .Values.component */ -}}
 {{- $component := "" -}}
 {{- if hasKey . "component" -}}
@@ -60,7 +59,10 @@ app.kubernetes.io/instance: {{ $root.Release.Name }}
   {{- $component = $root.Values.component -}}
 {{- end -}}
 {{- if $component }}
+app.kubernetes.io/instance: {{ include "icm-web.fullname" $root }}-{{ $component }}
 app.kubernetes.io/component: {{ $component }}
+{{- else }}
+app.kubernetes.io/instance: {{ include "icm-web.fullname" $root }}
 {{- end }}
 {{- end -}}
 

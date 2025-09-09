@@ -27,14 +27,14 @@ tests:
           value: custom-name
       - equal:
           path: spec.selector.matchLabels["app.kubernetes.io/instance"]
-          value: icm-as
+          value: icm-as-custom-name-appserver
       #spec.template.metadata
       - equal:
           path: spec.template.metadata.labels["app.kubernetes.io/name"]
           value: custom-name
       - equal:
           path: spec.template.metadata.labels["app.kubernetes.io/instance"]
-          value: icm-as
+          value: icm-as-custom-name-appserver
       #spec.template.spec.volumes
       - contains:
           path: spec.template.spec.volumes
@@ -67,4 +67,4 @@ tests:
           value: custom-name
       - equal:
           path: spec.selector["app.kubernetes.io/instance"]
-          value: icm-as
+          value: icm-as-custom-name-appserver
