@@ -8,7 +8,7 @@ metadata:
 data:
   newrelic.yml:  |-
     common: &default_settings
-      app_name: "{{ (include "icm-as.operationalContextName" .) }}-icm-as"
+      app_name: "{{ template "icm-as.fullname" . }}-appserver"
       application_logging:
         enabled: true
         forwarding:

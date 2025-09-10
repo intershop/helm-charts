@@ -10,8 +10,6 @@ image: "{{ .Values.agent.image.repository }}"
 {{- end }}
 imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
 env:
-- name: OTEL_SERVICE_NAME
-  value: {{ include "icm-web.fullname" . }}-webadapteragent
 - name: ICM_ICMSERVLETURLS
   value: "cs.url.0=http://{{ .Release.Name }}-{{ .Values.appServerConnection.serviceName }}:{{ .Values.appServerConnection.port }}/servlet/ConfigurationServlet"
 - name: ICM_AS_SERVICE
