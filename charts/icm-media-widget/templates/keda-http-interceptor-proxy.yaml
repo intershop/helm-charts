@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "icm-media-widget.fullname" . }}-keda-hip
+  labels:
+    {{- include "icm-media-widget.labels" . | nindent 4 }}
+spec:
+  type: ExternalName
+  externalName: keda-add-ons-http-interceptor-proxy.keda.svc.cluster.local
+  ports:
+    - port: 8080
+      targetPort: 8080
