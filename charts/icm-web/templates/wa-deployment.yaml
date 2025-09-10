@@ -162,8 +162,6 @@ spec:
           {{- end }}
           imagePullPolicy: {{ .Values.webadapter.image.pullPolicy }}
           env:
-          - name: OTEL_SERVICE_NAME
-            value: {{ template "icm-web.fullname" . }}-webadapter
           - name: ICM_ICMSERVLETURLS
             value: "cs.url.0=http://{{ .Release.Name }}-{{ .Values.appServerConnection.serviceName }}:{{ .Values.appServerConnection.port }}/servlet/ConfigurationServlet"
           {{- if .Values.webadapter.disableHTTP2 }}
