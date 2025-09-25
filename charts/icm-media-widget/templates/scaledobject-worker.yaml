@@ -1,0 +1,23 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ include "icm-media-widget.fullname" . }}-worker
+  labels:
+    {{- include "icm-media-widget.labels" . | nindent 4 }}
+    app.kubernetes.io/component: worker
+spec:
+  scaleTargetRef:
+    name: {{ include "icm-media-widget.fullname" . }}-worker
+  idleReplicaCount: 0
+  minReplicaCount:  0
+  maxReplicaCount:  2
+  pollingInterval: 30
+  cooldownPeriod: 300
+  triggers:
+  - type: azure-blob
+    metadata:
+      blobContainerName: upload
+      blobCount: "1"
+      activationBlobCount: "0"
+      blobPrefix: ""
+      connectionFromEnv: AZURE_BLOB_STORAGE_CONNECTION

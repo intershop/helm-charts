@@ -32,14 +32,19 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
+          env:
+          {{- range $key, $value := .Values.environments }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: {{ .Values.service.port }}
-              protocol: TCP
+          - containerPort: {{ .Values.deployment.container.port_1 }}
+          - containerPort: {{ .Values.deployment.container.port_2 }}
+          - containerPort: {{ .Values.deployment.container.port_3 }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:

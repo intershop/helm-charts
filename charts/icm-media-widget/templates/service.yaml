@@ -7,9 +7,17 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
+    - port: {{ .Values.service.port_1 }}
+      targetPort: {{ .Values.deployment.container.port_1 }}
       protocol: TCP
-      name: http
+      name: {{ .Values.deployment.container.port_1 | quote }}
+    - port: {{ .Values.service.port_2 }}
+      targetPort: {{ .Values.deployment.container.port_2 }}
+      protocol: TCP
+      name: {{ .Values.deployment.container.port_2 | quote }}
+    - port: {{ .Values.service.port_3 }}
+      targetPort: {{ .Values.deployment.container.port_3 }}
+      protocol: TCP
+      name: {{ .Values.deployment.container.port_3 | quote }}
   selector:
     {{- include "icm-media-widget.selectorLabels" . | nindent 4 }}
