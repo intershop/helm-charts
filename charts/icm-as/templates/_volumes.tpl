@@ -64,6 +64,21 @@ volumes:
 {{- end }} {{/*if $mount.targetFile*/}}
 {{- end }} {{/*range*/}}
 {{- end }} {{/*if .Values.secretMounts*/}}
+{{- if and .Values.envConfigMap.enabled .Values.envConfigMap.data (not .Values.envConfigMap.existingConfigMap) }}
+- name: {{ include "icm-as.fullname" . }}-env-config
+  configMap:
+    name: {{ include "icm-as.fullname" . }}-env-config
+{{- end }}
+{{- if .Values.managedIdentity.enabled }}
+- name: azure-identity-token
+  projected:
+    defaultMode: 420
+    sources:
+    - serviceAccountToken:
+        audience: api://AzureADTokenExchange
+        expirationSeconds: 3600
+        path: azure-identity-token
+{{- end }}
 {{- end -}} {{/*define "icm-as.volumes"*/}}
 
 {{/*

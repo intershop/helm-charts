@@ -43,8 +43,18 @@ spec:
   jobTemplate:
     spec:
       template:
+        metadata:
+          {{- if .Values.managedIdentity.enabled }}
+          annotations:
+            azure.workload.identity/use: "true"
+            {{- if .Values.managedIdentity.clientId }}
+            azure.workload.identity/client-id: {{ .Values.managedIdentity.clientId | quote }}
+            {{- end }}
+          labels:
+            azure.workload.identity/use: "true"
+          {{- end }}
         spec:
-          {{- if eq (include "icm-as.jgroups.discovery" .) "kube_ping" }}
+          {{- if or (eq (include "icm-as.jgroups.discovery" .) "kube_ping") .Values.managedIdentity.enabled }}
           serviceAccountName: {{ include "icm-as.serviceAccountName" . }}
           {{- end }}
           {{- if include "icm-as.nodeSelector" $jobValues }}

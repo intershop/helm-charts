@@ -163,6 +163,19 @@ serviceAccount:
   # The name of the service account to use. (default .Release.Name + "-default")
   name:
 
+# Azure Workload Identity (managed identity) configuration
+managedIdentity:
+  # Enable or disable Azure Workload Identity support
+  enabled: false
+  # The client ID of the Azure managed identity (user-assigned identity)
+  clientId: ""
+  # The tenant ID of the Azure AD tenant
+  tenantId: ""
+  # Additional environment variables to set for managed identity
+  additionalEnvVars: []
+  # - name: AZURE_SUBSCRIPTION_ID
+  #   value: "your-subscription-id"
+
 podSecurityContext:
   # intershop user - defined by icm-base-docker image
   runAsUser: 150
@@ -220,10 +233,21 @@ database:
 environment:
   CARTRIDGE_LIST: "ft_icm_as"
 
+# ConfigMap-based environment variables
+# Use this to load environment variables from a ConfigMap instead of defining them directly in values.yaml
+envConfigMap:
+  # Enable ConfigMap-based environment variables
+  enabled: false
+  # Use an existing ConfigMap (if not provided, a new ConfigMap will be created using 'data')
+  existingConfigMap: ""
+  # Data for the ConfigMap (only used if existingConfigMap is not provided)
+  data: {}
+    # EXAMPLE_VAR: "example-value"
+    # ANOTHER_VAR: "another-value"
+
 # environment variable secrets to be propagated to the icm-as-container
 # @Deprecated since 2.9.0, replaced by secretMounts with targetEnv provided
-secrets:
-  []
+secrets: []
   # - env: <YOUR_MAIL_PASSWORD> # environment variable key
   #  name: <emailSecrets> # name of the secret, containing the referenced key
   #  key: <smtpPassword> # key within the secret
@@ -441,8 +465,7 @@ copySitesDir:
 ingress:
   enabled: false
   className: null
-  annotations:
-    {}
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   # Paths are treated as list of prefixes. Any URL matching one of the prefixes will

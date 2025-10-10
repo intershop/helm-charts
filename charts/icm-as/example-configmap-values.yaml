@@ -1,0 +1,48 @@
+# Example values file showing how to use ConfigMap for environment variables
+# This demonstrates different ways to configure environment variables via ConfigMap
+
+# Method 1: Create a new ConfigMap with data inline
+envConfigMap:
+  enabled: true
+  data:
+    # Azure-specific environment variables
+    AZURE_SUBSCRIPTION_ID: "your-subscription-id"
+    AZURE_RESOURCE_GROUP: "your-resource-group"
+
+    # Application configuration
+    LOG_LEVEL: "INFO"
+    CACHE_SIZE: "1000"
+    FEATURE_FLAG_ENABLED: "true"
+
+    # Database configuration (non-sensitive data only)
+    DB_CONNECTION_POOL_SIZE: "10"
+    DB_TIMEOUT: "30"
+
+    # ICM-specific configuration
+    INTERSHOP_SEARCH_ENABLED: "true"
+    INTERSHOP_CACHE_TTL: "3600"
+
+# Method 2: Use an existing ConfigMap (uncomment to use)
+# envConfigMap:
+#   enabled: true
+#   existingConfigMap: "my-existing-configmap"
+
+# Note: Sensitive data like passwords, API keys, etc. should still use secrets
+# Use the 'secrets' or 'secretMounts' configuration for sensitive data
+
+# Regular environment variables can still be defined here
+environment:
+  CARTRIDGE_LIST: "ft_icm_as"
+  SERVER_TYPE: "production"
+
+# Service account and managed identity configuration
+serviceAccount:
+  create: true
+  name: "icm-serviceaccount"
+  annotations:
+    azure.workload.identity/client-id: "your-managed-identity-client-id"
+
+managedIdentity:
+  enabled: true
+  clientId: "your-managed-identity-client-id"
+  tenantId: "your-azure-tenant-id"

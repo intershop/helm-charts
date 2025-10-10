@@ -45,6 +45,51 @@ The necessary database connection can be configured in the `database` section. T
 
 The section `replication` supports a replication/staging scenario. To use this feature, deploy two separate icm-as (+ icm-web), one for the source (_edit_) system and one for the target (_live_) system.
 
+=== Azure Workload Identity (Managed Identity)
+
+This chart supports Azure Workload Identity for secure access to Azure resources without storing credentials in your application. When enabled, the application can authenticate to Azure services using a managed identity.
+
+==== Prerequisites
+
+* Azure Kubernetes Service (AKS) cluster with Workload Identity enabled
+* Azure User-Assigned Managed Identity created in Azure
+* Workload Identity federation configured between the Kubernetes service account and the managed identity
+
+==== Configuration
+
+To enable managed identity support:
+
+[source,yaml]
+----
+managedIdentity:
+  enabled: true
+  clientId: "your-managed-identity-client-id"
+  tenantId: "your-azure-ad-tenant-id"  # optional
+  additionalEnvVars:  # optional
+    - name: AZURE_SUBSCRIPTION_ID
+      value: "your-subscription-id"
+
+serviceAccount:
+  create: true
+----
+
+When enabled, the chart will:
+
+* Create a Kubernetes service account with the required annotations
+* Add Azure Workload Identity labels and annotations to pods
+* Mount the Azure identity token as a volume
+* Set environment variables for Azure SDK authentication
+
+==== Using Managed Identity in Your Application
+
+Your ICM application can use the Azure SDK to authenticate with managed identity. The following environment variables will be available:
+
+* `AZURE_CLIENT_ID`: The client ID of the managed identity
+* `AZURE_TENANT_ID`: The tenant ID (if configured)
+* `AZURE_FEDERATED_TOKEN_FILE`: Path to the federated token file
+
+Example values file: link:example-managed-identity-values.yaml[example-managed-identity-values.yaml]
+
 === Add the Intershop Helm Repository
 
 Before installing Intershop Helm charts, add the https://intershop.github.io/helm-charts[Intershop helm-charts repository] to your Helm client.

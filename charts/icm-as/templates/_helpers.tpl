@@ -55,7 +55,73 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Create the name of the service account to use
 */}}
 {{- define "icm-as.serviceAccountName" -}}
-  {{ default (printf "%s-%s" (include "icm-as.fullname" .) "default") .Values.serviceAccount.name }}
+{{- if .Values.serviceAccount.create -}}
+    {{- default (include "icm-as.fullname" .) .Values.serviceAccount.name -}}
+{{- else -}}
+    {{- default "default" .Values.serviceAccount.name -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Azure Workload Identity environment variables
+*/}}
+{{- define "icm-as.managedIdentityEnv" -}}
+{{- if .Values.managedIdentity.enabled }}
+- name: AZURE_CLIENT_ID
+  value: {{ .Values.managedIdentity.clientId | quote }}
+{{- if .Values.managedIdentity.tenantId }}
+- name: AZURE_TENANT_ID
+  value: {{ .Values.managedIdentity.tenantId | quote }}
+{{- end }}
+- name: AZURE_FEDERATED_TOKEN_FILE
+  value: "/var/run/secrets/azure/tokens/azure-identity-token"
+{{- range .Values.managedIdentity.additionalEnvVars }}
+- name: {{ .name }}
+  value: {{ .value | quote }}
+{{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
+ConfigMap environment variables
+*/}}
+{{- define "icm-as.envFromConfigMap" -}}
+{{- if .Values.envConfigMap.enabled }}
+{{- if .Values.envConfigMap.existingConfigMap }}
+- configMapRef:
+    name: {{ .Values.envConfigMap.existingConfigMap }}
+{{- else if .Values.envConfigMap.data }}
+- configMapRef:
+    name: {{ include "icm-as.fullname" . }}-env-config
+{{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Azure Workload Identity volume mounts
+*/}}
+{{- define "icm-as.managedIdentityVolumeMounts" -}}
+{{- if .Values.managedIdentity.enabled }}
+- name: azure-identity-token
+  mountPath: /var/run/secrets/azure/tokens
+  readOnly: true
+{{- end }}
+{{- end -}}
+
+{{/*
+Azure Workload Identity volumes
+*/}}
+{{- define "icm-as.managedIdentityVolumes" -}}
+{{- if .Values.managedIdentity.enabled }}
+- name: azure-identity-token
+  projected:
+    defaultMode: 420
+    sources:
+    - serviceAccountToken:
+        audience: api://AzureADTokenExchange
+        expirationSeconds: 3600
+        path: azure-identity-token
+{{- end }}
 {{- end -}}
 
 {{/*
@@ -106,6 +172,12 @@ annotations:
   {{- end }}
   prometheus.io/port: '7744'
   prometheus.io/path: '/metrics'
+  {{- if .Values.managedIdentity.enabled }}
+  azure.workload.identity/use: "true"
+  {{- if .Values.managedIdentity.clientId }}
+  azure.workload.identity/client-id: {{ .Values.managedIdentity.clientId | quote }}
+  {{- end }}
+  {{- end }}
 {{- if .Values.podAnnotations -}}
 {{- toYaml .Values.podAnnotations | nindent 2 }}
 {{- end }}

@@ -43,8 +43,11 @@ spec:
         {{- if include "icm-as.podBinding" . }}
           {{- include "icm-as.podBinding" . | nindent 8 }}
         {{- end }}
+        {{- if .Values.managedIdentity.enabled }}
+        azure.workload.identity/use: "true"
+        {{- end }}
     spec:
-      {{- if eq (include "icm-as.jgroups.discovery" .) "kube_ping" }}
+      {{- if or (eq (include "icm-as.jgroups.discovery" .) "kube_ping") .Values.managedIdentity.enabled }}
       serviceAccountName: {{ include "icm-as.serviceAccountName" . }}
       {{- end }}
       {{- if include "icm-as.nodeSelector" . }}
