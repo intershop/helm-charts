@@ -65,12 +65,9 @@ ingress:
   hosts:
     - host: icm-cdntest-int01.icm.intershop.de
       paths:
-        - path: /mediawidget/web-component(/|$)(.*)
-          pathType: ImplementationSpecific
-          pathSuffix: "-keda-hip"
         - path: /mediawidget(/|$)(.*)
           pathType: ImplementationSpecific
-          pathSuffix: ""
+          pathSuffix: "-keda-hip"
   tls:
     - secretName: tls-star-icm-intershop-de
       hosts:
@@ -129,13 +126,21 @@ worker:
   image:
     repository: icmbuild.azurecr.io/intershop/icm-media-widget-worker
     pullPolicy: Always
-    tag: "1.0.0-alpha.0"
+    tag: "1.0.0-alpha"
   service:
     type: ClusterIP
-    port: 8081
+    port: 8080
   environments:
     AZURE_BLOB_STORAGE_CONNECTION: <your connection string>
   resources: {}
+  livenessProbe:
+    httpGet:
+      path: /q/health/live
+      port: 8080
+  readinessProbe:
+    httpGet:
+      path: /q/health/ready
+      port: 8080
   volumes: []
   volumeMounts: []
   nodeSelector: {}

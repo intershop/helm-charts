@@ -1,27 +1,26 @@
 kind: HTTPScaledObject
 apiVersion: http.keda.sh/v1alpha1
 metadata:
-  name: {{ include "icm-media-widget.fullname" . }}
+  name: {{ include "icm-media-widget.fullname" . }}-worker-rest
   labels:
     {{- include "icm-media-widget.labels" . | nindent 4 }}
   annotations:
     httpscaledobject.keda.sh/skip-scaledobject-creation: "false"
 spec:
   hosts:
-  - icm-cdntest-int01.icm.intershop.de
-  - icm-cdntest-int01-icm-mediawidget-icm-media-widget.icm-cdntest-int01.svc.cluster.local
+  - icm-cdntest-int01-icm-mediawidget-icm-media-widget-worker-rest.icm-cdntest-int01.svc.cluster.local
   pathPrefixes:
   - /
   scaleTargetRef:
-    name: {{ include "icm-media-widget.fullname" . }}
+    name: {{ include "icm-media-widget.fullname" . }}-worker-rest
     kind: Deployment
     apiVersion: apps/v1
-    service: {{ include "icm-media-widget.fullname" . }}
+    service: {{ include "icm-media-widget.fullname" . }}-worker-rest
     port: 8080
   replicas:
     min: 0
     max: 2
-  scaledownPeriod: 500
+  scaledownPeriod: 100
   scalingMetric: # requestRate and concurrency are mutually exclusive
     requestRate:
       granularity: 1s

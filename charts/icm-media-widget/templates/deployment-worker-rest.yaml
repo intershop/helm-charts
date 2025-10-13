@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "icm-media-widget.fullname" . }}-worker
+  name: {{ include "icm-media-widget.fullname" . }}-worker-rest
   labels:
     {{- include "icm-media-widget.labels" . | nindent 4 }}
     app.kubernetes.io/component: worker
@@ -9,17 +9,17 @@ spec:
   replicas: {{ .Values.worker.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "icm-media-widget.name" . }}-worker
-      app.kubernetes.io/component: worker
+      app.kubernetes.io/name: {{ include "icm-media-widget.name" . }}-worker-rest
+      app.kubernetes.io/component: worker-rest
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "icm-media-widget.name" . }}-worker
-        app.kubernetes.io/component: worker
+        app.kubernetes.io/name: {{ include "icm-media-widget.name" . }}-worker-rest
+        app.kubernetes.io/component: worker-rest
     spec:
       serviceAccountName: {{ include "icm-media-widget.serviceAccountName" . }}
       containers:
-        - name: worker
+        - name: worker-rest
           image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag }}"
           imagePullPolicy: {{ .Values.worker.image.pullPolicy }}
           env:
