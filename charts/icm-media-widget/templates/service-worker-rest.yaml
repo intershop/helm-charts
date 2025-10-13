@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "icm-media-widget.fullname" . }}-worker-rest
+  labels:
+    {{- include "icm-media-widget.labels" . | nindent 4 }}
+    app.kubernetes.io/component: worker-rest
+spec:
+  type: {{ .Values.worker.service.type }}
+  ports:
+    - port: {{ .Values.worker.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "icm-media-widget.name" . }}-worker-rest
+    app.kubernetes.io/component: worker-rest
