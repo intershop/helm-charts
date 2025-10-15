@@ -4,10 +4,6 @@
 Creates the environment section
 */}}
 {{- define "icm-as.env" -}}
-{{- if .Values.envConfigMap.enabled }}
-envFrom:
-{{- include "icm-as.envFromConfigMap" . }}
-{{- end }}
 env:
 - name: ENVIRONMENT
   value: "{{ include "icm-as.environmentName" . }}"
@@ -59,7 +55,6 @@ env:
 {{ include "icm-as.envReplication" . }}
 {{ include "icm-as.featuredJVMArguments" . }}
 {{ include "icm-as.additionalJVMArguments" . }}
-# {{- if and .Values.environment (kindIs "map" .Values.environment) }}
 {{- range $key, $value := .Values.environment }}
 {{ $environmentContainsSecret := false -}}
 {{- /*
@@ -82,7 +77,6 @@ Purpose is to filter out any duplicated environment assignment when set both on 
   value: {{ $value | quote }}
 {{- end -}}
 {{- end -}}
-# {{- end }}
 {{- if .Values.webLayer.enabled }}
 - name: INTERSHOP_WEBADAPTER_ENABLED
   value: "false"

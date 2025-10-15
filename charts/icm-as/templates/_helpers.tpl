@@ -83,21 +83,6 @@ Azure Workload Identity environment variables
 {{- end -}}
 
 {{/*
-ConfigMap environment variables
-*/}}
-{{- define "icm-as.envFromConfigMap" -}}
-{{- if .Values.envConfigMap.enabled }}
-{{- if .Values.envConfigMap.existingConfigMap }}
-- configMapRef:
-    name: {{ .Values.envConfigMap.existingConfigMap }}
-{{- else if .Values.envConfigMap.data }}
-- configMapRef:
-    name: {{ include "icm-as.fullname" . }}-env-config
-{{- end }}
-{{- end }}
-{{- end -}}
-
-{{/*
 Azure Workload Identity volume mounts
 */}}
 {{- define "icm-as.managedIdentityVolumeMounts" -}}

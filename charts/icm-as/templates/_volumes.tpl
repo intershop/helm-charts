@@ -64,11 +64,6 @@ volumes:
 {{- end }} {{/*if $mount.targetFile*/}}
 {{- end }} {{/*range*/}}
 {{- end }} {{/*if .Values.secretMounts*/}}
-{{- if and .Values.envConfigMap.enabled .Values.envConfigMap.data (not .Values.envConfigMap.existingConfigMap) }}
-- name: {{ include "icm-as.fullname" . }}-env-config
-  configMap:
-    name: {{ include "icm-as.fullname" . }}-env-config
-{{- end }}
 {{- if .Values.managedIdentity.enabled }}
 - name: azure-identity-token
   projected:

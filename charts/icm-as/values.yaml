@@ -233,18 +233,6 @@ database:
 environment:
   CARTRIDGE_LIST: "ft_icm_as"
 
-# ConfigMap-based environment variables
-# Use this to load environment variables from a ConfigMap instead of defining them directly in values.yaml
-envConfigMap:
-  # Enable ConfigMap-based environment variables
-  enabled: false
-  # Use an existing ConfigMap (if not provided, a new ConfigMap will be created using 'data')
-  existingConfigMap: ""
-  # Data for the ConfigMap (only used if existingConfigMap is not provided)
-  data: {}
-    # EXAMPLE_VAR: "example-value"
-    # ANOTHER_VAR: "another-value"
-
 # environment variable secrets to be propagated to the icm-as-container
 # @Deprecated since 2.9.0, replaced by secretMounts with targetEnv provided
 secrets: []
