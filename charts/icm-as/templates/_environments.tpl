@@ -233,9 +233,6 @@ Job-specific-environment
 {{- include "icm-as.envNewrelic" . }}
 {{- include "icm-as.envSecrets" . }}
 {{- include "icm-as.envSecretMounts" . }}
-{{- if .Values.managedIdentity.enabled }}
-{{- include "icm-as.managedIdentityEnv" . }}
-{{- end }}
 {{- end -}}
 
 {{/*
@@ -250,9 +247,6 @@ AppServer-specific-environment
 {{- include "icm-as.envNewrelic" . }}
 {{- include "icm-as.envSecrets" . }}
 {{- include "icm-as.envSecretMounts" . }}
-{{- if .Values.managedIdentity.enabled }}
-{{- include "icm-as.managedIdentityEnv" . }}
-{{- end }}
 {{- end -}}
 
 {{/*

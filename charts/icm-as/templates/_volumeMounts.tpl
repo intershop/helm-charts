@@ -64,9 +64,4 @@ volumeMounts:
 {{- end }} {{/*if $mount.targetFile*/}}
 {{- end }} {{/*range*/}}
 {{- end }} {{/*if .Values.secretMounts*/}}
-{{- if .Values.managedIdentity.enabled }}
-- name: azure-identity-token
-  mountPath: /var/run/secrets/azure/tokens
-  readOnly: true
-{{- end }}
 {{- end -}} {{/*define "icm-as.volumeMounts"*/}}
