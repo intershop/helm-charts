@@ -166,7 +166,7 @@ serviceAccount:
   # The name of the service account to use. (default .Release.Name + "-sa")
   name:
 
-# Azure Workload Identity (sometimes called managed identity) configuration
+# Azure Workload Identity configuration
 workloadIdentity:
   # Enable or disable Azure Workload Identity support
   enabled: false
