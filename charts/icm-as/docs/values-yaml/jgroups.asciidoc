@@ -26,7 +26,7 @@ Configures which discovery technology is used by http://www.jgroups.org/[JGroups
 
 [NOTE]
 ====
-If `discovery=kube_ping`, the `icm-as-server` containers requires access to the Kubernetes API. To fulfill this requirement a link:service-account.asciidoc[serviceAccount] is deployed.
+If `discovery=kube_ping`, the `icm-as-server` containers require access to the Kubernetes API. To fulfill this requirement a link:service-account.asciidoc[serviceAccount] is deployed.
 ====
 
 === Example
