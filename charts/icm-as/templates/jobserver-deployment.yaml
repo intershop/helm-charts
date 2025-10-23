@@ -43,9 +43,14 @@ spec:
   jobTemplate:
     spec:
       template:
+        {{- if include "icm-as.serviceAccount.podLabels" . }}
+        metadata:
+          labels:
+            {{- include "icm-as.serviceAccount.podLabels" . | nindent 12 -}}
+        {{- end }}
         spec:
-          {{- if eq (include "icm-as.jgroups.discovery" .) "kube_ping" }}
-          serviceAccountName: {{ include "icm-as.serviceAccountName" . }}
+          {{- if include "icm-as.serviceAccount.podSpec" . -}}
+            {{- include "icm-as.serviceAccount.podSpec" . | nindent 10 }}
           {{- end }}
           {{- if include "icm-as.nodeSelector" $jobValues }}
             {{- include "icm-as.nodeSelector" $jobValues | nindent 10 }}

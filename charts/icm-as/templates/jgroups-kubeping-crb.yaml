@@ -9,6 +9,6 @@ roleRef:
   name: jgroups-kubeping-pod-reader
 subjects:
 - kind: ServiceAccount
-  name: {{ include "icm-as.serviceAccountName" . }}
+  name: {{ include "icm-as.serviceAccount.name" . }}
   namespace: {{.Release.Namespace}}
 {{ end }}

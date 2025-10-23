@@ -155,13 +155,25 @@ operationalContext:
   # name of the environment (environment-type + some sort of id, e.g. int-01, default=<environmentType>)
   environmentName: prd
 
+# Service Account configuration
 serviceAccount:
-  # Specifies whether a service account should be created and used
+  # Specifies whether a service account should be (forced) created (if required by workload identity or jgroups kube-ping the service account will be created anyway)
   create: false
-  # Annotations to add to the service account
+  # additional labels for the service account (may overwrite standard labels)
+  labels: {}
+  # additional annotations for the service account (may overwrite standard annotations)
   annotations: {}
-  # The name of the service account to use. (default .Release.Name + "-default")
+  # The name of the service account to use. (default .Release.Name + "-sa")
   name:
+
+# Azure Workload Identity configuration
+workloadIdentity:
+  # Enable or disable Azure Workload Identity support
+  enabled: false
+  # The client ID of the Azure managed identity (user-assigned identity, mandatory if workloadIdentity.enabled is true)
+  clientId:
+  # The tenant ID of the Azure AD tenant (optional, only required if the identity is defined inside another tenant than the K8s cluster)
+  tenantId:
 
 podSecurityContext:
   # intershop user - defined by icm-base-docker image
