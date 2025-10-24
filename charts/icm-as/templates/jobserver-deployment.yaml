@@ -45,7 +45,7 @@ spec:
       template:
         metadata:
           labels:
-            {{- include "icm-as.labels" $ctx | nindent 8 }}
+            {{- include "icm-as.labels" $ctx | nindent 12 }}
           {{- if include "icm-as.serviceAccount.podLabels" . }}
             {{- include "icm-as.serviceAccount.podLabels" . | nindent 12 -}}
           {{- end }}
