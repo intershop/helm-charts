@@ -1,10 +1,10 @@
+{{- $ctx := dict "root" . "component" "webadapter" -}}
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "icm-web.fullname" . }}-wa
   labels:
-    app: {{ include "icm-web.fullname" . }}-wa
-    release: {{ include "icm-web.fullname" . }}
+    {{- include "icm-web.labels" $ctx | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -17,5 +17,4 @@ spec:
       protocol: TCP
       name: https
   selector:
-    app: icm-wa
-    release: {{ include "icm-web.fullname" . }}
+    {{- include "icm-web.selectorLabels" $ctx | nindent 4 }}

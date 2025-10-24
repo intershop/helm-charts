@@ -1,22 +1,20 @@
 {{- if .Values.mssql.enabled -}}
+{{- $ctx := dict "root" . "component" "mssql" -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "icm-as.fullname" . }}-mssql
   labels:
-    app: {{ include "icm-as.fullname" . }}-mssql
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- include "icm-as.labels" $ctx | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: icm-as-mssql
-      release: {{ include "icm-as.fullname" . }}
+      {{- include "icm-as.selectorLabels" $ctx | nindent 6 }}
   template:
     metadata:
       labels:
-        app: icm-as-mssql
-        release: {{ include "icm-as.fullname" . }}
+        {{- include "icm-as.labels" $ctx | nindent 8 }}
     spec:
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:

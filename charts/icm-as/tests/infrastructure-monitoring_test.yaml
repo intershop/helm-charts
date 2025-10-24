@@ -110,10 +110,10 @@ tests:
           value: icm-as-inframonitoring
       #metadata.labels
       - equal:
-          path: metadata.labels.app
+          path: metadata.labels["app.kubernetes.io/name"]
           value: icm-as
       - equal:
-          path: metadata.labels.chart
+          path: metadata.labels["helm.sh/chart"]
           value: icm-as-0.8.15
       #spec.ports
       - contains:
@@ -124,7 +124,7 @@ tests:
             targetPort: inframonitoring
       #spec.selector
       - equal:
-          path: spec.selector.app
+          path: spec.selector["app.kubernetes.io/name"]
           value: icm-as
       #status
       - isEmpty:

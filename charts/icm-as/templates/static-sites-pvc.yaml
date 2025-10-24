@@ -3,6 +3,8 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ template "icm-as.fullname" . }}-static-sites-pvc
+  labels:
+    {{- include "icm-as.labels" . | nindent 4 }}
 spec:
   storageClassName: {{ .Values.persistence.sites.static.storageClass | quote }}
   accessModes:

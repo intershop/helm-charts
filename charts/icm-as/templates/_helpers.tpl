@@ -35,20 +35,36 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "icm-as.labels" -}}
-helm.sh/chart: {{ include "icm-as.chart" . }}
-environment-name: {{ include "icm-as.environmentName" . }}
-operational-context: {{ include "icm-as.operationalContextName" . }}
+{{- $root := .root | default . -}}
+helm.sh/chart: {{ include "icm-as.chart" $root }}
+environment-name: "{{ include "icm-as.environmentName" $root }}"
+environment-type: "{{ include "icm-as.environmentType" $root }}"
+operational-context: {{ include "icm-as.operationalContextName" $root }}
 {{ include "icm-as.selectorLabels" . }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/version: {{ $root.Chart.AppVersion | quote }}
+app.kubernetes.io/managed-by: {{ $root.Release.Service }}
 {{- end -}}
 
 {{/*
-Selector labels
+Selector labels (component optional)
 */}}
 {{- define "icm-as.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "icm-as.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
+{{- $root := .root | default . -}}
+app.kubernetes.io/name: {{ include "icm-as.name" $root }}
+
+{{- /* component: prefer .component, fallback to .Values.component */ -}}
+{{- $component := "" -}}
+{{- if hasKey . "component" -}}
+  {{- $component = .component -}}
+{{- else if and (hasKey $root.Values "component") $root.Values.component -}}
+  {{- $component = $root.Values.component -}}
+{{- end -}}
+{{- if $component }}
+app.kubernetes.io/instance: {{ include "icm-as.fullname" $root }}-{{ $component }}
+app.kubernetes.io/component: {{ $component }}
+{{- else }}
+app.kubernetes.io/instance: {{ include "icm-as.fullname" $root }}
+{{- end }}
 {{- end -}}
 
 {{/*
@@ -71,13 +87,6 @@ These are additional parameters defined by deployment, which are not indented to
 {{- $addVmOptions = append $addVmOptions .Values.jvm.additionalOptions -}}
 - name: ADDITIONAL_JVM_ARGUMENTS
   value: {{ join " " $addVmOptions | quote }}
-{{- end -}}
-
-{{/*
-Creates a chart-label
-*/}}
-{{- define "icm-as.chartLabel" -}}
-chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 {{- end -}}
 
 {{/*

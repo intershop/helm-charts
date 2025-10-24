@@ -4,10 +4,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "icm-web.fullname" . }}-ssl-certificates
   labels:
-    app: {{ template "icm-web.fullname" . }}-ssl-certificates
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
+    {{- include "icm-web.labels" . | nindent 4 }}
 data:
   {{- (.Files.Glob "custom-ssl-certificates/*").AsConfig | nindent 2 }}
 {{- end }}

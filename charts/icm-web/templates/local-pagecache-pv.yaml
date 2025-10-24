@@ -5,6 +5,7 @@ metadata:
   name: {{ include "icm-web.fullname" . }}-local-pagecache-pv
   labels:
     type: local
+    {{- include "icm-web.labels" . | nindent 4 }}
 spec:
   storageClassName: standard
   capacity:

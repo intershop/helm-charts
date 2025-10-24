@@ -35,13 +35,15 @@ kind: Deployment
 metadata:
   name: my-icm-web-wa
   labels:
-    app: my-icm-web-wa
+    app.kubernetes.io/name: my-icm-web
+    app.kubernetes.io/instance: my-icm-web
+    app.kubernetes.io/component: wa
 ----
 
 `nameOverride` can now be used to customize parts of this:
 [source,yaml]
 ----
-nameOverride: my-custom-icm-as
+nameOverride: my-custom-icm-web
 ----
 Therefore, the deployment will look like:
 [source,yaml]
@@ -49,9 +51,11 @@ Therefore, the deployment will look like:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-icm-web-my-custom-icm-as-wa
+  name: my-icm-web-my-custom-icm-web-wa
   labels:
-    app: my-icm-web-my-custom-icm-as-wa
+    app.kubernetes.io/name: my-icm-web-my-custom-icm-web-wa
+    app.kubernetes.io/instance: my-icm-web
+    app.kubernetes.io/component: wa
 ----
 
 Other resources like the `icm-web` https://kubernetes.io/docs/concepts/services-networking/service/[service] will also use this name:
@@ -60,17 +64,18 @@ Other resources like the `icm-web` https://kubernetes.io/docs/concepts/services-
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-icm-web-my-custom-icm-as-wa
+  name: my-icm-web-my-custom-icm-web-wa
   labels:
-    app: my-icm-web-my-custom-icm-as-wa
-    release: my-icm-web-my-custom-icm-as
+    app.kubernetes.io/name: my-icm-web-my-custom-icm-web-wa
+    app.kubernetes.io/instance: my-icm-web
+    app.kubernetes.io/component: wa
 ----
 
 `fullnameOverride` can be used to get full control over the names:
 [source,yaml]
 ----
-nameOverride: my-custom-icm-as
-fullnameOverride: your-custom-icm-as
+nameOverride: my-custom-icm-web
+fullnameOverride: your-custom-icm-web
 ----
 Therefore, the deployment will look like:
 [source,yaml]
@@ -78,9 +83,11 @@ Therefore, the deployment will look like:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: your-custom-icm-as-wa
+  name: your-custom-icm-web-wa
   labels:
-    app: your-custom-icm-as-wa
+    app.kubernetes.io/name: my-custom-icm-web
+    app.kubernetes.io/instance: my-icm-web
+    app.kubernetes.io/component: appserver
 ----
 
 Other resources like the `icm-web` https://kubernetes.io/docs/concepts/services-networking/service/[service] will also use this fullname:
@@ -91,8 +98,9 @@ kind: Service
 metadata:
   name: your-custom-icm-as-wa
   labels:
-    app: your-custom-icm-as-wa
-    release: your-custom-icm-as
+    app.kubernetes.io/name: my-custom-icm-web
+    app.kubernetes.io/instance: my-icm-web
+    app.kubernetes.io/component: appserver
 ----
 
 [#_example_nodeSelector]

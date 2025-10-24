@@ -3,6 +3,8 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ template "icm-as.fullname" . }}-cluster-encryption-pvc
+  labels:
+    {{- include "icm-as.labels" . | nindent 4 }}
 spec:
   accessModes:
     - ReadOnlyMany

@@ -27,7 +27,7 @@ Attribute `license_key` is deprecated since `1.8.0`, use `licenseKeySecretKeyRef
 
 [TIP]
 ====
-The New Relic configuration generated from configured values will use the link:operational-context.asciidoc[`operationalContextName`] as the `app_name`.
+The New Relic configuration generated from configured values will use the `app.kubernetes.io/instance`-label of the icm-as deployment as the `app_name`. This will connect collected log and metrics with the https://newrelic.com/de/blog/best-practices/what-is-apm[APM]-data.
 ====
 
 [#_licenseKeySecretKeyRefType]

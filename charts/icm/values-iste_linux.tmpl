@@ -146,10 +146,14 @@ ingress-nginx:
         requiredDuringSchedulingIgnoredDuringExecution:
         - labelSelector:
             matchExpressions:
-            - key: release
+            - key: app.kubernetes.io/name
               operator: In
               values:
-              - ${HELM_JOB_NAME}-icm-web
+              - icm-web
+            - key: app.kubernetes.io/instance
+              operator: In
+              values:
+              - ${HELM_JOB_NAME}
           topologyKey: kubernetes.io/hostname
     service:
       external:

@@ -19,10 +19,10 @@ tests:
           value: icm-testrunner
       #metadata.labels
       - equal:
-          path: metadata.labels.app
+          path: metadata.labels["app.kubernetes.io/name"]
           value: icm-testrunner
       - equal:
-          path: metadata.labels.chart
+          path: metadata.labels["helm.sh/chart"]
           value: icm-0.8.15
       - equal:
           path: spec.template.spec.containers[0].name

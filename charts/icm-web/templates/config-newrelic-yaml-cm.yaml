@@ -4,8 +4,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "icm-web.fullname" . }}-newrelic-yml
   labels:
-    app: {{ template "icm-web.fullname" . }}-newrelic-yml
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- include "icm-web.labels" . | nindent 4 }}
 data:
   newrelic.yml:  |-
     common: &default_settings

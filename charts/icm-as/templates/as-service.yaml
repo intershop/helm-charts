@@ -1,10 +1,10 @@
+{{- $ctx := dict "root" . "component" "appserver" -}}
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "icm-as.fullname" . }}
   labels:
-    app: {{ include "icm-as.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- include "icm-as.labels" $ctx | nindent 4 }}
 spec:
   ports:
   - name: svc
@@ -14,7 +14,6 @@ spec:
     port: 7744
     targetPort: mgnt
   selector:
-    app: icm-as
-    release: {{ include "icm-as.fullname" . }}
+    {{- include "icm-as.selectorLabels" $ctx | nindent 4 }}
 status:
   loadBalancer: {}

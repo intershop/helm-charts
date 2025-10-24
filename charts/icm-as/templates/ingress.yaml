@@ -5,10 +5,7 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    app.kubernetes.io/name: {{ $fullName }}
-    helm.sh/chart: {{ include "icm-as.chart" . }}
-    app.kubernetes.io/instance: {{ $fullName }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "icm-as.labels" . | nindent 4 }}
   annotations:
     nginx.ingress.kubernetes.io/affinity: cookie
     nginx.ingress.kubernetes.io/affinity-mode: persistent

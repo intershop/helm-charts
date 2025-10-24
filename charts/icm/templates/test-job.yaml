@@ -4,15 +4,16 @@ kind: Job
 metadata:
   name: {{ template "icm-chart.fullname" . }}-testrunner
   labels:
-    app: {{ template "icm-chart.fullname" . }}-testrunner
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    helm.sh/chart: {{ include "icm-chart.chart" . }}
+    app.kubernetes.io/name: {{ template "icm-chart.fullname" . }}-testrunner
+    app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
   backoffLimit: 0
   template:
     metadata:
       labels:
-        app: {{ template "icm-chart.fullname" . }}-testrunner
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ template "icm-chart.fullname" . }}-testrunner
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       {{- if .Values.testrunner.affinity}}
       affinity:
