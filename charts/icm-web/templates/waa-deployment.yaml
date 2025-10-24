@@ -24,7 +24,10 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "icm-web.selectorLabels" $ctx | nindent 6 }}
+      app: icm-wa
+      release: {{ include "icm-web.fullname" . }}
+      # TODO: uncomment the following line and delete app+release for the next major release
+      # {{- include "icm-web.selectorLabels" $ctx | nindent 6 }}
   template:
     metadata:
     {{- if .Values.agent.podAnnotations }}
@@ -32,6 +35,9 @@ spec:
       {{- toYaml .Values.agent.podAnnotations | trim | nindent 8 }}
     {{- end }}
       labels:
+        # TODO: delete app+release for the next major release
+        app: icm-wa
+        release: {{ include "icm-web.fullname" . }}
         {{- include "icm-web.labels" $ctx | nindent 8 }}
         {{- if .Values.agent.podLabels }}
           {{- toYaml .Values.agent.podLabels | trim | nindent 8 }}
