@@ -46,4 +46,5 @@ The following table gives a short overview about the different sections (sorted 
 |link:values-yaml/ssl-certificate-retrieval.asciidoc[sslCertificateRetrieval]|SSL/TLS certificate retrieval
 |link:values-yaml/test-connection.asciidoc[testConnection]|Test connection configuration
 |link:values-yaml/web-layer.asciidoc[webLayer]|Web layer (webadapter-replacement) configuration
+|link:values-yaml/workload-identity.asciidoc[workloadIdentity]|Workload identity configuration
 |===

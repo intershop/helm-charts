@@ -13,6 +13,7 @@ tests:
     asserts:
       - hasDocuments:
           count: 0
+
   - it: role jgroups KUBE_PING
     release:
       name: icm-as
@@ -26,6 +27,7 @@ tests:
     asserts:
       - isKind:
           of: ClusterRole
+
   - it: role-binding jgroups KUBE_PING
     release:
       name: icm-as
@@ -43,5 +45,5 @@ tests:
           path: subjects
           content:
             kind: ServiceAccount
-            name: icm-as-default
+            name: icm-as-sa
             namespace: NAMESPACE
