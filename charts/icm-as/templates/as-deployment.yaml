@@ -43,9 +43,12 @@ spec:
         {{- if include "icm-as.podBinding" . }}
           {{- include "icm-as.podBinding" . | nindent 8 }}
         {{- end }}
+        {{- if include "icm-as.serviceAccount.podLabels" . -}}
+          {{- include "icm-as.serviceAccount.podLabels" . | nindent 8 }}
+        {{- end }}
     spec:
-      {{- if eq (include "icm-as.jgroups.discovery" .) "kube_ping" }}
-      serviceAccountName: {{ include "icm-as.serviceAccountName" . }}
+      {{- if include "icm-as.serviceAccount.podSpec" . -}}
+        {{- include "icm-as.serviceAccount.podSpec" . | nindent 6 }}
       {{- end }}
       {{- if include "icm-as.nodeSelector" . }}
         {{- include "icm-as.nodeSelector" . | nindent 6 }}
