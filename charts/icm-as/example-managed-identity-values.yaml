@@ -1,0 +1,55 @@
+# Example values for enabling Azure Workload Identity (Managed Identity) in ICM-AS
+
+# Enable managed identity support
+managedIdentity:
+  enabled: true
+  # The client ID of your Azure User-Assigned Managed Identity
+  clientId: "your-managed-identity-client-id"
+  # The tenant ID of your Azure AD tenant (optional)
+  tenantId: "your-azure-ad-tenant-id"
+  # Additional environment variables (optional)
+  additionalEnvVars:
+    - name: AZURE_SUBSCRIPTION_ID
+      value: "your-subscription-id"
+
+# Service account must be created when using managed identity
+serviceAccount:
+  create: true
+  name: "" # Will use default naming
+  annotations: {}
+
+# Example application configuration
+replicaCount: 1
+
+image:
+  repository: "intershophub/icm-as"
+  tag: "11.1.3"
+  pullPolicy: IfNotPresent
+
+# Enable job server with managed identity support
+job:
+  enabled: false # Set to true if you want job server
+
+# Other standard ICM-AS configuration...
+operationalContext:
+  customerId: "your-customer-id"
+  environmentType: prd
+  environmentName: prd
+
+# Database configuration (example)
+database:
+  type: "mssql"
+  jdbcURL: "jdbc:sqlserver://your-db-server:1433;databaseName=intershop"
+  jdbcUser: "intershop"
+  # Use Azure Key Vault or Kubernetes secrets for passwords
+  jdbcPasswordSecretKeyRef:
+    name: "db-secrets"
+    key: "password"
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 3Gi
+  requests:
+    cpu: 1000m
+    memory: 3Gi
