@@ -1,0 +1,31 @@
+= `values.yaml` Attributes in Section `workloadIdentity`
+
+:icons: font
+
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
+
+
+== Description
+
+Allows to enhance the usage of a link:service-account.asciidoc[serviceAccount] by https://azure.github.io/azure-workload-identity/docs/[workload identity] to grant the access to Azure resources for e.g. a pod. The following table lists the attributes of the `workloadIdentity` section:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|enabled|Enables the usage of workload identity.|boolean|{optional}|`false`
+|clientId|The Azure client id.|string|{conditional} mandatory if `enabled=true`|-
+|tenantId|The Azure tenant id.|string|{optional} only required if the identity is defined inside another tenant than the K8s cluster)|-
+|===
+
+=== Example
+
+[source,yaml]
+----
+workloadIdentity:
+  enabled: true
+  clientId: abcdefgh-1234-5678-90ab-cdef12345678
+  tenantId: 12345678-90ab-cdef-1234-567890abcdef
+----
+

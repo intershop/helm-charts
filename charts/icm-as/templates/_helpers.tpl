@@ -52,13 +52,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{/*
-Create the name of the service account to use
-*/}}
-{{- define "icm-as.serviceAccountName" -}}
-  {{ default (printf "%s-%s" (include "icm-as.fullname" .) "default") .Values.serviceAccount.name }}
-{{- end -}}
-
-{{/*
 Create the values for the environment variable FEATURED_JVM_ARGUMENTS.
 These are predefined parameter from several features.
 */}}
@@ -106,6 +99,9 @@ annotations:
   {{- end }}
   prometheus.io/port: '7744'
   prometheus.io/path: '/metrics'
+  {{- if .Values.workloadIdentity.enabled -}}{{/* .Values.serviceAccount.create also is true */}}
+  azure.workload.identity/use: "true"
+  {{- end }}
 {{- if .Values.podAnnotations -}}
 {{- toYaml .Values.podAnnotations | nindent 2 }}
 {{- end }}
