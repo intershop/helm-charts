@@ -22,8 +22,6 @@ spec:
     matchLabels:
       app: icm-as
       release: {{ include "icm-as.fullname" . }}
-      # TODO: uncomment the following line and delete app+release for the next major release
-      # {{- include "icm-as.selectorLabels" $ctx | nindent 6 }}
   {{- if (ne (int .Values.replicaCount) 0) }}
   strategy:
     type: {{ .Values.updateStrategy | default "RollingUpdate" }}

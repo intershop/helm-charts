@@ -47,24 +47,18 @@ tests:
           value: Helm
       #spec.selector
       - equal:
-          path: spec.selector.matchLabels["app.kubernetes.io/name"]
+          path: spec.selector.matchLabels.app
           value: icm-as
       - equal:
-          path: spec.selector.matchLabels["app.kubernetes.io/instance"]
-          value: icm-as-appserver
-      - equal:
-          path: spec.selector.matchLabels["app.kubernetes.io/component"]
-          value: appserver
+          path: spec.selector.matchLabels.release
+          value: icm-as
       #spec.template.metadata
       - equal:
-          path: spec.template.metadata.labels["app.kubernetes.io/name"]
+          path: spec.template.metadata.labels.app
           value: icm-as
       - equal:
-          path: spec.template.metadata.labels["app.kubernetes.io/instance"]
-          value: icm-as-appserver
-      - equal:
-          path: spec.template.metadata.labels["app.kubernetes.io/component"]
-          value: appserver
+          path: spec.template.metadata.labels.release
+          value: icm-as
       #spec.template.spec.containers[0]
       - equal:
           path: spec.template.spec.containers[0].name

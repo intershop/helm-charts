@@ -23,24 +23,18 @@ tests:
           value: icm-as
       #spec.selector
       - equal:
-          path: spec.selector.matchLabels["app.kubernetes.io/name"]
+          path: spec.selector.matchLabels.app
           value: icm-as
       - equal:
-          path: spec.selector.matchLabels["app.kubernetes.io/instance"]
-          value: custom-fullname-appserver
-      - equal:
-          path: spec.selector.matchLabels["app.kubernetes.io/component"]
-          value: appserver
+          path: spec.selector.matchLabels.release
+          value: custom-fullname
       #spec.template.metadata
       - equal:
-          path: spec.template.metadata.labels["app.kubernetes.io/name"]
+          path: spec.template.metadata.labels.app
           value: icm-as
       - equal:
-          path: spec.template.metadata.labels["app.kubernetes.io/instance"]
-          value: custom-fullname-appserver
-      - equal:
-          path: spec.template.metadata.labels["app.kubernetes.io/component"]
-          value: appserver
+          path: spec.template.metadata.labels.release
+          value: custom-fullname
       #spec.template.spec.volumes
       - contains:
           path: spec.template.spec.volumes
