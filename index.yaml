@@ -6,6 +6,42 @@ entries:
       requestedMemoryQuota: 6000Mi
     apiVersion: v2
     appVersion: 13.1.2
+    created: "2025-10-24T09:37:38.04227468Z"
+    dependencies:
+    - name: icm-as
+      repository: file://../icm-as
+      version: 2.11.0-alpha
+    - condition: icm-web.enabled
+      name: icm-web
+      repository: file://../icm-web
+      version: 0.16.0-alpha
+    - condition: ingress-nginx.enabled
+      name: ingress-nginx
+      repository: https://kubernetes.github.io/ingress-nginx
+      version: 4.12.2
+    - condition: mailhog.enabled
+      name: mailhog
+      repository: https://codecentric.github.io/helm-charts
+      version: 5.2.0
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 17.15.2
+    - condition: redis-cluster.enabled
+      name: redis-cluster
+      repository: https://charts.bitnami.com/bitnami
+      version: 8.6.12
+    description: Intershop Commerce Management - ICM
+    digest: 75b1dd313e869200989494ab5d58c7dba2313f87b4ee16f3e130a20f35161588
+    name: icm
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-2.16.0-alpha/icm-2.16.0-alpha.tgz
+    version: 2.16.0-alpha
+  - annotations:
+      requestedCpuQuotaInMinutes: "2200"
+      requestedMemoryQuota: 6000Mi
+    apiVersion: v2
+    appVersion: 13.1.2
     created: "2025-10-24T08:25:10.476186721Z"
     dependencies:
     - name: icm-as
@@ -7595,6 +7631,16 @@ entries:
   icm-as:
   - apiVersion: v2
     appVersion: 11.10.3-LTS
+    created: "2025-10-24T09:37:38.2100604Z"
+    description: Intershop Commerce Management - AppServer
+    digest: 61fe9045bf277bfe95ca8ec310fddf0ca1d3b80f9f99776c2d118371b9e6b9db
+    name: icm-as
+    type: application
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-as-2.11.0-alpha/icm-as-2.11.0-alpha.tgz
+    version: 2.11.0-alpha
+  - apiVersion: v2
+    appVersion: 11.10.3-LTS
     created: "2025-10-24T08:25:10.629884066Z"
     description: Intershop Commerce Management - AppServer
     digest: d14da9b067944acd9f96468e7b4532c820fd010b2fa7f57bafbe191f1e880676
@@ -9225,6 +9271,27 @@ entries:
     - https://github.com/intershop/helm-charts/releases/download/icm-proxy-1.0.0/icm-proxy-1.0.0.tgz
     version: 1.0.0
   icm-replication:
+  - annotations:
+      requestedCpuQuotaInMinutes: "3000"
+      requestedMemoryQuota: 9Gi
+    apiVersion: v2
+    appVersion: 13.1.2
+    created: "2025-10-24T09:37:38.662870343Z"
+    dependencies:
+    - alias: icm-live
+      name: icm
+      repository: file://../icm
+      version: 2.16.0-alpha
+    - alias: icm-edit
+      name: icm
+      repository: file://../icm
+      version: 2.16.0-alpha
+    description: Intershop Commerce Management - ICM Replication
+    digest: aef5e03afe73417f5e9d2d3ba77e4ac83367c7c5e9d6333c42c731734edbf49c
+    name: icm-replication
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-replication-2.16.0-alpha/icm-replication-2.16.0-alpha.tgz
+    version: 2.16.0-alpha
   - annotations:
       requestedCpuQuotaInMinutes: "3000"
       requestedMemoryQuota: 9Gi
@@ -13117,6 +13184,15 @@ entries:
     version: 1.0.0-alpha
   - apiVersion: v2
     appVersion: 11.0.13
+    created: "2025-10-24T09:37:38.823421341Z"
+    description: Intershop Commerce Management - Web Adapter and Web Adapter Agent
+    digest: a19bbe2c16b5b918028a8ebd7bc02d92901e48dff993e16611e230343f19d897
+    name: icm-web
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-web-0.16.0-alpha/icm-web-0.16.0-alpha.tgz
+    version: 0.16.0-alpha
+  - apiVersion: v2
+    appVersion: 11.0.13
     created: "2025-09-29T08:14:24.223120569Z"
     description: Intershop Commerce Management - Web Adapter and Web Adapter Agent
     digest: 869f73ef48e3280ed83aac617100c4c022ca845e53e0089efed014a8ba2a4c80
@@ -14219,4 +14295,4 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.2.3/pwa-main-0.2.3.tgz
     version: 0.2.3
-generated: "2025-10-24T08:47:01.918180854Z"
+generated: "2025-10-24T09:37:38.826643241Z"
