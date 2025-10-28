@@ -19,8 +19,8 @@ tests:
           value: icm-as-custom-name
       #metadata.labels
       - equal:
-          path: metadata.labels.app
-          value: icm-as-custom-name
+          path: metadata.labels["app.kubernetes.io/name"]
+          value: custom-name
       #spec.selector
       - equal:
           path: spec.selector.matchLabels.app
@@ -59,12 +59,12 @@ tests:
           value: icm-as-custom-name
       #metadata.labels
       - equal:
-          path: metadata.labels.app
-          value: icm-as-custom-name
+          path: metadata.labels["app.kubernetes.io/name"]
+          value: custom-name
       #spec.selector
       - equal:
-          path: spec.selector.app
-          value: icm-as
+          path: spec.selector["app.kubernetes.io/name"]
+          value: custom-name
       - equal:
-          path: spec.selector.release
-          value: icm-as-custom-name
+          path: spec.selector["app.kubernetes.io/instance"]
+          value: icm-as-custom-name-appserver

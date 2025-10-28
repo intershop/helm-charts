@@ -19,8 +19,8 @@ tests:
           value: custom-fullname
       #metadata.labels
       - equal:
-          path: metadata.labels.app
-          value: custom-fullname
+          path: metadata.labels["app.kubernetes.io/name"]
+          value: icm-as
       #spec.selector
       - equal:
           path: spec.selector.matchLabels.app
@@ -59,9 +59,9 @@ tests:
           value: custom-fullname
       #metadata.labels
       - equal:
-          path: metadata.labels.app
-          value: custom-fullname
+          path: metadata.labels["app.kubernetes.io/name"]
+          value: icm-as
       #spec.selector
       - equal:
-          path: spec.selector.app
+          path: spec.selector["app.kubernetes.io/name"]
           value: icm-as

@@ -4,12 +4,11 @@ kind: ConfigMap
 metadata:
   name: {{ template "icm-as.fullname" . }}-newrelic-yml
   labels:
-    app: {{ template "icm-as.fullname" . }}-newrelic-yml
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- include "icm-as.labels" . | nindent 4 }}
 data:
   newrelic.yml:  |-
     common: &default_settings
-      app_name: "{{ (include "icm-as.operationalContextName" .) }}-icm-as"
+      app_name: "{{ template "icm-as.fullname" . }}-appserver"
       application_logging:
         enabled: true
         forwarding:
