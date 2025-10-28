@@ -6,9 +6,9 @@ icm-as:
     # as long as there are no long running job pods we need this annotation for icm-as
     "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
 
-  image:
-  #    repository: intershophub/icm-as
-  #    tag: :11.0.12-dev1
+  # image:
+  #   repository: intershophub/icm-as
+  #   tag: :11.0.12-dev1
 
   ## define a secret for a container registry
   dockerSecret:
@@ -22,7 +22,7 @@ icm-as:
   replicaCount: 1
 
   # environment variables to be propagated to the icm-as-container
-  environment:
+  # environment:
 
   ## @param persistence - Either choose local (default), cluster, azurefiles, static or nfs persitence layer
   persistence:
