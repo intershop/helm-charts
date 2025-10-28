@@ -4,6 +4,8 @@ kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
   name: {{ include "icm-as.fullname" . }}-cluster-mssql-db-data-sc
+  labels:
+    {{- include "icm-as.labels" . | nindent 4 }}
 provisioner: kubernetes.io/azure-file
 allowVolumeExpansion: true
 mountOptions:
