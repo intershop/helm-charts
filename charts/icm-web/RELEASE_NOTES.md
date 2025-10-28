@@ -1,14 +1,10 @@
 
-<a name="icm-web-0.14.5"></a>
-## [icm-web-0.14.5](https://github.com/intershop/helm-charts/compare/icm-web-0.14.4...icm-web-0.14.5)
+<a name="icm-web-0.15.0"></a>
+## [icm-web-0.15.0](https://github.com/intershop/helm-charts/compare/icm-web-0.14.5...icm-web-0.15.0)
 
-> 2025-08-21
+> 2025-10-28
 
-### Chore
+### Features
 
-* bump versions of icm:patch icm-web:patch
-
-### Fix
-
-* **icm:** consume newest webadapter ([#1070](https://github.com/intershop/helm-charts/issues/1070))
+* **icm:** label unification ([#1106](https://github.com/intershop/helm-charts/issues/1106))
 

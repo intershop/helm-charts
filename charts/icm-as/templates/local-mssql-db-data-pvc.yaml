@@ -4,6 +4,8 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ template "icm-as.fullname" . }}-local-mssql-db-data-pvc
+  labels:
+    {{- include "icm-as.labels" . | nindent 4 }}
 spec:
   storageClassName: standard
   accessModes:

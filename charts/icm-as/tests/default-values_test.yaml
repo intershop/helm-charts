@@ -35,19 +35,16 @@ tests:
           value: icm-as
       - equal:
           path: metadata.labels["app.kubernetes.io/instance"]
-          value: icm-as
+          value: icm-as-appserver
+      - equal:
+          path: metadata.labels["app.kubernetes.io/component"]
+          value: appserver
       - equal:
           path: metadata.labels["app.kubernetes.io/version"]
           value: "11.0.1"
       - equal:
           path: metadata.labels["app.kubernetes.io/managed-by"]
           value: Helm
-      - equal:
-          path: metadata.labels.app
-          value: icm-as
-      - equal:
-          path: metadata.labels.chart
-          value: icm-as-0.8.15
       #spec.selector
       - equal:
           path: spec.selector.matchLabels.app
@@ -60,7 +57,7 @@ tests:
           path: spec.template.metadata.labels.app
           value: icm-as
       - equal:
-          path: spec.template.metadata.labels.app
+          path: spec.template.metadata.labels.release
           value: icm-as
       #spec.template.spec.containers[0]
       - equal:
@@ -259,10 +256,16 @@ tests:
           value: icm-as
       #metadata.labels
       - equal:
-          path: metadata.labels.app
+          path: metadata.labels["app.kubernetes.io/name"]
           value: icm-as
       - equal:
-          path: metadata.labels.chart
+          path: metadata.labels["app.kubernetes.io/instance"]
+          value: icm-as-appserver
+      - equal:
+          path: metadata.labels["app.kubernetes.io/component"]
+          value: appserver
+      - equal:
+          path: metadata.labels["helm.sh/chart"]
           value: icm-as-0.8.15
       #spec.ports
       - contains:
@@ -279,8 +282,14 @@ tests:
             targetPort: mgnt
       #spec.selector
       - equal:
-          path: spec.selector.app
+          path: spec.selector["app.kubernetes.io/name"]
           value: icm-as
+      - equal:
+          path: spec.selector["app.kubernetes.io/instance"]
+          value: icm-as-appserver
+      - equal:
+          path: spec.selector["app.kubernetes.io/component"]
+          value: appserver
       #status
       - isEmpty:
           path: status.loadBalancer

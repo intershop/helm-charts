@@ -6,6 +6,7 @@ metadata:
   name: {{ template "icm-as.fullname" . }}-local-mssql-db-backup-pv
   labels:
     type: local
+    {{- include "icm-as.labels" . | nindent 4 }}
 spec:
   storageClassName: standard
   capacity:
