@@ -59,4 +59,4 @@ tests:
           of: ConfigMap
       - matchRegex:
           path: data["newrelic.yml"]
-          pattern: '.*"helmtest-uat2-edit-icm-waa".*'
+          pattern: '.*"release-name-icm-web-webadapter".*'
