@@ -1,4 +1,20 @@
 
+<a name="icm-2.17.0-alpha"></a>
+## [icm-2.17.0-alpha](https://github.com/intershop/helm-charts/compare/icm-2.15.0...icm-2.17.0-alpha)
+
+> 2025-10-28
+
+### Features
+
+* **icm:** label unification ([#1106](https://github.com/intershop/helm-charts/issues/1106))
+
+
+<a name="icm-2.15.0"></a>
+## [icm-2.15.0](https://github.com/intershop/helm-charts/compare/icm-2.14.7...icm-2.15.0)
+
+> 2025-10-24
+
+
 <a name="icm-2.14.7"></a>
 ## [icm-2.14.7](https://github.com/intershop/helm-charts/compare/icm-2.14.6...icm-2.14.7)
 
