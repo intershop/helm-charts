@@ -5,10 +5,7 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    app.kubernetes.io/name:  {{ $fullName }}
-    helm.sh/chart: {{ include "icm-web.chart" . }}
-    app.kubernetes.io/instance:  {{ $fullName }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "icm-web.labels" . | nindent 4 }}
 {{- with .Values.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
