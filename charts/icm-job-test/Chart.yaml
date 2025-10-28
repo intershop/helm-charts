@@ -8,6 +8,6 @@ annotations:
   requestedCpuQuotaInMinutes: "2200"
 dependencies:
   - name: icm
-    version: 2.15.0
+    version: 2.16.0-alpha
     repository: file://../icm
 
