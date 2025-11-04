@@ -88,30 +88,6 @@ docker run -it --network host --workdir=/data --volume <my kube config>:/root/.k
 $(pwd):/data quay.io/helmpack/chart-testing:v3.8.0 ct lint --config ct_icm.yaml
 ----
 
-== Testing ICM
-
-This helm chart also allows you to execute Intershop HtmlUnit tests via a testrunner.
-
-=== Execute Locally
-
-There are already preconfigured value-files for local test execution, orchestrated by a bash script.
-Follow these steps to execute a test:
-
-. Be sure that each included chart is up-to-date:
-+
-[source,bash]
-----
-helm dependency update ../icm-as
-helm dependency update .
-----
-
-. Create the necessary k8s secrets for icm-web and icm-as (e.g., `kubectl create secret docker-registry dockerhub --docker-username=<your username> --docker-password=<your password> --docker-email=<your email>`)
-. Run: `./start-test-local.sh` and follow the instructions.
-
-=== Local Execution Guide
-
-For detailed instructions on local execution, see link:docs/local-execution.asciidoc[Local Execution Guide].
-
 == Detailed documentation
 
-* link:docs/values-yaml/[values.yaml] documentation
+* link:docs/values-yaml.asciidoc[values.yaml] documentation

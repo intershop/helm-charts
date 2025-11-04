@@ -30,7 +30,7 @@ class UpgradeType(Enum, metaclass=MyEnumMeta):
 
 class ProductType(Enum, metaclass=MyEnumMeta):
   PWA = 'pwa'
-  ICM_REPLICATION = 'icm-replication'
+  ICM_REPLICATION_TEST = 'icm-replication-test'
   ICM_JOB_TEST = 'icm-job-test'
   ICM = 'icm'
   ICM_AS = 'icm-as'
@@ -42,13 +42,13 @@ class ProductType(Enum, metaclass=MyEnumMeta):
 # value is a list of ProductType which depend on the key
 dependencies = {
   ProductType.PWA: [],
-  ProductType.ICM_REPLICATION: [],
+  ProductType.ICM_REPLICATION_TEST: [],
   ProductType.ICM_JOB_TEST: [],
-  ProductType.ICM: [ProductType.ICM_TEST, ProductType.ICM_JOB_TEST, ProductType.ICM_REPLICATION],
+  ProductType.ICM: [ProductType.ICM_TEST],
   ProductType.ICM_AS: [ProductType.ICM],
   ProductType.ICM_JOB: [],
   ProductType.ICM_WEB: [ProductType.ICM],
-  ProductType.ICM_TEST:[]
+  ProductType.ICM_TEST:[ProductType.ICM_JOB_TEST, ProductType.ICM_REPLICATION_TEST]
 }
 
 def handle_subprocess_error(subprocess_result, error_message):

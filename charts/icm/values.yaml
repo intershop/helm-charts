@@ -123,9 +123,6 @@ ingress-nginx:
 mailhog:
   enabled: false
 
-test:
-  enabled: false
-
 # For redis deployment using a single master (and possibly multiple read replicas). May use redis sentinel.
 # The whole dataset must fit into the single master node.
 # See https://artifacthub.io/packages/helm/bitnami/redis

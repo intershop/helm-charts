@@ -60,10 +60,10 @@ spec:
               topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchExpressions:
-                - key: app
+                - key: app.kubernetes.io/instance
                   operator: In
                   values:
-                  - {{ include "icm-web.fullname" . }}-wa
+                  - {{ include "icm-web.fullname" . }}-wa-webadapter
       {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
