@@ -14,7 +14,7 @@ DEFAULT_TESTSUITE='tests.remote.com.intershop.cms.suite.PageListingTestSuite'
 TESTSUITE="${TESTSUITE:-$DEFAULT_TESTSUITE}"
 read -e -p 'Testsuite: ' -i "$TESTSUITE" TESTSUITE || { echo "Error reading input"; exit 1; }
 
-DEFAULT_ICM_TEST_IMAGE='intershophub/icm-as-test:13.1.2'
+DEFAULT_ICM_TEST_IMAGE='intershophub/icm-as-test:14.0.1'
 ICM_TEST_IMAGE="${ICM_TEST_IMAGE:-$DEFAULT_ICM_TEST_IMAGE}"
 read -e -p 'Test image: ' -i "$ICM_TEST_IMAGE" ICM_TEST_IMAGE || { echo "Error reading input"; exit 1; }
 
