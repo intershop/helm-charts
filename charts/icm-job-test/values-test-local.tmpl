@@ -1,56 +1,57 @@
-icm:
-  test:
-    enabled: true
-
-  icm-as:
-    nodeSelector: null
-    infrastructureMonitoring:
-      enabled: false
-    imagePullSecrets:
-    - "${ICM_AS_PULL_SECRET}"
-    persistence:
-      sites:
-        size: 2Gi
-        type: local
-        local:
-          path: ${LOCAL_MOUNT_BASE}/sites
-      jgroups:
-        size: 1Gi
-        type: local
-        local:
-          path: ${LOCAL_MOUNT_BASE}/jgroups
-      customdata:
-        enabled: true
-        existingClaim: ${HELM_JOB_NAME}-local-testdata-pvc
-        mountPoint: /data
-    mssql:
+icm-test:
+  icm:
+    test:
       enabled: true
-      acceptEula: "Y"
-      persistence:
-        data:
-          size: 1Gi
-          type: local
-          local:
-            path: ${LOCAL_MOUNT_BASE}/mssql/data
-        backup:
-          size: 1Gi
-          type: local
-          local:
-            path: ${LOCAL_MOUNT_BASE}/mssql/backup
 
-  icm-web:
-    nodeSelector: null
-    persistence:
-      customdata:
-        enabled: true
-        existingClaim: ${HELM_JOB_NAME}-local-testdata-pvc
-
-  ingress-nginx:
-    controller:
+    icm-as:
       nodeSelector: null
+      infrastructureMonitoring:
+        enabled: false
+      imagePullSecrets:
+      - "${ICM_AS_PULL_SECRET}"
+      persistence:
+        sites:
+          size: 2Gi
+          type: local
+          local:
+            path: ${LOCAL_MOUNT_BASE}/sites
+        jgroups:
+          size: 1Gi
+          type: local
+          local:
+            path: ${LOCAL_MOUNT_BASE}/jgroups
+        customdata:
+          enabled: true
+          existingClaim: ${HELM_JOB_NAME}-icm-test-local-testdata-pvc
+          mountPoint: /data
+      mssql:
+        enabled: true
+        acceptEula: "Y"
+        persistence:
+          data:
+            size: 1Gi
+            type: local
+            local:
+              path: ${LOCAL_MOUNT_BASE}/mssql/data
+          backup:
+            size: 1Gi
+            type: local
+            local:
+              path: ${LOCAL_MOUNT_BASE}/mssql/backup
 
-  mailhog:
-    nodeSelector: null
+    icm-web:
+      nodeSelector: null
+      persistence:
+        customdata:
+          enabled: true
+          existingClaim: ${HELM_JOB_NAME}-icm-test-local-testdata-pvc
+
+    ingress-nginx:
+      controller:
+        nodeSelector: null
+
+    mailhog:
+      nodeSelector: null
 
   testrunner:
     nodeSelector: null

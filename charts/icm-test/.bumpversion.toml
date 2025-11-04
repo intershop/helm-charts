@@ -5,3 +5,13 @@ current_version = "1.0.0-alpha"
 filename = "Chart.yaml"
 search = "name: icm-test\nversion: {current_version}"
 replace = "name: icm-test\nversion: {new_version}"
+
+[[tool.bumpversion.files]]
+filename = "../icm-job-test/Chart.yaml"
+search = "name: icm-test\n    version: {current_version}"
+replace = "name: icm-test\n    version: {new_version}"
+
+[[tool.bumpversion.files]]
+filename = "../icm-replication-test/Chart.yaml"
+search = "name: icm-test\n    version: {current_version}"
+replace = "name: icm-test\n    version: {new_version}"

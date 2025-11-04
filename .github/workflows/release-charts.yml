@@ -34,6 +34,7 @@ jobs:
           # otherwise icm-replication would package an empty icm-chart (there is no recursion in here)
           helm dependency update charts/icm-as
           helm dependency update charts/icm
+          helm dependency update charts/icm-test
 
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo add kubernetes-ingress-nginx https://kubernetes.github.io/ingress-nginx

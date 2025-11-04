@@ -72,6 +72,8 @@ icm:
       customdata:
         enabled: true
         existingClaim: icm-nfs
+    replication:
+      enabled: false
     ingress:
       hosts:
         - host: "${HELM_JOB_NAME}.${DNS_ZONE_NAME}"
@@ -84,7 +86,8 @@ icm:
       license_key: "${NEWRELIC_LICENSE_KEY}"
 
   icm-web:
-    nodeSelector: {}
+    nodeSelector:
+      agentpool: agentpool2
     resources:
       agent:
         limits:
@@ -152,10 +155,10 @@ icm:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
               matchExpressions:
-                - key: release
+                - key: app.kubernetes.io/instance
                   operator: In
                   values:
-                    - ${HELM_JOB_NAME}-icm-web
+                    - ${HELM_JOB_NAME}-icm-web-webadapter
             topologyKey: kubernetes.io/hostname
 
       service:
