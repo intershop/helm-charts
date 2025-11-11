@@ -1,0 +1,21 @@
+name: "Unit test icm-test chart"
+on:
+  pull_request:
+    paths:
+    - 'charts/icm-test/**'
+
+jobs:
+  lint-test-icm-unittest:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Base
+      uses: ./.github/template/base
+    - name: Unit test
+      uses: ./.github/template/unittest
+      with:
+        chartTestingFile: ct_icm-test.yaml
+        chartName: icm

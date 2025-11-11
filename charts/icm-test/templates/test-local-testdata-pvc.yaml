@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "icm-chart.fullname" . }}-local-testdata-pvc
+  name: {{ template "icm-test.fullname" . }}-local-testdata-pvc
 spec:
   storageClassName: standard
   accessModes:
@@ -11,6 +11,6 @@ spec:
   resources:
     requests:
       storage: {{ .Values.testrunner.persistence.testdata.size }}
-  volumeName: {{ template "icm-chart.fullname" . }}-local-testdata-pv
+  volumeName: {{ template "icm-test.fullname" . }}-local-testdata-pv
 {{ end }}
 {{ end }}

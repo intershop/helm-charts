@@ -16,14 +16,14 @@ tests:
           of: Job
       - equal:
           path: metadata.name
-          value: icm-testrunner
+          value: icm-icm-test-testrunner
       #metadata.labels
       - equal:
           path: metadata.labels["app.kubernetes.io/name"]
-          value: icm-testrunner
+          value: icm-icm-test-testrunner
       - equal:
           path: metadata.labels["helm.sh/chart"]
-          value: icm-0.8.15
+          value: icm-test-0.8.15
       - equal:
           path: spec.template.spec.containers[0].name
           value: testrunner

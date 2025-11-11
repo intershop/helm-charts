@@ -1,0 +1,10 @@
+= Comparison: Helm Chart vs ZIP
+
+[cols="1,2,2", options="header"]
+|===
+| Criteria | Helm Chart | ZIP
+| Installation | `helm install` | Unzip and run a script
+| Configuration | `values.yaml` | Environment variables or local files
+| Execution | Kubernetes (pods, services) | Locally via a script/Docker
+| Dependencies | Managed by Kubernetes | May require manual installation
+|===
