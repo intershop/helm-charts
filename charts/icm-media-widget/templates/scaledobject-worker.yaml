@@ -12,7 +12,7 @@ spec:
   minReplicaCount:  0
   maxReplicaCount:  2
   pollingInterval: 30
-  cooldownPeriod: 300
+  cooldownPeriod: 60
   triggers:
   - type: azure-blob
     metadata:
@@ -20,4 +20,15 @@ spec:
       blobCount: "1"
       activationBlobCount: "0"
       blobPrefix: ""
+      globPattern: "*.{zip,tar}"
       connectionFromEnv: AZURE_BLOB_STORAGE_CONNECTION
+  - type: metrics-api
+    metadata:
+      # komplette URL zu deinem Controller, Port anpassen!
+      url: "http://{{ include "icm-media-widget.fullname" . }}-worker.{{ .Release.Namespace }}:8080/api/downscaleMetrics/active-jobs"
+      format: "json"
+      valueLocation: "metricValue"
+      # ab 1 aktiv → 1 Job = 1 Replica, 2+ Jobs = 2 Replicas
+      targetValue: "1"
+      # optional, default 0: ab >0 Jobs wird der Scaler überhaupt aktiv
+      activationTargetValue: "0"
