@@ -1,0 +1,114 @@
+icm-edit:
+  icm:
+    icm-as:
+      nameOverride: icm-as-edit
+      replication:
+        enabled: true
+        role: source
+        # "targetSystemUrl" deprecated since ICM-Replication Helm Charts 2.6.0, will be removed in a future version.
+        # Configure the source and targets within replication instead.
+        targetSystemUrl: https://<domain for icm-replication-ingress-nginx-live>:443
+        # "sourceDatabaseName" deprecated since ICM-Replication Helm Charts 2.6.0, will be removed in a future version.
+        # Configure the source and targets within replication instead.
+        sourceDatabaseName: intershop_edit
+        # source:
+          # webserverUrl: <sourceExternalUrl>
+          # databaseLink: <sourceDatabaseLink>
+          # databaseUser: <sourceDatabaseUser>
+          # databaseName: <sourceDatabaseName>
+        # targets:
+          # live1:
+            # webserverUrl: <targetExternalUrl>
+            # databaseUser: <targetDatabaseUser>
+          # live2:
+            # webserverUrl: <targetExternalUrl>
+            # databaseUser: <targetDatabaseUser>
+      database:
+        jdbcURL: "jdbc:sqlserver://<ipaddress or hostname>:1433;databaseName=intershop_edit"
+        jdbcUser: "intershop_edit"
+        jdbcPassword: "intershop_edit"
+      environment:
+        INTERSHOP_WEBSERVERURL: http://<domain for icm-replication-ingress-nginx-edit>:80
+        INTERSHOP_WEBSERVERSECUREURL: https://<domain for icm-replication-ingress-nginx-edit>:443
+
+      ## @param persistence - Either choose local (default), cluster, azurefiles or nfs persitence layer
+      persistence:
+        sites:
+          size: 1Gi
+          type: local
+          local:
+            path: <local sites edit folder>
+        encryption:
+          size: 1Gi
+          type: local
+          local:
+            path: <local encryption edit folder>
+
+    icm-web:
+      nameOverride: icm-web-edit
+      appServerConnection:
+        serviceName: icm-as-edit
+      persistence:
+        pagecache:
+          size: 1Gi
+          type: emptyDir
+
+icm-live:
+  icm:
+    icm-as:
+      nameOverride: icm-as-live
+      replication:
+        enabled: true
+        role: target
+        # source:
+          # webserverUrl: <sourceExternalUrl>
+          # databaseLink: <sourceDatabaseLink>
+          # databaseUser: <sourceDatabaseUser>
+          # databaseName: <sourceDatabaseName>
+        # targets:
+          # live1:
+            # webserverUrl: <targetExternalUrl>
+            # databaseUser: <targetDatabaseUser>
+          # live2:
+            # webserverUrl: <targetExternalUrl>
+            # databaseUser: <targetDatabaseUser>
+      database:
+        jdbcURL: "jdbc:sqlserver://<ipaddress or hostname>:1433;databaseName=intershop_live"
+        jdbcUser: "intershop_live"
+        jdbcPassword: "intershop_live"
+      environment:
+        INTERSHOP_WEBSERVERURL: http://<domain for icm-replication-ingress-nginx-live>:80
+        INTERSHOP_WEBSERVERSECUREURL: https://<domain for icm-replication-ingress-nginx-live>:443
+
+      ## @param persistence - Either choose local (default), cluster, azurefiles or nfs persitence layer
+      persistence:
+        sites:
+          size: 1Gi
+          type: local
+          local:
+            path: <local sites live folder>
+        encryption:
+          size: 1Gi
+          type: local
+          local:
+            path: <local encryption live folder>
+
+    icm-web:
+      nameOverride: icm-web-live
+      imagePullSecrets:
+      - "dockerhub"
+      webadapter:
+        replicaCount: 1
+        image:
+          repository: intershophub/icm-webadapter:2.5.0
+          secret: dockerhub
+      agent:
+        replicaCount: 1
+        image:
+          repository: intershophub/icm-webadapteragent:4.0.1
+      appServerConnection:
+        serviceName: icm-as-live
+      persistence:
+        pagecache:
+          size: 1Gi
+          type: emptyDir
