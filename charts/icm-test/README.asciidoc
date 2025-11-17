@@ -1,6 +1,6 @@
-= Helm Chart Intershop Commerce Management - Job Server Test
+= Helm Chart Intershop Commerce Management - ICM Test
 
-This chart is able to test the job server functionality.
+This chart is able to test the icm chart functionality.
 
 == Prerequisites Details
 
@@ -15,18 +15,11 @@ This chart will do the following:
 * Deploy an ICM Application Server using the link:../icm-as/README.md[intershop/icm-as] chart
 * Deploy an ICM Web Adapter and Web Adapter Agent using the link:../icm-web/README.md[intershop/icm-web] chart
 
+== Running the Chart locally
+
+To run the chart locally, refer to the the documentation on link:./docs/local-execution.asciidoc[local execution].
+
 == Installing the Chart
-
-=== Initial Setup - ICM System Namespace
-
-Before installing this chart, you must create the `icm-system` namespace, create a Docker Pull Secret in that namespace, and install the `icm-job` chart to it:
-
-[source,bash]
-----
-kubectl create namespace icm-system
-kubectl create secret docker-registry <yourDockerRegistryName> --docker-server=<yourDockerRegistryServer> --docker-username=<yourUsername> --docker-password=<yourPassword> --docker-email=<yourEmail> --namespace icm-system
-helm install icm-job . --namespace icm-system
-----
 
 === Docker Pull Secret
 
@@ -44,11 +37,6 @@ kubectl create secret docker-registry <yourDockerRegistryName> --docker-server=<
 `local`, `cluster`, `azurefiles`, `nfs`, `existingClaim` are possible persistence options.
 The default is `local`, where `persistence.sites.local.path` must be set to a valid local folder.
 
-==== jGroups
-
-`local`, `cluster`, `azurefiles`, `nfs`, `existingClaim` are possible persistence options.
-The default is `emptyDir`.
-
 === Database
 
 The necessary database connection can be configured in the `database` section. The chart also supports deploying a (containerized) MSSQL database. If enabled, the deployed MSSQL database is used instead of the one configured in the `database` section.
@@ -65,11 +53,11 @@ helm repo update
 
 === Install Chart
 
-To install the chart with the release name `icm-job-test`:
+To install the chart with the release name `icm-test`:
 
 [source,bash]
 ----
-helm install icm-job-test intershop/icm-job-test --values=values.yaml
+helm install icm-test intershop/icm-test --values=values.yaml
 ----
 
 === Install Chart via Cloned helm-charts Repository
@@ -80,3 +68,27 @@ cd charts
 helm dependency update icm
 helm install my-release ./icm --values=values.yaml --namespace icm
 ----
+
+== Testing ICM
+
+This helm chart also allows you to execute Intershop HtmlUnit tests via a testrunner.
+
+=== Execute Locally
+
+There are already preconfigured value-files for local test execution, orchestrated by a bash script.
+Follow these steps to execute a test:
+
+. Be sure that each included chart is up-to-date:
++
+[source,bash]
+----
+helm dependency update ../icm-as
+helm dependency update .
+----
+
+. Create the necessary k8s secrets for icm-web and icm-as (e.g., `kubectl create secret docker-registry dockerhub --docker-username=<your username> --docker-password=<your password> --docker-email=<your email>`)
+. Run: `./start-test-local.sh` and follow the instructions.
+
+=== Local Execution Guide
+
+For detailed instructions on local execution, see link:docs/local-execution.asciidoc[Local Execution Guide].

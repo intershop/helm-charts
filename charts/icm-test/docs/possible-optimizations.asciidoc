@@ -1,0 +1,25 @@
+= Possible Optimizations
+
+Detect if Kubernetes is not installed and start a local cluster in a Docker container:
+
+** Check if Kubernetes is running:
++
+[source,sh]
+----
+kubectl cluster-info > /dev/null 2>&1
+----
+
+** If unavailable, start a lightweight Kubernetes cluster using `kind`:
++
+[source,sh]
+----
+docker run -d --name kind-control-plane --privileged -p 6443:6443 kindest/node:v1.25.0
+----
+
+** Extract and use the generated `kubeconfig`:
++
+[source,sh]
+----
+docker cp kind-control-plane:/etc/kubernetes/admin.conf /tmp/kubeconfig
+export KUBECONFIG=/tmp/kubeconfig
+----
