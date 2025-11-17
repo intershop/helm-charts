@@ -1,0 +1,120 @@
+{{- if .Values.test.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "icm-test.fullname" . }}-testrunner
+  labels:
+    helm.sh/chart: {{ include "icm-test.chart" . }}
+    app.kubernetes.io/name: {{ template "icm-test.fullname" . }}-testrunner
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ template "icm-test.fullname" . }}-testrunner
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- if .Values.testrunner.affinity}}
+      affinity:
+        {{- toYaml .Values.testrunner.affinity | trim | nindent 8 }}
+      {{- end }}
+      {{- if .Values.testrunner.nodeSelector}}
+      nodeSelector:
+        {{- toYaml .Values.testrunner.nodeSelector | trim | nindent 8 }}
+      {{- end }}
+      restartPolicy: Never
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        {{- range $i, $val := .Values.hostAliases }}
+        - {{ . | quote }}
+        {{- end }}
+      {{- if .Values.testrunner.imagePullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.testrunner.imagePullSecrets }}
+        - name: {{ . | quote }}
+        {{- end }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.testrunner.podSecurityContext | nindent 8 }}
+      containers:
+      {{- if .Values.testrunner.image.tag }}
+      - image: "{{ .Values.testrunner.image.repository }}:{{ .Values.testrunner.image.tag }}"
+      {{- else }}
+      - image: "{{ .Values.testrunner.image.repository }}"
+      {{- end }}
+        name: testrunner
+        imagePullPolicy: IfNotPresent
+        command:
+          - "/bin/sh"
+          - "-c"
+          - {{- toYaml .Values.testrunner.image.command | nindent 12 }}
+        env:
+        {{- range $key, $value := .Values.testrunner.environment }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- include "icm-test.testrunner.featuredJVMArguments" . | nindent 8 }}
+        {{- include "icm-test.testrunner.additionalJVMArguments" . | nindent 8 }}
+        resources:
+{{ toYaml .Values.testrunner.resources | indent 12 }}
+        volumeMounts:
+        - name: testdata-volume
+          mountPath: /data
+      initContainers:
+      {{- if eq .Values.testrunner.persistence.testdata.type "local" }}
+      # the following container
+      # 1) only is active if local storage is enabled
+      # 2) applies permission 777 to sites volume
+      # 3) makes user/group intershop owner of sites volume
+      # !) This is necessary for Windows users with Docker Desktop using WSL[2] backend because:
+      #    Docker Desktop with WSL[2] creates folders for local volume mounts assigning the user root and permissions 700
+      - name: testdata-volume-mount-hack
+        image: busybox:1.36.1
+        command: ["sh", "-c", "chmod 777 /data && chown -R 150:150 /data"]
+        volumeMounts:
+        - name: testdata-volume
+          mountPath: /data
+        securityContext:
+          runAsUser: 0
+      {{- end }}
+      - name: init-wait-for-as
+        image: busybox:1.36.1
+        resources:
+{{ toYaml .Values.testrunner.initContainer.resources | indent 12 }}
+
+        command:
+        - /bin/sh
+        - -c
+        - |
+          # logging function that creates a timestamp
+          timestamp_log () {
+              echo "$(date +"%Y-%m-%d %H:%M:%S") - $*"
+          }
+
+        {{- if index .Values "icm" "icm-as" "replication" "enabled" }}
+          until wget --server-response --header "X-HEALTHCHECK: INTERSHOPAGENT" https://{{ .Values.testrunner.initContainerDomainNameLive }}/INTERSHOP/wastatus 2>&1 | grep -q "HTTP/1.1 200 OK" &&
+              wget --server-response --header "X-HEALTHCHECK: INTERSHOPAGENT" https://{{ .Values.testrunner.initContainerDomainNameEdit }}/INTERSHOP/wastatus 2>&1 | grep -q "HTTP/1.1 200 OK"; do
+        {{- else }}
+          until wget --server-response --header "X-HEALTHCHECK: INTERSHOPAGENT" https://{{ .Values.testrunner.initContainerDomainName }}/INTERSHOP/wastatus 2>&1 | grep -q "HTTP/1.1 200 OK"; do
+        {{- end }}
+            timestamp_log "Readiness probe of application server has failed"
+            sleep 5
+          done
+          timestamp_log "Readiness probe of application server was successful"
+      volumes:
+      - name: testdata-volume
+        {{- if eq .Values.testrunner.persistence.testdata.type "local" }}
+        persistentVolumeClaim:
+          claimName: "{{ template "icm-test.fullname" . }}-local-testdata-pvc"
+        {{- else if eq .Values.testrunner.persistence.testdata.type "existingClaim" }}
+        persistentVolumeClaim:
+          claimName: "{{ .Values.testrunner.persistence.testdata.existingClaim }}"
+        {{- else if eq .Values.testrunner.persistence.testdata.type "azurefiles" }}
+        azureFile:
+          secretName: {{ .Values.testrunner.persistence.testdata.azurefiles.secretName }}
+          shareName: {{ .Values.testrunner.persistence.testdata.azurefiles.shareName }}
+          readOnly: false
+        {{- end }}
+{{ end }}
