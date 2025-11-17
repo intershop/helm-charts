@@ -7,11 +7,6 @@ search = "name: icm\nversion: {current_version}"
 replace = "name: icm\nversion: {new_version}"
 
 [[tool.bumpversion.files]]
-filename = "../icm-replication/Chart.yaml"
-search = "name: icm\n    version: {current_version}"
-replace = "name: icm\n    version: {new_version}"
-
-[[tool.bumpversion.files]]
-filename = "../icm-job-test/Chart.yaml"
+filename = "../icm-test/Chart.yaml"
 search = "name: icm\n    version: {current_version}"
 replace = "name: icm\n    version: {new_version}"

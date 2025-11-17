@@ -2,17 +2,17 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "icm-chart.fullname" . }}-testrunner
+  name: {{ template "icm-test.fullname" . }}-testrunner
   labels:
-    helm.sh/chart: {{ include "icm-chart.chart" . }}
-    app.kubernetes.io/name: {{ template "icm-chart.fullname" . }}-testrunner
+    helm.sh/chart: {{ include "icm-test.chart" . }}
+    app.kubernetes.io/name: {{ template "icm-test.fullname" . }}-testrunner
     app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
   backoffLimit: 0
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ template "icm-chart.fullname" . }}-testrunner
+        app.kubernetes.io/name: {{ template "icm-test.fullname" . }}-testrunner
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       {{- if .Values.testrunner.affinity}}
@@ -55,8 +55,8 @@ spec:
         - name: {{ $key }}
           value: {{ $value | quote }}
         {{- end }}
-        {{- include "icm-chart.testrunner.featuredJVMArguments" . | nindent 8 }}
-        {{- include "icm-chart.testrunner.additionalJVMArguments" . | nindent 8 }}
+        {{- include "icm-test.testrunner.featuredJVMArguments" . | nindent 8 }}
+        {{- include "icm-test.testrunner.additionalJVMArguments" . | nindent 8 }}
         resources:
 {{ toYaml .Values.testrunner.resources | indent 12 }}
         volumeMounts:
@@ -88,21 +88,26 @@ spec:
         - /bin/sh
         - -c
         - |
-        {{- if index .Values "icm-as" "replication" "enabled" }}
+          # logging function that creates a timestamp
+          timestamp_log () {
+              echo "$(date +"%Y-%m-%d %H:%M:%S") - $*"
+          }
+
+        {{- if index .Values "icm" "icm-as" "replication" "enabled" }}
           until wget --server-response --header "X-HEALTHCHECK: INTERSHOPAGENT" https://{{ .Values.testrunner.initContainerDomainNameLive }}/INTERSHOP/wastatus 2>&1 | grep -q "HTTP/1.1 200 OK" &&
               wget --server-response --header "X-HEALTHCHECK: INTERSHOPAGENT" https://{{ .Values.testrunner.initContainerDomainNameEdit }}/INTERSHOP/wastatus 2>&1 | grep -q "HTTP/1.1 200 OK"; do
         {{- else }}
           until wget --server-response --header "X-HEALTHCHECK: INTERSHOPAGENT" https://{{ .Values.testrunner.initContainerDomainName }}/INTERSHOP/wastatus 2>&1 | grep -q "HTTP/1.1 200 OK"; do
         {{- end }}
-            echo "Readiness probe of application server has failed"
+            timestamp_log "Readiness probe of application server has failed"
             sleep 5
           done
-          echo "Readiness probe of application server was successful"
+          timestamp_log "Readiness probe of application server was successful"
       volumes:
       - name: testdata-volume
         {{- if eq .Values.testrunner.persistence.testdata.type "local" }}
         persistentVolumeClaim:
-          claimName: "{{ template "icm-chart.fullname" . }}-local-testdata-pvc"
+          claimName: "{{ template "icm-test.fullname" . }}-local-testdata-pvc"
         {{- else if eq .Values.testrunner.persistence.testdata.type "existingClaim" }}
         persistentVolumeClaim:
           claimName: "{{ .Values.testrunner.persistence.testdata.existingClaim }}"
