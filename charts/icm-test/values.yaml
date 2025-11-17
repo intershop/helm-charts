@@ -1,0 +1,9 @@
+test:
+  enabled: false
+  testrunner:
+    persistence:
+      testdata:
+        size: 1Gi
+        type: local
+        local:
+          dir: /invaliddir
