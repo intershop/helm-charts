@@ -1,0 +1,99 @@
+= Local Execution of the ICM Test Chart
+
+This document describes how to run the ICM Test Chart locally using Docker Desktop.
+
+== Prerequisites
+
+* Docker Desktop (https://www.docker.com/products/docker-desktop/)
+* kubectl (https://kubernetes.io/docs/tasks/tools/)
+* helm (https://helm.sh/docs/intro/install/)
+
+== Steps
+
+=== 1. Switch kubectl context to local Docker
+
+Start Docker Desktop and ensure it is running with Kubernetes. Then, switch your kubectl context to Docker Desktop using the following command.
+
+[source,bash]
+----
+kubectl config use-context docker-desktop
+----
+
+=== 2. Extract keys from PFX
+
+Get the relevant certificate file (in pfx format) from the link:https://portal.azure.com/#@intershop.com/resource/subscriptions/47fb4ba1-5c1c-4058-8e56-9c60042de65d/resourceGroups/ateam-common/providers/Microsoft.KeyVault/vaults/iste-keyvault-test/overview[iste-keyvault-test] and extract the keys using the following commands:
+
+[source,bash]
+----
+# Set Password
+export CERT_PASSWD=""
+
+# Export certificate
+openssl pkcs12 -passin env:CERT_PASSWD -in <FILENAME>.pfx -nocerts -out test.intershop.com.key -nodes
+
+# Export private key
+openssl pkcs12 -passin env:CERT_PASSWD -in <FILENAME>.pfx  -nokeys -out test.intershop.com.crt -nodes
+----
+
+=== 3. Create Kubernetes TLS secret
+
+Make sure you are in the directory where you just extracted your keys. Create the kubernetes TLS secret using:
+
+[source,bash]
+----
+kubectl create secret tls ingress-tls-csi --key="test.intershop.com.key" --cert="test.intershop.com.crt"
+----
+
+=== 4. Create Dockerhub Kubernetes secret
+
+In order to have access to dockerhub (we need to pull some images from there), create a dockerhub secret using the following command:
+
+[source,bash]
+----
+kubectl create secret docker-registry dockerhub --docker-username=<DOCKER_USERNAME> --docker-password=<DOCKER_PASSWORD> --docker-email=<DOCKER_EMAIL>
+----
+
+=== 5. Create icmbuildsnapshot Kubernetes secret (optional)
+
+In order to have access to the azure container registry to pull test images, create an Azure container registry secret using the following command:
+
+[source,bash]
+----
+kubectl create secret docker-registry icmbuildsnapshot --docker-server=icmbuild.azurecr.io --docker-username=icmbuild --docker-password=<DOCKER_PASSWORD> --docker-email=<DOCKER_EMAIL>
+----
+
+This is only necessary if you want to pull images from the azure container registry in the first place. You can also use test images from dockerhub. See step 8 for more details.
+
+=== 6. Reroute host IP
+
+Remap the host address of the test to your own IP. To do this on Windows go to `C:\Windows\System32\drivers\etc\hosts`. On Linux go to `/etc/hosts`. Within the file add the following line and save the file:
+
+`<YOUR_IP_ADDRESS> <RELEASE_NAME>.test.intershop.com`
+
+It is important that you later use the correct release_name for the helm chart when deploying. The release name will determine which host address will be used and if use a different release name it won't be rerouted to your ip address.
+
+=== 7. Create the local persistent volume directories
+
+At a location of your choosing (by default on Windows: `d:\tmp\pv\` and on Linux `/mnt/host/d/tmp/pv/`), create the following directories:
+
+. mssql
+. sites
+. testdata
+
+=== 8. Run the `start-test-local.sh` script
+
+You can now run the `start-test-local.sh` script using `./start-test-local.sh`. Beware that the first run of the test will take significantly longer since the database values have to be initialized. The script will prompt you with a few input parameters (that all already have a default):
+
+[loweralpha]
+. Helm Chart Name: The name of the helm chart as you want to release it. This MUST match the name you set earlier in the hosts file (Step 6).
+. Testsuite: The name of the testsuite you want to run.
+. Test image: The image you want to run your test on. You can either use the default or specify your own. You can get possible images from the ISTE or from Dockerhub. In ISTE: Open the files of a testplan and look for a file called `helm_install_vars.sh`. In there you will find a field called `ICM_TEST_IMAGE`. This is the image name you need to use here.
+. Base path of your local folder mount: This is the path to the persistent volume directories you created earlier.
+. The pull secret for the icm-as+testrunner image: This is the pull secret from where you want to pull the test image. With default naming conventions this should be `dockerhub`. If you want to pull your image from the azure container registry, this secret needs to be `icmbuildsnapshot`.
+. The pull secret for the icm-wa+waa image: This is the pull secret for Docker Hub. With default naming conventions this should be `dockerhub`.
+
+The script will also verify if you have correctly configured the kubernetes secrets.
+
+=== Saving a backup
+
+When the database is finished initializing, you may copy the mssql and sites directory in your local pv directory into a backup directory. That way you can quickly setup another testing environment in case of data loss or other reasons. Just copy the content of the backup folder to the new location of your pv directory.

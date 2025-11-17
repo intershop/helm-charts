@@ -1,0 +1,16 @@
+{{- if .Values.test.enabled }}
+{{- if eq .Values.testrunner.persistence.testdata.type "local" }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "icm-test.fullname" . }}-local-testdata-pvc
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.testrunner.persistence.testdata.size }}
+  volumeName: {{ template "icm-test.fullname" . }}-local-testdata-pv
+{{ end }}
+{{ end }}
