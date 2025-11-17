@@ -14,7 +14,7 @@ This document describes how to configure an Azure Storage Account to be used for
 In order to create the storage account, you first need to have a resource group. If you don't have one yet, you can create one using the following command:
 
 [source,bash]
-az group create --name <group-name> --location <location>
+az group create --name <group-name> --location <location> tags.Purpose="Temporary Test-RG" tags.Lifecycle="DeleteAfterRun"
 
 You can now create the storage account within that resource group using this command:
 
@@ -49,3 +49,4 @@ The file shares correspond to the files in your local persistent volumes folder 
 * iste-nfs: <local-persistent-volumes-folder>/testdata
 
 Your Azure Storage Account is now ready for use.
+*Attention!*: Besure to delete the created resources afterwards to spare resources!
