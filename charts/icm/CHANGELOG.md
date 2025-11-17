@@ -1,4 +1,14 @@
 
+<a name="icm-2.18.0"></a>
+## [icm-2.18.0](https://github.com/intershop/helm-charts/compare/icm-2.16.0...icm-2.18.0)
+
+> 2025-11-17
+
+### Features
+
+* **icm:** split up icm test chart ([#1105](https://github.com/intershop/helm-charts/issues/1105))
+
+
 <a name="icm-2.16.0"></a>
 ## [icm-2.16.0](https://github.com/intershop/helm-charts/compare/icm-2.15.0...icm-2.16.0)
 
