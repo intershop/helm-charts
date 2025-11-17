@@ -31,7 +31,11 @@ jobs:
 
         arr=($unique_changed_directories)
         for element in "${arr[@]}"; do
-          formatted_output+=" \"$element\","
+          if [ -d "charts/$element" ]; then
+            formatted_output+=" \"$element\","
+          else
+            echo "Warning: Directory charts/$element does not exist, skipping..." 1>&2
+          fi
         done
         formatted_output=${formatted_output%,} # Entferne das letzte Komma
 

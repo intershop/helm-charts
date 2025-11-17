@@ -1,0 +1,93 @@
+= Execution of the Azure Test
+
+This document describes how to run the ICM Test Chart using Azure.
+NOTE: This is only for internal testing purposes.
+
+== Prerequisites
+
+* kubectl (https://kubernetes.io/docs/tasks/tools/)
+* Azure CLI (https://learn.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
+* helm (https://helm.sh/docs/intro/install/)
+* Test has ran locally at least once
+
+== Steps
+
+=== 1. Go to test-iste-testrun-aks-test-admin cluster
+
+To get access to the cluster run the following command:
+
+[source,bash]
+az aks get-credentials --admin --overwrite-existing --name test-iste-testrun-aks-test --resource-group test-iste-testrun-aks-test-northeurope --subscription ISH-ENG-ATeam
+
+You can then switch your kubectl context to the test-iste-testrun-aks-test-admin cluster using the following command:
+
+[source,bash]
+kubectl config use-context test-iste-testrun-aks-test-admin
+
+=== 2. Go to icm-test namespace (or create it if not present)
+
+The test should be executed within the `icm-test` namespace. You can check if it already exists using this command:
+
+[source,bash]
+kubectl get namespace icm-test
+
+If it doesn't already exist, you can create it using the following command:
+
+[source,bash]
+kubectl create namespace icm-test
+
+To switch to the new namespace (or the already existing one), use the following command:
+
+[source,bash]
+kubectl config set-context --current --namespace=icm-test
+
+=== 3. Create necessary Kubernetes Secrets
+
+Similar to the local test, you need to configure some Kubernetes Secrets for the test to be able to execute. Please refer to the link:./local-execution.asciidoc[local execution documentation] and read steps 2, 3 and 4. This describes the necessary secrets and how to create them.
+
+Note: This time you won't need to configure the `icmbuildsnapshot` secret since the azure test can only run on test images from Docker Hub.
+
+=== 4. Create persistent volume claim
+
+For the test to execute, a persistent volume claim is necessary with the name `icm-nfs` is necessary. You can check if it already exists with the following command:
+
+[source,bash]
+kubectl get pvc icm-nfs
+
+If it doesn't already exist, you can create it using this template:
+
+[source,yaml]
+----
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: icm-nfs
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: azurefile
+----
+
+To then apply this to a namespace, save the pvc manifest to a file (e.g., `pvc-icm-nfs.yaml`) and run the following command to apply it to the namespace:
+
+[source,bash]
+kubectl apply -f pvc-icm-nfs.yaml -n icm-test
+
+
+=== 5. Run the `start-test-azure.sh` script
+
+You can now run the `start-test-azure.sh` script using `./start-test-azure.sh`. Beware that the first run of the test will take significantly longer since the database values have to be initialized. The script will prompt you with a few input parameters (that all already have a default):
+
+[loweralpha]
+. Helm chart name: The name of the helm chart as you want to release it. This MUST be `icm-11-azure-test` since there is a domain configured for it with this hostname.
+. Testsuite: The name of the testsuite you want to run.
+. Test image: The image you want to run your test on. As mentioned earlier, you can only use test images from Docker Hub in this case.
+. The pull secret for the icm-as+testrunner image: This is the pull secret from where you want to pull the test image. Since we can only use Docker Hub as the origin for test images this will be your Docker Hub secret. With default naming conventions this should be `dockerhub`.
+. The pull secret for the icm-wa+waa image: This is the pull secret for Docker Hub. With default naming conventions this should be `dockerhub`.
+. Azure Storage Account Verification: Since we now no longer run the test locally, we need the necessary persistent files to be stored somewhere else. In this case, we will use Azure File Shares with an Azure Storage Account to store the test data. You will now be prompted whether or not you already have an Azure Storage Account configured with the necessary data. If yes, it will then ask for its resource group and name in order to configure the necessary kubernetes secret to access it. If not, you will need to provide the path to the local persistent files. This is why you need to have run the test at least once locally. It will then create a new Azure Storage Account and copy the necessary data into it. This may take a while. If you want to configure the Azure Storage Account yourself beforehand, please refer to the link:./configure-azure-storage-account.asciidoc[documentation] for that.
+
+The script will also verify if you have correctly configured the kubernetes secrets.
+
