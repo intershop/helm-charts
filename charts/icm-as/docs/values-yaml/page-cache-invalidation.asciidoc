@@ -10,7 +10,7 @@ _@Since `icm-as` version 14.1.0, previous `icm-as` versions do not support page 
 
 == Description
 
-Allows trigger a page cache invalidation of the icm-as page cache during deployment. This feature take the following aspects into account:
+Allows to trigger a page cache invalidation of the icm-as page cache during deployment. This feature takes the following aspects into account:
 
 * The invalidation is only triggered if the `executionMarker` value differs from the last deployment. This allows to avoid unnecessary invalidations during application server restarts (e.g. during a migration to another K8s node)
 * The invalidation can be limited to specific sites

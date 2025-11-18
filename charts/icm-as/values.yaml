@@ -594,7 +594,7 @@ pageCacheInvalidation:
   # enable or disable page cache invalidation support (optional, default: false)
   enabled: false
   # configures the execution marker for the invalidation (only if the marker differs from last deployment/icm-as-startup the page cache will be invalidated, optional, default: empty)
-  executionMarker: 1
+  executionMarker:
   # yaml array of site names for the invalidation. The values have the following semantics:
   #   <empty>: no invalidation
   #   array containing "*": ALL sites will be invalidated (Caution: could take a while for many sites!)
