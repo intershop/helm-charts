@@ -1,0 +1,61 @@
+= `values.yaml` Attributes in Section `pageCacheInvalidation`
+
+:icons: font
+
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
+
+_@Since `icm-as` version 14.1.0, previous `icm-as` versions do not support page cache invalidation during startup_
+
+== Description
+
+Allows trigger a page cache invalidation of the icm-as page cache during deployment. This feature take the following aspects into account:
+
+* The invalidation is only triggered if the `executionMarker` value differs from the last deployment. This allows to avoid unnecessary invalidations during application server restarts (e.g. during a migration to another K8s node)
+* The invalidation can be limited to specific sites
+
+The following table lists the attributes of the `pageCacheInvalidation` section:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|enabled|Enables the page cache invalidation.|boolean|{optional}|`false`
+|executionMarker|Configures the execution marker for the invalidation: only if the marker differs from last deployment/icm-as-startup the page cache will be invalidated.|string|{optional}|[.placeholder]#empty#
+|sites|Names of the sites for the invalidation.|<<_sites,Sites>>|{optional}|`[]`
+|===
+
+[#_sites]
+=== Type `Sites`
+
+The `Sites` type configures the names of the sites for which a page cache invalidation should be triggered. Actually the `Sites` type is a normal YAML array (also see paragraph <<_example,Example>>). The values have the following semantics:
+
+[cols="1,3",options="header"]
+|===
+|Value(s) |Semantics
+|list of site names|invalidation of the page cache for these sites.
+|`*`|invalidation of the page cache for ALL sites.
+|`[]`|no invalidation of the page cache.
+|===
+
+[IMPORTANT]
+====
+Be aware that using the star `*` will invalidate the page cache for ALL sites. This may slow down all user requests until the page cache is filled again.
+====
+
+[#_example]
+=== Example
+
+[source,yaml]
+----
+pageCacheInvalidation:
+  enabled: true <1>
+  executionMarker: 3 <2>
+  sites: <3>
+    - inSPIRED-inTRONICS-Site
+    - inSPIRED-inTRONICS_Business-Site
+----
+
+<1> enables the page cache invalidation
+<2> uses `3` as execution marker (only if this value differs from last deployment/icm-as-startup the page cache will be invalidated)
+<3> invalidates the page cache for the sites `inSPIRED-inTRONICS-Site` and `inSPIRED-inTRONICS_Business-Site`
