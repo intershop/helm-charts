@@ -85,6 +85,10 @@ Purpose is to filter out any duplicated environment assignment when set both on 
 - name: INTERSHOP_PAGECACHE_REDIS_ENABLED
   value: "true"
 {{- end }}
+{{- include "icm-as.envNewrelic" . }}
+{{- include "icm-as.envSecrets" . }}
+{{- include "icm-as.envSecretMounts" . }}
+{{- include "icm-as.envPageCacheInvalidation" . }}
 {{- end -}}
 
 {{/*
@@ -109,6 +113,22 @@ Creates the environment newrelic section
 {{- end }}
 {{- end }}
 {{- end -}}
+
+{{/*
+Creates the environment variables for page cache invalidation
+*/}}
+{{- define "icm-as.envPageCacheInvalidation" -}}
+{{- if .Values.pageCacheInvalidation.enabled }}
+{{- if .Values.pageCacheInvalidation.executionMarker }}
+- name: INTERSHOP_PAGECACHE_INVALIDATEONDBPREPARE_EXECUTIONMARKER
+  value: {{ .Values.pageCacheInvalidation.executionMarker | quote }}
+{{- end -}} {{/*if .Values.pageCacheInvalidation.executionMarker*/}}
+{{- if .Values.pageCacheInvalidation.sites }}
+- name: INTERSHOP_PAGECACHE_INVALIDATEONDBPREPARE_SITES
+  value: {{ .Values.pageCacheInvalidation.sites | join "," | quote }}
+{{- end -}} {{/*if .Values.pageCacheInvalidation.sites*/}}
+{{- end -}} {{/*if .Values.pageCacheInvalidation.enabled*/}}
+{{- end -}} {{/*define "icm-as.envPageCacheInvalidation*/}}
 
 {{/*
 Creates the environment secrets section
@@ -230,9 +250,6 @@ Job-specific-environment
   value: "true"
 - name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
   value: {{ .jobServerGroup }}
-{{- include "icm-as.envNewrelic" . }}
-{{- include "icm-as.envSecrets" . }}
-{{- include "icm-as.envSecretMounts" . }}
 {{- end -}}
 
 {{/*
@@ -244,9 +261,6 @@ AppServer-specific-environment
 - name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
   value: "BOS,WFS"
 {{- end }}
-{{- include "icm-as.envNewrelic" . }}
-{{- include "icm-as.envSecrets" . }}
-{{- include "icm-as.envSecretMounts" . }}
 {{- end -}}
 
 {{/*
