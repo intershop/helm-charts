@@ -1,0 +1,274 @@
+suite: tests correctness of pageCacheInvalidation configuration
+templates:
+  - templates/as-deployment.yaml
+  - templates/jobserver-deployment.yaml
+tests:
+  # Test 1: Default configuration - pageCacheInvalidation disabled
+  - it: should not add environment variables when pageCacheInvalidation is disabled
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      pageCacheInvalidation.enabled: false
+    asserts:
+      - template: as-deployment.yaml
+        notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_INVALIDATEONDBPREPARE_EXECUTIONMARKER
+      - template: as-deployment.yaml
+        notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_INVALIDATEONDBPREPARE_SITES
+
+  # Test 2: Enabled with executionMarker only
+  - it: should add executionMarker environment variable when enabled
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: as-deployment.yaml
+    set:
+      pageCacheInvalidation.enabled: true
+      pageCacheInvalidation.executionMarker: 1
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_INVALIDATEONDBPREPARE_EXECUTIONMARKER
+            value: "1"
+
+  # Test 3: Enabled with sites only (empty executionMarker)
+  - it: should not add executionMarker if not provided but sites are configured
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: as-deployment.yaml
+    set:
+      pageCacheInvalidation.enabled: true
+      pageCacheInvalidation.sites[0]: TestEnterprise-Site
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_INVALIDATEONDBPREPARE_EXECUTIONMARKER
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_INVALIDATEONDBPREPARE_SITES
+            value: "TestEnterprise-Site"
+
+  # Test 4: Single site in array
+  - it: should handle single site in array
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: as-deployment.yaml
+    set:
+      pageCacheInvalidation.enabled: true
+      pageCacheInvalidation.sites:
+        - SingleSite-Site
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_INVALIDATEONDBPREPARE_SITES
+            value: "SingleSite-Site"
+
+  # Test 5: Multiple sites - comma-separated list conversion
+  - it: should convert yaml array to comma-separated list for multiple sites
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: as-deployment.yaml
+    set:
+      pageCacheInvalidation.enabled: true
+      pageCacheInvalidation.sites:
+        - TestEnterprise-Site
+        - TestEnterprise-TestSalesChannel-Site
+        - TestEnterprise-TestPartnerChannel-Site
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_INVALIDATEONDBPREPARE_SITES
+            value: "TestEnterprise-Site,TestEnterprise-TestSalesChannel-Site,TestEnterprise-TestPartnerChannel-Site"
+
+  # Test 6: Wildcard for all sites
+  - it: should handle wildcard for all sites invalidation
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: as-deployment.yaml
+    set:
+      pageCacheInvalidation.enabled: true
+      pageCacheInvalidation.sites:
+        - "*"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_INVALIDATEONDBPREPARE_SITES
+            value: "*"
+
+  # Test 7: Both executionMarker and sites configured
+  - it: should add both executionMarker and sites when both are configured
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: as-deployment.yaml
+    set:
+      pageCacheInvalidation.enabled: true
+      pageCacheInvalidation.executionMarker: 2
+      pageCacheInvalidation.sites:
+        - TestEnterprise-Site
+        - TestEnterprise-TestSalesChannel-Site
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_INVALIDATEONDBPREPARE_EXECUTIONMARKER
+            value: "2"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_INVALIDATEONDBPREPARE_SITES
+            value: "TestEnterprise-Site,TestEnterprise-TestSalesChannel-Site"
+
+  # Test 8: Empty sites array should not add sites env variable
+  - it: should not add sites environment variable if sites array is empty
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: as-deployment.yaml
+    set:
+      pageCacheInvalidation.enabled: true
+      pageCacheInvalidation.executionMarker: 1
+      pageCacheInvalidation.sites: []
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_INVALIDATEONDBPREPARE_EXECUTIONMARKER
+            value: "1"
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_INVALIDATEONDBPREPARE_SITES
+
+  # Test 9: Different executionMarker values (string conversion)
+  - it: should properly quote executionMarker values
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: as-deployment.yaml
+    set:
+      pageCacheInvalidation.enabled: true
+      pageCacheInvalidation.executionMarker: 42
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_INVALIDATEONDBPREPARE_EXECUTIONMARKER
+            value: "42"
+
+  # Test 10: Enabled but no executionMarker and no sites
+  - it: should not add any environment variables when enabled but executionMarker and sites are not set
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: as-deployment.yaml
+    set:
+      pageCacheInvalidation.enabled: true
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_INVALIDATEONDBPREPARE_EXECUTIONMARKER
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_INVALIDATEONDBPREPARE_SITES
+
+  #
+  # jobserver environment variable tests (main cases only)
+  #
+
+  # Test 11: Configuration in jobserver-deployment
+  - it: should add environment variables to jobserver-deployment when enabled
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: jobserver-deployment.yaml
+    set:
+      pageCacheInvalidation.enabled: true
+      pageCacheInvalidation.executionMarker: 3
+      pageCacheInvalidation.sites:
+        - TestEnterprise-Site
+      job.enabled: true
+    asserts:
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_INVALIDATEONDBPREPARE_EXECUTIONMARKER
+            value: "3"
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_INVALIDATEONDBPREPARE_SITES
+            value: "TestEnterprise-Site"
+
+  # Test 12: Jobserver should not have variables when disabled
+  - it: should not add environment variables to jobserver-deployment when disabled
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: jobserver-deployment.yaml
+    set:
+      pageCacheInvalidation.enabled: false
+      job.enabled: true
+    asserts:
+      - notContains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_INVALIDATEONDBPREPARE_EXECUTIONMARKER
+      - notContains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_PAGECACHE_INVALIDATEONDBPREPARE_SITES
