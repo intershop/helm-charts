@@ -3,8 +3,3 @@ name: pwa-main
 version: 0.9.3
 description: Helm Chart to operate Intershop Progressive Web App
 type: application
-dependencies:
-  - name: icm
-    version: 0.5.0
-    repository: https://intershop.github.io/helm-charts
-    condition: hybrid.enabled

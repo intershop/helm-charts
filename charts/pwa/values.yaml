@@ -32,14 +32,13 @@ service:
 
 ##
 ## @param hybrid Set to enable PWA Hybrid Approach. This means pages are produced by PWA or ICM.
-## You must specify the icm-web chart's wa-service reference. Communication cannot be routed through
-## ICM ingress controller.
+## You can specify the icm-web-wa service internal URL for kubernetes deployments.
+## Communication cannot be routed through ICM ingress controller.
 ##
 hybrid:
   enabled: false
-  backend: {}
-#    service: icm-web
-#    port: 443
+# backendURL: https://kubernetes-icm-web-wa:8443
+# forwardedPort: 443
 
 resources: {}
 

@@ -39,7 +39,7 @@
       "type": "object",
       "title": "The hybrid schema",
       "description": "Activate the so called Hybrid Approach of PWA (needs ICM deployed in the same namespace)",
-      "required": ["enabled", "backend"],
+      "required": ["enabled"],
       "properties": {
         "enabled": {
           "type": "boolean",
@@ -47,22 +47,13 @@
           "description": "Enable or disable Hybrid Approach deployment",
           "default": false
         },
-        "backend": {
-          "type": "object",
-          "title": "ICM Web Adapter service connection reference",
-          "required": [],
-          "properties": {
-            "service": {
-              "type": "string",
-              "title": "ICM Web Adapter service name",
-              "default": "icm-web"
-            },
-            "port": {
-              "type": "integer",
-              "title": "ICM Web Adapter service port",
-              "default": "443"
-            }
-          }
+        "backendURL": {
+          "type": "string",
+          "title": "ICM Web Adapter service internal kubernetes URL"
+        },
+        "forwardedPort": {
+          "type": "integer",
+          "title": "ICM Web Adapter service forwarded port"
         }
       }
     },
