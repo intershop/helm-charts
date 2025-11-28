@@ -37,8 +37,8 @@ service:
 ##
 hybrid:
   enabled: false
-# backendURL: https://kubernetes-icm-web-wa:8443
-# forwardedPort: 443
+  # backendURL: https://kubernetes-icm-web-wa:8443
+  # forwardedPort: 443
 
 resources: {}
 

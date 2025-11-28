@@ -38,7 +38,7 @@
     "hybrid": {
       "type": "object",
       "title": "The hybrid schema",
-      "description": "Activate the so called Hybrid Approach of PWA (needs ICM deployed in the same namespace)",
+      "description": "Activate the so-called Hybrid Approach of PWA (if ICM is deployed in the same namespace it should be referenced via internal backend URL).",
       "required": ["enabled"],
       "properties": {
         "enabled": {

@@ -51,7 +51,7 @@ spec:
           - name: SSR_HYBRID
             value: "true"
           - name: SSR_HYBRID_BACKEND
-            value: "{{ default .Values.upstream.icmBaseURL .Values.hybrid.backendURL}}"
+            value: "{{ default .Values.upstream.icmBaseURL .Values.hybrid.backendURL }}"
         {{- end }}
         {{- if $pwaMetricsEnabled }}
           - name: PROMETHEUS
