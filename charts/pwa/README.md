@@ -58,11 +58,11 @@ In addition, the version changes and necessary migration information is provided
 
 For more information about the Hybrid Approach, refer to the official Intershop PWA [Hybrid Approach](https://github.com/intershop/intershop-pwa/blob/develop/docs/concepts/hybrid-approach.md) documentation.
 
-| Name                   | Description                                     | Example Value                        |
-| ---------------------- | ----------------------------------------------- | ------------------------------------ |
-| `hybrid.enabled`       | Enable or disable Hybrid Approach deployment    | `true`                               |
-| `hybrid.backendURL`    | ICM Web Adapter service internal kubernetes URL | `https://kubernetes-icm-web-wa:8443` |
-| `hybrid.forwardedPort` | ICM Web Adapter service forwarded port          | `443`                                |
+| Name                     | Description                                                                            | Example Value                        |
+| ------------------------ | -------------------------------------------------------------------------------------- | ------------------------------------ |
+| `hybrid.enabled`         | Enable or disable Hybrid Approach deployment                                           | `true`                               |
+| `hybrid.icmInternalURL`  | ICM Web Adapter service internal kubernetes URL                                        | `https://kubernetes-icm-web-wa:8443` |
+| `hybrid.pwaExternalPort` | The PWAs external port that will be forwarded to the Responsive Starter Store requests | `443`                                |
 
 ## Shared Redis Cache
 

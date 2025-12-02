@@ -51,9 +51,9 @@ spec:
             value: "http://{{ include "pwa-main.fullname" . }}:{{ .Values.service.port }}"
           - name: ICM_BASE_URL
             value: "{{ .Values.upstream.icmBaseURL }}"
-        {{- if and .Values.hybrid.enabled .Values.hybrid.forwardedPort }}
+        {{- if and .Values.hybrid.enabled .Values.hybrid.pwaExternalPort }}
           - name: HYBRID_FORWARDED_PORT
-            value: "{{ .Values.hybrid.forwardedPort }}"
+            value: "{{ .Values.hybrid.pwaExternalPort }}"
         {{- end }}
         {{- if .Values.cache.multiChannel }}
           - name: MULTI_CHANNEL_SOURCE
