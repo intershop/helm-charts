@@ -23,11 +23,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.7.1
-
-      - name: Add dependency chart repos
-        run: |
-          helm repo add intershop https://intershop.github.io/helm-charts
+          python-version: 3.13.9
 
       - name: Set up chart-testing
         uses: helm/chart-testing-action@v2.6.1
