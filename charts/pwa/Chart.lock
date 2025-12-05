@@ -1,6 +1,0 @@
-dependencies:
-- name: icm
-  repository: https://intershop.github.io/helm-charts
-  version: 0.5.0
-digest: sha256:5fd2fedce717d2d4013e09e5495b3ddcb7886fd6f677620cb8905d31ac1e9bf1
-generated: "2022-11-01T16:22:53.848990698+01:00"
