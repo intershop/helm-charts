@@ -9,7 +9,7 @@
       "type": "object",
       "properties": {
         "values": {
-          "$ref": "https://raw.githubusercontent.com/intershop/helm-charts/pwa-main-0.9.3/charts/pwa/values.schema.json"
+          "$ref": "https://raw.githubusercontent.com/intershop/helm-charts/pwa-main-0.10.0/charts/pwa/values.schema.json"
         }
       }
     }
