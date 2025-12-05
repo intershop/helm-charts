@@ -48,10 +48,10 @@ spec:
             value: "{{ .Values.upstream.cdnPrefixURL }}"
         {{- end }}
         {{- if .Values.hybrid.enabled }}
-          - name: SSR_HYBRID_BACKEND
-            value: "https://{{ include "pwa-main.hybridname" . }}-wa:{{ default 443 .Values.hybrid.backend.port}}"
           - name: SSR_HYBRID
             value: "true"
+          - name: SSR_HYBRID_BACKEND
+            value: "{{ default .Values.upstream.icmBaseURL .Values.hybrid.icmInternalURL }}"
         {{- end }}
         {{- if $pwaMetricsEnabled }}
           - name: PROMETHEUS
