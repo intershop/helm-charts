@@ -156,10 +156,20 @@ imgproxy:
     IMGPROXY_ABS_NAME: "chaptersbinfrastorage"
     IMGPROXY_ABS_KEY: "<your azure blob storage key>"
     IMGPROXY_PATH_PREFIX: "/imgproxy"
+    IMGPROXY_USE_ETAG: "true"
   resources:
     ingress:
       enabled: true
       className: "nginx-icm"
+      annotations:
+        nginx.ingress.kubernetes.io/proxy-buffering: "on"
+        nginx.ingress.kubernetes.io/configuration-snippet: |
+          proxy_cache imgproxy_cache;
+          proxy_cache_valid 200 60m;
+          proxy_cache_use_stale error timeout http_500 http_502 http_503 http_504;
+          proxy_cache_lock on;
+          add_header X-Cache-Status $upstream_cache_status always;
+
       hosts:
         - icm-cdntest-int01.icm.intershop.de
       tls:
