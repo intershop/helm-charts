@@ -17,8 +17,8 @@ Therefore, the `values.yaml` contains several sections, each belonging to a spec
 [cols="1,3,2",options="header"]
 |===
 |Section |Topic |Documentation
-|icm-as|ICM application server|link:../../../icm-as/docs/values-yaml.asciidoc[icm-as documentation]
-|icm-web|ICM Web Adapter|link:../../../icm-web/docs/values-yaml.asciidoc[icm-web documentation]
+|icm-as|ICM application server|link:../../icm-as/docs/values-yaml.asciidoc[icm-as documentation]
+|icm-web|ICM Web Adapter|link:../../icm-web/docs/values-yaml.asciidoc[icm-web documentation]
 |ingress-nginx|https://github.com/kubernetes/ingress-nginx[Ingress NGINX controller] (for development/testing purposes)|https://kubernetes.github.io/ingress-nginx[ingress-nginx documentation]
 |mailhog|https://github.com/mailhog/MailHog[MailHog] instance (for development/testing purposes)|https://artifacthub.io/packages/helm/codecentric/mailhog[MailHog documentation]
 |redis|Single https://redis.io/[Redis] master (page caching for Web Adapter replacement)|https://github.com/bitnami/charts/tree/main/bitnami/redis[Redis chart documentation]
