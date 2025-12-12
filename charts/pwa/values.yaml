@@ -102,11 +102,6 @@ readinessProbe:
 
 cache:
 
-  init:
-    image:
-      repository: busybox
-      tag: 1.36.1
-
   ####
   ## @param NGinx ignore query parameters during caching
   ##   cacheIgnoreParams: |
@@ -162,6 +157,14 @@ cache:
   ##   image: ishpwa.azurecr.io/kubectl:v1
   restart:
     enabled: false
+
+  # Init container configuration
+  # Enables an initialization container that runs before the PWA NGINX container starts
+  # enabled: Controls whether the init container should be deployed
+  # image: Specifies the Docker image to use for the init container (busybox for lightweight operations)
+  init:
+    enabled: true
+    image: busybox:1.37
 
   ####
   ## @param prefetch Specify settings for the prefetch job that heats up caches.
