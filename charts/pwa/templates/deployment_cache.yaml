@@ -104,6 +104,7 @@ spec:
             {{- end }}
           resources:
             {{- toYaml .Values.cache.resources | nindent 12 }}
+      {{- if .Values.cache.init.enabled }}
       initContainers:
         - name: init-pwa
           image: "{{ .Values.cache.init.image.repository }}:{{ .Values.cache.init.image.tag }}"
@@ -116,6 +117,7 @@ spec:
                 echo "waiting for {{ include "pwa-main.fullname" . }}:{{ .Values.service.port }}";
                 sleep 2;
               done
+      {{- end }}
       volumes:
       - name: multi-channel-config
         configMap:
