@@ -156,6 +156,13 @@ cache:
   ##      value: BAR
   extraEnvVars: []
 
+  ## @param restart Enable cache restart job after upgrade
+  ## restart:
+  ##   enabled: true
+  ##   image: ishpwa.azurecr.io/kubectl:v1
+  restart:
+    enabled: false
+
   ####
   ## @param prefetch Specify settings for the prefetch job that heats up caches.
   ## E.g:

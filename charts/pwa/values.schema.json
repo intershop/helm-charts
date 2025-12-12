@@ -171,6 +171,24 @@
             "$ref": "#/definitions/environmentItem"
           }
         },
+        "restart": {
+          "type": "object",
+          "title": "Restart job after upgrade",
+          "description": "Enable cache restart job after upgrade.",
+          "required": ["enabled"],
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Enable or disable NGINX/cache restart job after upgrade",
+              "default": false
+            },
+            "image": {
+              "type": "string",
+              "title": "A kubectl image for the restart job",
+              "default": "bitnami/kubectl"
+            }
+          }
+        },
         "prefetch": {
           "type": "array",
           "title": "Prefetch job settings",
