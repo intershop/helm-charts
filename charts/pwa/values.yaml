@@ -102,11 +102,6 @@ readinessProbe:
 
 cache:
 
-  init:
-    image:
-      repository: busybox
-      tag: 1.36.1
-
   ####
   ## @param NGinx ignore query parameters during caching
   ##   cacheIgnoreParams: |
@@ -155,6 +150,13 @@ cache:
   ##    - name: FOO
   ##      value: BAR
   extraEnvVars: []
+
+  # Init container configuration
+  # Enables an initialization container that runs before the PWA NGINX container starts
+  # enabled: Controls whether the init container should be deployed
+  # image: Specifies the Docker image to use for the init container (default = busybox:1.37)
+  init:
+    enabled: true
 
   ####
   ## @param prefetch Specify settings for the prefetch job that heats up caches.

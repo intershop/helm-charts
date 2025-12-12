@@ -171,6 +171,24 @@
             "$ref": "#/definitions/environmentItem"
           }
         },
+        "init": {
+          "type": "object",
+          "title": "Init container for NGINX/cache deployment",
+          "description": "Enable init container that waits for PWA main service to be ready.",
+          "required": ["enabled"],
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Enable or disable init container for cache deployment",
+              "default": false
+            },
+            "image": {
+              "type": "string",
+              "title": "An image for the init container",
+              "default": "busybox:1.37"
+            }
+          }
+        },
         "prefetch": {
           "type": "array",
           "title": "Prefetch job settings",
