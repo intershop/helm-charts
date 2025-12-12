@@ -19,7 +19,7 @@ In addition, the version changes and necessary migration information is provided
 
 | Chart  | PWA    | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                 | Migration Information                                                                                                                                                                                                                                                                           |
 | ------ | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0.11.0 | 1.0.0  | <ul><li>Add option to enable/disable cache init container</li></ul>                                                                                                                                                                                                                                                                                                                                                                     |                                                                                                                                                                                                                                                                                                 |
+| 0.11.0 | 1.0.0  | <ul><li>Add option to enable/disable cache init container</li><li>Introduce cache container reset after deployment via hook job</li></ul>                                                                                                                                                                                                                                                                                               |                                                                                                                                                                                                                                                                                                 |
 | 0.10.0 | 1.0.0  | <ul><li>Change Hybrid Approach handling and configuration options</li><li>Remove dependency to ICM deployment charts</li></ul>                                                                                                                                                                                                                                                                                                          | Removed not used deployment handling introduced with version 0.4.0, new configuration options require PWA 9.1.0                                                                                                                                                                                 |
 | 0.9.3  | 1.0.0  | <ul><li>Fix `cache.additionalHeaders` functionality introduced with version 0.8.0</li></ul>                                                                                                                                                                                                                                                                                                                                             |                                                                                                                                                                                                                                                                                                 |
 | 0.9.2  | 1.0.0  | <ul><li>Fix options to configure `successfulJobsHistoryLimit` and `failedJobsHistoryLimit` for the prefetch job</li></ul>                                                                                                                                                                                                                                                                                                               |                                                                                                                                                                                                                                                                                                 |
@@ -44,14 +44,15 @@ In addition, the version changes and necessary migration information is provided
 
 ### NGINX
 
-| Name                      | Description                                                | Example Value                                                                                                                                             |
-| ------------------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `cache.extraEnvVars`      | Extra environment variables to be set                      | `- name: FOO`<br>&nbsp;&nbsp;&nbsp;&nbsp;`value: BAR`                                                                                                     |
-| `cache.multiChannel`      | Multi-channel/site configuration object                    | `.+:`<br>&nbsp;&nbsp;`channel: default`                                                                                                                   |
-| `cache.cacheIgnoreParams` | NGINX ignore query parameters during caching               | `params:`<br>&nbsp;&nbsp;`- utm_source`<br>&nbsp;&nbsp;`- utm_campaign`                                                                                   |
-| `cache.additionalHeaders` | Additional result headers configuration                    | `headers:`<br>&nbsp;&nbsp;`- X-Frame-Options: 'SAMEORIGIN'`                                                                                               |
-| `cache.prefetch`          | Specify settings for the prefetch job that heats up caches | `prefetch:`<br>&nbsp;&nbsp;`- host: example.com`<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`path: /home`                                                     |
-| `cache.init`              | Specify settings for the init container                    | `init:`<br>&nbsp;&nbsp;`enabled: true`<br>&nbsp;&nbsp;`image:`<br/>&nbsp;&nbsp;&nbsp;&nbsp;`repository: busybox`<br>&nbsp;&nbsp;&nbsp;&nbsp;`tag: 1.37.0` |
+| Name                      | Description                                                                | Example Value                                                                                                                                             |
+| ------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `cache.extraEnvVars`      | Extra environment variables to be set                                      | `- name: FOO`<br>&nbsp;&nbsp;&nbsp;&nbsp;`value: BAR`                                                                                                     |
+| `cache.multiChannel`      | Multi-channel/site configuration object                                    | `.+:`<br>&nbsp;&nbsp;`channel: default`                                                                                                                   |
+| `cache.cacheIgnoreParams` | NGINX ignore query parameters during caching                               | `params:`<br>&nbsp;&nbsp;`- utm_source`<br>&nbsp;&nbsp;`- utm_campaign`                                                                                   |
+| `cache.additionalHeaders` | Additional result headers configuration                                    | `headers:`<br>&nbsp;&nbsp;`- X-Frame-Options: 'SAMEORIGIN'`                                                                                               |
+| `cache.prefetch`          | Specify settings for the prefetch job that heats up caches                 | `prefetch:`<br>&nbsp;&nbsp;`- host: example.com`<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`path: /home`                                                     |
+| `cache.init`              | Specify settings for the init container                                    | `init:`<br>&nbsp;&nbsp;`enabled: true`<br>&nbsp;&nbsp;`image:`<br/>&nbsp;&nbsp;&nbsp;&nbsp;`repository: busybox`<br>&nbsp;&nbsp;&nbsp;&nbsp;`tag: 1.37.0` |
+| `cache.reset`             | Specify settings for the cache reset job (`cache.init` should be disabled) | `reset:`<br>&nbsp;&nbsp;`enabled: true`<br>&nbsp;&nbsp;`image: bitnami/kubectl`                                                                           |
 
 > [!NOTE]
 > Both `cacheIgnoreParams` and `multiChannel` parameters take precedence over any `extraEnvVars` value containing `MULTI_CHANNEL` or `CACHING_IGNORE_PARAMS` variables.
@@ -84,6 +85,37 @@ Unless `keepCache` is explicitly set to `true`, the cache will be flushed on eve
 This chart does not deploy a Redis instance. You must provide one yourself. We recommend using a cloud service.
 
 If you want to deploy a Redis instance yourself, be aware that the PWA implementation does not support Redis Cluster or Redis Sentinel connections.
+
+## NGINX Cache Reset
+
+The cache reset job is a Helm post-upgrade hook that automatically restarts the NGINX cache deployment after a Helm upgrade.
+This ensures that any cached content is cleared, preventing stale data from being served after PWA SSR container updates.
+
+> [!NOTE]
+> The cache reset job is used as an alternative to the cache init container in `RollingUpdate` and multi pod deployments.
+> If `cache.init.enabled` is `true`, the init container waits for the PWA SSR service to be ready before starting the NGINX/cache service.
+> However, this only works as intended with the `Recreate` update strategy where no previous SSR pods can render results that will be cached by new NGINX pods.
+> The reset job circumvents this problem by performing a `kubectl rollout restart` on the cache deployments after all SSR pods are started successfully and the old SSR pods are deleted.
+> For this reason the `cache.init` feature should be disabled when the `cache.reset` feature is enabled.
+
+The job is executed only when `cache.reset.enabled` is set to `true`.
+It creates the necessary RBAC resources (ServiceAccount, Role, and RoleBinding) with permissions to restart the specific cache deployment.
+
+Example configuration:
+
+```yaml
+cache:
+  reset:
+    enabled: true
+    image: bitnami/kubectl
+```
+
+| Property  | Description                                                         | Default           |
+| --------- | ------------------------------------------------------------------- | ----------------- |
+| `enabled` | Enable or disable the cache reset job after upgrade                 | `false`           |
+| `image`   | Docker image containing `kubectl` for executing the restart command | `bitnami/kubectl` |
+
+When enabled, the job runs automatically after each `helm upgrade` operation, ensuring the cache is fresh and consistent with the latest PWA SSR container deployment.
 
 ## NGINX Cache Prefetch
 
