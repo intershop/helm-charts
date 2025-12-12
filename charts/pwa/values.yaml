@@ -158,6 +158,13 @@ cache:
   init:
     enabled: true
 
+  ## @param reset Enable cache reset job after upgrade
+  ## reset:
+  ##   enabled: true
+  ##   image: bitnami/kubectl
+  reset:
+    enabled: false
+
   ####
   ## @param prefetch Specify settings for the prefetch job that heats up caches.
   ## E.g:
