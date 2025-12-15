@@ -304,6 +304,12 @@
           "title": "Don't flush Redis cache on deployment",
           "description": "Don't flush Redis cache on deployment",
           "default": false
+        },
+        "cliImage": {
+          "type": "string",
+          "title": "Redis CLI image",
+          "description": "Image containing the Redis CLI for the flush job",
+          "default": "bitnami/redis"
         }
       }
     },
