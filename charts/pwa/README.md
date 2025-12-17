@@ -15,24 +15,24 @@ $ helm install my-release intershop/pwa-main
 ## Release Versions
 
 The following table provides an overview of the different PWA Helm Chart versions and the minimum required PWA version to use it with.
-In addition, the version changes and necessary migration information is provided.
+In addition, the version changes and necessary migration information are provided.
 
-| Chart  | PWA    | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                 | Migration Information                                                                                                                                                                                                                                                                           |
-| ------ | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0.11.0 | 1.0.0  | <ul><li>Add option to enable/disable cache init container</li><li>Introduce cache container reset after deployment via hook job</li><li>Provide option to change the `redis-cli` image for the cache flush job</li><li>Introduce options for explicit deployment labels and deployment annotations</li></ul>                                                                                                                            |                                                                                                                                                                                                                                                                                                 |
-| 0.10.0 | 1.0.0  | <ul><li>Change Hybrid Approach handling and configuration options</li><li>Remove dependency to ICM deployment charts</li></ul>                                                                                                                                                                                                                                                                                                          | Removed not used deployment handling introduced with version 0.4.0, new configuration options require PWA 9.1.0                                                                                                                                                                                 |
-| 0.9.3  | 1.0.0  | <ul><li>Fix `cache.additionalHeaders` functionality introduced with version 0.8.0</li></ul>                                                                                                                                                                                                                                                                                                                                             |                                                                                                                                                                                                                                                                                                 |
-| 0.9.2  | 1.0.0  | <ul><li>Fix options to configure `successfulJobsHistoryLimit` and `failedJobsHistoryLimit` for the prefetch job</li></ul>                                                                                                                                                                                                                                                                                                               |                                                                                                                                                                                                                                                                                                 |
-| 0.9.1  | 1.0.0  | <ul><li>Init container image needs to be configurable</li></ul>                                                                                                                                                                                                                                                                                                                                                                         |                                                                                                                                                                                                                                                                                                 |
-| 0.9.0  | 1.0.0  | <ul><li>Options to configure `successfulJobsHistoryLimit` and `failedJobsHistoryLimit` for the prefetch job</li><li>Make prefetch job `args` and `image` configurable</li><li>Provide validation support for Flux configurations</li></ul>                                                                                                                                                                                              |                                                                                                                                                                                                                                                                                                 |
-| 0.8.0  | 1.0.0  | <ul><li>New format of declaring (multiple) Ingresses (Split Ingress)</li><li>Shared Redis cache for the nginx containers (requires PWA 5.0.0)</li><li>Additional result headers configuration (requires PWA 5.0.0)</li><li>Monitoring support with Prometheus and Grafana (for development and testing)</li><li>Delay NGINX until PWA SSR is listening</li><li>Configurable update strategy</li><li>Less verbose prefetch job</li></ul> | See [Migration to 0.8.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.8.0.md) in regards to the new format of configuring Ingress and the dropped support of older kubernetes clusters<br/>Configurable `updateStrategy` stays at `RollingUpdate` by default |
-| 0.7.0  | 1.0.0  | <ul><li>Re-enabled support for `multi-channel.yaml` and `caching-ignore-params.yaml` source code fallbacks</li><li>Added additional Ingress for domain whitelisting</li><li>Added labels on deployment and pod levels</li></ul>                                                                                                                                                                                                         | Removed deprecated configuration options:<ul><li>`upstream.icm`</li><li>`cache.enabled` - was not optional</li><li>`cache.channels`</li></ul>See [Migration to 0.7.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.7.0.md)                                   |
-| 0.6.0  | 1.0.0  | Support for Prometheus metrics                                                                                                                                                                                                                                                                                                                                                                                                          |                                                                                                                                                                                                                                                                                                 |
-| 0.5.0  | 1.0.0  | Added prefetch job that can heat up caches                                                                                                                                                                                                                                                                                                                                                                                              |                                                                                                                                                                                                                                                                                                 |
-| 0.4.0  | 1.0.0  | Support for PWA Hybrid Approach deployment (with ICM 11)                                                                                                                                                                                                                                                                                                                                                                                | Requires PWA 3.2.0 for Hybrid Approach support                                                                                                                                                                                                                                                  |
-| 0.3.0  | 1.0.0  | Use new Ingress controller definition                                                                                                                                                                                                                                                                                                                                                                                                   | See [Migration to 0.3.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.3.0.md)                                                                                                                                                                                |
-| 0.2.4  | 0.25.0 | Support for `multiChannel`, `cacheIgnoreParams` and `extraEnvVars` for nginx/cache deployment                                                                                                                                                                                                                                                                                                                                           | Missing support for `multi-channel.yaml` and `caching-ignore-params.yaml` source code fallbacks                                                                                                                                                                                                 |
-| 0.2.3  | 0.25.0 | Legacy Helm Chart 0.2.3 as initial version                                                                                                                                                                                                                                                                                                                                                                                              |                                                                                                                                                                                                                                                                                                 |
+| Chart  | PWA    | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                 | Migration Information                                                                                                                                                                                                                                                                       |
+| ------ | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0.11.0 | 1.0.0  | <ul><li>Added option to enable/disable cache init container</li><li>Introduced cache container reset after deployment via hook job</li><li>Provided option to change the `redis-cli` image for the cache flush job</li><li>Introduced options for explicit deployment labels and deployment annotations</li></ul>                                                                                                                       |                                                                                                                                                                                                                                                                                             |
+| 0.10.0 | 1.0.0  | <ul><li>Changed Hybrid Approach handling and configuration options</li><li>Remove dependency to ICM deployment charts</li></ul>                                                                                                                                                                                                                                                                                                         | Removed unused deployment handling introduced with version 0.4.0, new configuration options require PWA 9.1.0                                                                                                                                                                               |
+| 0.9.3  | 1.0.0  | <ul><li>Fixed `cache.additionalHeaders` functionality introduced with version 0.8.0</li></ul>                                                                                                                                                                                                                                                                                                                                           |                                                                                                                                                                                                                                                                                             |
+| 0.9.2  | 1.0.0  | <ul><li>Fixed options to configure `successfulJobsHistoryLimit` and `failedJobsHistoryLimit` for the prefetch job</li></ul>                                                                                                                                                                                                                                                                                                             |                                                                                                                                                                                                                                                                                             |
+| 0.9.1  | 1.0.0  | <ul><li>Init container image needs to be configurable</li></ul>                                                                                                                                                                                                                                                                                                                                                                         |                                                                                                                                                                                                                                                                                             |
+| 0.9.0  | 1.0.0  | <ul><li>Options to configure `successfulJobsHistoryLimit` and `failedJobsHistoryLimit` for the prefetch job</li><li>Made prefetch job `args` and `image` configurable</li><li>Provided validation support for Flux configurations</li></ul>                                                                                                                                                                                             |                                                                                                                                                                                                                                                                                             |
+| 0.8.0  | 1.0.0  | <ul><li>New format of declaring (multiple) Ingresses (Split Ingress)</li><li>Shared Redis cache for the nginx containers (requires PWA 5.0.0)</li><li>Additional result headers configuration (requires PWA 5.0.0)</li><li>Monitoring support with Prometheus and Grafana (for development and testing)</li><li>Delay nginx until PWA SSR is listening</li><li>Configurable update strategy</li><li>Less verbose prefetch job</li></ul> | See [Migration to 0.8.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.8.0.md) regarding the new format of configuring Ingress and the dropped support of older Kubernetes clusters<br/>Configurable `updateStrategy` stays at `RollingUpdate` by default |
+| 0.7.0  | 1.0.0  | <ul><li>Re-enabled support for `multi-channel.yaml` and `caching-ignore-params.yaml` source code fallbacks</li><li>Added additional Ingress for domain whitelisting</li><li>Added labels on deployment and Pod levels</li></ul>                                                                                                                                                                                                         | Removed deprecated configuration options:<ul><li>`upstream.icm`</li><li>`cache.enabled` - was not optional</li><li>`cache.channels`</li></ul>See [Migration to 0.7.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.7.0.md)                               |
+| 0.6.0  | 1.0.0  | Support for Prometheus metrics                                                                                                                                                                                                                                                                                                                                                                                                          |                                                                                                                                                                                                                                                                                             |
+| 0.5.0  | 1.0.0  | Added prefetch job that can heat up caches                                                                                                                                                                                                                                                                                                                                                                                              |                                                                                                                                                                                                                                                                                             |
+| 0.4.0  | 1.0.0  | Support for PWA Hybrid Approach deployment (with ICM 11)                                                                                                                                                                                                                                                                                                                                                                                | Requires PWA 3.2.0 for Hybrid Approach support                                                                                                                                                                                                                                              |
+| 0.3.0  | 1.0.0  | Use of new Ingress controller definition                                                                                                                                                                                                                                                                                                                                                                                                | See [Migration to 0.3.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.3.0.md)                                                                                                                                                                            |
+| 0.2.4  | 0.25.0 | Support for `multiChannel`, `cacheIgnoreParams`, and `extraEnvVars` for nginx/cache deployment                                                                                                                                                                                                                                                                                                                                          | Missing support for `multi-channel.yaml` and `caching-ignore-params.yaml` source code fallbacks                                                                                                                                                                                             |
+| 0.2.3  | 0.25.0 | Legacy Helm Chart 0.2.3 as initial version                                                                                                                                                                                                                                                                                                                                                                                              |                                                                                                                                                                                                                                                                                             |
 
 ## Parameters
 
@@ -42,13 +42,13 @@ In addition, the version changes and necessary migration information is provided
 | ---------------- | ------------------------------ | -------------------------------------------- |
 | `updateStrategy` | The Kubernetes update strategy | `Recreate`<br>`RollingUpdate`&nbsp;(default) |
 
-### NGINX
+### nginx
 
 | Name                      | Description                                                                | Example Value                                                                                                                                             |
 | ------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `cache.extraEnvVars`      | Extra environment variables to be set                                      | `- name: FOO`<br>&nbsp;&nbsp;&nbsp;&nbsp;`value: BAR`                                                                                                     |
 | `cache.multiChannel`      | Multi-channel/site configuration object                                    | `.+:`<br>&nbsp;&nbsp;`channel: default`                                                                                                                   |
-| `cache.cacheIgnoreParams` | NGINX ignore query parameters during caching                               | `params:`<br>&nbsp;&nbsp;`- utm_source`<br>&nbsp;&nbsp;`- utm_campaign`                                                                                   |
+| `cache.cacheIgnoreParams` | nginx ignore query parameters during caching                               | `params:`<br>&nbsp;&nbsp;`- utm_source`<br>&nbsp;&nbsp;`- utm_campaign`                                                                                   |
 | `cache.additionalHeaders` | Additional result headers configuration                                    | `headers:`<br>&nbsp;&nbsp;`- X-Frame-Options: 'SAMEORIGIN'`                                                                                               |
 | `cache.prefetch`          | Specify settings for the prefetch job that heats up caches                 | `prefetch:`<br>&nbsp;&nbsp;`- host: example.com`<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`path: /home`                                                     |
 | `cache.init`              | Specify settings for the init container                                    | `init:`<br>&nbsp;&nbsp;`enabled: true`<br>&nbsp;&nbsp;`image:`<br/>&nbsp;&nbsp;&nbsp;&nbsp;`repository: busybox`<br>&nbsp;&nbsp;&nbsp;&nbsp;`tag: 1.37.0` |
@@ -61,16 +61,16 @@ In addition, the version changes and necessary migration information is provided
 
 For more information about the Hybrid Approach, refer to the official Intershop PWA [Hybrid Approach](https://github.com/intershop/intershop-pwa/blob/develop/docs/concepts/hybrid-approach.md) documentation.
 
-| Name                     | Description                                                                            | Example Value                        |
-| ------------------------ | -------------------------------------------------------------------------------------- | ------------------------------------ |
-| `hybrid.enabled`         | Enable or disable Hybrid Approach deployment                                           | `true`                               |
-| `hybrid.icmInternalURL`  | ICM Web Adapter service internal kubernetes URL                                        | `https://kubernetes-icm-web-wa:8443` |
-| `hybrid.pwaExternalPort` | The PWAs external port that will be forwarded to the Responsive Starter Store requests | `443`                                |
+| Name | Description | Example Value |
+| ------------------------ | --------------------------------------------------------------------------------------\_ | ------------------------------------ |
+| `hybrid.enabled` | Enable or disable Hybrid Approach deployment | `true` |
+| `hybrid.icmInternalURL` | ICM Web Adapter service internal Kubernetes URL | `https://kubernetes-icm-web-wa:8443` |
+| `hybrid.pwaExternalPort` | The PWA's external port that will be forwarded to the Responsive Starter Store requests | `443` |
 
 ## Shared Redis Cache
 
 > [!IMPORTANT]
-> The shared Redis cache for the nginx containers requires Intershop PWA version 5.0.0 or newer.
+> The shared Redis cache for the nginx containers requires Intershop PWA version 5.0.0 or later.
 
 The PWA Helm chart supports a shared Redis cache for the nginx containers. To enable it, add the following configuration to your values file:
 
@@ -83,23 +83,23 @@ redis:
 
 Unless `keepCache` is explicitly set to `true`, the cache will be flushed on every deployment using `redis-cli` with a `flushdb` command on the supplied URI.
 
-To use a different or proxied image that contains the `redis-cli` the property `cliImage` is provided.
+To use a different or proxied image that contains the `redis-cli`, the property `cliImage` is provided.
 
 This chart does not deploy a Redis instance. You must provide one yourself. We recommend using a cloud service.
 
 If you want to deploy a Redis instance yourself, be aware that the PWA implementation does not support Redis Cluster or Redis Sentinel connections.
 
-## NGINX Cache Reset
+## nginx Cache Reset
 
-The cache reset job is a Helm post-upgrade hook that automatically restarts the NGINX cache deployment after a Helm upgrade.
+The cache reset job is a Helm post-upgrade hook that automatically restarts the nginx cache deployment after a Helm upgrade.
 This ensures that any cached content is cleared, preventing stale data from being served after PWA SSR container updates.
 
 > [!NOTE]
-> The cache reset job is used as an alternative to the cache init container in `RollingUpdate` and multi pod deployments.
-> If `cache.init.enabled` is `true`, the init container waits for the PWA SSR service to be ready before starting the NGINX/cache service.
-> However, this only works as intended with the `Recreate` update strategy where no previous SSR pods can render results that will be cached by new NGINX pods.
-> The reset job circumvents this problem by performing a `kubectl rollout restart` on the cache deployments after all SSR pods are started successfully and the old SSR pods are deleted.
-> For this reason the `cache.init` feature should be disabled when the `cache.reset` feature is enabled.
+> The cache reset job is used as an alternative to the cache init container in `RollingUpdate` and multi Pod deployments.
+> If `cache.init.enabled` is `true`, the init container waits for the PWA SSR service to be ready before starting the nginx/cache service.
+> However, this only works as intended with the `Recreate` update strategy where no previous SSR Pods can render results that will be cached by new nginx Pods.
+> The reset job circumvents this problem by performing a `kubectl rollout restart` on the cache deployments after all SSR Pods are started successfully and the old SSR Pods are deleted.
+> For this reason, the `cache.init` feature should be disabled when the `cache.reset` feature is enabled.
 
 The job is executed only when `cache.reset.enabled` is set to `true`.
 It creates the necessary RBAC resources (ServiceAccount, Role, and RoleBinding) with permissions to restart the specific cache deployment.
@@ -120,7 +120,7 @@ cache:
 
 When enabled, the job runs automatically after each `helm upgrade` operation, ensuring the cache is fresh and consistent with the latest PWA SSR container deployment.
 
-## NGINX Cache Prefetch
+## nginx Cache Prefetch
 
 The prefetch job is implemented as `wget` in recursive spider mode with level limit `0`. This means that it follows all the links it finds in the first requested page. The link to the first page is created by the given Helm chart values. Since one PWA deployment can host multiple sites, you can provide prefetch config values as array items.
 
@@ -135,7 +135,7 @@ prefetch:
 
 The example above configures the prefetch to happen every day at 11:00 pm. It will request the initial page at https://customer-int.pwa.intershop.de/b2c/home.
 
-The only mandatory property is `host` – used to specify the fully qualified name for your site. This host must be contained in your Ingress configuration. All other properties have reasonable defaults.
+The only mandatory property is `host`, which is used to specify the fully qualified name for your site. This host must be contained in your Ingress configuration. All other properties have reasonable defaults.
 
 | Property                   | Default                                                                                                                                                        |
 | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -148,12 +148,12 @@ The only mandatory property is `host` – used to specify the fully qualified na
 | successfulJobsHistoryLimit | `0`                                                                                                                                                            |
 | failedJobsHistoryLimit     | `1`                                                                                                                                                            |
 
-The value for `cron` determines the schedule of the prefetch job. You can search the internet for "cron tab syntax" or use [tooling](https://crontab.guru) to come up with a correct value.
+The value for `cron` determines the schedule of the prefetch job. You can search the internet for "cron tab syntax" or use [tooling](https://crontab.guru) to come up with a valid value.
 
-The value for `stop` determines the duration in seconds after the job is forcefully stopped. Forcefully stopping is still considered to be a successful run for container/job.
+The value for `stop` determines the duration in seconds after which the job is forcefully stopped. Forcefully stopping is still considered to be a successful run for container/job.
 
 The value for `args` provides a way to override the current default arguments of the `wget` configuration.
-When overriding the complete set of intended arguments needs to be provided.
+When overriding, the complete set of intended arguments needs to be provided.
 
 The value for `image` can be used to override the default [adapted `wget` image](https://github.com/jometzner/wget) or to update to a different version via the PWA deployment configuration.
 
@@ -161,7 +161,7 @@ The Kubernetes [Jobs history limits](https://kubernetes.io/docs/concepts/workloa
 
 ## Multiple Ingress
 
-Sometimes customers only want to go live with a subset of their domains, but want to keep the rest hidden behind IP whitelisting. Therefore, a second instance object can be added to the ingress config to address this use case.
+Sometimes customers only want to go live with a subset of their domains, but want to keep the rest hidden behind IP whitelisting. Therefore, a second instance object can be added to the Ingress config to address this use case.
 To implement it in your project, follow the example below:
 
 ```yaml
@@ -173,7 +173,7 @@ ingress:
     ingress-testing:
       hosts:
         # in case multiple PWA instances will be deployed into the given environment
-        # namespace, a postfix has to be added to the hostname: i.e. ${pwa-hostname}-edit
+        # namespace, a postfix has to be added to the hostname: i.e., ${pwa-hostname}-edit
         - host: ${pwa_hostname}.pwa.intershop.de
         - host: ${pwa_hostname}-edit.pwa.intershop.de
       tlsSecretName: tls-star-pwa-intershop-de
@@ -185,7 +185,7 @@ ingress:
           allow xxx.xxx.xxx.xxx;
           allow yyy.yyy.yyy.yyy;
           deny all;
-    # This is the 2nd ingress that is "live" and visible from everywhere
+    # This is the 2nd Ingress that is "live" and visible from everywhere
     ingress-live:
       hosts:
         - host: ${pwa_hostname}-live.pwa.intershop.de
@@ -199,12 +199,12 @@ ingress:
 To introduce specific labels for the Pods needed for monitoring, change your values file or HelmRelease to the following:
 
 ```yaml
-### @param podLabels labels for SSR pods and deployment
+### @param podLabels Labels for SSR Pods and deployment
 ### ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels:
   application-type: pwa
   customer-id: cstmr #Customer Initials
-### @param podLabels labels for NGINX/Cache pods and deployment
+### @param podLabels Labels for nginx/cache Pods and deployment
 ### ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 cache:
   podLabels:
@@ -302,7 +302,7 @@ monitoring:
 ```
 
 This will deploy a Prometheus instance and a Grafana instance. Both are configured to scrape the metrics of the PWA containers. The Grafana instance is preconfigured with a dashboard for the PWA metrics.
-Both services can be exposed via Ingress. To expose them add the following configuration to your values file:
+Both services can be exposed via Ingress. To expose them, add the following configuration to your _values_ file:
 
 ```yaml
 monitoring:
@@ -315,20 +315,20 @@ monitoring:
     annotations: ...
 ```
 
-The grafana access password can be configured via the `monitoring.grafana.password` value. If not set, a default password will be used.
+The Grafana access password can be configured via the `monitoring.grafana.password` value. If not set, a default password will be used.
 
 ## Validation
 
 The Intershop PWA Helm Chart provides a `values.schema.json` for validation support of the according `values.yaml` configurations.
 
-For Visual Studio Code the plugin `redhat.vscode-yaml` needs to be installed to make use of the already configured validation link in the [`values.yaml`](./values.yaml).
+For Visual Studio Code, install the plugin `redhat.vscode-yaml` to make use of the already configured validation link in the [`values.yaml`](./values.yaml).
 
 ```yaml
 # yaml-language-server: $schema=./values.schema.json
 ```
 
-For the more common Intershop PWA deployments via Flux the repository also provides validation support for such scenarios through the `values-flux.schema.json`.
-This file needs to be referenced in the PWA Flux deployment configuration files with a reference to the fitting version in the following way.
+For the more common Intershop PWA deployments via Flux, the repository also provides validation support for such scenarios through the `values-flux.schema.json`.
+Reference this file in the PWA Flux deployment configuration files with a reference to the fitting version in the following way:
 
 ```yaml
 # yaml-language-server: $schema=https://raw.githubusercontent.com/intershop/helm-charts/pwa-main-0.11.0/charts/pwa/values-flux.schema.json
@@ -343,7 +343,7 @@ $ helm dependency build helm-charts/charts/pwa
 $ helm install dev-release -f development.values.yaml helm-charts/charts/pwa
 ```
 
-To simply render the result of using the current Helm chart, run:
+To render the result of using the current Helm chart, run:
 
 ```bash
 $ helm template helm-charts/charts/pwa
@@ -355,7 +355,7 @@ To see the result for a specific given values file, run:
 $ helm template -f development.values.yaml helm-charts/charts/pwa
 ```
 
-To see the result for a given values file, but only for one specific template (e.g. `deployment.yaml`), run:
+To see the result for a given values file, but only for one specific template (e.g., `deployment.yaml`), run:
 
 ```bash
 $ helm template -f development.values.yaml -s templates/deployment.yaml helm-charts/charts/pwa
