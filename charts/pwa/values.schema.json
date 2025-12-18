@@ -171,6 +171,52 @@
             "$ref": "#/definitions/environmentItem"
           }
         },
+        "init": {
+          "type": "object",
+          "title": "Init container for NGINX/cache deployment",
+          "description": "Enable init container that waits for PWA main service to be ready.",
+          "required": ["enabled"],
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Enable or disable init container for cache deployment",
+              "default": true
+            },
+            "image": {
+              "type": "object",
+              "title": "The busybox image for the init container",
+              "properties": {
+                "repository": {
+                  "type": "string",
+                  "title": "The image repository",
+                  "default": "busybox"
+                },
+                "tag": {
+                  "type": "string",
+                  "title": "The image tag"
+                }
+              }
+            }
+          }
+        },
+        "reset": {
+          "type": "object",
+          "title": "Cache reset job after upgrade",
+          "description": "Enable NGINX/cache reset/restart job after upgrade.",
+          "required": ["enabled"],
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Enable or disable NGINX/cache reset job after upgrade",
+              "default": false
+            },
+            "image": {
+              "type": "string",
+              "title": "A kubectl image to restart/reset a deployment",
+              "default": "bitnami/kubectl"
+            }
+          }
+        },
         "prefetch": {
           "type": "array",
           "title": "Prefetch job settings",
@@ -258,6 +304,12 @@
           "title": "Don't flush Redis cache on deployment",
           "description": "Don't flush Redis cache on deployment",
           "default": false
+        },
+        "cliImage": {
+          "type": "string",
+          "title": "Redis CLI image",
+          "description": "Image containing the Redis CLI for the flush job",
+          "default": "bitnami/redis"
         }
       }
     },

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: {{ include "pwa-cache-clear.name" . }}
-        image: bitnami/redis
+        image: {{ default "bitnami/redis" .Values.redis.cliImage }}
         command: ["redis-cli", "-u", "{{ .Values.redis.uri }}", "flushdb"]
       restartPolicy: Never
 {{- end -}}
