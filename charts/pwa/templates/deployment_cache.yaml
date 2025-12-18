@@ -8,9 +8,17 @@ metadata:
     helm.sh/chart: {{ include "pwa-main.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    # TODO: remove duplication of podLabels at deployment with next major release
     {{- if .Values.cache.podLabels }}
     {{- toYaml .Values.cache.podLabels | nindent 4 }}
     {{- end }}
+    {{- if .Values.cache.deploymentLabels }}
+    {{- toYaml .Values.cache.deploymentLabels | nindent 4 }}
+    {{- end }}
+  {{- if .Values.cache.deploymentAnnotations }}
+  annotations:
+    {{- toYaml .Values.cache.deploymentAnnotations | nindent 4 }}
+  {{- end }}
 spec:
   strategy:
     type: {{ default "RollingUpdate" .Values.updateStrategy }}
@@ -29,7 +37,7 @@ spec:
         {{- end }}
       {{- if .Values.cache.podAnnotations }}
       annotations:
-      {{- toYaml .Values.cache.podAnnotations | nindent 8 }}
+        {{- toYaml .Values.cache.podAnnotations | nindent 8 }}
       {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
