@@ -48,14 +48,15 @@ tolerations: []
 
 affinity: {}
 
-## @param podAnnotations Annotations for SSR pods
+## Annotations for SSR pods and SSR deployment
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
-##
 podAnnotations: {}
+deploymentAnnotations: {}
 
-### @param podLabels Labels for SSR pods and deployment
+### Labels for SSR pods and SSR deployment
 ### ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
+deploymentLabels: {}
 
 ## @param environment Extra environment variables to be set on SSR containers
 ## E.g:
@@ -101,11 +102,6 @@ readinessProbe:
   # periodSeconds: 30
 
 cache:
-
-  init:
-    image:
-      repository: busybox
-      tag: 1.36.1
 
   ####
   ## @param NGinx ignore query parameters during caching
@@ -156,6 +152,24 @@ cache:
   ##      value: BAR
   extraEnvVars: []
 
+  ## @param init Enables an initialization container that runs before the PWA NGINX container starts
+  ## init:
+  ##   enabled: Controls whether the init container should be deployed
+  ##   image: Specifies the Docker image to use for the init container (repository: + tag:)
+  init:
+    enabled: true
+    image:
+      repository: busybox
+      tag: 1.37.0
+
+  ## @param reset Enable cache reset job after upgrade
+  ## reset:
+  ##   enabled: true
+  ##   image: bitnami/kubectl
+  reset:
+    enabled: false
+    image: ishcp.azurecr.io/ishops/cronjob-utils:1.0.0
+
   ####
   ## @param prefetch Specify settings for the prefetch job that heats up caches.
   ## E.g:
@@ -194,14 +208,15 @@ cache:
 
   affinity: {}
 
-  ## @param podAnnotations Annotations for NGINX pods
+  ## Annotations for NGINX pods and NGINX deployment
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
-  ##
   podAnnotations: {}
+  deploymentAnnotations: {}
 
-  ### @param podLabels Labels for NGINX/Cache pods and deployment
+  ### Labels for NGINX/Cache pods and NGINX/Cache deployment
   ### ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  deploymentLabels: {}
 
   livenessProbe: {}
 
