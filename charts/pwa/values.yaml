@@ -48,14 +48,15 @@ tolerations: []
 
 affinity: {}
 
-## @param podAnnotations Annotations for SSR pods
+## Annotations for SSR pods and SSR deployment
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
-##
 podAnnotations: {}
+deploymentAnnotations: {}
 
-### @param podLabels Labels for SSR pods and deployment
+### Labels for SSR pods and SSR deployment
 ### ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
+deploymentLabels: {}
 
 ## @param environment Extra environment variables to be set on SSR containers
 ## E.g:
@@ -207,14 +208,15 @@ cache:
 
   affinity: {}
 
-  ## @param podAnnotations Annotations for NGINX pods
+  ## Annotations for NGINX pods and NGINX deployment
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
-  ##
   podAnnotations: {}
+  deploymentAnnotations: {}
 
-  ### @param podLabels Labels for NGINX/Cache pods and deployment
+  ### Labels for NGINX/Cache pods and NGINX/Cache deployment
   ### ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
+  deploymentLabels: {}
 
   livenessProbe: {}
 
