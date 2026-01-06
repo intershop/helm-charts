@@ -5,7 +5,6 @@
 # Declare variables to be passed into your templates.
 
 updateStrategy: RollingUpdate
-# updateStrategy: Recreate
 
 replicaCount: 1
 
@@ -22,7 +21,7 @@ upstream:
   icmBaseURL: https://develop.icm.intershop.de
 
   ## @param cdnPrefixURL The base URL of your CDN
-  ## E.g:
+  ## E.g.:
   ## cdnPrefixURL: "https://www.example.com"
   cdnPrefixURL: ""
 
@@ -32,8 +31,8 @@ service:
 
 ##
 ## @param hybrid Set to enable PWA Hybrid Approach. This means pages are produced by PWA or ICM.
-## You can specify the icm-web-wa service internal URL for kubernetes deployments.
-## Communication cannot be routed through ICM ingress controller.
+## You can specify the icm-web-wa service internal URL for Kubernetes deployments.
+## Communication cannot be routed through ICM Ingress controller.
 ##
 hybrid:
   enabled: false
@@ -48,18 +47,18 @@ tolerations: []
 
 affinity: {}
 
-## Annotations for SSR pods and SSR deployment
+## Annotations for SSR Pods and SSR deployment
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 podAnnotations: {}
 deploymentAnnotations: {}
 
-### Labels for SSR pods and SSR deployment
+### Labels for SSR Pods and SSR deployment
 ### ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
 deploymentLabels: {}
 
 ## @param environment Extra environment variables to be set on SSR containers
-## E.g:
+## E.g.:
 ## environment:
 ##   - name: FOO
 ##     value: BAR
@@ -104,7 +103,7 @@ readinessProbe:
 cache:
 
   ####
-  ## @param NGinx ignore query parameters during caching
+  ## @param nginx ignore query parameters during caching
   ##   cacheIgnoreParams: |
   ##     params:
   ##       - utm_source
@@ -115,7 +114,7 @@ cache:
   cacheIgnoreParams: ""
 
   ####
-  ## @param Multi channel/site configuration object
+  ## @param Multi-channel/-site configuration object
   ##  multiChannel: |
   ##    .+:
   ##      - baseHref: /b2b
@@ -171,8 +170,8 @@ cache:
     image: ishcp.azurecr.io/ishops/cronjob-utils:1.0.0
 
   ####
-  ## @param prefetch Specify settings for the prefetch job that heats up caches.
-  ## E.g:
+  ## @param prefetch Specify settings for the prefetch job that heats up caches
+  ## E.g.:
   ## prefetch:
   ##   - host: customer-int.pwa.intershop.de
   ##     path: /
@@ -208,12 +207,12 @@ cache:
 
   affinity: {}
 
-  ## Annotations for NGINX pods and NGINX deployment
+  ## Annotations for nginx Pods and nginx deployment
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   podAnnotations: {}
   deploymentAnnotations: {}
 
-  ### Labels for NGINX/Cache pods and NGINX/Cache deployment
+  ### Labels for nginx/cache Pods and nginx/cache deployment
   ### ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
   deploymentLabels: {}
@@ -226,7 +225,7 @@ ingress:
   enabled: false
   className: nginx
 
-## example for enabled and configured ingress
+## example for enabled and configured Ingress
 # ingress:
 #   enabled: true
 #   className: nginx
