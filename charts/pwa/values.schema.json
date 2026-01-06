@@ -47,11 +47,13 @@
         },
         "icmInternalURL": {
           "type": "string",
-          "title": "ICM Web Adapter service internal Kubernetes URL"
+          "title": "ICM Web Adapter service internal Kubernetes URL",
+          "description": "The ICM Web Adapter service internal Kubernetes URL (only necessary if ICM is deployed in the same Kubernetes namespace)"
         },
         "pwaExternalPort": {
           "type": "integer",
-          "title": "The PWA's external port that will be forwarded to the Responsive Starter Store requests"
+          "title": "PWA's external port",
+          "description": "The PWA's external port that will be forwarded to the Responsive Starter Store requests (only necessary if it is not the default port)"
         }
       }
     },

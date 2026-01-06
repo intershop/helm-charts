@@ -5,7 +5,6 @@
 # Declare variables to be passed into your templates.
 
 updateStrategy: RollingUpdate
-# updateStrategy: Recreate
 
 replicaCount: 1
 
