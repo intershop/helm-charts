@@ -80,8 +80,7 @@ metrics:
   ##
   enabled: false
 
-livenessProbe:
-  {}
+livenessProbe: {}
   # exec:
   #   command:
   #   - /bin/sh
@@ -90,8 +89,7 @@ livenessProbe:
   # initialDelaySeconds: 10
   # periodSeconds: 30
 
-readinessProbe:
-  {}
+readinessProbe: {}
   # exec:
   #   command:
   #   - /bin/sh
@@ -101,7 +99,6 @@ readinessProbe:
   # periodSeconds: 30
 
 cache:
-
   ####
   ## @param nginx ignore query parameters during caching
   ##   cacheIgnoreParams: |
@@ -151,23 +148,16 @@ cache:
   ##      value: BAR
   extraEnvVars: []
 
-  ## @param init Enables an initialization container that runs before the PWA NGINX container starts
-  ## init:
-  ##   enabled: Controls whether the init container should be deployed
-  ##   image: Specifies the Docker image to use for the init container (repository: + tag:)
-  init:
-    enabled: true
-    image:
-      repository: busybox
-      tag: 1.37.0
-
   ## @param reset Enable cache reset job after upgrade
   ## reset:
   ##   enabled: true
   ##   image: bitnami/kubectl
   reset:
-    enabled: false
-    image: ishcp.azurecr.io/ishops/cronjob-utils:1.0.0
+    enabled: true
+    image:
+      repository: ishcp.azurecr.io/ishops/cronjob-utils
+      tag: "1"
+      pullPolicy: Always
 
   ####
   ## @param prefetch Specify settings for the prefetch job that heats up caches

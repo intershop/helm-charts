@@ -13,6 +13,9 @@
       "default": "RollingUpdate",
       "enum": ["RollingUpdate", "Recreate"]
     },
+    "image": {
+      "$ref": "#/definitions/imageReference"
+    },
     "upstream": {
       "type": "object",
       "title": "The upstream schema",
@@ -139,6 +142,9 @@
       "default": {},
       "required": [],
       "properties": {
+        "image": {
+          "$ref": "#/definitions/imageReference"
+        },
         "cacheIgnoreParams": {
           "type": "string",
           "title": "Configure nginx caching behavior",
@@ -163,34 +169,6 @@
             "$ref": "#/definitions/environmentItem"
           }
         },
-        "init": {
-          "type": "object",
-          "title": "Init container for nginx/cache deployment",
-          "description": "Enable init container that waits for PWA main service to be ready",
-          "required": ["enabled"],
-          "properties": {
-            "enabled": {
-              "type": "boolean",
-              "title": "Enable or disable init container for cache deployment",
-              "default": true
-            },
-            "image": {
-              "type": "object",
-              "title": "The busybox image for the init container",
-              "properties": {
-                "repository": {
-                  "type": "string",
-                  "title": "The image repository",
-                  "default": "busybox"
-                },
-                "tag": {
-                  "type": "string",
-                  "title": "The image tag"
-                }
-              }
-            }
-          }
-        },
         "reset": {
           "type": "object",
           "title": "Cache reset job after upgrade",
@@ -203,9 +181,7 @@
               "default": false
             },
             "image": {
-              "type": "string",
-              "title": "A kubectl image to restart/reset a deployment",
-              "default": "bitnami/kubectl"
+              "$ref": "#/definitions/imageReference"
             }
           }
         },
@@ -386,6 +362,31 @@
           "type": "string",
           "title": "Value",
           "description": "Value of the environment variable"
+        }
+      }
+    },
+    "imageReference": {
+      "type": "object",
+      "description": "reference to an OCI image",
+      "additionalProperties": false,
+      "properties": {
+        "repository": {
+          "type": "string",
+          "title": "Repository",
+          "description": "reference to an image repository / image name.",
+          "examples": ["busybox", "some-acr.azurecr.io/busybox"]
+        },
+        "tag": {
+          "type": "string",
+          "title": "Image Tag",
+          "description": "image tag / version",
+          "examples": ["1.0.0", "latest"]
+        },
+        "pullPolicy": {
+          "type": "string",
+          "title": "ImagePullPolicy",
+          "description": "Valid imagePullPolicy according to Kubernetes specs",
+          "enum": ["Always", "IfNotPresent", "Never"]
         }
       }
     }
