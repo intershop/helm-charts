@@ -2,7 +2,7 @@
 
 ## BREAKING: Changed structure of cache reset configuration
 
-Unfortunately the `cache.reset.image` section
+Unfortunately the `cache.reset.image` section didn't follow the regular pattern for image references - image repository and tag were "squashed" into a single value and it was not possible to change the pull policy of the image. This has been rectified, the reference can now be configured via `repository`, `tag` and `pullPolicy`.
 
 ## Removal of Init Container
 
