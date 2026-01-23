@@ -3,7 +3,7 @@
   "$id": "IntershopPWAHelmValuesSchema",
   "type": "object",
   "title": "The Intershop PWA Helm Values Schema",
-  "description": "The Helm Values Schema to define values necessary to deploy Intershops PWA.",
+  "description": "The Helm Values Schema to define values necessary to deploy Intershop PWA",
   "required": ["upstream", "cache"],
   "properties": {
     "updateStrategy": {
@@ -13,10 +13,12 @@
       "default": "RollingUpdate",
       "enum": ["RollingUpdate", "Recreate"]
     },
+    "image": {
+      "$ref": "#/definitions/imageReference"
+    },
     "upstream": {
       "type": "object",
       "title": "The upstream schema",
-      "description": "An explanation about the purpose of this instance.",
       "default": {},
       "required": ["icmBaseURL"],
       "properties": {
@@ -29,7 +31,7 @@
         "cdnPrefixURL": {
           "type": "string",
           "title": "The base URL of your CDN",
-          "description": "The base URL of your used Content Delivery Network service.",
+          "description": "The base URL of your used Content Delivery Network service",
           "examples": ["https://www.example.com"]
         }
       },
@@ -38,29 +40,30 @@
     "hybrid": {
       "type": "object",
       "title": "The hybrid schema",
-      "description": "Activate the so-called Hybrid Approach of PWA (if ICM is deployed in the same namespace it should be referenced via ICMs internal URL).",
+      "description": "Activate the Hybrid Approach of PWA (if ICM is deployed in the same namespace, it should be referenced via ICMs internal URL)",
       "required": ["enabled"],
       "properties": {
         "enabled": {
           "type": "boolean",
           "title": "Enable or disable Hybrid Approach deployment",
-          "description": "Enable or disable Hybrid Approach deployment",
           "default": false
         },
         "icmInternalURL": {
           "type": "string",
-          "title": "ICM Web Adapter service internal kubernetes URL"
+          "title": "ICM Web Adapter service internal Kubernetes URL",
+          "description": "The ICM Web Adapter service internal Kubernetes URL (only necessary if ICM is deployed in the same Kubernetes namespace)"
         },
         "pwaExternalPort": {
           "type": "integer",
-          "title": "The PWAs external port that will be forwarded to the Responsive Starter Store requests"
+          "title": "PWA's external port",
+          "description": "The PWA's external port that will be forwarded to the Responsive Starter Store requests (only necessary if it is not the default port)"
         }
       }
     },
     "environment": {
       "type": "array",
       "title": "Additional SSR process environment variables",
-      "description": "Additional SSR process environment variables to set.",
+      "description": "Additional SSR process environment variables to set",
       "default": [],
       "items": {
         "$ref": "#/definitions/environmentItem"
@@ -74,7 +77,6 @@
         "enabled": {
           "type": "boolean",
           "title": "Create Prometheus metrics exporter",
-          "description": "Create Prometheus metrics exporter",
           "form": true
         }
       }
@@ -87,14 +89,12 @@
         "enabled": {
           "type": "boolean",
           "title": "Enable or disable monitoring",
-          "description": "Enable or disable monitoring",
           "additionalProperties": false,
           "default": false
         },
         "prometheus": {
           "type": "object",
           "title": "Prometheus configuration",
-          "description": "Prometheus configuration",
           "additionalProperties": false,
           "properties": {
             "host": {
@@ -104,8 +104,7 @@
             },
             "annotations": {
               "type": "object",
-              "title": "Prometheus ingress annotations",
-              "description": "Prometheus ingress annotations",
+              "title": "Prometheus Ingress annotations",
               "additionalProperties": {
                 "type": "string"
               }
@@ -115,7 +114,6 @@
         "grafana": {
           "type": "object",
           "title": "Grafana configuration",
-          "description": "Grafana configuration",
           "additionalProperties": false,
           "properties": {
             "host": {
@@ -125,16 +123,14 @@
             },
             "annotations": {
               "type": "object",
-              "title": "Grafana ingress annotations",
-              "description": "Grafana ingress annotations",
+              "title": "Grafana Ingress annotations",
               "additionalProperties": {
                 "type": "string"
               }
             },
             "password": {
               "type": "string",
-              "title": "Grafana admin password",
-              "description": "Grafana admin password"
+              "title": "Grafana admin password"
             }
           }
         }
@@ -143,77 +139,49 @@
     "cache": {
       "type": "object",
       "title": "The cache schema",
-      "description": "An explanation about the purpose of this instance.",
       "default": {},
       "required": [],
       "properties": {
+        "image": {
+          "$ref": "#/definitions/imageReference"
+        },
         "cacheIgnoreParams": {
           "type": "string",
-          "title": "Configure NGinx caching behavior",
-          "description": "NGinx ignore query parameters during caching",
+          "title": "Configure nginx caching behavior",
+          "description": "nginx ignores query parameters during caching",
           "additionalProperties": true
         },
         "multiChannel": {
           "type": "string",
           "title": "Configure top-level URL to appserver URL mapping",
-          "description": "Multi channel/site configuration object"
+          "description": "Multi-channel/-site configuration object"
         },
         "additionalHeaders": {
           "type": "string",
           "title": "Configure additional headers",
-          "description": "NGinx adds specified header for every page response"
+          "description": "nginx adds specified header for every page response"
         },
         "extraEnvVars": {
           "type": "array",
-          "title": "Extra environment variables to be set on NGINX containers",
+          "title": "Extra environment variables on nginx containers",
           "description": "Extra environment variables to be set on NGINX containers",
           "items": {
             "$ref": "#/definitions/environmentItem"
           }
         },
-        "init": {
-          "type": "object",
-          "title": "Init container for NGINX/cache deployment",
-          "description": "Enable init container that waits for PWA main service to be ready.",
-          "required": ["enabled"],
-          "properties": {
-            "enabled": {
-              "type": "boolean",
-              "title": "Enable or disable init container for cache deployment",
-              "default": true
-            },
-            "image": {
-              "type": "object",
-              "title": "The busybox image for the init container",
-              "properties": {
-                "repository": {
-                  "type": "string",
-                  "title": "The image repository",
-                  "default": "busybox"
-                },
-                "tag": {
-                  "type": "string",
-                  "title": "The image tag"
-                }
-              }
-            }
-          }
-        },
         "reset": {
           "type": "object",
           "title": "Cache reset job after upgrade",
-          "description": "Enable NGINX/cache reset/restart job after upgrade.",
+          "description": "Enable nginx/cache reset/restart job after upgrade",
           "required": ["enabled"],
           "properties": {
             "enabled": {
               "type": "boolean",
-              "title": "Enable or disable NGINX/cache reset job after upgrade",
+              "title": "Enable or disable nginx/cache reset job after upgrade",
               "default": false
             },
             "image": {
-              "type": "string",
-              "title": "A kubectl image to restart/reset a deployment",
-              "default": "bitnami/kubectl"
+              "$ref": "#/definitions/imageReference"
             }
           }
         },
@@ -280,7 +248,6 @@
               "enabled": {
                 "type": "boolean",
                 "title": "Create Prometheus metrics exporter",
-                "description": "Create Prometheus metrics exporter",
                 "form": true
               }
             }
@@ -302,7 +269,6 @@
         "keepCache": {
           "type": "boolean",
           "title": "Don't flush Redis cache on deployment",
-          "description": "Don't flush Redis cache on deployment",
           "default": false
         },
         "cliImage": {
@@ -317,39 +283,34 @@
       "additionalProperties": false,
       "type": "object",
       "title": "Ingress configuration",
-      "description": "Configure the ingress for the PWA",
+      "description": "Configure the Ingress for the PWA",
       "properties": {
         "enabled": {
           "type": "boolean",
-          "title": "Enable ingress",
-          "description": "Enable ingress",
+          "title": "Enable Ingress",
           "default": false
         },
         "className": {
           "type": "string",
           "title": "Ingress class name",
-          "description": "Ingress class name",
           "default": "nginx"
         },
         "instances": {
           "type": "object",
           "title": "Ingress instances",
-          "description": "Configure different ingress instances",
+          "description": "Configure different Ingress instances",
           "additionalProperties": {
             "type": "object",
             "title": "Ingress instance",
-            "description": "Ingress instance",
             "additionalProperties": false,
             "properties": {
               "tlsSecretName": {
                 "type": "string",
-                "title": "TLS secret name",
-                "description": "TLS secret name"
+                "title": "TLS secret name"
               },
               "annotations": {
                 "type": "object",
                 "title": "Ingress Annotations",
-                "description": "Ingress Annotations",
                 "default": {},
                 "additionalProperties": {
                   "type": "string"
@@ -358,19 +319,16 @@
               "hosts": {
                 "type": "array",
                 "title": "Ingress hosts",
-                "description": "Ingress hosts",
                 "default": [],
                 "items": {
                   "type": "object",
                   "title": "Ingress host",
-                  "description": "Ingress host",
                   "additionalProperties": false,
                   "required": ["host"],
                   "properties": {
                     "host": {
                       "type": "string",
                       "title": "Host name",
-                      "description": "Host name",
                       "default": ""
                     },
                     "tlsSecretName": {
@@ -391,7 +349,7 @@
     "environmentItem": {
       "type": "object",
       "title": "Environment variable",
-      "description": "Environment variable to set.",
+      "description": "Environment variable to set",
       "required": ["name", "value"],
       "additionalProperties": false,
       "properties": {
@@ -404,6 +362,31 @@
           "type": "string",
           "title": "Value",
           "description": "Value of the environment variable"
+        }
+      }
+    },
+    "imageReference": {
+      "type": "object",
+      "description": "Reference to an OCI image",
+      "additionalProperties": false,
+      "properties": {
+        "repository": {
+          "type": "string",
+          "title": "Repository",
+          "description": "Reference to an image repository/image name.",
+          "examples": ["busybox", "some-acr.azurecr.io/busybox"]
+        },
+        "tag": {
+          "type": "string",
+          "title": "Image Tag",
+          "description": "Image tag/version",
+          "examples": ["1.0.0", "latest"]
+        },
+        "pullPolicy": {
+          "type": "string",
+          "title": "ImagePullPolicy",
+          "description": "Valid imagePullPolicy according to Kubernetes specs",
+          "enum": ["Always", "IfNotPresent", "Never"]
         }
       }
     }
