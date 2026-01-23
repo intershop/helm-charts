@@ -3,7 +3,7 @@
   "$id": "IntershopPWAHelmValuesSchema",
   "type": "object",
   "title": "The Intershop PWA Helm Values Schema",
-  "description": "The Helm Values Schema to define values necessary to deploy Intershops PWA",
+  "description": "The Helm Values Schema to define values necessary to deploy Intershop PWA",
   "required": ["upstream", "cache"],
   "properties": {
     "updateStrategy": {
@@ -367,19 +367,19 @@
     },
     "imageReference": {
       "type": "object",
-      "description": "reference to an OCI image",
+      "description": "Reference to an OCI image",
       "additionalProperties": false,
       "properties": {
         "repository": {
           "type": "string",
           "title": "Repository",
-          "description": "reference to an image repository / image name.",
+          "description": "Reference to an image repository/image name.",
           "examples": ["busybox", "some-acr.azurecr.io/busybox"]
         },
         "tag": {
           "type": "string",
           "title": "Image Tag",
-          "description": "image tag / version",
+          "description": "Image tag/version",
           "examples": ["1.0.0", "latest"]
         },
         "pullPolicy": {

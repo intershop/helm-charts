@@ -97,8 +97,8 @@ The cache reset job is a Helm post-upgrade hook that automatically restarts the 
 This ensures that any cached content is cleared, preventing stale data from being served after PWA SSR container updates.
 
 > [!NOTE]
-> The cache reset job a replacement for the cache init container functionality that was removed with PWA Helm Chart 0.12.0 since it did not work as intended in `RollingUpdate` and multi Pod deployments.
-> If `cache.init.enabled` was `true`, the init container waited for the PWA SSR service to be ready before starting the nginx/cache service.
+> The cache reset job is a replacement for the cache init container functionality that was removed with PWA Helm Chart 0.12.0 since it did not work as intended in `RollingUpdate` and multi Pod deployments.
+> when `cache.init.enabled` was `true`, the init container waited for the PWA SSR service to be ready before starting the nginx/cache service.
 > However, this only worked as intended with the `Recreate` update strategy where no previous SSR Pods could render results that would be cached by new nginx Pods.
 > The reset job circumvents this problem by performing a `kubectl rollout restart` on the cache deployments after all SSR Pods are started successfully and the old SSR Pods are deleted.
 
