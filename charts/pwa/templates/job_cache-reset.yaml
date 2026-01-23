@@ -57,7 +57,8 @@ spec:
       serviceAccountName: {{ .Release.Name }}-cache-reset
       containers:
         - name: kubectl
-          image: {{ default "bitnami/kubectl" .Values.cache.reset.image }}
+          image: {{ .Values.cache.reset.image.repository}}:{{.Values.cache.reset.image.tag}}
+          imagePullPolicy: {{ .Values.cache.reset.image.pullPolicy }}
           command:
             [
               "bash",
