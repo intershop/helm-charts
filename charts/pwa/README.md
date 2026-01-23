@@ -19,6 +19,7 @@ In addition, the version changes and necessary migration information are provide
 
 | Chart  | PWA    | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                 | Migration Information                                                                                                                                                                                                                                                                       |
 | ------ | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0.12.0 | 1.0.0  | <ul><li>Changed structure of cache reset image configuration</li><li>Removed cache init container</li></ul>                                                                                                                                                                                                                                                                                                                             | See [Migration to 0.12.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.12.0.md)                                                                                                                                                                          |
 | 0.11.0 | 1.0.0  | <ul><li>Added option to enable/disable cache init container</li><li>Introduced cache container reset after deployment via hook job</li><li>Provided option to change the `redis-cli` image for the cache flush job</li><li>Introduced options for explicit deployment labels and deployment annotations</li></ul>                                                                                                                       |                                                                                                                                                                                                                                                                                             |
 | 0.10.0 | 1.0.0  | <ul><li>Changed Hybrid Approach handling and configuration options</li><li>Remove dependency to ICM deployment charts</li></ul>                                                                                                                                                                                                                                                                                                         | Removed unused deployment handling introduced with version 0.4.0, new configuration options require PWA 9.1.0                                                                                                                                                                               |
 | 0.9.3  | 1.0.0  | <ul><li>Fixed `cache.additionalHeaders` functionality introduced with version 0.8.0</li></ul>                                                                                                                                                                                                                                                                                                                                           |                                                                                                                                                                                                                                                                                             |
@@ -44,14 +45,14 @@ In addition, the version changes and necessary migration information are provide
 
 ### nginx
 
-| Name                      | Description                                                | Example Value                                                                                                                                                                                                                      |
-| ------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `cache.extraEnvVars`      | Extra environment variables to be set                      | `- name: FOO`<br>&nbsp;&nbsp;&nbsp;&nbsp;`value: BAR`                                                                                                                                                                              |
-| `cache.multiChannel`      | Multi-channel/site configuration object                    | `.+:`<br>&nbsp;&nbsp;`channel: default`                                                                                                                                                                                            |
-| `cache.cacheIgnoreParams` | nginx ignore query parameters during caching               | `params:`<br>&nbsp;&nbsp;`- utm_source`<br>&nbsp;&nbsp;`- utm_campaign`                                                                                                                                                            |
-| `cache.additionalHeaders` | Additional result headers configuration                    | `headers:`<br>&nbsp;&nbsp;`- X-Frame-Options: 'SAMEORIGIN'`                                                                                                                                                                        |
-| `cache.prefetch`          | Specify settings for the prefetch job that heats up caches | `prefetch:`<br>&nbsp;&nbsp;`- host: example.com`<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`path: /home`                                                                                                                              |
-| `cache.reset`             | Specify settings for the cache reset job                   | `reset:`<br>&nbsp;&nbsp;`enabled: true`<br>&nbsp;&nbsp;`image:`<br>&nbsp;&nbsp;&nbsp;&nbsp;`repository: intershophub/intershop-pwa-nginx`<br>&nbsp;&nbsp;&nbsp;&nbsp;`tag: latest`<br>&nbsp;&nbsp;&nbsp;&nbsp;`pullPolicy: Always` |
+| Name                      | Description                                                | Example Value                                                                                                                                                                                                     |
+| ------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `cache.extraEnvVars`      | Extra environment variables to be set                      | `- name: FOO`<br>&nbsp;&nbsp;&nbsp;&nbsp;`value: BAR`                                                                                                                                                             |
+| `cache.multiChannel`      | Multi-channel/site configuration object                    | `.+:`<br>&nbsp;&nbsp;`channel: default`                                                                                                                                                                           |
+| `cache.cacheIgnoreParams` | nginx ignore query parameters during caching               | `params:`<br>&nbsp;&nbsp;`- utm_source`<br>&nbsp;&nbsp;`- utm_campaign`                                                                                                                                           |
+| `cache.additionalHeaders` | Additional result headers configuration                    | `headers:`<br>&nbsp;&nbsp;`- X-Frame-Options: 'SAMEORIGIN'`                                                                                                                                                       |
+| `cache.prefetch`          | Specify settings for the prefetch job that heats up caches | `prefetch:`<br>&nbsp;&nbsp;`- host: example.com`<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`path: /home`                                                                                                             |
+| `cache.reset`             | Specify settings for the cache reset job                   | `reset:`<br>&nbsp;&nbsp;`enabled: true`<br>&nbsp;&nbsp;`image:`<br>&nbsp;&nbsp;&nbsp;&nbsp;`repository: bitnami/kubectl`<br>&nbsp;&nbsp;&nbsp;&nbsp;`tag: latest`<br>&nbsp;&nbsp;&nbsp;&nbsp;`pullPolicy: Always` |
 
 |
 
@@ -62,11 +63,11 @@ In addition, the version changes and necessary migration information are provide
 
 For more information about the Hybrid Approach, refer to the official Intershop PWA [Hybrid Approach](https://github.com/intershop/intershop-pwa/blob/develop/docs/concepts/hybrid-approach.md) documentation.
 
-| Name | Description | Example Value |
-| ------------------------ | --------------------------------------------------------------------------------------\_ | ------------------------------------ |
-| `hybrid.enabled` | Enable or disable Hybrid Approach deployment | `true` |
-| `hybrid.icmInternalURL` | ICM Web Adapter service internal Kubernetes URL | `https://kubernetes-icm-web-wa:8443` |
-| `hybrid.pwaExternalPort` | The PWA's external port that will be forwarded to the Responsive Starter Store requests | `443` |
+| Name                     | Description                                                                             | Example Value                        |
+| ------------------------ | --------------------------------------------------------------------------------------- | ------------------------------------ |
+| `hybrid.enabled`         | Enable or disable Hybrid Approach deployment                                            | `true`                               |
+| `hybrid.icmInternalURL`  | ICM Web Adapter service internal Kubernetes URL                                         | `https://kubernetes-icm-web-wa:8443` |
+| `hybrid.pwaExternalPort` | The PWA's external port that will be forwarded to the Responsive Starter Store requests | `443`                                |
 
 ## Shared Redis Cache
 
@@ -96,11 +97,10 @@ The cache reset job is a Helm post-upgrade hook that automatically restarts the 
 This ensures that any cached content is cleared, preventing stale data from being served after PWA SSR container updates.
 
 > [!NOTE]
-> The cache reset job is used as an alternative to the cache init container in `RollingUpdate` and multi Pod deployments.
-> If `cache.init.enabled` is `true`, the init container waits for the PWA SSR service to be ready before starting the nginx/cache service.
-> However, this only works as intended with the `Recreate` update strategy where no previous SSR Pods can render results that will be cached by new nginx Pods.
+> The cache reset job a replacement for the cache init container functionality that was removed with PWA Helm Chart 0.12.0 since it did not work as intended in `RollingUpdate` and multi Pod deployments.
+> If `cache.init.enabled` was `true`, the init container waited for the PWA SSR service to be ready before starting the nginx/cache service.
+> However, this only worked as intended with the `Recreate` update strategy where no previous SSR Pods could render results that would be cached by new nginx Pods.
 > The reset job circumvents this problem by performing a `kubectl rollout restart` on the cache deployments after all SSR Pods are started successfully and the old SSR Pods are deleted.
-> For this reason, the `cache.init` feature should be disabled when the `cache.reset` feature is enabled.
 
 The job is executed only when `cache.reset.enabled` is set to `true`.
 It creates the necessary RBAC resources (ServiceAccount, Role, and RoleBinding) with permissions to restart the specific cache deployment.
@@ -111,13 +111,16 @@ Example configuration:
 cache:
   reset:
     enabled: true
-    image: bitnami/kubectl
+    image:
+      repository: bitnami/kubectl
+      tag: latest
+      pullPolicy: Always
 ```
 
-| Property  | Description                                                         | Default           |
-| --------- | ------------------------------------------------------------------- | ----------------- |
-| `enabled` | Enable or disable the cache reset job after upgrade                 | `false`           |
-| `image`   | Docker image containing `kubectl` for executing the restart command | `bitnami/kubectl` |
+| Property  | Description                                                         | Default                                                                                                           |
+| --------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `enabled` | Enable or disable the cache reset job after upgrade                 | `false`                                                                                                           |
+| `image`   | Docker image containing `kubectl` for executing the restart command | `repository: ishcp.azurecr.io/ishops/cronjob-utils`<br>&nbsp;&nbsp;`tag: "1"`<br>&nbsp;&nbsp;`pullPolicy: Always` |
 
 When enabled, the job runs automatically after each `helm upgrade` operation, ensuring the cache is fresh and consistent with the latest PWA SSR container deployment.
 

@@ -151,7 +151,9 @@ cache:
   ## @param reset Enable cache reset job after upgrade
   ## reset:
   ##   enabled: true
-  ##   image: bitnami/kubectl
+  ##   image:
+  ##     repository: bitnami/kubectl
+  ##     tag: latest
   reset:
     enabled: true
     image:
