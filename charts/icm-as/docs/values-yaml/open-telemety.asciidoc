@@ -1,0 +1,84 @@
+= `values.yaml` Attributes in Section `openTelemetry`
+
+:icons: font
+
+:mandatory: image:../images/mandatory.webp[]
+:optional: image:../images/optional.webp[]
+:conditional: image:../images/conditional.webp[]
+
+_@Since chart version 2.13.0_
+
+_@Since `icm-as` version 14.3.0, previous `icm-as` versions do not the Open Telemetry Java agent_
+
+== Description
+
+Configures the monitoring using https://opentelemetry.io/docs/specs/otel/overview/[Oepen Telemetry]. The following attributes are available:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|enabled|enable or disable the OpenTelemetry Java agent to monitor the icm-as JVM (some data is monitored through the Kubernetes OpenTelemetry Agent even if `enabled=false`, must be `false` if `newrelic.enabled=true`)|boolean|{optional}|`false`
+|exporterEndpoint|set the exporter endpoint to be used|boolean|{optional}|`http://nr-otel-dep-rec-collector-headless.opentelemetry.svc.cluster.local:4318`
+|metrics|configuration regarding metrics|<<_metricsType,Metrics>>|{optional}|see _<<_metricsDefault,++<++metrics default++>++>>_
+|traces|configuration regarding traces|<<_tracesType,Traces>>|{optional}|see _<<_tracesDefault,++<++traces default++>++>>_
+|===
+
+[TIP]
+====
+The OpenTelemetry configuration generated from configured values will use the `app.kubernetes.io/instance`-label of the icm-as deployment as the `app_name`. This will connect collected log and metrics with the https://newrelic.com/de/blog/best-practices/what-is-apm[APM]-data.
+====
+
+[#_metricsType]
+=== Type `Metrics`
+
+The `Metrics` type contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|enabled|enables/disables the metrics data collection|boolean|{optional}|`true`
+|===
+
+[#_tracesType]
+=== Type `Traces`
+
+The `Traces` type contains the following attributes:
+
+[cols="1,3,1,1,1",options="header"]
+|===
+|Attribute |Description |Type |Mandatory |Default Value
+|enabled|enables/disables the traces data collection|boolean|{optional}|`false`
+|===
+
+=== Example
+
+[source,yaml]
+----
+newrelic:
+  enabled: true <1>
+  metrics:
+    enabled: true <2>
+  traces:
+    enabled: true <3>
+----
+<1> Enable New Relic monitoring
+<2> Enable metrics monitoring
+<3> Enable traces monitoring
+
+=== Defaults
+
+[#_metricsDefault]
+.Default `metrics`
+[source,yaml]
+----
+metrics:
+  enabled: true
+----
+
+[#_tracesDefault]
+.Default `traces`
+[source,yaml]
+----
+traces:
+  enabled: false
+----
