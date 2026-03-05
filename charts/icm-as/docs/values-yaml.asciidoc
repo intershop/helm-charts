@@ -34,6 +34,7 @@ The following table gives a short overview about the different sections (sorted 
 |link:values-yaml/jvm.asciidoc[jvm]|`icm-as-server` JVM configuration
 |link:values-yaml/mssql.asciidoc[mssql]|Deployment of an MSSQL database inside a separate pod
 |link:values-yaml/newrelic.asciidoc[newrelic]|New Relic configuration
+|link:values-yaml/open-telemetry.asciidoc[openTelemetry]|Open telemetry configuration
 |link:values-yaml/operational-context.asciidoc[operationalContext]|Operational context configuration
 |link:values-yaml/page-cache-invalidation.asciidoc[pageCacheInvalidation]|Page cache invalidation during deployment
 |link:values-yaml/persistence.asciidoc[persistence]|Persistence / volumes configuration
