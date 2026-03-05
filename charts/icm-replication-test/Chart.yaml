@@ -6,7 +6,7 @@ name: icm-replication-test
 version: 1.2.1
 annotations:
   requestedMemoryQuota: 9Gi
-  requestedCpuQuotaInMinutes: 3000
+  requestedCpuQuotaInMinutes: 2000
 dependencies:
   - name: icm-test
     version: 1.2.1
