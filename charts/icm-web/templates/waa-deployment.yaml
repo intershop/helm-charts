@@ -44,6 +44,9 @@ spec:
         aadpodidbinding: {{ .Values.agent.podBinding.binding }}
         {{- end }}
     spec:
+      {{- if .Values.nodeName }}
+      nodeName: {{ .Values.nodeName }}
+      {{- end }}
       {{- if .Values.nodeSelector}}
       nodeSelector:
         {{- toYaml .Values.nodeSelector | trim | nindent 8 }}

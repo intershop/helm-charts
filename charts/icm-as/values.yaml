@@ -12,6 +12,9 @@ updateStrategy: RollingUpdate
 nodeSelector: {}
 #  agentpool: <your agentpool>
 
+# pin pods to a specific node (optional, leave empty to use scheduler)
+nodeName: ""
+
 # define custom annotations for deployment and pods:
 deploymentAnnotations: {}
 #  myAnnotation: true

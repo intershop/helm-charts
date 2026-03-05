@@ -4,6 +4,7 @@ icm-test:
 
   icm:
     icm-as:
+      nodeName: "${NODENAME}"
       nodeSelector:
         agentpool: agentpool2
       infrastructureMonitoring:
@@ -92,6 +93,7 @@ icm-test:
         license_key: "${NEWRELIC_LICENSE_KEY}"
 
     icm-web:
+      nodeName: "${NODENAME}"
       nodeSelector:
         agentpool: agentpool2
       resources:
@@ -222,6 +224,7 @@ icm-test:
 
   testrunner:
     initContainerDomainName: "${HELM_JOB_NAME}.${DNS_ZONE_NAME}"
+    nodeName: "${NODENAME}"
     nodeSelector:
       agentpool: agentpool2
     image:

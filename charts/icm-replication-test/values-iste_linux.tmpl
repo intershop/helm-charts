@@ -4,6 +4,7 @@ icm-edit:
 
   icm:
     icm-as:
+      nodeName: "${NODENAME}"
       nodeSelector:
         agentpool: agentpool2
       infrastructureMonitoring:
@@ -90,6 +91,7 @@ icm-edit:
         license_key: "${NEWRELIC_LICENSE_KEY}"
 
     icm-web:
+      nodeName: "${NODENAME}"
       nodeSelector:
         agentpool: agentpool2
       resources:
@@ -147,6 +149,7 @@ icm-live:
 
   icm:
     icm-as:
+      nodeName: "${NODENAME}"
       nodeSelector:
         agentpool: agentpool2
       infrastructureMonitoring:
@@ -233,6 +236,7 @@ icm-live:
         license_key: "${NEWRELIC_LICENSE_KEY}"
 
     icm-web:
+      nodeName: "${NODENAME}"
       nodeSelector:
         agentpool: agentpool2
       resources:
@@ -361,6 +365,7 @@ icm-live:
   testrunner:
     initContainerDomainNameLive: "${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}"
     initContainerDomainNameEdit: "${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}"
+    nodeName: "${NODENAME}"
     nodeSelector:
       agentpool: agentpool2
     image:

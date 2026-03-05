@@ -15,6 +15,9 @@ spec:
         app.kubernetes.io/name: {{ template "icm-test.fullname" . }}-testrunner
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      {{- if .Values.testrunner.nodeName }}
+      nodeName: {{ .Values.testrunner.nodeName }}
+      {{- end }}
       {{- if .Values.testrunner.affinity}}
       affinity:
         {{- toYaml .Values.testrunner.affinity | trim | nindent 8 }}

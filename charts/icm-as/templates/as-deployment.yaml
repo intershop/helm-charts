@@ -48,6 +48,9 @@ spec:
       {{- if include "icm-as.serviceAccount.podSpec" . -}}
         {{- include "icm-as.serviceAccount.podSpec" . | nindent 6 }}
       {{- end }}
+      {{- if .Values.nodeName }}
+      nodeName: {{ .Values.nodeName }}
+      {{- end }}
       {{- if include "icm-as.nodeSelector" . }}
         {{- include "icm-as.nodeSelector" . | nindent 6 }}
       {{- end }}

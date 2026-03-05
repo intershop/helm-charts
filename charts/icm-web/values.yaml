@@ -6,6 +6,9 @@
 nodeSelector: {}
 #  agentpool: <your agentpool>
 
+# pin pods to a specific node (optional, leave empty to use scheduler)
+nodeName: ""
+
 # operational context (~= environment) this icm is running in
 operationalContext:
   #   id of the customer e.g. xxxxx

@@ -4,7 +4,7 @@ name: icm-test
 version: 1.2.1
 annotations:
   requestedMemoryQuota: 6000Mi
-  requestedCpuQuotaInMinutes: "2200"
+  requestedCpuQuotaInMinutes: "2000"
 dependencies:
   - name: icm
     version: 2.18.0
