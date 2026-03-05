@@ -1,6 +1,6 @@
 {{- if .Values.newrelic.enabled -}}
 {{- if .Values.openTelemetry.enabled -}}
-  {{- fail "Error: newrelic.enabled is true so value openTelemetry.enabled can not be true at the same time." -}}
+  {{- fail "Error: newrelic.enabled is true so value openTelemetry.enabled must not be true at the same time." -}}
 {{- end -}}
 apiVersion: v1
 kind: ConfigMap

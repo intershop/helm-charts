@@ -81,10 +81,10 @@ openTelemetry:
   # set the exporter endpoint to be used (optional, default="http://nr-otel-dep-rec-collector-headless.opentelemetry.svc.cluster.local:4318")
   exporterEndpoint:
   metrics:
-    # fine grade possibility to enable/disable metrics for cost reduction (optional, default=true)
+    # fine-grained option to enable/disable metrics for cost reduction (optional, default=true)
     enabled: true
   traces:
-    # fine grade possibility to enable/disable traces for cost reduction (optional, default=false)
+    # fine-grained option to enable/disable traces for cost reduction (optional, default=false)
     enabled: false
 
 # configuration related to New Relic
@@ -101,10 +101,10 @@ newrelic:
   #  name: <your-company-prd-secrets>
   #  key: <licenseKey>
   metrics:
-    # fine grade possibility to disable metrics for cost reduction
+    # fine-grained option to disable metrics for cost reduction
     enabled: true
   apm:
-    # fine grade possibility to disable apm for cost reduction
+    # fine-grained option to disable apm for cost reduction
     enabled: true
 
 # configuration for metrics about infrastructure components

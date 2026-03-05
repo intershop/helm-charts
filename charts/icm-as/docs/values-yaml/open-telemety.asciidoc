@@ -8,11 +8,11 @@
 
 _@Since chart version 2.13.0_
 
-_@Since `icm-as` version 14.3.0, previous `icm-as` versions do not the Open Telemetry Java agent_
+_@Since `icm-as` version 14.3.0, previous `icm-as` versions do not support the Open Telemetry Java agent_
 
 == Description
 
-Configures the monitoring using https://opentelemetry.io/docs/specs/otel/overview/[Oepen Telemetry]. The following attributes are available:
+Configures the monitoring using https://opentelemetry.io/docs/specs/otel/overview/[Open Telemetry]. The following attributes are available:
 
 [cols="1,3,1,1,1",options="header"]
 |===

@@ -132,13 +132,13 @@ Creates the environment openTelemetry section
 - name: OTEL_RESOURCE_ATTRIBUTES
   value: k8s.namespace.name=$(K8S_NAMESPACE)
 - name: OTEL_EXPORTER_OTLP_ENDPOINT
-  value: {{ default "http://nr-otel-dep-rec-collector-headless.opentelemetry.svc.cluster.local:4318" .Values.openTelemetry.exporterEndpoint }}
+  value: {{ default "http://nr-otel-dep-rec-collector-headless.opentelemetry.svc.cluster.local:4318" .Values.openTelemetry.exporterEndpoint | quote }}
 - name: OTEL_METRICS_EXPORTER
 {{- if dig "metrics" "enabled" true .Values.openTelemetry }}
   value: "otlp"
 {{- else }}
   value: "none"
-{{- end }}{{/* if dig "metrics" "enabled" false .Values.openTelemetry */}}
+{{- end }}{{/* if dig "metrics" "enabled" true .Values.openTelemetry */}}
 - name: OTEL_TRACES_EXPORTER
 {{- if dig "traces" "enabled" false .Values.openTelemetry }}
   value: "otlp"

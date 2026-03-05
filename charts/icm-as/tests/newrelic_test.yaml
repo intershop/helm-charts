@@ -196,4 +196,4 @@ tests:
     template: templates/config-newrelic-yaml-cm.yaml
     asserts:
       - failedTemplate:
-          errorMessage: "Error: newrelic.enabled is true so value openTelemetry.enabled can not be true at the same time."
+          errorMessage: "Error: newrelic.enabled is true so value openTelemetry.enabled must not be true at the same time."
