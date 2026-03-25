@@ -12,7 +12,7 @@ This document describes how to run the ICM Test Chart locally using Docker Deskt
 
 === 1. Switch kubectl context to local Docker
 
-Start Docker Desktop and ensure it is running with Kubernetes. Then, switch your kubectl context to Docker Desktop using the following command.
+Start Docker Desktop and ensure it is running with Kubernetes. It is recommended to use kubeadm as the cluster type. Then, switch your kubectl context to Docker Desktop using the following command.
 
 [source,bash]
 ----
