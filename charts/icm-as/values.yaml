@@ -453,6 +453,16 @@ mssql:
       local:
         path: <local mssql backup folder>
 
+# Restore database from a dump file found in a dumpfile directory
+dumpfileRestore:
+  enabled: false
+  # Path to directory containing the .dmp or .bak file
+  dumpfileDir: <dumpfile directory>
+  image:
+    repository: <repository for restore job>
+  # Max seconds to wait for MSSQL to become ready
+  waitTimeout: <timeout for MSSQL readiness>
+
 # allows it to copy the sites dir which is needed for our test execution
 copySitesDir:
   enabled: false

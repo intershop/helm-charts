@@ -36,6 +36,22 @@ volumes:
 {{- end }}
 - name: customizations-volume
   emptyDir: {}
+{{- if and .Values.mssql.enabled .Values.dumpfileRestore.enabled }}
+- name: mssql-backup-volume
+{{- if eq .Values.mssql.persistence.backup.type "local" }}
+  persistentVolumeClaim:
+    claimName: "{{ template "icm-as.fullname" . }}-local-mssql-db-backup-pvc"
+{{- else if eq .Values.mssql.persistence.backup.type "existingClaim" }}
+  persistentVolumeClaim:
+    claimName: "{{ .Values.mssql.persistence.backup.existingClaim }}"
+{{- else if eq .Values.mssql.persistence.backup.type "nfs" }}
+  persistentVolumeClaim:
+    claimName: "{{ template "icm-as.fullname" . }}-nfs-mssql-db-backup-pvc"
+{{- else if eq .Values.mssql.persistence.backup.type "cluster" }}
+  persistentVolumeClaim:
+    claimName: "{{ template "icm-as.fullname" . }}-cluster-mssql-db-backup-pvc"
+{{- end }}
+{{- end }}
 {{- if .Values.sslCertificateRetrieval.enabled }}
 - name: secrets-store-inline
   csi:
