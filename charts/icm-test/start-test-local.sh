@@ -31,6 +31,7 @@ fi
 
 read -e -p 'Base path of your local folder mount: ' -i '/run/desktop/mnt/host/d/tmp/pv' LOCAL_MOUNT_BASE
 read -e -p 'The pull secret for the icm-as+testrunner image (e.g. dockerhub or icmbuildsnapshot): ' -i 'dockerhub' ICM_AS_PULL_SECRET
+read -e -p 'The pull secret for the mssql image (e.g dockerhub): ' -i 'dockerhub' MSSQL_PULL_SECRET
 read -e -p 'The pull secret for the icm-wa+waa image: ' -i 'dockerhub' ICM_WEB_PULL_SECRET
 set +o allexport
 

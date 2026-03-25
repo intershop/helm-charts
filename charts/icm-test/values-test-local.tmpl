@@ -3,6 +3,7 @@ icm:
     nodeSelector: null
     imagePullSecrets:
     - "${ICM_AS_PULL_SECRET}"
+    - "${MSSQL_PULL_SECRET}"
     persistence:
       sites:
         size: 2Gi
