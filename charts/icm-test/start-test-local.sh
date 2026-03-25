@@ -45,7 +45,21 @@ envsubst "${env_list}" < ./values-test-local.tmpl | tee values-test-local.yaml
 # create needed folders
 source ./scripts/start-test-local_dir-create.sh
 
-helm dependency update ../icm-as # wait for https://github.com/helm/helm/issues/2247
-helm dependency update ../icm
-helm dependency update .
+# Copy dumpfile directory into testdata so it's available at /data/dumpfile in the container
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+PROJECT_ROOT=$(cd "$SCRIPT_DIR/../.." && pwd)
+if [ -d "$PROJECT_ROOT/dumpfile" ]; then
+  echo "Copying dumpfile directory into testdata..."
+  TESTDATA_BASE=$LOCAL_MOUNT_BASE/testdata
+  VIRT_TYPE=$(systemd-detect-virt 2>/dev/null || echo "none")
+  if [ "$VIRT_TYPE" = "wsl" ]; then
+    TESTDATA_BASE=$(echo "$TESTDATA_BASE" | sed "s|/run/desktop/mnt/host|/mnt|")
+  fi
+  mkdir -p "$TESTDATA_BASE/dumpfile"
+  cp -v "$PROJECT_ROOT"/dumpfile/*.dmp "$PROJECT_ROOT"/dumpfile/*.bak "$TESTDATA_BASE/dumpfile/" 2>/dev/null || exit 1
+  echo "Dumpfile copy complete."
+else
+  echo "No dumpfile directory found at $PROJECT_ROOT/dumpfile, skipping copy."
+fi
+
 helm upgrade --install ${HELM_DRY_RUN} ${HELM_JOB_NAME} . -f ./values-iste_linux.yaml -f ./values-test-local.yaml
