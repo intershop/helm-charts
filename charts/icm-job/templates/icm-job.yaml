@@ -66,7 +66,13 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  creationTimestamp: null
+  labels:
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: project
+    app.kubernetes.io/instance: manager-role
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/part-of: project
   name: icm-manager-role
 rules:
 - apiGroups:
@@ -117,6 +123,13 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: project
+    app.kubernetes.io/instance: metrics-reader
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/part-of: project
   name: icm-metrics-reader
 rules:
 - nonResourceURLs:
@@ -166,6 +179,13 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  labels:
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: project
+    app.kubernetes.io/instance: metrics-auth-rolebinding
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: clusterrolebinding
+    app.kubernetes.io/part-of: project
   name: icm-metrics-auth-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -247,7 +267,14 @@ spec:
         - --leader-elect
         - --health-probe-bind-address=:8081
         - --metrics-bind-address=:8443
-        image: "{{ .Values.image.repository }}{{ if not (contains ":" .Values.image.repository) }}:{{ .Values.image.tag | default .Chart.AppVersion }}{{ end }}"
+        {{- $repository := .Values.image.repository -}}
+        {{- $tag := (.Values.image.tag | default .Chart.AppVersion) -}}
+        {{- $imageName := (splitList "/" $repository | last) -}}
+        {{- if contains ":" $imageName }}
+        image: "{{ $repository }}"
+        {{- else }}
+        image: "{{ $repository }}:{{ $tag }}"
+        {{- end }}
         imagePullPolicy: {{ .Values.image.imagePullPolicy | default "IfNotPresent"}}
         name: manager
         securityContext:
