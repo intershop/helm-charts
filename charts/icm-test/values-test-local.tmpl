@@ -14,12 +14,12 @@ icm:
         enabled: true
         existingClaim: ${HELM_JOB_NAME}-local-testdata-pvc
         mountPoint: /data
-      dumpfileRestore:
-        enabled: true
-        dumpfileDir: /data/dumpfile
-        image:
-          repository: mcr.microsoft.com/mssql-tools:latest
-        waitTimeout: 120
+    dumpfileRestore:
+      enabled: true
+      dumpfileDir: /data/dumpfile
+      image:
+        repository: mcr.microsoft.com/mssql-tools:latest
+      waitTimeout: 120
     mssql:
       enabled: true
       acceptEula: "Y"
