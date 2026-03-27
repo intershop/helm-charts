@@ -57,7 +57,7 @@ if [ -d "$PROJECT_ROOT/dumpfile" ]; then
     TESTDATA_BASE=$(echo "$TESTDATA_BASE" | sed "s|/run/desktop/mnt/host|/mnt|")
   fi
   mkdir -p "$TESTDATA_BASE/dumpfile"
-  cp -v "$PROJECT_ROOT"/dumpfile/*.dmp "$PROJECT_ROOT"/dumpfile/*.bak "$TESTDATA_BASE/dumpfile/" 2>/dev/null || exit 1
+  cp -v "$PROJECT_ROOT"/dumpfile/*.dmp "$TESTDATA_BASE/dumpfile/" 2>/dev/null || exit 1
   echo "Dumpfile copy complete."
 else
   echo "No dumpfile directory found at $PROJECT_ROOT/dumpfile, skipping copy."
