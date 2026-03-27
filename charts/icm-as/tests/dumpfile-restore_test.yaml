@@ -1,0 +1,234 @@
+suite: tests dumpfileRestore init-container and mssql-backup-volume
+templates:
+  - templates/as-deployment.yaml
+tests:
+  # ------------------------------------------------------------------
+  # Default: dumpfileRestore is disabled → init-container & volume absent
+  # ------------------------------------------------------------------
+  - it: db-restore-from-dumpfile init-container is absent by default
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      mssql.enabled: true
+    asserts:
+      - notContains:
+          path: spec.template.spec.initContainers
+          content:
+            name: db-restore-from-dumpfile
+          any: true
+      - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: mssql-backup-volume
+          any: true
+
+  # ------------------------------------------------------------------
+  # dumpfileRestore.enabled but mssql.enabled=false → absent
+  # ------------------------------------------------------------------
+  - it: db-restore-from-dumpfile is absent when mssql is disabled
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      mssql.enabled: false
+      dumpfileRestore.enabled: true
+      dumpfileRestore.dumpfileDir: /dumps
+      dumpfileRestore.image.repository: mcr.microsoft.com/mssql-tools
+      dumpfileRestore.waitTimeout: 60
+    asserts:
+      - notContains:
+          path: spec.template.spec.initContainers
+          content:
+            name: db-restore-from-dumpfile
+          any: true
+      - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: mssql-backup-volume
+          any: true
+
+  # ------------------------------------------------------------------
+  # type=local (default)
+  # ------------------------------------------------------------------
+  - it: renders mssql-backup-volume with type=local
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      mssql.enabled: true
+      mssql.persistence.backup.type: local
+      dumpfileRestore.enabled: true
+      dumpfileRestore.dumpfileDir: /dumps
+      dumpfileRestore.image.repository: mcr.microsoft.com/mssql-tools
+      dumpfileRestore.waitTimeout: 60
+    asserts:
+      - contains:
+          path: spec.template.spec.initContainers
+          content:
+            name: db-restore-from-dumpfile
+          any: true
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: mssql-backup-volume
+            persistentVolumeClaim:
+              claimName: "icm-as-local-mssql-db-backup-pvc"
+
+  # ------------------------------------------------------------------
+  # type=existingClaim
+  # ------------------------------------------------------------------
+  - it: renders mssql-backup-volume with type=existingClaim
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      mssql.enabled: true
+      mssql.persistence.backup.type: existingClaim
+      mssql.persistence.backup.existingClaim: my-existing-claim
+      dumpfileRestore.enabled: true
+      dumpfileRestore.dumpfileDir: /dumps
+      dumpfileRestore.image.repository: mcr.microsoft.com/mssql-tools
+      dumpfileRestore.waitTimeout: 60
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: mssql-backup-volume
+            persistentVolumeClaim:
+              claimName: "my-existing-claim"
+
+  # ------------------------------------------------------------------
+  # type=azurefiles
+  # ------------------------------------------------------------------
+  - it: renders mssql-backup-volume with type=azurefiles
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      mssql.enabled: true
+      mssql.persistence.backup.type: azurefiles
+      mssql.persistence.backup.azurefiles.shareName: backup-share
+      mssql.persistence.backup.azurefiles.secretName: backup-secret
+      dumpfileRestore.enabled: true
+      dumpfileRestore.dumpfileDir: /dumps
+      dumpfileRestore.image.repository: mcr.microsoft.com/mssql-tools
+      dumpfileRestore.waitTimeout: 60
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: mssql-backup-volume
+            azureFile:
+              secretName: backup-secret
+              shareName: backup-share
+              readOnly: false
+
+  # ------------------------------------------------------------------
+  # type=nfs
+  # ------------------------------------------------------------------
+  - it: renders mssql-backup-volume with type=nfs
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      mssql.enabled: true
+      mssql.persistence.backup.type: nfs
+      dumpfileRestore.enabled: true
+      dumpfileRestore.dumpfileDir: /dumps
+      dumpfileRestore.image.repository: mcr.microsoft.com/mssql-tools
+      dumpfileRestore.waitTimeout: 60
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: mssql-backup-volume
+            persistentVolumeClaim:
+              claimName: "icm-as-nfs-mssql-db-backup-pvc"
+
+  # ------------------------------------------------------------------
+  # type=cluster
+  # ------------------------------------------------------------------
+  - it: renders mssql-backup-volume with type=cluster
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      mssql.enabled: true
+      mssql.persistence.backup.type: cluster
+      dumpfileRestore.enabled: true
+      dumpfileRestore.dumpfileDir: /dumps
+      dumpfileRestore.image.repository: mcr.microsoft.com/mssql-tools
+      dumpfileRestore.waitTimeout: 60
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: mssql-backup-volume
+            persistentVolumeClaim:
+              claimName: "icm-as-cluster-mssql-db-backup-pvc"
+
+  # ------------------------------------------------------------------
+  # unknown type → fail fast
+  # ------------------------------------------------------------------
+  - it: fails on unknown mssql.persistence.backup.type
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      mssql.enabled: true
+      mssql.persistence.backup.type: bogus
+      dumpfileRestore.enabled: true
+      dumpfileRestore.dumpfileDir: /dumps
+      dumpfileRestore.image.repository: mcr.microsoft.com/mssql-tools
+      dumpfileRestore.waitTimeout: 60
+    asserts:
+      - failedTemplate:
+          errorMessage: "Unsupported mssql.persistence.backup.type: bogus (supported: local, existingClaim, azurefiles, nfs, cluster)"
+
+  # ------------------------------------------------------------------
+  # volumeMount on the init-container
+  # ------------------------------------------------------------------
+  - it: db-restore-from-dumpfile mounts mssql-backup-volume at /mssql-backup
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      mssql.enabled: true
+      dumpfileRestore.enabled: true
+      dumpfileRestore.dumpfileDir: /dumps
+      dumpfileRestore.image.repository: mcr.microsoft.com/mssql-tools
+      dumpfileRestore.waitTimeout: 60
+    asserts:
+      - contains:
+          path: spec.template.spec.initContainers
+          content:
+            name: db-restore-from-dumpfile
+          any: true
