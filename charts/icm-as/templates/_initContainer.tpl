@@ -97,8 +97,7 @@ initContainers:
     DB_NAME="{{ .Values.mssql.databaseName }}"
     echo "Waiting for MSSQL at $MSSQL_HOST to be ready..."
     for i in $(seq 1 {{ .Values.dumpfileRestore.waitTimeout }}); do
-      /opt/mssql-tools/bin/sqlcmd -S "$MSSQL_HOST" -U sa -P "$SA_PASSWORD" -Q "SELECT 1" > /dev/null 2>&1
-      if [ $? -eq 0 ]; then
+      if /opt/mssql-tools/bin/sqlcmd -S "$MSSQL_HOST" -U sa -P "$SA_PASSWORD" -Q "SELECT 1" > /dev/null 2>&1; then
         echo "MSSQL is ready after ${i}s."
         break
       fi
