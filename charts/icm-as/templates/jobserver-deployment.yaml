@@ -26,6 +26,9 @@ metadata:
     {{- if include "icm-as.podBinding" $jobValues }}
       {{- include "icm-as.podBinding" $jobValues | nindent 8 }}
     {{- end }}
+    {{- if include "icm-as.serviceAccount.podLabels" $jobValues -}}
+      {{- include "icm-as.serviceAccount.podLabels" $jobValues | nindent 4 }}
+    {{- end }}
 spec:
   scheduleTimeComputer: {{ include "icm-as.scheduleTimeComputer" $jobValues -}}
   {{- if .Values.job.suspend }}
