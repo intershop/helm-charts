@@ -186,3 +186,14 @@ tests:
       - matchRegex:
           path: data["newrelic.yml"]
           pattern: '(?m)^\W{4}metrics:\n\W{6}enabled: false$'
+
+  - it: should fail if both New Relic and OpenTelemetry are enabled
+    values:
+      - ../values.yaml
+    set:
+      newrelic.enabled: true
+      openTelemetry.enabled: true
+    template: templates/config-newrelic-yaml-cm.yaml
+    asserts:
+      - failedTemplate:
+          errorMessage: "Error: newrelic.enabled is true so value openTelemetry.enabled must not be true at the same time."

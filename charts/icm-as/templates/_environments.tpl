@@ -86,6 +86,7 @@ Purpose is to filter out any duplicated environment assignment when set both on 
   value: "true"
 {{- end }}
 {{- include "icm-as.envNewrelic" . }}
+{{- include "icm-as.envOpenTelemetry" . }}
 {{- include "icm-as.envSecrets" . }}
 {{- include "icm-as.envSecretMounts" . }}
 {{- include "icm-as.envPageCacheInvalidation" . }}
@@ -101,7 +102,7 @@ Creates the environment newrelic section
   value: "true"
 {{- else }}
   value: "false"
-{{- end }}
+{{- end }}{{/* if .Values.newrelic.apm.enabled */}}
 - name: NEW_RELIC_LICENSE_KEY
 {{- /* licenseKeySecretKeyRef has precedence over license_key */ -}}
 {{- if .Values.newrelic.licenseKeySecretKeyRef }}
@@ -110,9 +111,44 @@ Creates the environment newrelic section
 {{- toYaml .Values.newrelic.licenseKeySecretKeyRef | nindent 6 }}
 {{- else }}
   value: "{{ .Values.newrelic.license_key }}"
-{{- end }}
-{{- end }}
-{{- end -}}
+{{- end }}{{/* if .Values.newrelic.licenseKeySecretKeyRef */}}
+{{- end }}{{/* if .Values.newrelic.enabled */}}
+{{- end -}}{{/* define "icm-as.envNewrelic" */}}
+
+{{/*
+Creates the environment openTelemetry section
+*/}}
+{{- define "icm-as.envOpenTelemetry" -}}
+{{- if .Values.openTelemetry.enabled }}
+- name: ENABLE_OTEL
+  value: "true"
+- name: OTEL_SERVICE_NAME
+  value: "{{ template "icm-as.fullname" . }}-appserver"
+- name: K8S_NAMESPACE
+  valueFrom:
+    fieldRef:
+      apiVersion: v1
+      fieldPath: metadata.namespace
+- name: OTEL_RESOURCE_ATTRIBUTES
+  value: k8s.namespace.name=$(K8S_NAMESPACE)
+- name: OTEL_EXPORTER_OTLP_ENDPOINT
+  value: {{ default "http://nr-otel-dep-rec-collector-headless.opentelemetry.svc.cluster.local:4318" .Values.openTelemetry.exporterEndpoint | quote }}
+- name: OTEL_METRICS_EXPORTER
+{{- if dig "metrics" "enabled" true .Values.openTelemetry }}
+  value: "otlp"
+{{- else }}
+  value: "none"
+{{- end }}{{/* if dig "metrics" "enabled" true .Values.openTelemetry */}}
+- name: OTEL_TRACES_EXPORTER
+{{- if dig "traces" "enabled" false .Values.openTelemetry }}
+  value: "otlp"
+{{- else }}
+  value: "none"
+{{- end }}{{/* if dig "traces" "enabled" false .Values.openTelemetry */}}
+- name: OTEL_LOGS_EXPORTER
+  value: "none"{{/* logs are gathered from pods stdout directly */}}
+{{- end }}{{/* if .Values.openTelemetry.enabled */}}
+{{- end -}}{{/* define "icm-as.envOpenTelemetry" */}}
 
 {{/*
 Creates the environment variables for page cache invalidation
