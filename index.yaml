@@ -9937,6 +9937,14 @@ entries:
     version: 0.2.6
   icm-job:
   - apiVersion: v2
+    created: "2026-03-30T10:19:39.852971322Z"
+    description: Intershop Commerce Management - ICM Job Controller
+    digest: d5aa15401ea4ebaf30e1ea0e806717e6e9d73151777109e2ffeca3e73856f2ad
+    name: icm-job
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-job-1.2.0/icm-job-1.2.0.tgz
+    version: 1.2.0
+  - apiVersion: v2
     created: "2023-11-29T08:22:05.517892418Z"
     description: Intershop Commerce Management - ICM Job Controller
     digest: df09c41cdc42a6d6f38a3fdf8ad367c5aaf57b7f139c50671ee0b5f3ef7633fd
@@ -16299,4 +16307,4 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.2.3/pwa-main-0.2.3.tgz
     version: 0.2.3
-generated: "2026-03-30T08:57:08.631205543Z"
+generated: "2026-03-30T10:19:39.854530216Z"
