@@ -30,16 +30,16 @@ webadapter:
 
   # List of ConfigMaps to be mounted as volumes
   configMapMounts: []
-#    # the key will be part of the volume name
-#    - name: httpdConfig
-#      # where to mount the configMap
-#      mountPath: /intershop/conf/
-#      # name of the configMap
-#      configMapName: icm-web-httpd-conf
-#      # name of the file in the configMap
-#      fileName: httpd.conf
-#      # fileMode of the file
-#      fileMode: 440
+  #    # the key will be part of the volume name
+  #    - name: httpdConfig
+  #      # where to mount the configMap
+  #      mountPath: /intershop/conf/
+  #      # name of the configMap
+  #      configMapName: icm-web-httpd-conf
+  #      # name of the file in the configMap
+  #      fileName: httpd.conf
+  #      # fileMode of the file
+  #      fileMode: 440
 
   # provides custom certificates for webadapter
   customSSLCertificates: false
@@ -98,7 +98,7 @@ agent:
   # in some REST-based environment the webadapteragent isn't mandatory
   enabled: true
   image:
-    repository: intershophub/icm-webadapteragent:5.1.0
+    repository: intershophub/icm-webadapteragent:6.0.1
     pullPolicy: IfNotPresent
   # define the number of replicas being deployed (int, > 0, default=1)
   replicaCount: 1
@@ -227,8 +227,7 @@ resources:
 ingress:
   enabled: false
   className: nginx
-  annotations:
-    {}
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   # Paths are treated as list of prefixes. Any URL matching one of the prefixes will
