@@ -36,6 +36,29 @@ volumes:
 {{- end }}
 - name: customizations-volume
   emptyDir: {}
+{{- if and .Values.mssql.enabled .Values.dumpfileRestore.enabled }}
+- name: mssql-backup-volume
+{{- if eq .Values.mssql.persistence.backup.type "local" }}
+  persistentVolumeClaim:
+    claimName: "{{ template "icm-as.fullname" . }}-local-mssql-db-backup-pvc"
+{{- else if eq .Values.mssql.persistence.backup.type "existingClaim" }}
+  persistentVolumeClaim:
+    claimName: "{{ .Values.mssql.persistence.backup.existingClaim }}"
+{{- else if eq .Values.mssql.persistence.backup.type "azurefiles" }}
+  azureFile:
+    secretName: {{ .Values.mssql.persistence.backup.azurefiles.secretName }}
+    shareName: {{ .Values.mssql.persistence.backup.azurefiles.shareName }}
+    readOnly: false
+{{- else if eq .Values.mssql.persistence.backup.type "nfs" }}
+  persistentVolumeClaim:
+    claimName: "{{ template "icm-as.fullname" . }}-nfs-mssql-db-backup-pvc"
+{{- else if eq .Values.mssql.persistence.backup.type "cluster" }}
+  persistentVolumeClaim:
+    claimName: "{{ template "icm-as.fullname" . }}-cluster-mssql-db-backup-pvc"
+{{- else }}
+  {{- fail (printf "Unsupported mssql.persistence.backup.type: %s (supported: local, existingClaim, azurefiles, nfs, cluster)" .Values.mssql.persistence.backup.type) }}
+{{- end }}
+{{- end }}
 {{- if .Values.sslCertificateRetrieval.enabled }}
 - name: secrets-store-inline
   csi:
