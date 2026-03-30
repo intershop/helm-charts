@@ -1,0 +1,129 @@
+suite: tests correctness of openTelemetry section
+templates:
+  - templates/as-deployment.yaml
+tests:
+  - it: openTelemetry is enabled so metrics are enabled by default
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      openTelemetry.enabled: true
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ENABLE_OTEL
+            value: "true"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: OTEL_SERVICE_NAME
+            value: "icm-as-appserver"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: OTEL_RESOURCE_ATTRIBUTES
+            value: "k8s.namespace.name=$(K8S_NAMESPACE)"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: "http://nr-otel-dep-rec-collector-headless.opentelemetry.svc.cluster.local:4318"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: OTEL_METRICS_EXPORTER
+            value: "otlp"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: OTEL_TRACES_EXPORTER
+            value: "none"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: OTEL_LOGS_EXPORTER
+            value: "none"
+
+  - it: openTelemetry is enabled and metrics are disabled
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      openTelemetry.enabled: true
+      openTelemetry.metrics.enabled: false
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: OTEL_METRICS_EXPORTER
+            value: "none"
+
+  - it: openTelemetry is enabled and traces are enabled
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      openTelemetry.enabled: true
+      openTelemetry.traces.enabled: true
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: OTEL_TRACES_EXPORTER
+            value: "otlp"
+
+  - it: openTelemetry is enabled and custom endpoint is set
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      openTelemetry.enabled: true
+      openTelemetry.exporterEndpoint: "http://my-otel-collector:4317"
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: "http://my-otel-collector:4317"
+
+  - it: openTelemetry is disabled (default)
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      openTelemetry.enabled: false
+    template: templates/as-deployment.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ENABLE_OTEL
+            value: "true"

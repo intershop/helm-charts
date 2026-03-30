@@ -74,9 +74,22 @@ jvm:
   # define additional options / parameters to be used to start the jvm (will be appended to options)
   additionalOptions:
 
+# configuration related to New Relic via OpenTelemetry
+openTelemetry:
+  # enable or disable the OpenTelemetry Java agent to monitor the icm-as JVM (optional, default=false, must be false if newrelic.enabled=true)
+  enabled: false
+  # set the exporter endpoint to be used (optional, default="http://nr-otel-dep-rec-collector-headless.opentelemetry.svc.cluster.local:4318")
+  exporterEndpoint:
+  metrics:
+    # fine-grained option to enable/disable metrics for cost reduction (optional, default=true)
+    enabled: true
+  traces:
+    # fine-grained option to enable/disable traces for cost reduction (optional, default=false)
+    enabled: false
+
 # configuration related to New Relic
 newrelic:
-  # enable or disable the New Relic Java agent to monitor the icm-as JVM
+  # enable or disable the New Relic Java agent to monitor the icm-as JVM (optional, default=false, must be false if openTelemetry.enabled=true)
   # https://docs.newrelic.com/docs/kubernetes-pixie/kubernetes-integration/advanced-configuration/link-apm-applications-kubernetes/
   enabled: false
   # provide license key as plain text
@@ -88,10 +101,10 @@ newrelic:
   #  name: <your-company-prd-secrets>
   #  key: <licenseKey>
   metrics:
-    # fine grade possibility to disable metrics for cost reduction
+    # fine-grained option to disable metrics for cost reduction
     enabled: true
   apm:
-    # fine grade possibility to disable apm for cost reduction
+    # fine-grained option to disable apm for cost reduction
     enabled: true
 
 # configuration for metrics about infrastructure components
@@ -234,8 +247,7 @@ environment:
 
 # environment variable secrets to be propagated to the icm-as-container
 # @Deprecated since 2.9.0, replaced by secretMounts with targetEnv provided
-secrets:
-  []
+secrets: []
   # - env: <YOUR_MAIL_PASSWORD> # environment variable key
   #  name: <emailSecrets> # name of the secret, containing the referenced key
   #  key: <smtpPassword> # key within the secret
@@ -453,8 +465,7 @@ copySitesDir:
 ingress:
   enabled: false
   className: null
-  annotations:
-    {}
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   # Paths are treated as list of prefixes. Any URL matching one of the prefixes will
