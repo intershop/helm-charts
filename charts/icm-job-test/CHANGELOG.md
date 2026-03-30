@@ -1,4 +1,26 @@
 
+<a name="icm-job-test-1.5.0"></a>
+## [icm-job-test-1.5.0](https://github.com/intershop/helm-charts/compare/icm-job-test-1.4.1...icm-job-test-1.5.0)
+
+> 2026-03-30
+
+### Features
+
+* **icm:** no monitoring for ISTE needed ([#1193](https://github.com/intershop/helm-charts/issues/1193))
+
+
+<a name="icm-job-test-1.4.1"></a>
+## [icm-job-test-1.4.1](https://github.com/intershop/helm-charts/compare/icm-job-test-1.4.0...icm-job-test-1.4.1)
+
+> 2025-11-20
+
+
+<a name="icm-job-test-1.4.0"></a>
+## [icm-job-test-1.4.0](https://github.com/intershop/helm-charts/compare/icm-job-test-1.3.0...icm-job-test-1.4.0)
+
+> 2025-11-18
+
+
 <a name="icm-job-test-1.3.0"></a>
 ## [icm-job-test-1.3.0](https://github.com/intershop/helm-charts/compare/icm-job-test-1.2.0...icm-job-test-1.3.0)
 

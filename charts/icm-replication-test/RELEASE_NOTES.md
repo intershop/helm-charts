@@ -1,10 +1,10 @@
 
-<a name="icm-replication-test-1.1.0"></a>
-## icm-replication-test-1.1.0
+<a name="icm-replication-test-1.3.0"></a>
+## [icm-replication-test-1.3.0](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.2.1...icm-replication-test-1.3.0)
 
-> 2025-11-17
+> 2026-03-30
 
 ### Features
 
-* **icm:** split up icm test chart ([#1105](https://github.com/intershop/helm-charts/issues/1105))
+* **icm:** no monitoring for ISTE needed ([#1193](https://github.com/intershop/helm-charts/issues/1193))
 
