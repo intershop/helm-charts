@@ -2,8 +2,6 @@ icm-edit:
   icm:
     icm-as:
       nodeSelector: null
-      infrastructureMonitoring:
-        enabled: false
       imagePullSecrets:
       - "${ICM_AS_PULL_SECRET}"
       persistence:
@@ -40,8 +38,6 @@ icm-live:
   icm:
     icm-as:
       nodeSelector: null
-      infrastructureMonitoring:
-        enabled: false
       imagePullSecrets:
       - "${ICM_AS_PULL_SECRET}"
       persistence:
