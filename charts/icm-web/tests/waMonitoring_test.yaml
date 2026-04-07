@@ -1,0 +1,155 @@
+suite: test correctness of waMonitoring configuration
+templates:
+  - templates/wa-deployment.yaml
+tests:
+  - it: should inject wa-monitoring container when enabled
+    set:
+      waMonitoring.enabled: true
+      waMonitoring.image.repository: "intershophub/icm-wa-monitoring-exporter:1.2.0"
+      waMonitoring.appServerUnavailableTimeout: "60s"
+      waMonitoring.scraptingInterval: "10s"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers
+          content:
+            name: icm-web-wa-monitoring
+            image: "intershophub/icm-wa-monitoring-exporter:1.2.0"
+            imagePullPolicy: IfNotPresent
+            env:
+              - name: WA_CONFIG
+                value: "env"
+              - name: WA_TENANT
+                value: "n_a"
+              - name: WA_ENVIRONMENT
+                value: "prd-standalone"
+              - name: WA_SKIP_CERT_VALIDATION
+                value: "true"
+              - name: WA_APP_SERVER_UNAVAILABLE_TIMEOUT
+                value: "60s"
+              - name: WA_LOG
+                value: "/intershop/logs"
+              - name: WA_URI
+                value: "http://RELEASE-NAME-icm-web-wa:8080/INTERSHOP/wastatistics"
+              - name: HTTPD_STATUS_URI
+                value: "http://RELEASE-NAME-icm-web-wa:8080/server-status?auto"
+              - name: SCRAPE_INTERVAL
+                value: "10s"
+            ports:
+              - containerPort: 2112
+                name: metrics
+                protocol: TCP
+            resources:
+              limits:
+                cpu: 100m
+                memory: 100Mi
+              requests:
+                cpu: 100m
+                memory: 100Mi
+            volumeMounts:
+              - mountPath: "/intershop/logs"
+                name: "logs-volume"
+
+  - it: should inject wa-monitoring container with default values
+    asserts:
+      - contains:
+          path: spec.template.spec.containers
+          content:
+            name: icm-web-wa-monitoring
+            image: "intershophub/icm-wa-monitoring-exporter:1.2.0"
+            imagePullPolicy: IfNotPresent
+            env:
+              - name: WA_CONFIG
+                value: "env"
+              - name: WA_TENANT
+                value: "n_a"
+              - name: WA_ENVIRONMENT
+                value: "prd-standalone"
+              - name: WA_SKIP_CERT_VALIDATION
+                value: "true"
+              - name: WA_APP_SERVER_UNAVAILABLE_TIMEOUT
+                value: "30s"
+              - name: WA_LOG
+                value: "/intershop/logs"
+              - name: WA_URI
+                value: "http://RELEASE-NAME-icm-web-wa:8080/INTERSHOP/wastatistics"
+              - name: HTTPD_STATUS_URI
+                value: "http://RELEASE-NAME-icm-web-wa:8080/server-status?auto"
+              - name: SCRAPE_INTERVAL
+                value: "5s"
+            ports:
+              - containerPort: 2112
+                name: metrics
+                protocol: TCP
+            resources:
+              limits:
+                cpu: 100m
+                memory: 100Mi
+              requests:
+                cpu: 100m
+                memory: 100Mi
+            volumeMounts:
+              - mountPath: "/intershop/logs"
+                name: "logs-volume"
+
+  - it: should inject wa-monitoring container with values from operationalContext
+    set:
+      operationalContext.customerId: "acme"
+      operationalContext.environmentType: "uat"
+      operationalContext.stagingType: "live"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers
+          content:
+            name: icm-web-wa-monitoring
+            image: "intershophub/icm-wa-monitoring-exporter:1.2.0"
+            imagePullPolicy: IfNotPresent
+            env:
+              - name: WA_CONFIG
+                value: "env"
+              - name: WA_TENANT
+                value: "acme"
+              - name: WA_ENVIRONMENT
+                value: "uat-live"
+              - name: WA_SKIP_CERT_VALIDATION
+                value: "true"
+              - name: WA_APP_SERVER_UNAVAILABLE_TIMEOUT
+                value: "30s"
+              - name: WA_LOG
+                value: "/intershop/logs"
+              - name: WA_URI
+                value: "http://RELEASE-NAME-icm-web-wa:8080/INTERSHOP/wastatistics"
+              - name: HTTPD_STATUS_URI
+                value: "http://RELEASE-NAME-icm-web-wa:8080/server-status?auto"
+              - name: SCRAPE_INTERVAL
+                value: "5s"
+            ports:
+              - containerPort: 2112
+                name: metrics
+                protocol: TCP
+            resources:
+              limits:
+                cpu: 100m
+                memory: 100Mi
+              requests:
+                cpu: 100m
+                memory: 100Mi
+            volumeMounts:
+              - mountPath: "/intershop/logs"
+                name: "logs-volume"
+
+  - it: should not inject wa-monitoring container when disabled
+    set:
+      waMonitoring.enabled: false
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers
+          content:
+            name: icm-web-wa-monitoring
+
+  - it: should fail if waMonitoring.image.repository is missing
+    set:
+      waMonitoring.enabled: true
+      waMonitoring.image.repository: ""
+    asserts:
+      - failedTemplate:
+          errorMessage: "Error: missing value at waMonitoring.image.repository."

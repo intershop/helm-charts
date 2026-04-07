@@ -76,3 +76,10 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the service
+*/}}
+{{- define "icm-web.waServiceName" -}}
+{{- include "icm-web.fullname" . -}}-wa
+{{- end -}}

@@ -94,6 +94,20 @@ webadapter:
   deploymentLabels: {}
   podLabels: {}
 
+# configure the monoring side car (exposed Prometeus metrics gathered from webadapter) for the webadapter
+waMonitoring:
+  # enable/disable the monitoring (boolean, optional, default=true)
+  enabled: true
+  image:
+    # which image to be used (docker image reference, mandatory)
+    repository: "intershophub/icm-wa-monitoring-exporter:1.2.0"
+    # pull policy for the image (pullPolicy, optional, default="IfNotPresent")
+    pullPolicy: "IfNotPresent"
+  # how long to keep waStatistics related metrics available while the related app server is unavailable (syntax compatible with Go duration, optional, default="30s")
+  appServerUnavailableTimeout: 30s
+  # interval between scraping (metrics update) requests (syntax compatible with Go duration, optional, default="5s")
+  scraptingInterval: 5s
+
 agent:
   # in some REST-based environment the webadapteragent isn't mandatory
   enabled: true

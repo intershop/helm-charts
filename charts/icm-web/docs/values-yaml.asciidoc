@@ -31,5 +31,6 @@ The following table gives a short overview about the different sections (sorted 
 |link:values-yaml/pod-security-context.asciidoc[podSecurityContext]|Pod security context
 |link:values-yaml/resources.asciidoc[resources]|Configures the resource definitions (requests, limits) for the icm-as-server and the jobserver containers
 |link:values-yaml/service.asciidoc[service]|Service configuration
+|link:values-yaml/wa-monitoring.asciidoc[waMonitoring]|Web Adapter monitoring sidecar configuration
 |link:values-yaml/webadapter.asciidoc[webadapter]|Web Adapter (`icm-web-wa`) configuration
 |===
