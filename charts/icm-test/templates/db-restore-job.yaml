@@ -119,12 +119,10 @@ spec:
       {{- if $icmAsValues.copySitesDir.enabled }}
       - name: sites-volume
         {{- if eq $icmAsValues.persistence.sites.type "azurefiles" }}
-        csi:
-          driver: file.csi.azure.com
+        azureFile:
+          secretName: {{ $icmAsValues.persistence.sites.azurefiles.secretName }}
+          shareName: {{ $icmAsValues.persistence.sites.azurefiles.shareName }}
           readOnly: false
-          volumeAttributes:
-            secretName: {{ $icmAsValues.persistence.sites.azurefiles.secretName }}
-            shareName: {{ $icmAsValues.persistence.sites.azurefiles.shareName }}
         {{- else }}
         persistentVolumeClaim:
           claimName: "{{ include "icm-test.icmAsSitesClaimName" . }}"
