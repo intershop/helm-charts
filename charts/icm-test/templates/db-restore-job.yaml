@@ -69,9 +69,9 @@ spec:
             echo "Dumpfile directory $DUMPFILE_DIR does not exist, skipping restore."
             exit 0
           fi
-          DUMPFILE=$(find "$DUMPFILE_DIR" -maxdepth 1 \( -name "*.dmp" -o -name "*.bak" \) 2>/dev/null | head -1)
+          DUMPFILE=$(find "$DUMPFILE_DIR" -maxdepth 1 -name "*.dmp" 2>/dev/null | head -1)
           if [ -z "$DUMPFILE" ]; then
-            echo "No dumpfile found in $DUMPFILE_DIR, skipping restore."
+            echo "No .dmp file found in $DUMPFILE_DIR, skipping restore."
             exit 0
           fi
           echo "Found dumpfile: $DUMPFILE"
