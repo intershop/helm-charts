@@ -1,0 +1,159 @@
+{{- $icmAsValues := index .Values.icm "icm-as" -}}
+{{- if and .Values.test.enabled $icmAsValues.mssql.enabled .Values.dumpfileRestore.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "icm-test.fullname" . }}-db-restore
+  labels:
+    helm.sh/chart: {{ include "icm-test.chart" . }}
+    app.kubernetes.io/name: {{ template "icm-test.fullname" . }}-db-restore
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ template "icm-test.fullname" . }}-db-restore
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      {{- if $icmAsValues.nodeSelector }}
+      nodeSelector:
+        {{- toYaml $icmAsValues.nodeSelector | trim | nindent 8 }}
+      {{- end }}
+      {{- if $icmAsValues.imagePullSecrets }}
+      imagePullSecrets:
+        {{- range $icmAsValues.imagePullSecrets }}
+        - name: {{ . | quote }}
+        {{- end }}
+      {{- end }}
+      restartPolicy: Never
+      {{- if $icmAsValues.copySitesDir.enabled }}
+      initContainers:
+      - name: cp-sites-dir
+        image: "{{ $icmAsValues.image.repository }}{{ if not (contains ":" $icmAsValues.image.repository) }}:{{ $icmAsValues.image.tag | default $.Chart.AppVersion }}{{ end }}"
+        command:
+        - "/bin/sh"
+        - "-c"
+        - |
+          set -x
+          SITES_DIR={{ $icmAsValues.copySitesDir.fromDir }}
+          if [ -d "$SITES_DIR" ]; then
+            SITES_VOL=/intershop
+            cp -r $SITES_DIR $SITES_VOL
+            chmod 777 $SITES_VOL/sites && chown -R {{ $icmAsValues.copySitesDir.chmodUser }}:{{ $icmAsValues.copySitesDir.chmodGroup }} $SITES_VOL/sites
+            find $SITES_VOL -type f > "{{ $icmAsValues.copySitesDir.resultDir }}/sites.txt"
+          fi
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+        volumeMounts:
+        - name: sites-volume
+          mountPath: /intershop/sites
+        {{- if $icmAsValues.persistence.customdata.enabled }}
+        - name: custom-data-volume
+          mountPath: {{ $icmAsValues.persistence.customdata.mountPoint | default "/data" }}
+        {{- end }}
+      {{- end }}
+      containers:
+      - name: db-restore-from-dumpfile
+        image: "{{ .Values.dumpfileRestore.image.repository }}"
+        imagePullPolicy: IfNotPresent
+        command:
+        - "/bin/bash"
+        - "-c"
+        - |
+          set -e
+          DUMPFILE_DIR="{{ .Values.dumpfileRestore.dumpfileDir }}"
+          if [ ! -d "$DUMPFILE_DIR" ]; then
+            echo "Dumpfile directory $DUMPFILE_DIR does not exist, skipping restore."
+            exit 0
+          fi
+          DUMPFILE=$(find "$DUMPFILE_DIR" -maxdepth 1 \( -name "*.dmp" -o -name "*.bak" \) 2>/dev/null | head -1)
+          if [ -z "$DUMPFILE" ]; then
+            echo "No dumpfile found in $DUMPFILE_DIR, skipping restore."
+            exit 0
+          fi
+          echo "Found dumpfile: $DUMPFILE"
+          FILENAME=$(basename "$DUMPFILE")
+          echo "Copying dumpfile to MSSQL backup volume..."
+          cp "$DUMPFILE" /mssql-backup/
+          echo "Dumpfile copied successfully."
+          MSSQL_HOST="{{ include "icm-test.icmAsMssqlServiceName" . }}"
+          SA_PASSWORD="{{ $icmAsValues.mssql.saPassword }}"
+          DB_NAME="{{ $icmAsValues.mssql.databaseName }}"
+          echo "Waiting for MSSQL at $MSSQL_HOST to be ready..."
+          for i in $(seq 1 {{ .Values.dumpfileRestore.waitTimeout }}); do
+            if /opt/mssql-tools/bin/sqlcmd -S "$MSSQL_HOST" -U sa -P "$SA_PASSWORD" -Q "SELECT 1" > /dev/null 2>&1; then
+              echo "MSSQL is ready after ${i}s."
+              break
+            fi
+            if [ "$i" -eq {{ .Values.dumpfileRestore.waitTimeout }} ]; then
+              echo "ERROR: MSSQL did not become ready within {{ .Values.dumpfileRestore.waitTimeout }}s."
+              exit 1
+            fi
+            sleep 1
+          done
+          echo "Restoring database '$DB_NAME' from /var/opt/mssql/backup/$FILENAME..."
+          /opt/mssql-tools/bin/sqlcmd -S "$MSSQL_HOST" -U sa -P "$SA_PASSWORD" -Q "RESTORE DATABASE [$DB_NAME] FROM DISK = N'/var/opt/mssql/backup/$FILENAME' WITH REPLACE"
+          if [ $? -eq 0 ]; then
+            echo "Database restore completed successfully."
+            DB_USER="{{ $icmAsValues.mssql.user }}"
+            DB_PASSWORD="{{ $icmAsValues.mssql.password }}"
+            echo "Fixing database user mapping for $DB_USER..."
+            /opt/mssql-tools/bin/sqlcmd -S "$MSSQL_HOST" -U sa -P "$SA_PASSWORD" -Q "USE [$DB_NAME]; IF NOT EXISTS (SELECT name FROM master.sys.server_principals WHERE name = '$DB_USER') BEGIN CREATE LOGIN [$DB_USER] WITH PASSWORD = '$DB_PASSWORD', CHECK_POLICY = OFF END; IF NOT EXISTS (SELECT name FROM sys.database_principals WHERE name = '$DB_USER') BEGIN CREATE USER [$DB_USER] FOR LOGIN [$DB_USER] END ELSE BEGIN ALTER USER [$DB_USER] WITH LOGIN = [$DB_USER] END; ALTER ROLE [db_owner] ADD MEMBER [$DB_USER];"
+          else
+            echo "ERROR: Database restore failed."
+            exit 1
+          fi
+        volumeMounts:
+        {{- if $icmAsValues.persistence.customdata.enabled }}
+        - name: custom-data-volume
+          mountPath: {{ $icmAsValues.persistence.customdata.mountPoint | default "/data" }}
+        {{- end }}
+        - name: mssql-backup-volume
+          mountPath: /mssql-backup
+        securityContext:
+          runAsUser: 0
+      volumes:
+      {{- if $icmAsValues.copySitesDir.enabled }}
+      - name: sites-volume
+        {{- if eq $icmAsValues.persistence.sites.type "azurefiles" }}
+        csi:
+          driver: file.csi.azure.com
+          readOnly: false
+          volumeAttributes:
+            secretName: {{ $icmAsValues.persistence.sites.azurefiles.secretName }}
+            shareName: {{ $icmAsValues.persistence.sites.azurefiles.shareName }}
+        {{- else }}
+        persistentVolumeClaim:
+          claimName: "{{ include "icm-test.icmAsSitesClaimName" . }}"
+        {{- end }}
+      {{- end }}
+      {{- if $icmAsValues.persistence.customdata.enabled }}
+      - name: custom-data-volume
+        persistentVolumeClaim:
+          claimName: "{{ $icmAsValues.persistence.customdata.existingClaim }}"
+      {{- end }}
+      - name: mssql-backup-volume
+        {{- if eq $icmAsValues.mssql.persistence.backup.type "local" }}
+        persistentVolumeClaim:
+          claimName: "{{ include "icm-test.icmAsMssqlBackupClaimName" . }}"
+        {{- else if eq $icmAsValues.mssql.persistence.backup.type "existingClaim" }}
+        persistentVolumeClaim:
+          claimName: "{{ include "icm-test.icmAsMssqlBackupClaimName" . }}"
+        {{- else if eq $icmAsValues.mssql.persistence.backup.type "azurefiles" }}
+        azureFile:
+          secretName: {{ $icmAsValues.mssql.persistence.backup.azurefiles.secretName }}
+          shareName: {{ $icmAsValues.mssql.persistence.backup.azurefiles.shareName }}
+          readOnly: false
+        {{- else if eq $icmAsValues.mssql.persistence.backup.type "nfs" }}
+        persistentVolumeClaim:
+          claimName: "{{ include "icm-test.icmAsMssqlBackupClaimName" . }}"
+        {{- else if eq $icmAsValues.mssql.persistence.backup.type "cluster" }}
+        persistentVolumeClaim:
+          claimName: "{{ include "icm-test.icmAsMssqlBackupClaimName" . }}"
+        {{- else }}
+        {{- fail (printf "Unsupported mssql.persistence.backup.type: %s (supported: local, existingClaim, azurefiles, nfs, cluster)" $icmAsValues.mssql.persistence.backup.type) }}
+        {{- end }}
+{{- end }}
