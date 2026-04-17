@@ -95,8 +95,7 @@ spec:
             sleep 1
           done
           echo "Restoring database '$DB_NAME' from /var/opt/mssql/backup/$FILENAME..."
-          /opt/mssql-tools/bin/sqlcmd -S "$MSSQL_HOST" -U sa -P "$SA_PASSWORD" -Q "RESTORE DATABASE [$DB_NAME] FROM DISK = N'/var/opt/mssql/backup/$FILENAME' WITH REPLACE"
-          if [ $? -eq 0 ]; then
+          if /opt/mssql-tools/bin/sqlcmd -S "$MSSQL_HOST" -U sa -P "$SA_PASSWORD" -Q "RESTORE DATABASE [$DB_NAME] FROM DISK = N'/var/opt/mssql/backup/$FILENAME' WITH REPLACE"; then
             echo "Database restore completed successfully."
             DB_USER="{{ $icmAsValues.mssql.user }}"
             DB_PASSWORD="{{ $icmAsValues.mssql.password }}"
