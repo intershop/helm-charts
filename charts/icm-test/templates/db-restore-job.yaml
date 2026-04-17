@@ -37,11 +37,11 @@ spec:
         - |
           set -x
           SITES_DIR={{ $icmAsValues.copySitesDir.fromDir }}
+          SITES_VOL=/mnt/sites
           if [ -d "$SITES_DIR" ]; then
-            SITES_VOL=/intershop
-            cp -r $SITES_DIR $SITES_VOL
-            chmod 777 $SITES_VOL/sites && chown -R {{ $icmAsValues.copySitesDir.chmodUser }}:{{ $icmAsValues.copySitesDir.chmodGroup }} $SITES_VOL/sites
-            find $SITES_VOL -type f > "{{ $icmAsValues.copySitesDir.resultDir }}/sites.txt"
+            cp -r "$SITES_DIR"/* "$SITES_VOL"/
+            chmod 777 "$SITES_VOL" && chown -R {{ $icmAsValues.copySitesDir.chmodUser }}:{{ $icmAsValues.copySitesDir.chmodGroup }} "$SITES_VOL"
+            find "$SITES_VOL" -type f > "{{ $icmAsValues.copySitesDir.resultDir }}/sites.txt"
           fi
         imagePullPolicy: IfNotPresent
         securityContext:
@@ -49,7 +49,7 @@ spec:
           runAsGroup: 0
         volumeMounts:
         - name: sites-volume
-          mountPath: /intershop/sites
+          mountPath: /mnt/sites
         {{- if $icmAsValues.persistence.customdata.enabled }}
         - name: custom-data-volume
           mountPath: {{ $icmAsValues.persistence.customdata.mountPoint | default "/data" }}
