@@ -63,4 +63,14 @@ else
   echo "No dumpfile directory found at $PROJECT_ROOT/dumpfile, skipping copy."
 fi
 
+# Update dependencies from source charts if they exist
+# When running standalone with pre-bundled charts/ this is skipped (happens in local execution)
+if [ -d "../icm-as" ]; then
+  helm dependency update ../icm-as # wait for https://github.com/helm/helm/issues/2247
+fi
+if [ -d "../icm" ]; then
+  helm dependency update ../icm
+fi
+helm dependency update .
+
 helm upgrade --install ${HELM_DRY_RUN} ${HELM_JOB_NAME} . -f ./values-iste_linux.yaml -f ./values-test-local.yaml
