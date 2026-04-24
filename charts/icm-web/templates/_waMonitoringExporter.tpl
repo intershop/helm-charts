@@ -22,11 +22,11 @@
   - name: WA_LOG
     value: "/intershop/logs"
   - name: WA_URI
-    value: {{ printf "http://%s:8080/INTERSHOP/wastatistics" (include "icm-web.waServiceName" .) | quote }}
+    value: "http://localhost:8080/INTERSHOP/wastatistics"
   - name: HTTPD_STATUS_URI
-    value: {{ printf "http://%s:8080/server-status?auto" (include "icm-web.waServiceName" .) | quote }}
+    value: "http://localhost:8080/server-status?auto"
   - name: SCRAPE_INTERVAL
-    value: {{ (dig "scraptingInterval" "5s" $waMon) | quote }}
+    value: {{ (dig "scrapingInterval" "5s" $waMon) | quote }}
   ports:
   - name: metrics
     containerPort: 2112

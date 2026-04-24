@@ -22,7 +22,7 @@ The following table lists attributes that are specific to the `waMonitoring` sec
 |Attribute |Description |Type |Mandatory |Default Value
 |enabled|Enable/disable the monitoring sidecar|boolean|{optional}|`true`
 |appServerUnavailableTimeout|How long to keep waStatistics related metrics available while the related app server is unavailable (syntax compatible with Go duration)|string|{optional}|`30s`
-|scraptingInterval|Interval between scraping (metrics update) requests (syntax compatible with Go duration)|string|{optional}|`5s`
+|scrapingInterval|Interval between scraping (metrics update) requests (syntax compatible with Go duration)|string|{optional}|`5s`
 |===
 
 == Example
@@ -32,8 +32,8 @@ The following table lists attributes that are specific to the `waMonitoring` sec
 waMonitoring:
   enabled: true
   image:
-    repository: "intershophub/icm-wa-monitoring-exporter:1.2.0"
+    repository: "intershophub/icm-wa-monitoring-exporter:1.1.0"
     pullPolicy: "IfNotPresent"
   appServerUnavailableTimeout: 30s
-  scraptingInterval: 5s
+  scrapingInterval: 5s
 ----

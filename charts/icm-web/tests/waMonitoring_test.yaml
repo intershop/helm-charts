@@ -7,7 +7,7 @@ tests:
       waMonitoring.enabled: true
       waMonitoring.image.repository: "intershophub/icm-wa-monitoring-exporter:1.2.0"
       waMonitoring.appServerUnavailableTimeout: "60s"
-      waMonitoring.scraptingInterval: "10s"
+      waMonitoring.scrapingInterval: "10s"
     asserts:
       - contains:
           path: spec.template.spec.containers
