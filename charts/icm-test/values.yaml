@@ -7,3 +7,13 @@ test:
         type: local
         local:
           dir: /invaliddir
+
+# Restore database from a dump file found in a dumpfile directory
+dumpfileRestore:
+  enabled: false
+  # Path to directory containing the .dmp or .bak file
+  dumpfileDir: /data/dumpfile
+  image:
+    repository: mcr.microsoft.com/mssql-tools:latest
+  # Max seconds to wait for MSSQL to become ready
+  waitTimeout: 120
