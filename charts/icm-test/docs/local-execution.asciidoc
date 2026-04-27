@@ -12,7 +12,7 @@ This document describes how to run the ICM Test Chart locally using Docker Deskt
 
 === 1. Switch kubectl context to local Docker
 
-Start Docker Desktop and ensure it is running with Kubernetes. Then, switch your kubectl context to Docker Desktop using the following command.
+Start Docker Desktop and ensure it is running with Kubernetes. It is recommended to use kubeadm as the cluster type. Then, switch your kubectl context to Docker Desktop using the following command.
 
 [source,bash]
 ----
@@ -88,8 +88,9 @@ You can now run the `start-test-local.sh` script using `./start-test-local.sh`. 
 . Helm Chart Name: The name of the helm chart as you want to release it. This MUST match the name you set earlier in the hosts file (Step 6).
 . Testsuite: The name of the testsuite you want to run.
 . Test image: The image you want to run your test on. You can either use the default or specify your own. You can get possible images from the ISTE or from Dockerhub. In ISTE: Open the files of a testplan and look for a file called `helm_install_vars.sh`. In there you will find a field called `ICM_TEST_IMAGE`. This is the image name you need to use here.
-. Base path of your local folder mount: This is the path to the persistent volume directories you created earlier.
+. Base path of your local folder mount: This is the path to the persistent volume directories you created earlier. Note: Due to the way local folders are mounted into the docker desktop kubernetes cluster, the path needs to be in the format `/run/desktop/mnt/host/<your_path>`.
 . The pull secret for the icm-as+testrunner image: This is the pull secret from where you want to pull the test image. With default naming conventions this should be `dockerhub`. If you want to pull your image from the azure container registry, this secret needs to be `icmbuildsnapshot`.
+. The pull secret for the MSSQL image: This is the pull secret used to pull the MSSQL database image. With default naming conventions this should be `dockerhub`.
 . The pull secret for the icm-wa+waa image: This is the pull secret for Docker Hub. With default naming conventions this should be `dockerhub`.
 
 The script will also verify if you have correctly configured the kubernetes secrets.
