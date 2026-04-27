@@ -29,9 +29,57 @@ tests:
               - name: WA_LOG
                 value: "/intershop/logs"
               - name: WA_URI
-                value: "http://RELEASE-NAME-icm-web-wa:8080/INTERSHOP/wastatistics"
+                value: "http://localhost:8080/INTERSHOP/wastatistics"
               - name: HTTPD_STATUS_URI
-                value: "http://RELEASE-NAME-icm-web-wa:8080/server-status?auto"
+                value: "http://localhost:8080/server-status?auto"
+              - name: SCRAPE_INTERVAL
+                value: "10s"
+            ports:
+              - containerPort: 2112
+                name: metrics
+                protocol: TCP
+            resources:
+              limits:
+                cpu: 100m
+                memory: 100Mi
+              requests:
+                cpu: 100m
+                memory: 100Mi
+            volumeMounts:
+              - mountPath: "/intershop/logs"
+                name: "logs-volume"
+
+  - it: should support image tag when provided separately
+    set:
+      waMonitoring.enabled: true
+      waMonitoring.image.repository: "intershophub/icm-wa-monitoring-exporter"
+      waMonitoring.image.tag: "customTag"
+      waMonitoring.appServerUnavailableTimeout: "60s"
+      waMonitoring.scrapingInterval: "10s"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers
+          content:
+            name: icm-web-wa-monitoring
+            image: "intershophub/icm-wa-monitoring-exporter:customTag"
+            imagePullPolicy: IfNotPresent
+            env:
+              - name: WA_CONFIG
+                value: "env"
+              - name: WA_TENANT
+                value: "n_a"
+              - name: WA_ENVIRONMENT
+                value: "prd-standalone"
+              - name: WA_SKIP_CERT_VALIDATION
+                value: "true"
+              - name: WA_APP_SERVER_UNAVAILABLE_TIMEOUT
+                value: "60s"
+              - name: WA_LOG
+                value: "/intershop/logs"
+              - name: WA_URI
+                value: "http://localhost:8080/INTERSHOP/wastatistics"
+              - name: HTTPD_STATUS_URI
+                value: "http://localhost:8080/server-status?auto"
               - name: SCRAPE_INTERVAL
                 value: "10s"
             ports:
@@ -55,7 +103,7 @@ tests:
           path: spec.template.spec.containers
           content:
             name: icm-web-wa-monitoring
-            image: "intershophub/icm-wa-monitoring-exporter:1.2.0"
+            image: "intershophub/icm-wa-monitoring-exporter:1.1.0"
             imagePullPolicy: IfNotPresent
             env:
               - name: WA_CONFIG
@@ -71,9 +119,9 @@ tests:
               - name: WA_LOG
                 value: "/intershop/logs"
               - name: WA_URI
-                value: "http://RELEASE-NAME-icm-web-wa:8080/INTERSHOP/wastatistics"
+                value: "http://localhost:8080/INTERSHOP/wastatistics"
               - name: HTTPD_STATUS_URI
-                value: "http://RELEASE-NAME-icm-web-wa:8080/server-status?auto"
+                value: "http://localhost:8080/server-status?auto"
               - name: SCRAPE_INTERVAL
                 value: "5s"
             ports:
@@ -101,7 +149,7 @@ tests:
           path: spec.template.spec.containers
           content:
             name: icm-web-wa-monitoring
-            image: "intershophub/icm-wa-monitoring-exporter:1.2.0"
+            image: "intershophub/icm-wa-monitoring-exporter:1.1.0"
             imagePullPolicy: IfNotPresent
             env:
               - name: WA_CONFIG
@@ -117,9 +165,9 @@ tests:
               - name: WA_LOG
                 value: "/intershop/logs"
               - name: WA_URI
-                value: "http://RELEASE-NAME-icm-web-wa:8080/INTERSHOP/wastatistics"
+                value: "http://localhost:8080/INTERSHOP/wastatistics"
               - name: HTTPD_STATUS_URI
-                value: "http://RELEASE-NAME-icm-web-wa:8080/server-status?auto"
+                value: "http://localhost:8080/server-status?auto"
               - name: SCRAPE_INTERVAL
                 value: "5s"
             ports:

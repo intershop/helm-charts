@@ -1,12 +1,15 @@
 {{/* vim: set filetype=mustache: */}}
 {{- define "icm-wa.monitoringContainer" -}}
 {{- $waMon := default dict .Values.waMonitoring }}
+{{- $waMonImage := dig "image" dict $waMon }}
+{{- $waMonImageRepository := dig "repository" "" $waMonImage }}
+{{- $waMonImageTag := dig "tag" "" $waMonImage }}
 {{- if dig "enabled" true $waMon }}
 - name: "{{ .Chart.Name }}-wa-monitoring"
-  {{- if not (dig "image" "repository" "" $waMon) }}
+  {{- if not $waMonImageRepository }}
     {{- fail "Error: missing value at waMonitoring.image.repository." -}}
   {{- end }}
-  image: {{ $waMon.image.repository | quote }}
+  image: {{- if $waMonImageTag }} {{ printf "%s:%s" $waMonImageRepository $waMonImageTag | quote }}{{- else }} {{ $waMonImageRepository | quote }}{{- end }}
   imagePullPolicy: {{ (dig "image" "pullPolicy" "IfNotPresent" $waMon) | quote }}
   env:
   - name: WA_CONFIG

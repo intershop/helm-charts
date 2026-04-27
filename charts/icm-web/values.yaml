@@ -94,7 +94,7 @@ webadapter:
   deploymentLabels: {}
   podLabels: {}
 
-# configure the monoring side car (exposed Prometeus metrics gathered from webadapter) for the webadapter
+# configure the monitoring side car (exposed Prometeus metrics gathered from webadapter) for the webadapter
 waMonitoring:
   # enable/disable the monitoring (boolean, optional, default=true)
   enabled: true

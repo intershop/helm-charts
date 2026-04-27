@@ -81,5 +81,5 @@ Create the name of the service account to use
 Create the name of the service
 */}}
 {{- define "icm-web.waServiceName" -}}
-{{- include "icm-web.fullname" . -}}-wa
+{{- printf "%s-wa" (include "icm-web.fullname" .) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
