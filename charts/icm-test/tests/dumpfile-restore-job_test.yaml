@@ -1,0 +1,97 @@
+suite: tests dumpfileRestore job
+templates:
+  - templates/db-restore-job.yaml
+tests:
+  - it: db-restore job is absent by default
+    release:
+      name: icm
+    chart:
+      version: 0.8.15
+    values:
+      - ../values-iste_linux.tmpl
+    template: templates/db-restore-job.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: db-restore job renders with local backup pvc
+    release:
+      name: icm
+    chart:
+      version: 0.8.15
+    values:
+      - ../values-iste_linux.tmpl
+      - ../values-test-local.tmpl
+    template: templates/db-restore-job.yaml
+    asserts:
+      - isKind:
+          of: Job
+      - equal:
+          path: metadata.name
+          value: icm-icm-test-db-restore
+      - equal:
+          path: spec.template.spec.containers[0].name
+          value: db-restore-from-dumpfile
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: mcr.microsoft.com/mssql-tools:latest
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: custom-data-volume
+            persistentVolumeClaim:
+              claimName: "${HELM_JOB_NAME}-local-testdata-pvc"
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: mssql-backup-volume
+            persistentVolumeClaim:
+              claimName: "icm-icm-as-local-mssql-db-backup-pvc"
+
+  - it: db-restore job renders azurefiles backup volume
+    release:
+      name: icm
+    chart:
+      version: 0.8.15
+    values:
+      - ../values-iste_linux.tmpl
+    set:
+      icm.icm-as.mssql.enabled: true
+      dumpfileRestore.enabled: true
+      dumpfileRestore.dumpfileDir: /data/dumpfile
+      dumpfileRestore.image.repository: mcr.microsoft.com/mssql-tools
+      dumpfileRestore.waitTimeout: 60
+      icm.icm-as.persistence.customdata.enabled: true
+      icm.icm-as.persistence.customdata.existingClaim: custom-data-claim
+      icm.icm-as.mssql.persistence.backup.type: azurefiles
+      icm.icm-as.mssql.persistence.backup.azurefiles.secretName: backup-secret
+      icm.icm-as.mssql.persistence.backup.azurefiles.shareName: backup-share
+    template: templates/db-restore-job.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: mssql-backup-volume
+            azureFile:
+              secretName: backup-secret
+              shareName: backup-share
+              readOnly: false
+
+  - it: fails on unknown mssql.persistence.backup.type
+    release:
+      name: icm
+    chart:
+      version: 0.8.15
+    values:
+      - ../values-iste_linux.tmpl
+    set:
+      icm.icm-as.mssql.enabled: true
+      dumpfileRestore.enabled: true
+      dumpfileRestore.dumpfileDir: /data/dumpfile
+      dumpfileRestore.image.repository: mcr.microsoft.com/mssql-tools
+      dumpfileRestore.waitTimeout: 60
+      icm.icm-as.mssql.persistence.backup.type: bogus
+    template: templates/db-restore-job.yaml
+    asserts:
+      - failedTemplate:
+          errorMessage: "Unsupported mssql.persistence.backup.type: bogus (supported: local, existingClaim, azurefiles, nfs, cluster)"
