@@ -3,6 +3,7 @@ icm:
     nodeSelector: null
     imagePullSecrets:
     - "${ICM_AS_PULL_SECRET}"
+    - "${MSSQL_PULL_SECRET}"
     persistence:
       sites:
         size: 2Gi
@@ -13,6 +14,12 @@ icm:
         enabled: true
         existingClaim: ${HELM_JOB_NAME}-local-testdata-pvc
         mountPoint: /data
+    copySitesDir:
+      enabled: true
+      fromDir: /intershop/sites
+      resultDir: /data
+      chmodUser: 150
+      chmodGroup: 150
     mssql:
       enabled: true
       acceptEula: "Y"
@@ -52,3 +59,10 @@ testrunner:
       type: local
       local:
         dir: ${LOCAL_MOUNT_BASE}/testdata
+
+dumpfileRestore:
+  enabled: true
+  dumpfileDir: /data/dumpfile
+  image:
+    repository: mcr.microsoft.com/mssql-tools:latest
+  waitTimeout: 120
