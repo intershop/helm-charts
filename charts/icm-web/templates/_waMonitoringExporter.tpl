@@ -15,9 +15,9 @@
   - name: WA_CONFIG
     value: "env"
   - name: WA_TENANT
-    value: {{ include "icm-web.customerId" . }}
+    value: {{ include "icm-web.customerId" . | quote }}
   - name: WA_ENVIRONMENT
-    value: {{ printf "%s-%s" (include "icm-web.environmentType" .) (include "icm-web.stagingType" .) }}
+    value: {{ printf "%s-%s" (include "icm-web.environmentType" .) (include "icm-web.stagingType" .) | quote }}
   - name: WA_SKIP_CERT_VALIDATION
     value: "true"
   - name: WA_APP_SERVER_UNAVAILABLE_TIMEOUT
