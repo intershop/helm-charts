@@ -248,4 +248,5 @@ spec:
         {{- if (and .Values.agent.enabled (eq .Values.persistence.pagecache.type "emptyDir"))}}
         - name: "{{ .Chart.Name }}-agent"
           {{- include "icm-waa.container" . | nindent 10 }}
-        {{- end }}
+        {{- end -}}
+        {{- include "icm-wa.monitoringContainer" . | nindent 8 }}
