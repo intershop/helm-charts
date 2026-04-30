@@ -25,12 +25,17 @@ Renders values from the operational context
   {{- .Values.operationalContext.stagingType | default "standalone" -}}
 {{- end -}}
 
+{{- define "icm-web.customerId" -}}
+  {{- include "icm-web.operationalContext" . -}}
+  {{- .Values.operationalContext.customerId | default "n_a" -}}
+{{- end -}}
+
 {{/*
 Renders the operational context name
 */}}
 {{- define "icm-web.operationalContextName" -}}
   {{- include "icm-web.operationalContext" . -}}
-  {{- $customerId := .Values.operationalContext.customerId | default "n_a" -}}
+  {{- $customerId := include "icm-web.customerId" . -}}
   {{- $environmentName := include "icm-web.environmentName" . -}}
   {{- $stagingType := include "icm-web.stagingType" . -}}
   {{- printf "%s-%s-%s" $customerId $environmentName $stagingType -}}
