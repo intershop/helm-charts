@@ -51,5 +51,5 @@ volumeMounts:
   mountPath: {{ .Values.persistence.customdata.mountPoint }}
 {{- end }}
 resources:
-  {{- toYaml .Values.resources.agent | nindent 12 }}
+  {{ toYaml .Values.resources.agent | nindent 2 }}
 {{- end -}}

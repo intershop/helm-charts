@@ -1,4 +1,4 @@
-suite: test correctness of environment
+suite: test correctness of new relic related resources
 templates:
   - templates/waa-deployment.yaml
   - templates/config-newrelic-yaml-cm.yaml
