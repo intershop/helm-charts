@@ -1,0 +1,22 @@
+{{- if .Values.waMonitoring.enabled }}
+{{- $ctx := dict "root" . "component" "webadapter" -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ printf "%s-wa-monitoring" (include "icm-web.fullname" .) | lower | trunc 63 | trimSuffix "-" }}
+  labels:
+    {{- include "icm-web.labels" $ctx | nindent 4 }}
+  annotations:
+    prometheus.io/path: /metrics
+    prometheus.io/scheme: http
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '2112'
+spec:
+  ports:
+  - name: metrics
+    port: 2112
+    targetPort: metrics
+    protocol: TCP
+  selector:
+    {{- include "icm-web.selectorLabels" $ctx | nindent 4 }}
+{{- end }}

@@ -76,3 +76,10 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the service
+*/}}
+{{- define "icm-web.waServiceName" -}}
+{{- printf "%s-wa" (include "icm-web.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
