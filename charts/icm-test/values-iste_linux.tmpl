@@ -12,7 +12,6 @@ icm:
       "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
     image:
       repository: "${ICM_TEST_IMAGE}"
-      pullPolicy: Always
     customCommand:
       - "/bin/sh"
       - "-c"
@@ -221,7 +220,6 @@ testrunner:
     agentpool: agentpool2
   image:
     repository: "${ICM_TEST_IMAGE}"
-    pullPolicy: Always
     command: |
       set -x
       mkdir -p ${HELM_DIRECTORY}/result
