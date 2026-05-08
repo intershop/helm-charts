@@ -1,10 +1,10 @@
 
-<a name="icm-test-1.4.0"></a>
-## [icm-test-1.4.0](https://github.com/intershop/helm-charts/compare/icm-test-1.3.1...icm-test-1.4.0)
+<a name="icm-test-1.5.1"></a>
+## [icm-test-1.5.1](https://github.com/intershop/helm-charts/compare/icm-test-1.5.0...icm-test-1.5.1)
 
-> 2026-04-27
+> 2026-05-08
 
-### Features
+### Bug Fixes
 
-* **icm:** enable automatic database dumpfile import using a kubernetes job ([#1205](https://github.com/intershop/helm-charts/issues/1205))
+* **icm:** revert pull policy to default IfNotPresent  ([#1223](https://github.com/intershop/helm-charts/issues/1223))
 
