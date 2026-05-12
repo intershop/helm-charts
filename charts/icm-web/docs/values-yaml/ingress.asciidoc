@@ -19,7 +19,7 @@ Enabling this ingress only makes sense if the link:../../../icm-as/docs/values-y
 |===
 |Attribute |Description |Type |Mandatory |Default Value
 |enabled|Enables/disables the deployment of the ingress configuration|boolean|{optional}|`false`
-|className|The name of the ingress class to be used|string|{optional}|[.placeholder]#https://kubernetes.io/docs/concepts/services-networking/ingress/#default-ingress-class[default ingress class]#
+|className|The name of the ingress class to be used|string|{optional}|`ingress-haproxy-pub`
 |annotations|Annotations to be applied to the ingress configuration|<<_annotations,Annotations>>|{optional}|`{}`
 |hosts|Lists the hosts for the ingress rules|yaml array containing 0 to n <<_hostDefinition,HostDefinition>> objects|{mandatory}|-
 |tls|Configures the SSL/TLS termination of the processed hosts|yaml array containing 0 to n <<_tlsDefinition,TLSDefinition>> objects|{optional}|`[]`

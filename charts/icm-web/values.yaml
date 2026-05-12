@@ -240,7 +240,7 @@ resources:
 
 ingress:
   enabled: false
-  className: nginx
+  className: ingress-haproxy-pub
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
