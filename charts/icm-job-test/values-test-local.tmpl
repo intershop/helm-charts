@@ -44,7 +44,7 @@ icm-test:
           enabled: true
           existingClaim: ${HELM_JOB_NAME}-icm-test-local-testdata-pvc
 
-    ingress-nginx:
+    kubernetes-ingress:
       controller:
         nodeSelector: null
 

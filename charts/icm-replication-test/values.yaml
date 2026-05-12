@@ -7,29 +7,29 @@ icm-edit:
         role: source
         # "targetSystemUrl" deprecated since ICM-Replication Helm Charts 2.6.0, will be removed in a future version.
         # Configure the source and targets within replication instead.
-        targetSystemUrl: https://<domain for icm-replication-ingress-nginx-live>:443
+        targetSystemUrl: https://<domain for icm-replication-ingress-haproxy-live>:443
         # "sourceDatabaseName" deprecated since ICM-Replication Helm Charts 2.6.0, will be removed in a future version.
         # Configure the source and targets within replication instead.
         sourceDatabaseName: intershop_edit
         # source:
-          # webserverUrl: <sourceExternalUrl>
-          # databaseLink: <sourceDatabaseLink>
-          # databaseUser: <sourceDatabaseUser>
-          # databaseName: <sourceDatabaseName>
+        # webserverUrl: <sourceExternalUrl>
+        # databaseLink: <sourceDatabaseLink>
+        # databaseUser: <sourceDatabaseUser>
+        # databaseName: <sourceDatabaseName>
         # targets:
-          # live1:
-            # webserverUrl: <targetExternalUrl>
-            # databaseUser: <targetDatabaseUser>
-          # live2:
-            # webserverUrl: <targetExternalUrl>
-            # databaseUser: <targetDatabaseUser>
+        # live1:
+        # webserverUrl: <targetExternalUrl>
+        # databaseUser: <targetDatabaseUser>
+        # live2:
+        # webserverUrl: <targetExternalUrl>
+        # databaseUser: <targetDatabaseUser>
       database:
         jdbcURL: "jdbc:sqlserver://<ipaddress or hostname>:1433;databaseName=intershop_edit"
         jdbcUser: "intershop_edit"
         jdbcPassword: "intershop_edit"
       environment:
-        INTERSHOP_WEBSERVERURL: http://<domain for icm-replication-ingress-nginx-edit>:80
-        INTERSHOP_WEBSERVERSECUREURL: https://<domain for icm-replication-ingress-nginx-edit>:443
+        INTERSHOP_WEBSERVERURL: http://<domain for icm-replication-ingress-haproxy-edit>:80
+        INTERSHOP_WEBSERVERSECUREURL: https://<domain for icm-replication-ingress-haproxy-edit>:443
 
       ## @param persistence - Either choose local (default), cluster, azurefiles or nfs persitence layer
       persistence:
@@ -61,24 +61,24 @@ icm-live:
         enabled: true
         role: target
         # source:
-          # webserverUrl: <sourceExternalUrl>
-          # databaseLink: <sourceDatabaseLink>
-          # databaseUser: <sourceDatabaseUser>
-          # databaseName: <sourceDatabaseName>
+        # webserverUrl: <sourceExternalUrl>
+        # databaseLink: <sourceDatabaseLink>
+        # databaseUser: <sourceDatabaseUser>
+        # databaseName: <sourceDatabaseName>
         # targets:
-          # live1:
-            # webserverUrl: <targetExternalUrl>
-            # databaseUser: <targetDatabaseUser>
-          # live2:
-            # webserverUrl: <targetExternalUrl>
-            # databaseUser: <targetDatabaseUser>
+        # live1:
+        # webserverUrl: <targetExternalUrl>
+        # databaseUser: <targetDatabaseUser>
+        # live2:
+        # webserverUrl: <targetExternalUrl>
+        # databaseUser: <targetDatabaseUser>
       database:
         jdbcURL: "jdbc:sqlserver://<ipaddress or hostname>:1433;databaseName=intershop_live"
         jdbcUser: "intershop_live"
         jdbcPassword: "intershop_live"
       environment:
-        INTERSHOP_WEBSERVERURL: http://<domain for icm-replication-ingress-nginx-live>:80
-        INTERSHOP_WEBSERVERSECUREURL: https://<domain for icm-replication-ingress-nginx-live>:443
+        INTERSHOP_WEBSERVERURL: http://<domain for icm-replication-ingress-haproxy-live>:80
+        INTERSHOP_WEBSERVERSECUREURL: https://<domain for icm-replication-ingress-haproxy-live>:443
 
       ## @param persistence - Either choose local (default), cluster, azurefiles or nfs persitence layer
       persistence:
@@ -96,7 +96,7 @@ icm-live:
     icm-web:
       nameOverride: icm-web-live
       imagePullSecrets:
-      - "dockerhub"
+        - "dockerhub"
       webadapter:
         replicaCount: 1
         image:

@@ -125,12 +125,8 @@ icm-edit:
         className: "ingress-class-${HELM_JOB_NAME}"
         annotations:
           service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-          nginx.ingress.kubernetes.io/affinity: cookie
-          nginx.ingress.kubernetes.io/affinity-mode: persistent
-          nginx.ingress.kubernetes.io/session-cookie-name: stid
-          nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
-          nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
-          nginx.ingress.kubernetes.io/proxy-body-size: "100M"
+          haproxy.org/cookie-persistence: stid
+          haproxy.org/proxy-body-size: "100M"
         hosts:
         - host: "${HELM_JOB_NAME}-edit.${DNS_ZONE_NAME}"
           paths:
@@ -268,12 +264,8 @@ icm-live:
         className: "ingress-class-${HELM_JOB_NAME}"
         annotations:
           service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-          nginx.ingress.kubernetes.io/affinity: cookie
-          nginx.ingress.kubernetes.io/affinity-mode: persistent
-          nginx.ingress.kubernetes.io/session-cookie-name: stid
-          nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
-          nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
-          nginx.ingress.kubernetes.io/proxy-body-size: "100M"
+          haproxy.org/cookie-persistence: stid
+          haproxy.org/proxy-body-size: "100M"
         hosts:
         - host: "${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}"
           paths:
@@ -284,15 +276,13 @@ icm-live:
           hosts:
           - "${HELM_JOB_NAME}-live.${DNS_ZONE_NAME}"
 
-    ingress-nginx:
+    kubernetes-ingress:
       enabled: true
       controller:
         kind: Deployment
-        ingressClassByName: "true"
         ingressClassResource:
           name: "ingress-class-${HELM_JOB_NAME}"
           controllerValue: "k8s.io/ingress-${HELM_JOB_NAME}"
-        ingressClass: "ingress-class-${HELM_JOB_NAME}"
         admissionWebhooks:
           enabled: false
         nodeSelector:

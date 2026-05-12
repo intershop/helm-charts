@@ -11,11 +11,8 @@ tests:
       ingress.enabled: true
     asserts:
       - equal:
-          path: metadata.annotations["nginx.ingress.kubernetes.io/affinity"]
-          value: cookie
-      - equal:
-          path: metadata.annotations["nginx.ingress.kubernetes.io/affinity-mode"]
-          value: persistent
+          path: metadata.annotations["haproxy.org/cookie-persistence"]
+          value: stid
   - it: should render additional metadata.annotations
     set:
       ingress.enabled: true
@@ -37,34 +34,34 @@ tests:
     set:
       ingress.enabled: true
       ingress.hosts:
-      - host: foo.com
-        paths:
-        - path: /
-          pathType: Prefix
+        - host: foo.com
+          paths:
+            - path: /
+              pathType: Prefix
       ingress.tls:
-      - secretName: fooSecret
-        hosts:
-        - foo.com
+        - secretName: fooSecret
+          hosts:
+            - foo.com
     asserts:
       - equal:
           path: spec.tls
           value:
-          - secretName: fooSecret
-            hosts:
-            - foo.com
+            - secretName: fooSecret
+              hosts:
+                - foo.com
       - equal:
           path: spec.rules
           value:
-          - host: foo.com
-            http:
-              paths:
-              - path: /
-                pathType: Prefix
-                backend:
-                  service:
-                    name: RELEASE-NAME-icm-as
-                    port:
-                      name: svc
+            - host: foo.com
+              http:
+                paths:
+                  - path: /
+                    pathType: Prefix
+                    backend:
+                      service:
+                        name: RELEASE-NAME-icm-as
+                        port:
+                          name: svc
   - it: should set default ingress name.
     set:
       ingress.enabled: true

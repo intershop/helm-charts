@@ -226,9 +226,9 @@ resources:
 
 ingress:
   enabled: false
-  className: nginx
+  className: haproxy
   annotations: {}
-    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/ingress.class: haproxy
     # kubernetes.io/tls-acme: "true"
   # Paths are treated as list of prefixes. Any URL matching one of the prefixes will
   # be forwarded to ICM.
