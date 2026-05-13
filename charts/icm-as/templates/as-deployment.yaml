@@ -54,6 +54,9 @@ spec:
       {{- if include "icm-as.tolerations" . }}
         {{- include "icm-as.tolerations" . | nindent 6 }}
       {{- end }}
+      {{- if include "icm-as.affinity" $ctx }}
+        {{- include "icm-as.affinity" $ctx | nindent 6 }}
+      {{- end }}
       {{- if include "icm-as.imagePullSecrets" . }}
         {{- include "icm-as.imagePullSecrets" . | nindent 6 }}
       {{- end }}
