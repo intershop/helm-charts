@@ -81,6 +81,10 @@ Purpose is to filter out any duplicated environment assignment when set both on 
 - name: INTERSHOP_WEBADAPTER_ENABLED
   value: "false"
 {{- end }}
+{{- if not (hasKey .Values.environment "SERVER_GROUPS") }}
+- name: SERVER_GROUPS
+  value: "{{ include "icm-as.availableServerGroups" . }}"
+{{- end }}
 {{- if .Values.webLayer.redis.enabled }}
 - name: INTERSHOP_PAGECACHE_REDIS_ENABLED
   value: "true"
@@ -165,6 +169,30 @@ Creates the environment variables for page cache invalidation
 {{- end -}} {{/*if .Values.pageCacheInvalidation.sites*/}}
 {{- end -}} {{/*if .Values.pageCacheInvalidation.enabled*/}}
 {{- end -}} {{/*define "icm-as.envPageCacheInvalidation*/}}
+
+{{/*
+Builds a comma separated list of available server groups for all servers.
+*/}}
+{{- define "icm-as.availableServerGroups" -}}
+{{- $groups := list "WFS" "BOS" -}}
+{{- if .Values.job.enabled -}}
+  {{- $jobServers := .Values.job.servers | default (dict) -}}
+  {{- if eq (len $jobServers) 0 -}}
+    {{- $legacyJobGroup := "JOB" -}}
+    {{- if and .Values.job .Values.job.serverGroup -}}
+      {{- $legacyJobGroup = .Values.job.serverGroup -}}
+    {{- end -}}
+    {{- $groups = append $groups $legacyJobGroup -}}
+  {{- else -}}
+    {{- $jobServerKeys := keys $jobServers | sortAlpha -}}
+    {{- range $jobServerKey := $jobServerKeys -}}
+      {{- $jobConfig := (get $jobServers $jobServerKey) | default (dict) -}}
+      {{- $groups = append $groups ($jobConfig.serverGroup | default "JOB") -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- join "," (uniq $groups) -}}
+{{- end -}}
 
 {{/*
 Creates the environment secrets section

@@ -1,24 +1,39 @@
 {{- if .Values.job.enabled -}}
-{{- $ctx := dict "root" . "component" "jobserver" -}}
-{{/* Build values based on main values merged with job specific ones */}}
-{{- $jobValues:= deepCopy . -}}
-{{- $jobValues := set $jobValues "Values" (merge .Values.job $jobValues.Values) -}}
-{{- if $jobValues.Values.serverGroup -}}
-{{- $jobValues := set $jobValues "jobServerGroup" $jobValues.Values.serverGroup -}}
-{{- else -}}
-{{- $jobValues := set $jobValues "jobServerGroup" "JOB" -}}
+{{- $legacyJobValues := omit .Values.job "enabled" "servers" -}}
+{{- $jobServers := .Values.job.servers | default (dict) -}}
+{{- if eq (len $jobServers) 0 -}}
+{{- $values_ := set $jobServers "default" (dict) -}}
 {{- end -}}
-{{- if $jobValues.Values.serverName -}}
-{{- $jobValues := set $jobValues "jobServerName" $jobValues.Values.serverName -}}
+{{- $jobServerKeys := keys $jobServers | sortAlpha -}}
+{{- range $jobServerKey := $jobServerKeys -}}
+{{- $jobConfig := (get $jobServers $jobServerKey) | default (dict) -}}
+{{- $effectiveJobValues := mergeOverwrite (deepCopy $legacyJobValues) (deepCopy $jobConfig) -}}
+{{/* Build values based on main values merged with job specific ones */}}
+{{- $jobValues:= deepCopy $ -}}
+{{- $effectiveValues := mergeOverwrite (deepCopy $.Values) (deepCopy $effectiveJobValues) -}}
+{{- $_ := set $jobValues "Values" $effectiveValues -}}
+{{- if $effectiveValues.serverGroup -}}
+{{- $_ := set $jobValues "jobServerGroup" $effectiveValues.serverGroup -}}
 {{- else -}}
-{{- $jobValues := set $jobValues "jobServerName" "jobserver" -}}
-{{- $values_ := set $jobValues.Values "serverName" "jobserver" -}}
+{{- $_ := set $jobValues "jobServerGroup" "JOB" -}}
+{{- end -}}
+{{- if $effectiveValues.serverName -}}
+{{- $_ := set $jobValues "jobServerName" $effectiveValues.serverName -}}
+{{- else -}}
+{{- $_ := set $jobValues "jobServerName" "jobserver" -}}
+{{- $_ := set $effectiveValues "serverName" "jobserver" -}}
+{{- end -}}
+{{- $ctx := dict "root" $jobValues "component" "jobserver" -}}
+{{- $jobResourceName := printf "%s-job" (include "icm-as.fullname" $jobValues) -}}
+{{- if ne $jobServerKey "default" -}}
+{{- $jobResourceName = printf "%s-%s" $jobResourceName $jobServerKey -}}
 {{- end -}}
 
+{{ printf "\n---\n" }}
 apiVersion: batch.core.intershop.de/v1
 kind: ICMJob
 metadata:
-  name: {{ include "icm-as.fullname" $jobValues }}-job
+  name: {{ $jobResourceName }}
   {{- include "icm-as.podData" $jobValues | nindent 2 }}
   labels:
     {{- include "icm-as.labels" $ctx | nindent 4 }}
@@ -31,59 +46,54 @@ metadata:
     {{- end }}
 spec:
   scheduleTimeComputer: {{ include "icm-as.scheduleTimeComputer" $jobValues -}}
-  {{- if .Values.job.suspend }}
-  suspend: {{ .Values.job.suspend }}
+  {{- if $effectiveValues.suspend }}
+  suspend: {{ $effectiveValues.suspend }}
   {{- end }}
-  {{- if .Values.job.pollInterval }}
-  pollInterval: {{ .Values.job.pollInterval }}
+  {{- if $effectiveValues.pollInterval }}
+  pollInterval: {{ $effectiveValues.pollInterval }}
   {{- end }}
-  {{- if .Values.job.failedJobsHistoryLimit }}
-  failedJobsHistoryLimit: {{ .Values.job.failedJobsHistoryLimit }}
+  {{- if $effectiveValues.failedJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ $effectiveValues.failedJobsHistoryLimit }}
   {{- end }}
-  {{- if .Values.job.successfulJobsHistoryLimit }}
-  successfulJobsHistoryLimit: {{ .Values.job.successfulJobsHistoryLimit }}
+  {{- if $effectiveValues.successfulJobsHistoryLimit }}
+  successfulJobsHistoryLimit: {{ $effectiveValues.successfulJobsHistoryLimit }}
   {{- end }}
   jobTemplate:
     spec:
       template:
-        metadata:
-          labels:
-            {{- include "icm-as.labels" $ctx | nindent 12 }}
-          {{- if include "icm-as.serviceAccount.podLabels" . }}
-            {{- include "icm-as.serviceAccount.podLabels" . | nindent 12 -}}
-          {{- end }}
         spec:
-          {{- if include "icm-as.serviceAccount.podSpec" . -}}
-            {{- include "icm-as.serviceAccount.podSpec" . | nindent 10 }}
+          {{- if include "icm-as.serviceAccount.podSpec" $jobValues -}}
+            {{- include "icm-as.serviceAccount.podSpec" $jobValues | nindent 10 }}
           {{- end }}
           {{- if include "icm-as.nodeSelector" $jobValues }}
             {{- include "icm-as.nodeSelector" $jobValues | nindent 10 }}
           {{- end }}
-          {{- if include "icm-as.imagePullSecrets" . }}
-            {{- include "icm-as.imagePullSecrets" . | nindent 10 }}
+          {{- if include "icm-as.imagePullSecrets" $jobValues }}
+            {{- include "icm-as.imagePullSecrets" $jobValues | nindent 10 }}
           {{- end }}
           containers:
           - name: icm-as-server
-            {{- include "icm-as.command" (list .Values.customCommand false) | nindent 12 }}
-            {{- include "icm-as.image" . | nindent 12 }}
+            {{- include "icm-as.command" (list $effectiveValues.customCommand false) | nindent 12 }}
+            {{- include "icm-as.image" $jobValues | nindent 12 }}
             {{- include "icm-as.envJob" $jobValues | nindent 12 }}
             {{- include "icm-as.ports" $jobValues | nindent 12 }}
             {{- include "icm-as.resources" $jobValues | nindent 12 }}
-            {{- include "icm-as.volumeMounts" . | nindent 12 }}
-            {{- include "icm-as.probes" . | nindent 12 }}
+            {{- include "icm-as.volumeMounts" $jobValues | nindent 12 }}
+            {{- include "icm-as.probes" $jobValues | nindent 12 }}
             {{- include "icm-as.lifecycle" $jobValues | nindent 12 }}
-          {{- include "icm-as.initContainers" . | nindent 10 }}
+          {{- include "icm-as.initContainers" $jobValues | nindent 10 }}
           restartPolicy: OnFailure
           {{- if include "icm-as.podSecurityContext" $jobValues }}
             {{- include "icm-as.podSecurityContext" $jobValues | nindent 10 }}
           {{- end }}
-          {{- if include "icm-as.hostAliases" . }}
-            {{- include "icm-as.hostAliases" . | nindent 10 }}
+          {{- if include "icm-as.hostAliases" $jobValues }}
+            {{- include "icm-as.hostAliases" $jobValues | nindent 10 }}
           {{- end }}
-          {{- if include "icm-as.dnsConfig" . }}
-            {{- include "icm-as.dnsConfig" . | nindent 10 }}
+          {{- if include "icm-as.dnsConfig" $jobValues }}
+            {{- include "icm-as.dnsConfig" $jobValues | nindent 10 }}
           {{- end }}
-          {{- include "icm-as.volumes" . | nindent 10 }}
+          {{- include "icm-as.volumes" $jobValues | nindent 10 }}
+{{- end }}
 {{- end -}}
 
 {{/*

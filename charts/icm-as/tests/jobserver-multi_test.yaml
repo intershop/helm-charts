@@ -1,0 +1,104 @@
+suite: multi jobserver rendering
+templates:
+  - templates/jobserver-deployment.yaml
+tests:
+  - it: renders legacy single jobserver when job.servers is not set
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+      appVersion: 11.0.1
+    values:
+      - ../values.yaml
+    template: templates/jobserver-deployment.yaml
+    set:
+      job.enabled: true
+      job.pollInterval: 12
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: metadata.name
+          value: icm-as-job
+      - equal:
+          path: spec.pollInterval
+          value: 12
+
+  - it: renders one ICMJob per job.servers entry
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+      appVersion: 11.0.1
+    values:
+      - ../values.yaml
+    template: templates/jobserver-deployment.yaml
+    set:
+      job.enabled: true
+      job.pollInterval: 10
+      job.servers.default.serverGroup: JOB
+      job.servers.default.serverName: jobserver
+      job.servers.priority.serverGroup: JOB_PRIORITY
+      job.servers.priority.serverName: jobserver-priority
+      job.servers.priority.pollInterval: 5
+      job.servers.priority.resources.requests.cpu: 1500m
+      job.servers.priority.resources.requests.memory: 3Gi
+      job.servers.priority.resources.limits.cpu: 1500m
+      job.servers.priority.resources.limits.memory: 3Gi
+    asserts:
+      - hasDocuments:
+          count: 2
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: SERVER_GROUPS
+            value: WFS,BOS,JOB,JOB_PRIORITY
+
+  - it: renders priority jobserver name and overrides when only one non-default server is configured
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+      appVersion: 11.0.1
+    values:
+      - ../values.yaml
+    template: templates/jobserver-deployment.yaml
+    set:
+      job.enabled: true
+      job.pollInterval: 10
+      job.servers.priority.serverGroup: JOB_PRIORITY
+      job.servers.priority.serverName: jobserver-priority
+      job.servers.priority.pollInterval: 5
+      job.servers.priority.resources.requests.cpu: 1500m
+      job.servers.priority.resources.requests.memory: 3Gi
+      job.servers.priority.resources.limits.cpu: 1500m
+      job.servers.priority.resources.limits.memory: 3Gi
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: metadata.name
+          value: icm-as-job-priority
+      - equal:
+          path: spec.pollInterval
+          value: 5
+      - equal:
+          path: spec.scheduleTimeComputer
+          value: http://icm-as.NAMESPACE:7744/jobserver/nextScheduleDate?serverGroup=JOB_PRIORITY
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: SERVER_GROUPS
+            value: WFS,BOS,JOB_PRIORITY
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.requests.cpu
+          value: 1500m
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.requests.memory
+          value: 3Gi
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.limits.cpu
+          value: 1500m
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.limits.memory
+          value: 3Gi
