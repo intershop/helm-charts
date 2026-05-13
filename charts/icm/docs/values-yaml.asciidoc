@@ -37,7 +37,7 @@ icm-web:
 
 ingress-haproxy:
   enabled: true
-  <ingress-nginx configuration>
+  <ingress-haproxy configuration>
 
 mailhog:
   enabled: true
