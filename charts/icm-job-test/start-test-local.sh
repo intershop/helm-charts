@@ -65,7 +65,7 @@ fi
 
 # Update dependencies from source charts if sibling chart directories exist (i.e. running from the full repo).
 # When running standalone with pre-bundled charts/ this is skipped.
-if [ -d "../icm-as" ] && [ -d "../icm" ] && [ -d "../icm-test"]; then
+if [ -d "../icm-as" ] && [ -d "../icm" ] && [ -d "../icm-test" ]; then
   helm dependency update ../icm-as # wait for https://github.com/helm/helm/issues/2247
   helm dependency update ../icm
   helm dependency update ../icm-test
