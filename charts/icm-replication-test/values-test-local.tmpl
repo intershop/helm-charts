@@ -4,6 +4,7 @@ icm-edit:
       nodeSelector: null
       imagePullSecrets:
       - "${ICM_AS_PULL_SECRET}"
+      - "${MSSQL_PULL_SECRET}"
       persistence:
         sites:
           size: 1Gi
@@ -34,12 +35,20 @@ icm-edit:
         customdata:
           existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
 
+  dumpfileRestore:
+    enabled: true
+    dumpfileDir: /data/dumpfile
+    image:
+      repository: mcr.microsoft.com/mssql-tools:latest
+    waitTimeout: 120
+
 icm-live:
   icm:
     icm-as:
       nodeSelector: null
       imagePullSecrets:
       - "${ICM_AS_PULL_SECRET}"
+      - "${MSSQL_PULL_SECRET}"
       persistence:
         sites:
           size: 1Gi
@@ -87,3 +96,10 @@ icm-live:
         type: local
         local:
           dir: ${LOCAL_MOUNT_BASE}/testdata
+
+  dumpfileRestore:
+    enabled: true
+    dumpfileDir: /data/dumpfile
+    image:
+      repository: mcr.microsoft.com/mssql-tools:latest
+    waitTimeout: 120
