@@ -17,6 +17,7 @@ dependencies:
     repository: https://kubernetes.github.io/ingress-nginx
     condition: ingress-nginx.enabled
   - name: kubernetes-ingress
+    alias: ingress-haproxy
     version: 1.41.0
     repository: https://haproxytech.github.io/helm-charts
     condition: ingress-haproxy.enabled
