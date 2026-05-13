@@ -240,7 +240,7 @@ resources:
 
 ingress:
   enabled: false
-  className: ingress-haproxy-pub
+  className: ingress-haproxy
   annotations: {}
   # Paths are treated as list of prefixes. Any URL matching one of the prefixes will be forwarded to ICM.
   hosts:
