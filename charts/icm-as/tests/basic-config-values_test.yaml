@@ -183,4 +183,31 @@ tests:
           value: "true"
           effect: "NoSchedule"
 
-# TODO affinity
+  - it: podAntiAffinity can be disabled
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      podAntiAffinity.enabled: false
+    template: templates/as-deployment.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.affinity
+
+  - it: podAntiAffinity can be required
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      podAntiAffinity.required: true
+    template: templates/as-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].topologyKey
+          value: kubernetes.io/hostname
