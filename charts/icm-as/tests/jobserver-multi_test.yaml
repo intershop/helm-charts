@@ -23,6 +23,11 @@ tests:
       - equal:
           path: spec.pollInterval
           value: 12
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
+            value: JOB
 
   - it: renders one ICMJob per job.servers entry
     release:
@@ -87,6 +92,11 @@ tests:
           content:
             name: SERVER_GROUPS
             value: WFS,BOS,JOB_PRIORITY
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
+            value: JOB_PRIORITY
       - equal:
           path: spec.jobTemplate.spec.template.spec.containers[0].resources.requests.cpu
           value: 1500m
