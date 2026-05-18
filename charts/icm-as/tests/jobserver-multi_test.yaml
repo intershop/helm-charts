@@ -36,15 +36,13 @@ tests:
     set:
       job.enabled: true
       job.pollInterval: 10
-      job.servers.default.serverGroup: JOB
-      job.servers.default.serverName: jobserver
-      job.servers.priority.serverGroup: JOB_PRIORITY
-      job.servers.priority.serverName: jobserver-priority
-      job.servers.priority.pollInterval: 5
-      job.servers.priority.resources.requests.cpu: 1500m
-      job.servers.priority.resources.requests.memory: 3Gi
-      job.servers.priority.resources.limits.cpu: 1500m
-      job.servers.priority.resources.limits.memory: 3Gi
+      job.servers.jobserver.serverGroup: JOB
+      job.servers.jobserver-priority.serverGroup: JOB_PRIORITY
+      job.servers.jobserver-priority.pollInterval: 5
+      job.servers.jobserver-priority.resources.requests.cpu: 1500m
+      job.servers.jobserver-priority.resources.requests.memory: 3Gi
+      job.servers.jobserver-priority.resources.limits.cpu: 1500m
+      job.servers.jobserver-priority.resources.limits.memory: 3Gi
     asserts:
       - hasDocuments:
           count: 2
@@ -54,7 +52,7 @@ tests:
             name: SERVER_GROUPS
             value: WFS,BOS,JOB,JOB_PRIORITY
 
-  - it: renders priority jobserver name and overrides when only one non-default server is configured
+  - it: renders jobserver name and overrides when only one non-legacy server is configured
     release:
       name: icm-as
     chart:
@@ -66,19 +64,18 @@ tests:
     set:
       job.enabled: true
       job.pollInterval: 10
-      job.servers.priority.serverGroup: JOB_PRIORITY
-      job.servers.priority.serverName: jobserver-priority
-      job.servers.priority.pollInterval: 5
-      job.servers.priority.resources.requests.cpu: 1500m
-      job.servers.priority.resources.requests.memory: 3Gi
-      job.servers.priority.resources.limits.cpu: 1500m
-      job.servers.priority.resources.limits.memory: 3Gi
+      job.servers.jobserver-priority.serverGroup: JOB_PRIORITY
+      job.servers.jobserver-priority.pollInterval: 5
+      job.servers.jobserver-priority.resources.requests.cpu: 1500m
+      job.servers.jobserver-priority.resources.requests.memory: 3Gi
+      job.servers.jobserver-priority.resources.limits.cpu: 1500m
+      job.servers.jobserver-priority.resources.limits.memory: 3Gi
     asserts:
       - hasDocuments:
           count: 1
       - equal:
           path: metadata.name
-          value: icm-as-job-priority
+          value: icm-as-job-jobserver-priority
       - equal:
           path: spec.pollInterval
           value: 5

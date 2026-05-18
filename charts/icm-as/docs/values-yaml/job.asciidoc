@@ -42,12 +42,10 @@ job:
   enabled: true
   pollInterval: 10
   servers:
-    default:
+    jobserver:
       serverGroup: JOB
-      serverName: jobserver
-    priority:
+    jobserver-priority:
       serverGroup: JOB_PRIORITY
-      serverName: jobserver-priority
       pollInterval: 5
       resources:
         requests:
@@ -59,6 +57,7 @@ job:
 ----
 
 When `job.servers` is configured, each entry inherits values from `job.*` and can override them per server.
+The map key is the server name. The key `jobserver` keeps the legacy resource name `<release>-job`.
 
 === Backward Compatibility
 

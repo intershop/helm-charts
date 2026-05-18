@@ -2,7 +2,7 @@
 {{- $legacyJobValues := omit .Values.job "enabled" "servers" -}}
 {{- $jobServers := .Values.job.servers | default (dict) -}}
 {{- if eq (len $jobServers) 0 -}}
-{{- $values_ := set $jobServers "default" (dict) -}}
+{{- $values_ := set $jobServers "jobserver" (dict) -}}
 {{- end -}}
 {{- $jobServerKeys := keys $jobServers | sortAlpha -}}
 {{- range $jobServerKey := $jobServerKeys -}}
@@ -20,12 +20,12 @@
 {{- if $effectiveValues.serverName -}}
 {{- $_ := set $jobValues "jobServerName" $effectiveValues.serverName -}}
 {{- else -}}
-{{- $_ := set $jobValues "jobServerName" "jobserver" -}}
-{{- $_ := set $effectiveValues "serverName" "jobserver" -}}
+{{- $_ := set $jobValues "jobServerName" $jobServerKey -}}
+{{- $_ := set $effectiveValues "serverName" $jobServerKey -}}
 {{- end -}}
 {{- $ctx := dict "root" $jobValues "component" "jobserver" -}}
 {{- $jobResourceName := printf "%s-job" (include "icm-as.fullname" $jobValues) -}}
-{{- if ne $jobServerKey "default" -}}
+{{- if ne $jobServerKey "jobserver" -}}
 {{- $jobResourceName = printf "%s-%s" $jobResourceName $jobServerKey -}}
 {{- end -}}
 

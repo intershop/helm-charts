@@ -509,16 +509,15 @@ job:
 
   # Optional multi-jobserver configuration.
   # If this map is set, one ICMJob custom resource is rendered per entry.
-  # Entry key 'default' keeps the legacy resource name '<release>-job'.
+  # The entry key is used as the job server name.
+  # Entry key 'jobserver' keeps the legacy resource name '<release>-job'.
   # Other keys will render as '<release>-job-<key>'.
   # Each entry inherits all legacy job.* settings and may override selected values.
   # servers:
-  #   default:
+  #   jobserver:
   #     serverGroup: JOB
-  #     serverName: jobserver
-  #   priority:
+  #   jobserver-priority:
   #     serverGroup: JOB_PRIORITY
-  #     serverName: jobserver-priority
   #     resources:
   #       requests:
   #         cpu: 1500m
