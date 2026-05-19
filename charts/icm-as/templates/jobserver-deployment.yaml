@@ -2,7 +2,7 @@
 {{- $legacyJobValues := omit .Values.job "enabled" "servers" -}}
 {{- $jobServers := .Values.job.servers | default (dict) -}}
 {{- if eq (len $jobServers) 0 -}}
-{{- $values_ := set $jobServers "jobserver" (dict) -}}
+{{- $jobServers = dict "jobserver" (dict) -}}
 {{- end -}}
 {{- $jobServerKeys := keys $jobServers | sortAlpha -}}
 {{- range $jobServerKey := $jobServerKeys -}}
