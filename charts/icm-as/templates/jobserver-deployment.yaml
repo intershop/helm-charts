@@ -25,8 +25,12 @@
 {{- end -}}
 {{- $ctx := dict "root" $jobValues "component" "jobserver" -}}
 {{- $jobResourceName := printf "%s-job" (include "icm-as.fullname" $jobValues) -}}
-{{- if ne $jobServerKey "jobserver" -}}
-{{- $jobResourceName = printf "%s-%s" $jobResourceName $jobServerKey -}}
+{{- $jobResourceSuffix := trimPrefix "jobserver-" $jobServerKey -}}
+{{- if eq $jobResourceSuffix "jobserver" -}}
+{{- $jobResourceSuffix = "" -}}
+{{- end -}}
+{{- if ne $jobResourceSuffix "" -}}
+{{- $jobResourceName = printf "%s-%s" $jobResourceName $jobResourceSuffix -}}
 {{- end -}}
 
 {{ printf "\n---\n" }}
