@@ -15,7 +15,7 @@ The following table lists the attributes of the `job` section:
 |===
 |Attribute |Description |Type |Mandatory |Default Value
 |enabled|Enable/disable the `jobserver`. If disabled, all jobs (depending on their configuratons) will be executed by regular `icm-as-server` pods.|boolean|{optional}|`false`
-|servers|Optional map for multi-jobserver setup. One ICMJob custom resource is rendered per map entry. Entry key `default` keeps legacy resource name behavior.|map|{optional}|empty
+|servers|Optional map for multi-jobserver setup. One ICMJob custom resource is rendered per map entry. Entry key `jobserver` keeps legacy resource name behavior.|map|{optional}|empty
 |suspend|If true, job-server-support will be available but no jobs will be created|boolean|{optional}|`false`
 |pollInterval|Sets the polling interval of the ICM Job Controller in seconds|int|{optional}|`30`
 |failedJobsHistoryLimit|Number of failed K8s jobs to keep before removing|int|{optional}|`1`
