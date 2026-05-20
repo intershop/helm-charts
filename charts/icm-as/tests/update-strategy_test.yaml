@@ -56,3 +56,31 @@ tests:
       - equal:
           path: spec.strategy.type
           value: Recreate
+
+  - it: delay for deployment with Recreate strategy (default)
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: templates/as-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.minReadySeconds
+          value: 30
+
+  - it: delay for deployment with Recreate strategy (explicit)
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      minReadySeconds: 50
+    template: templates/as-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.minReadySeconds
+          value: 50
