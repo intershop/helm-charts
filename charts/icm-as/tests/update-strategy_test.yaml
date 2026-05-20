@@ -57,7 +57,7 @@ tests:
           path: spec.strategy.type
           value: Recreate
 
-  - it: delay for deployment with Recreate strategy (default)
+  - it: delay for deployment (default)
     release:
       name: icm-as
     chart:
@@ -70,7 +70,7 @@ tests:
           path: spec.minReadySeconds
           value: 30
 
-  - it: delay for deployment with Recreate strategy (explicit)
+  - it: delay for deployment (explicit)
     release:
       name: icm-as
     chart:
