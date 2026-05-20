@@ -94,8 +94,8 @@ podAntiAffinity:
         matchLabels:
           app.kubernetes.io/name: {{ include "pwa-cache.name" . }}
           app.kubernetes.io/instance: {{ .Release.Name }}
-          {{- if .Values.podLabels }}
-          {{- toYaml .Values.podLabels | nindent 10 }}
+          {{- if .Values.cache.podLabels }}
+          {{- toYaml .Values.cache.podLabels | nindent 10 }}
           {{- end }}
   {{- else }}
   preferredDuringSchedulingIgnoredDuringExecution:
@@ -106,8 +106,8 @@ podAntiAffinity:
           matchLabels:
             app.kubernetes.io/name: {{ include "pwa-cache.name" . }}
             app.kubernetes.io/instance: {{ .Release.Name }}
-            {{- if .Values.podLabels }}
-            {{- toYaml .Values.podLabels | nindent 12 }}
+            {{- if .Values.cache.podLabels }}
+            {{- toYaml .Values.cache.podLabels | nindent 12 }}
             {{- end }}
   {{- end }}
 {{- end -}}
