@@ -47,6 +47,14 @@ tolerations: []
 
 affinity: {}
 
+podAntiAffinity:
+  # enable/disable default anti-affinity
+  enabled: false
+  # enable/disable hard rule for distributing pods across nodes
+  # true: use requiredDuringSchedulingIgnoredDuringExecution (hard rule; pod may stay Pending if no suitable node is available)
+  # false: use preferredDuringSchedulingIgnoredDuringExecution (soft rule; best-effort)
+  required: false
+
 ## Annotations for SSR Pods and SSR deployment
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 podAnnotations: {}
@@ -198,6 +206,14 @@ cache:
   tolerations: []
 
   affinity: {}
+
+  podAntiAffinity:
+    # enable/disable default anti-affinity
+    enabled: false
+    # enable/disable hard rule for distributing pods across nodes
+    # true: use requiredDuringSchedulingIgnoredDuringExecution (hard rule; pod may stay Pending if no suitable node is available)
+    # false: use preferredDuringSchedulingIgnoredDuringExecution (soft rule; best-effort)
+    required: false
 
   ## Annotations for nginx Pods and nginx deployment
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
