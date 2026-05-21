@@ -28,6 +28,11 @@ tests:
           content:
             name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
             value: JOB
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_JOB_JOBSERVERGROUPS
+            value: JOB
 
   - it: renders one ICMJob per job.servers entry
     release:
@@ -56,6 +61,11 @@ tests:
           content:
             name: SERVER_GROUPS
             value: WFS,BOS,JOB,JOB_PRIORITY
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_JOB_JOBSERVERGROUPS
+            value: JOB,JOB_PRIORITY
 
   - it: renders jobserver name and overrides when only one non-legacy server is configured
     release:
@@ -80,7 +90,7 @@ tests:
           count: 1
       - equal:
           path: metadata.name
-          value: icm-as-job-jobserver-priority
+          value: icm-as-job-priority
       - equal:
           path: spec.pollInterval
           value: 5
@@ -96,6 +106,11 @@ tests:
           path: spec.jobTemplate.spec.template.spec.containers[0].env
           content:
             name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
+            value: JOB_PRIORITY
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_JOB_JOBSERVERGROUPS
             value: JOB_PRIORITY
       - equal:
           path: spec.jobTemplate.spec.template.spec.containers[0].resources.requests.cpu
