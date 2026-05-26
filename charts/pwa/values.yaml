@@ -49,7 +49,7 @@ affinity: {}
 
 podAntiAffinity:
   # enable/disable default anti-affinity
-  enabled: false
+  enabled: true
   # enable/disable hard rule for distributing pods across nodes
   # true: use requiredDuringSchedulingIgnoredDuringExecution (hard rule; pod may stay Pending if no suitable node is available)
   # false: use preferredDuringSchedulingIgnoredDuringExecution (soft rule; best-effort)
@@ -209,7 +209,7 @@ cache:
 
   podAntiAffinity:
     # enable/disable default anti-affinity
-    enabled: false
+    enabled: true
     # enable/disable hard rule for distributing pods across nodes
     # true: use requiredDuringSchedulingIgnoredDuringExecution (hard rule; pod may stay Pending if no suitable node is available)
     # false: use preferredDuringSchedulingIgnoredDuringExecution (soft rule; best-effort)
