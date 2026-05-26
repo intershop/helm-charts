@@ -136,6 +136,9 @@
         }
       }
     },
+    "podAntiAffinity": {
+      "$ref": "#/definitions/podAntiAffinityConfig"
+    },
     "cache": {
       "type": "object",
       "title": "The cache schema",
@@ -252,6 +255,9 @@
               }
             }
           }
+        },
+        "podAntiAffinity": {
+          "$ref": "#/definitions/podAntiAffinityConfig"
         }
       }
     },
@@ -387,6 +393,26 @@
           "title": "ImagePullPolicy",
           "description": "Valid imagePullPolicy according to Kubernetes specs",
           "enum": ["Always", "IfNotPresent", "Never"]
+        }
+      }
+    },
+    "podAntiAffinityConfig": {
+      "type": "object",
+      "title": "Pod anti-affinity configuration",
+      "description": "Configure pod anti-affinity rules for distributing pods across nodes",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable pod anti-affinity",
+          "description": "Enable or disable default anti-affinity rules",
+          "default": false
+        },
+        "required": {
+          "type": "boolean",
+          "title": "Use hard anti-affinity rule",
+          "description": "true: requiredDuringSchedulingIgnoredDuringExecution (hard rule; pod may stay Pending if no suitable node is available), false: preferredDuringSchedulingIgnoredDuringExecution (soft rule; best-effort)",
+          "default": false
         }
       }
     }
