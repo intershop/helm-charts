@@ -363,7 +363,7 @@
 
 ### Features
 
-- kube_ping with labels ([#450](https://github.com/intershop/helm-charts/issues/450)) _ fix creation of service account and according roles _ fix: service account name \* roles and bindings are created only once with the service account
+* kube_ping with labels ([#450](https://github.com/intershop/helm-charts/issues/450)) * fix creation of service account and according roles * fix: service account name * roles and bindings are created only once with the service account
 
 <a name="icm-as-1.4.0"></a>
 
