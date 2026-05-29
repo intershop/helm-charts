@@ -51,6 +51,45 @@ tests:
           content:
             name: INTERSHOP_JDBC_USER
             value: "intershop"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_JOB_JOBSERVERGROUPS
+            value: ""
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
+            value: "WFS,BOS,JOB"
+
+  - it: SERVER_GROUPS includes all job server groups even if job.enabled is false
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      job.enabled: false
+      job.servers.jobserver.serverGroup: JOB
+      job.servers.jobserver-large.serverGroup: JOB_LARGE
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_JOB_JOBSERVERGROUPS
+            value: ""
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SERVER_GROUPS
+            value: "WFS,BOS,JOB,JOB_LARGE"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
+            value: "WFS,BOS,JOB,JOB_LARGE"
 
   - it: two custom values
     release:
@@ -233,6 +272,40 @@ tests:
           content:
             name: PROPERTY1
             value: "one"
+
+  - it: appserver server groups remain BOS,WFS even when job-specific groups are configured
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      job.enabled: true
+      job.servers.jobserver.serverGroup: JOB
+      job.servers.jobserver-large.serverGroup: JOB_LARGE
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
+            value: "BOS,WFS"
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
+            value: "JOB"
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
+            value: "JOB_LARGE"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERSHOP_JOB_JOBSERVERGROUPS
+            value: "JOB,JOB_LARGE"
 
   - it: custom environmentName
     release:
