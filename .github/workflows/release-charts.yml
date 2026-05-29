@@ -1,13 +1,13 @@
 name: Release Charts
 
 on:
-  workflow_dispatch:
-  # releases the main branch
+  workflow_dispatch: # releases the main branch
+
   # the new versions must already be specified in all Chart.yaml files
   # before merging to main
   push:
     branches:
-    - main
+      - main
 
 jobs:
   release:
@@ -41,6 +41,7 @@ jobs:
           helm repo add codecentric https://codecentric.github.io/helm-charts
           helm repo add intershop https://intershop.github.io/helm-charts
           helm repo add mailpit https://jouve.github.io/charts/
+          helm repo add kubernetes-ingress https://haproxytech.github.io/helm-charts
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
