@@ -65,6 +65,11 @@ spec:
   jobTemplate:
     spec:
       template:
+        {{- if include "icm-as.serviceAccount.podLabels" $jobValues }}
+        metadata:
+          labels:
+            {{- include "icm-as.serviceAccount.podLabels" $jobValues | nindent 12 }}
+        {{- end }}
         spec:
           {{- if include "icm-as.serviceAccount.podSpec" $jobValues -}}
             {{- include "icm-as.serviceAccount.podSpec" $jobValues | nindent 10 }}
