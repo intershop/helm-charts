@@ -81,6 +81,12 @@ Purpose is to filter out any duplicated environment assignment when set both on 
 - name: INTERSHOP_WEBADAPTER_ENABLED
   value: "false"
 {{- end }}
+{{- if not (hasKey .Values.environment "SERVER_GROUPS") }}
+- name: SERVER_GROUPS
+  value: "{{ include "icm-as.availableServerGroups" . }}"
+{{- end }}
+- name: INTERSHOP_JOB_JOBSERVERGROUPS
+  value: "{{ include "icm-as.jobServerGroups" . }}"
 {{- if .Values.webLayer.redis.enabled }}
 - name: INTERSHOP_PAGECACHE_REDIS_ENABLED
   value: "true"
@@ -165,6 +171,53 @@ Creates the environment variables for page cache invalidation
 {{- end -}} {{/*if .Values.pageCacheInvalidation.sites*/}}
 {{- end -}} {{/*if .Values.pageCacheInvalidation.enabled*/}}
 {{- end -}} {{/*define "icm-as.envPageCacheInvalidation*/}}
+
+{{/*
+Builds a comma separated list of available server groups for all servers.
+*/}}
+{{- define "icm-as.availableServerGroups" -}}
+{{- $groups := list "WFS" "BOS" -}}
+{{- $jobServers := .Values.job.servers | default (dict) -}}
+{{- if eq (len $jobServers) 0 -}}
+  {{- $legacyJobGroup := "JOB" -}}
+  {{- if and .Values.job .Values.job.serverGroup -}}
+    {{- $legacyJobGroup = .Values.job.serverGroup -}}
+  {{- end -}}
+  {{- $groups = append $groups $legacyJobGroup -}}
+{{- else -}}
+  {{- $jobServerKeys := keys $jobServers | sortAlpha -}}
+  {{- range $jobServerKey := $jobServerKeys -}}
+    {{- $jobConfig := (get $jobServers $jobServerKey) | default (dict) -}}
+    {{- $groups = append $groups ($jobConfig.serverGroup | default "JOB") -}}
+  {{- end -}}
+{{- end -}}
+{{- join "," (uniq $groups) -}}
+{{- end -}}
+
+{{/*
+Builds a comma separated list of all job server groups.
+Returns empty if no jobserver is configured.
+*/}}
+{{- define "icm-as.jobServerGroups" -}}
+{{- if .Values.job.enabled -}}
+  {{- $groups := list -}}
+  {{- $jobServers := .Values.job.servers | default (dict) -}}
+  {{- if eq (len $jobServers) 0 -}}
+    {{- $legacyJobGroup := "JOB" -}}
+    {{- if and .Values.job .Values.job.serverGroup -}}
+      {{- $legacyJobGroup = .Values.job.serverGroup -}}
+    {{- end -}}
+    {{- $groups = append $groups $legacyJobGroup -}}
+  {{- else -}}
+    {{- $jobServerKeys := keys $jobServers | sortAlpha -}}
+    {{- range $jobServerKey := $jobServerKeys -}}
+      {{- $jobConfig := (get $jobServers $jobServerKey) | default (dict) -}}
+      {{- $groups = append $groups ($jobConfig.serverGroup | default "JOB") -}}
+    {{- end -}}
+  {{- end -}}
+  {{- join "," (uniq $groups) -}}
+{{- end -}}
+{{- end -}}
 
 {{/*
 Creates the environment secrets section
@@ -296,6 +349,13 @@ AppServer-specific-environment
 {{- if .Values.job.enabled }}
 - name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
   value: "BOS,WFS"
+{{- else }}
+- name: INTERSHOP_SERVER_ASSIGNEDTOSERVERGROUP
+  {{- if hasKey .Values.environment "SERVER_GROUPS" }}
+  value: "{{ .Values.environment.SERVER_GROUPS }}"
+  {{- else }}
+  value: "{{ include "icm-as.availableServerGroups" . }}"
+  {{- end }}
 {{- end }}
 {{- end -}}
 
