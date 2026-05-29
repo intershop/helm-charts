@@ -7,6 +7,7 @@ replicaCount: 1
 
 # define the update strategy (possible values: Recreate, RollingUpdate; default=RollingUpdate)
 updateStrategy: RollingUpdate
+# minReadySeconds: 30
 
 # define where the application shall run on
 nodeSelector: {}
@@ -367,9 +368,9 @@ probes:
   #    initialDelaySeconds: 0
   #    periodSeconds: 10
   readiness: {}
-#    failureThreshold: 3
-#    initialDelaySeconds: 0
-#    periodSeconds: 5
+  #    failureThreshold: 3
+  #    initialDelaySeconds: 60
+  #    periodSeconds: 10
 
 # Duration in seconds pod needs to terminate gracefully, value is optional, below is the default
 # terminationGracePeriodSeconds: 30
@@ -507,6 +508,25 @@ job:
   # if enabled=true the job controller must be deployed at cluster separately. see icm-job chart.
   enabled: false
 
+  # Optional multi-jobserver configuration.
+  # If this map is set, one ICMJob custom resource is rendered per entry.
+  # The entry key is used as the job server name.
+  # Entry key 'jobserver' keeps the legacy resource name '<release>-job'.
+  # Other keys will render as '<release>-job-<key>'.
+  # Each entry inherits all legacy job.* settings and may override selected values.
+  # servers:
+  #   jobserver:
+  #     serverGroup: JOB
+  #   jobserver-priority:
+  #     serverGroup: JOB_PRIORITY
+  #     resources:
+  #       requests:
+  #         cpu: 1500m
+  #         memory: 3Gi
+  #       limits:
+  #         cpu: 1500m
+  #         memory: 3Gi
+
   # If true, job-server-support will be available but no jobs will be created
   # suspend: false
 
@@ -527,6 +547,9 @@ job:
   # Custom job-server name. Defaults to 'jobserver'
   # serverName: <CustomJobServerName>
 
+  # Custom server group. Defaults to 'JOB'.
+  # serverGroup: <CustomJobServerGroup>
+
 # Configuration for a replication/staging scenario
 replication:
   # enables/disables the replication support: whether this icm-as is part of a replication system or not
@@ -534,6 +557,10 @@ replication:
 
   # defines the type of this replication system (source | target)
   role: <source|target>
+
+  # enables/disables the classic staging process (STAGING_PROCESS_CLASSIC=true)
+  # when true, the classic staging process is used instead of the new one
+  classic: true
 
   # "targetSystemUrl" deprecated since ICM-AS Helm Charts 2.2.0, will be removed in a future version.
   # Configure the source and targets within replication instead.
@@ -612,3 +639,12 @@ pageCacheInvalidation:
   #   array containing specific site names: only these sites
   # (optional, default: empty)
   sites: []
+
+# Pod anti-affinity defaults for icm-as appserver pods
+podAntiAffinity:
+  # enable/disable default anti-affinity
+  enabled: true
+  # enable/disable hard rule for distributing pods across nodes
+  # true: use requiredDuringSchedulingIgnoredDuringExecution (hard rule; pod may stay Pending if no suitable node is available)
+  # false: use preferredDuringSchedulingIgnoredDuringExecution (soft rule; best-effort)
+  required: false

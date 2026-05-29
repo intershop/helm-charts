@@ -16,6 +16,7 @@ Configures the `icm-as-server` regarding mass data and object replication. The f
 |Attribute |Description |Type |Mandatory |Default Value
 |enabled|If `true`, the deployed ICM is a replication system|boolean|{optional}|`false`
 |role|Defines whether this `icm-as-server` is a source (_edit_) or a target (_life_) system|enum {`source`,`target`}|{mandatory}|-
+|classic|If `true`, sets `STAGING_PROCESS_CLASSIC=true` to use the classic staging process|boolean|{optional}|`true`
 |source|Configures all the connections to the source (_edit_) system|<<_source,Source>>|{mandatory}|-
 |targets|Configures all the connections to all the target (_life_) systems|<<_targets,Targets>>|{mandatory}|-
 |===
