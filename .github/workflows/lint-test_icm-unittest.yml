@@ -2,20 +2,32 @@ name: "Unit test icm chart"
 on:
   pull_request:
     paths:
-    - 'charts/icm/**'
+      - "charts/icm/**"
 
 jobs:
   lint-test-icm-unittest:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    - name: Base
-      uses: ./.github/template/base
-    - name: Unit test
-      uses: ./.github/template/unittest
-      with:
-        chartTestingFile: ct_icm.yaml
-        chartName: icm
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Base
+        uses: ./.github/template/base
+      - name: Add dependency chart repos
+        run: |
+          helm dependency update charts/icm-as
+          helm dependency update charts/icm
+          helm dependency update charts/icm-test
+
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo add kubernetes-ingress-nginx https://kubernetes.github.io/ingress-nginx
+          helm repo add codecentric https://codecentric.github.io/helm-charts
+          helm repo add intershop https://intershop.github.io/helm-charts
+          helm repo add mailpit https://jouve.github.io/charts/
+          helm repo add kubernetes-ingress https://haproxytech.github.io/helm-charts
+      - name: Unit test
+        uses: ./.github/template/unittest
+        with:
+          chartTestingFile: ct_icm.yaml
+          chartName: icm

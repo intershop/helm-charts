@@ -156,6 +156,32 @@ tolerations:
 {{- end -}}
 
 {{/*
+Pod-affinity / anti-affinity
+*/}}
+{{- define "icm-as.affinity" -}}
+{{- $root := .root | default . -}}
+{{- if $root.Values.podAntiAffinity.enabled -}}
+affinity:
+  podAntiAffinity:
+    {{- if $root.Values.podAntiAffinity.required }}
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - topologyKey: "kubernetes.io/hostname"
+        labelSelector:
+          matchLabels:
+            {{- include "icm-as.selectorLabels" . | nindent 14 }}
+    {{- else }}
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          topologyKey: "kubernetes.io/hostname"
+          labelSelector:
+            matchLabels:
+              {{- include "icm-as.selectorLabels" . | nindent 14}}
+    {{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
 Image spec
 */}}
 {{- define "icm-as.image" -}}

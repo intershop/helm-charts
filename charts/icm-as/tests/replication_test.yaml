@@ -847,3 +847,44 @@ tests:
     asserts:
       - failedTemplate:
           errorMessage: "Error: The key 'live-system' in 'replication.targets' violates the constraint that it cannot contain any of these characters: '.', '-', '_'."
+
+  - it: as-deployment replication.classic defaults to true
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: true
+      replication.role: source
+      replication.targetSystemUrl: https://icm-web-live-wa:443
+      replication.sourceDatabaseName: intershop_edit
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_PROCESS_CLASSIC
+            value: "true"
+
+  - it: as-deployment replication.classic=false sets STAGING_PROCESS_CLASSIC to false
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      replication.enabled: true
+      replication.role: source
+      replication.targetSystemUrl: https://icm-web-live-wa:443
+      replication.sourceDatabaseName: intershop_edit
+      replication.classic: false
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: STAGING_PROCESS_CLASSIC
+            value: "false"

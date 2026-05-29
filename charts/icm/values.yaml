@@ -120,6 +120,9 @@ icm-web:
 ingress-nginx:
   enabled: false
 
+ingress-haproxy:
+  enabled: false
+
 mailhog:
   enabled: false
 
