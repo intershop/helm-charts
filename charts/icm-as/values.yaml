@@ -558,6 +558,10 @@ replication:
   # defines the type of this replication system (source | target)
   role: <source|target>
 
+  # enables/disables the classic staging process (STAGING_PROCESS_CLASSIC=true)
+  # when true, the classic staging process is used instead of the new one
+  classic: true
+
   # "targetSystemUrl" deprecated since ICM-AS Helm Charts 2.2.0, will be removed in a future version.
   # Configure the source and targets within replication instead.
   # if role=source the following properties are mandatory (otherwise they are ignored)
