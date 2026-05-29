@@ -868,7 +868,7 @@ tests:
             name: STAGING_PROCESS_CLASSIC
             value: "true"
 
-  - it: as-deployment replication.classic=true sets STAGING_PROCESS_CLASSIC to false
+  - it: as-deployment replication.classic=false sets STAGING_PROCESS_CLASSIC to false
     release:
       name: icm-as
     chart:
@@ -876,11 +876,11 @@ tests:
     values:
       - ../values.yaml
     set:
-      replication.enabled: false
+      replication.enabled: true
       replication.role: source
       replication.targetSystemUrl: https://icm-web-live-wa:443
       replication.sourceDatabaseName: intershop_edit
-      replication.classic: true
+      replication.classic: false
     template: templates/as-deployment.yaml
     asserts:
       - contains:
