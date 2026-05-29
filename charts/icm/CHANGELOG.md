@@ -1,4 +1,36 @@
 
+<a name="icm-2.21.0"></a>
+## [icm-2.21.0](https://github.com/intershop/helm-charts/compare/icm-2.20.0...icm-2.21.0)
+
+> 2026-05-29
+
+### Features
+
+* **icm:** support HAProxy as ingress controller ([#1250](https://github.com/intershop/helm-charts/issues/1250))
+
+
+<a name="icm-2.20.0"></a>
+## [icm-2.20.0](https://github.com/intershop/helm-charts/compare/icm-2.19.0...icm-2.20.0)
+
+> 2026-04-30
+
+
+<a name="icm-2.19.0"></a>
+## [icm-2.19.0](https://github.com/intershop/helm-charts/compare/icm-2.18.0...icm-2.19.0)
+
+> 2026-03-30
+
+### Documentation
+
+* **icm:** fix links in values-yaml.asciidoc documentation
+
+
+<a name="icm-2.18.0"></a>
+## [icm-2.18.0](https://github.com/intershop/helm-charts/compare/icm-2.17.0...icm-2.18.0)
+
+> 2025-11-18
+
+
 <a name="icm-2.17.0"></a>
 ## [icm-2.17.0](https://github.com/intershop/helm-charts/compare/icm-2.16.0...icm-2.17.0)
 

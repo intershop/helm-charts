@@ -19,7 +19,8 @@ Therefore, the `values.yaml` contains several sections, each belonging to a spec
 |Section |Topic |Documentation
 |icm-as|ICM application server|link:../../icm-as/docs/values-yaml.asciidoc[icm-as documentation]
 |icm-web|ICM Web Adapter|link:../../icm-web/docs/values-yaml.asciidoc[icm-web documentation]
-|ingress-nginx|https://github.com/kubernetes/ingress-nginx[Ingress NGINX controller] (for development/testing purposes)|https://kubernetes.github.io/ingress-nginx[ingress-nginx documentation]
+|ingress-nginx|https://github.com/kubernetes/ingress-nginx[Ingress controller based on NGINX] (for development/testing purposes)|https://kubernetes.github.io/ingress-nginx[ingress-nginx documentation]
+|ingress-haproxy|https://www.haproxy.com/documentation/kubernetes-ingress/[Ingress controller based on HAProxy] (for development/testing purposes)|https://www.haproxy.com/documentation/kubernetes-ingress/community/installation/azure/#install-with-helm[ingress-haproxy documentation]
 |mailhog|https://github.com/mailhog/MailHog[MailHog] instance (for development/testing purposes)|https://artifacthub.io/packages/helm/codecentric/mailhog[MailHog documentation]
 |redis|Single https://redis.io/[Redis] master (page caching for Web Adapter replacement)|https://github.com/bitnami/charts/tree/main/bitnami/redis[Redis chart documentation]
 |redis-cluster|Multiple https://redis.io/[Redis] masters (page caching for Web Adapter replacement)|https://github.com/bitnami/charts/tree/main/bitnami/redis[Redis chart documentation]
@@ -34,9 +35,9 @@ icm-as:
 icm-web:
   <icm-web configuration>
 
-ingress-nginx:
+ingress-haproxy:
   enabled: true
-  <ingress-nginx configuration>
+  <ingress-haproxy configuration>
 
 mailhog:
   enabled: true
@@ -52,7 +53,7 @@ redis-cluster:
 
 This development example deploys the following (besides `icm-as` and `icm-web`):
 
-* An Ingress NGINX controller
+* An Ingress controller based on HAProxy
 * A MailHog instance
 * A single Redis master
 
