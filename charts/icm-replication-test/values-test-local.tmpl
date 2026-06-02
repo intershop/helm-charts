@@ -34,6 +34,10 @@ icm-edit:
       persistence:
         customdata:
           existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
+    redis:
+      enabled: false
+    redis-cluster:
+      enabled: false
 
   dumpfileRestore:
     enabled: true
@@ -83,6 +87,10 @@ icm-live:
         nodeSelector: null
     mailhog:
       nodeSelector: null
+    redis:
+      enabled: false
+    redis-cluster:
+      enabled: false
 
   testrunner:
     nodeSelector: null
