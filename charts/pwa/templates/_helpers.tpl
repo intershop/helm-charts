@@ -32,6 +32,38 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
+pwa pod anti affinity
+*/}}
+{{- define "pwa-main.podAntiAffinity" -}}
+{{- if .Values.podAntiAffinity.enabled -}}
+podAntiAffinity:
+  {{- if .Values.podAntiAffinity.required }}
+  requiredDuringSchedulingIgnoredDuringExecution:
+    - topologyKey: "kubernetes.io/hostname"
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: {{ include "pwa-main.name" . }}
+          app.kubernetes.io/instance: {{ .Release.Name }}
+          {{- if .Values.podLabels }}
+          {{- toYaml .Values.podLabels | nindent 10 }}
+          {{- end }}
+  {{- else }}
+  preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        topologyKey: "kubernetes.io/hostname"
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: {{ include "pwa-main.name" . }}
+            app.kubernetes.io/instance: {{ .Release.Name }}
+            {{- if .Values.podLabels }}
+            {{- toYaml .Values.podLabels | nindent 12 }}
+            {{- end }}
+  {{- end }}
+{{- end -}}
+{{- end -}}
+
+{{/*
     ingress configuration
 */}}
 {{- define "pwa-ingress.service" -}}
@@ -47,6 +79,38 @@ pwa cache variables
 
 {{- define "pwa-cache.name" -}}
 {{- printf "%s-%s" (include  "pwa-main.name" . ) "cache" -}}
+{{- end -}}
+
+{{/*
+pwa cache pod anti affinity
+*/}}
+{{- define "pwa-cache.podAntiAffinity" -}}
+{{- if .Values.cache.podAntiAffinity.enabled -}}
+podAntiAffinity:
+  {{- if .Values.cache.podAntiAffinity.required }}
+  requiredDuringSchedulingIgnoredDuringExecution:
+    - topologyKey: "kubernetes.io/hostname"
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: {{ include "pwa-cache.name" . }}
+          app.kubernetes.io/instance: {{ .Release.Name }}
+          {{- if .Values.cache.podLabels }}
+          {{- toYaml .Values.cache.podLabels | nindent 10 }}
+          {{- end }}
+  {{- else }}
+  preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        topologyKey: "kubernetes.io/hostname"
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: {{ include "pwa-cache.name" . }}
+            app.kubernetes.io/instance: {{ .Release.Name }}
+            {{- if .Values.cache.podLabels }}
+            {{- toYaml .Values.cache.podLabels | nindent 12 }}
+            {{- end }}
+  {{- end }}
+{{- end -}}
 {{- end -}}
 
 {{- define "pwa-cache-metrics.fullname" -}}
