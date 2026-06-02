@@ -1,5 +1,11 @@
 # Migration to 0.12.0
 
+## Cache reset enabled by default
+
+With the PWA Helm Chart 0.12.0, the cache reset functionality is enabled by default using the Intershop `ishcp.azurecr.io/ishops/cronjob-utils` image.
+If the default behavior fits your project's needs, no configuration is required.
+To disable it, set `cache.reset.enabled=false`.
+
 ## Changed Structure of Cache Reset Image Configuration
 
 The `cache.reset.image` section did not follow the regular pattern for image references - image repository and tag were "squashed" into a single value and it was not possible to change the pull policy of the image.
