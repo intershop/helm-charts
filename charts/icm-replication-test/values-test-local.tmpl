@@ -78,13 +78,11 @@ icm-live:
       persistence:
         customdata:
           existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
-
-  ingress-nginx:
-    controller:
+    ingress-nginx:
+      controller:
+        nodeSelector: null
+    mailhog:
       nodeSelector: null
-
-  mailhog:
-    nodeSelector: null
 
   testrunner:
     nodeSelector: null
