@@ -107,9 +107,12 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- with .Values.affinity }}
+    {{- if or .Values.affinity .Values.podAntiAffinity.enabled }}
       affinity:
-        {{- toYaml . | nindent 8 }}
+        {{- with .Values.affinity }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- include "pwa-main.podAntiAffinity" . | nindent 8 }}
     {{- end }}
     {{- with .Values.tolerations }}
       tolerations:

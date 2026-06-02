@@ -128,9 +128,12 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- with .Values.cache.affinity }}
+    {{- if or .Values.cache.affinity .Values.cache.podAntiAffinity.enabled }}
       affinity:
-        {{- toYaml . | nindent 8 }}
+        {{- with .Values.cache.affinity }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- include "pwa-cache.podAntiAffinity" . | nindent 8 }}
     {{- end }}
     {{- with .Values.cache.tolerations }}
       tolerations:
