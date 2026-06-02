@@ -181,7 +181,7 @@
             "enabled": {
               "type": "boolean",
               "title": "Enable or disable nginx/cache reset job after upgrade",
-              "default": false
+              "default": true
             },
             "image": {
               "$ref": "#/definitions/imageReference"
