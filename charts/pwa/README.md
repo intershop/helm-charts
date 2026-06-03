@@ -19,7 +19,8 @@ In addition, the version changes and necessary migration information are provide
 
 | Chart  | PWA    | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                 | Migration Information                                                                                                                                                                                                                                                                       |
 | ------ | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0.12.0 | 1.0.0  | <ul><li>Changed structure of cache reset image configuration</li><li>Removed cache init container</li></ul>                                                                                                                                                                                                                                                                                                                             | See [Migration to 0.12.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.12.0.md)                                                                                                                                                                          |
+| 0.13.0 | 1.0.0  | <ul><li>Introduced pod anti-affinity configuration (enabled by default with soft rules)</li></ul>                                                                                                                                                                                                                                                                                                                                       | See [Migration to 0.13.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.13.0.md) if you have custom `podAntiAffinity` rules in your `affinity` configuration                                                                                              |
+| 0.12.0 | 1.0.0  | <ul><li>Cache Reset enabled by default</li><li>Changed structure of cache reset image configuration</li><li>Removed cache init container</li></ul>                                                                                                                                                                                                                                                                                      | See [Migration to 0.12.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.12.0.md)                                                                                                                                                                          |
 | 0.11.0 | 1.0.0  | <ul><li>Added option to enable/disable cache init container</li><li>Introduced cache container reset after deployment via hook job</li><li>Provided option to change the `redis-cli` image for the cache flush job</li><li>Introduced options for explicit deployment labels and deployment annotations</li></ul>                                                                                                                       |                                                                                                                                                                                                                                                                                             |
 | 0.10.0 | 1.0.0  | <ul><li>Changed Hybrid Approach handling and configuration options</li><li>Remove dependency to ICM deployment charts</li></ul>                                                                                                                                                                                                                                                                                                         | Removed unused deployment handling introduced with version 0.4.0, new configuration options require PWA 9.1.0                                                                                                                                                                               |
 | 0.9.3  | 1.0.0  | <ul><li>Fixed `cache.additionalHeaders` functionality introduced with version 0.8.0</li></ul>                                                                                                                                                                                                                                                                                                                                           |                                                                                                                                                                                                                                                                                             |
@@ -41,7 +42,7 @@ In addition, the version changes and necessary migration information are provide
 
 | Name             | Description                    | Example Value                                |
 | ---------------- | ------------------------------ | -------------------------------------------- |
-| `updateStrategy` | The Kubernetes update strategy | `Recreate`<br>`RollingUpdate`&nbsp;(default) |
+| `updateStrategy` | The Kubernetes update strategy | `RollingUpdate`&nbsp;(default)<br>`Recreate` |
 
 ### nginx
 
@@ -66,6 +67,32 @@ For more information about the Hybrid Approach, refer to the official Intershop 
 | `hybrid.enabled`         | Enable or disable Hybrid Approach deployment                                            | `true`                               |
 | `hybrid.icmInternalURL`  | ICM Web Adapter service internal Kubernetes URL                                         | `https://kubernetes-icm-web-wa:8443` |
 | `hybrid.pwaExternalPort` | The PWA's external port that will be forwarded to the Responsive Starter Store requests | `443`                                |
+
+## Pod Anti-Affinity
+
+The PWA Helm chart supports pod anti-affinity rules to distribute pods across different nodes in your Kubernetes cluster. This helps improve availability and resilience by ensuring pods are spread across the infrastructure.
+
+Pod anti-affinity can be configured for both the SSR (server-side rendering) pods and the nginx/cache pods.
+
+```yaml
+podAntiAffinity:
+  enabled: true
+  required: false
+
+cache:
+  podAntiAffinity:
+    enabled: true
+    required: false
+```
+
+| Property   | Description                                                                                                                                                                                                                                                                        | Default |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `enabled`  | Enable or disable pod anti-affinity rules                                                                                                                                                                                                                                          | `true`  |
+| `required` | Use hard anti-affinity rule (`true`) or soft anti-affinity rule (`false`)<br>`true`: requiredDuringSchedulingIgnoredDuringExecution - pod may stay Pending if no suitable node is available<br>`false`: preferredDuringSchedulingIgnoredDuringExecution - best-effort distribution | `false` |
+
+When `enabled` is set to `true` and `required` is `false` (default), Kubernetes will prefer to schedule pods on different nodes but will allow them on the same node if necessary. This provides a good balance between high availability and scheduling flexibility.
+
+When `required` is set to `true`, Kubernetes will enforce that pods must be scheduled on different nodes. This provides stronger guarantees but may result in pods remaining in a Pending state if insufficient nodes are available.
 
 ## Shared Redis Cache
 
@@ -117,7 +144,7 @@ cache:
 
 | Property  | Description                                                         | Default                                                                                                           |
 | --------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `enabled` | Enable or disable the cache reset job after upgrade                 | `false`                                                                                                           |
+| `enabled` | Enable or disable the cache reset job after upgrade                 | `true`                                                                                                            |
 | `image`   | Docker image containing `kubectl` for executing the restart command | `repository: ishcp.azurecr.io/ishops/cronjob-utils`<br>&nbsp;&nbsp;`tag: "1"`<br>&nbsp;&nbsp;`pullPolicy: Always` |
 
 When enabled, the job runs automatically after each `helm upgrade` operation, ensuring the cache is fresh and consistent with the latest PWA SSR container deployment.
@@ -246,7 +273,7 @@ spec:
   chart:
     repository: https://intershop.github.io/helm-charts
     name: pwa-main
-    version: 0.12.0
+    version: 0.13.0
   values:
 ```
 
@@ -277,7 +304,7 @@ spec:
     spec:
       # pwa helm chart, version from https://github.com/intershop/helm-charts
       chart: pwa-main
-      version: 0.12.0
+      version: 0.13.0
       # Source reference to the HelmChart Repo
       sourceRef:
         kind: HelmRepository
@@ -333,7 +360,7 @@ For the more common Intershop PWA deployments via Flux, the repository also prov
 Reference this file in the PWA Flux deployment configuration files with a reference to the fitting version in the following way:
 
 ```yaml
-# yaml-language-server: $schema=https://raw.githubusercontent.com/intershop/helm-charts/pwa-main-0.12.0/charts/pwa/values-flux.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/intershop/helm-charts/pwa-main-0.13.0/charts/pwa/values-flux.schema.json
 ```
 
 ## Development
