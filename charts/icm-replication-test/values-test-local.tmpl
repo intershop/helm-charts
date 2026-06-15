@@ -4,6 +4,7 @@ icm-edit:
       nodeSelector: null
       imagePullSecrets:
       - "${ICM_AS_PULL_SECRET}"
+      - "${MSSQL_PULL_SECRET}"
       persistence:
         sites:
           size: 1Gi
@@ -33,6 +34,17 @@ icm-edit:
       persistence:
         customdata:
           existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
+    redis:
+      enabled: false
+    redis-cluster:
+      enabled: false
+
+  dumpfileRestore:
+    enabled: true
+    dumpfileDir: /data/dumpfile
+    image:
+      repository: mcr.microsoft.com/mssql-tools:latest
+    waitTimeout: 120
 
 icm-live:
   icm:
@@ -40,6 +52,7 @@ icm-live:
       nodeSelector: null
       imagePullSecrets:
       - "${ICM_AS_PULL_SECRET}"
+      - "${MSSQL_PULL_SECRET}"
       persistence:
         sites:
           size: 1Gi
@@ -69,13 +82,15 @@ icm-live:
       persistence:
         customdata:
           existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
-
-  ingress-nginx:
-    controller:
+    ingress-nginx:
+      controller:
+        nodeSelector: null
+    mailhog:
       nodeSelector: null
-
-  mailhog:
-    nodeSelector: null
+    redis:
+      enabled: false
+    redis-cluster:
+      enabled: false
 
   testrunner:
     nodeSelector: null
@@ -87,3 +102,10 @@ icm-live:
         type: local
         local:
           dir: ${LOCAL_MOUNT_BASE}/testdata
+
+  dumpfileRestore:
+    enabled: true
+    dumpfileDir: /data/dumpfile
+    image:
+      repository: mcr.microsoft.com/mssql-tools:latest
+    waitTimeout: 120
