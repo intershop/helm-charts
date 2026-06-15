@@ -1,4 +1,44 @@
 
+<a name="icm-job-test-1.9.0"></a>
+## [icm-job-test-1.9.0](https://github.com/intershop/helm-charts/compare/icm-job-test-1.8.0...icm-job-test-1.9.0)
+
+> 2026-06-15
+
+### Features
+
+* **icm:** automatic dumpfile import for icm-replication-test and icm-job-test charts ([#1271](https://github.com/intershop/helm-charts/issues/1271))
+
+
+<a name="icm-job-test-1.8.0"></a>
+## [icm-job-test-1.8.0](https://github.com/intershop/helm-charts/compare/icm-job-test-1.7.1...icm-job-test-1.8.0)
+
+> 2026-05-29
+
+
+<a name="icm-job-test-1.7.1"></a>
+## [icm-job-test-1.7.1](https://github.com/intershop/helm-charts/compare/icm-job-test-1.7.0...icm-job-test-1.7.1)
+
+> 2026-05-08
+
+
+<a name="icm-job-test-1.7.0"></a>
+## [icm-job-test-1.7.0](https://github.com/intershop/helm-charts/compare/icm-job-test-1.6.0...icm-job-test-1.7.0)
+
+> 2026-04-30
+
+
+<a name="icm-job-test-1.6.0"></a>
+## [icm-job-test-1.6.0](https://github.com/intershop/helm-charts/compare/icm-job-test-1.5.1...icm-job-test-1.6.0)
+
+> 2026-04-27
+
+
+<a name="icm-job-test-1.5.1"></a>
+## [icm-job-test-1.5.1](https://github.com/intershop/helm-charts/compare/icm-job-test-1.5.0...icm-job-test-1.5.1)
+
+> 2026-04-20
+
+
 <a name="icm-job-test-1.5.0"></a>
 ## [icm-job-test-1.5.0](https://github.com/intershop/helm-charts/compare/icm-job-test-1.4.1...icm-job-test-1.5.0)
 
