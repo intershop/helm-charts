@@ -1,10 +1,10 @@
 
-<a name="icm-replication-test-1.3.0"></a>
-## [icm-replication-test-1.3.0](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.2.1...icm-replication-test-1.3.0)
+<a name="icm-replication-test-1.7.0"></a>
+## [icm-replication-test-1.7.0](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.6.0...icm-replication-test-1.7.0)
 
-> 2026-03-30
+> 2026-06-15
 
 ### Features
 
-* **icm:** no monitoring for ISTE needed ([#1193](https://github.com/intershop/helm-charts/issues/1193))
+* **icm:** automatic dumpfile import for icm-replication-test and icm-job-test charts ([#1271](https://github.com/intershop/helm-charts/issues/1271))
 
