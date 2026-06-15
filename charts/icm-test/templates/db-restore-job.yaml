@@ -1,5 +1,5 @@
 {{- $icmAsValues := index .Values.icm "icm-as" -}}
-{{- if and .Values.test.enabled $icmAsValues.mssql.enabled .Values.dumpfileRestore.enabled }}
+{{- if and $icmAsValues.mssql.enabled .Values.dumpfileRestore.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
