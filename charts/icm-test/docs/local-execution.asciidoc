@@ -87,8 +87,7 @@ At a location of your choosing (by default on Windows: `d:\tmp\pv\` and on Linux
 
 === 8. Creating the ICMJob custom resource (only necessary for icm-job-tests)
 
-When running a job server test, it is necessary to create the ICMJob custom resource before running the test. It is defined in the icm-job chart and be created using the following command:
-
+When running a job server test, it is necessary to create the ICMJob custom resource before running the test. It is defined in the icm-job chart and can be created using the following command:
 [source,bash]
 ----
 kubectl apply -f charts/icm-job/crds/icm-job-controller.yaml
