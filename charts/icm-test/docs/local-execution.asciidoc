@@ -72,6 +72,11 @@ Remap the host address of the test to your own IP. To do this on Windows go to `
 
 It is important that you later use the correct release_name for the helm chart when deploying. The release name will determine which host address will be used and if use a different release name it won't be rerouted to your ip address.
 
+**For replication test suites:** If you are running an icm replication test suite, there will be two different icm instances, both of which need to be rerouted to the correct hostname. In that case, you need to add two lines to the hosts file which look like this:
+
+`<YOUR_IP_ADDRESS> <RELEASE_NAME>-live.test.intershop.com`
+`<YOUR_IP_ADDRESS> <RELEASE_NAME>-edit.test.intershop.com`
+
 === 7. Create the local persistent volume directories
 
 At a location of your choosing (by default on Windows: `d:\tmp\pv\` and on Linux `/mnt/host/d/tmp/pv/`), create the following directories:
@@ -80,7 +85,15 @@ At a location of your choosing (by default on Windows: `d:\tmp\pv\` and on Linux
 . sites
 . testdata
 
-=== 8. Run the `start-test-local.sh` script
+=== 8. Creating the ICMJob custom resource (only necessary for icm-job-tests)
+
+When running a job server test, it is necessary to create the ICMJob custom resource before running the test. It is defined in the icm-job chart and can be created using the following command:
+[source,bash]
+----
+kubectl apply -f charts/icm-job/crds/icm-job-controller.yaml
+----
+
+=== 9. Run the `start-test-local.sh` script
 
 You can now run the `start-test-local.sh` script using `./start-test-local.sh`. Beware that the first run of the test will take significantly longer since the database values have to be initialized. The script will prompt you with a few input parameters (that all already have a default):
 
