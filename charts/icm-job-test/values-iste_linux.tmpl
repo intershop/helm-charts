@@ -4,6 +4,10 @@ icm-test:
 
   icm:
     icm-as:
+      serviceAccount:
+        create: true
+      jgroups:
+        discovery: kube_ping
       nodeSelector:
         agentpool: agentpool2
       infrastructureMonitoring:
