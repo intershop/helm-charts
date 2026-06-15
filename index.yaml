@@ -10054,6 +10054,21 @@ entries:
       requestedCpuQuotaInMinutes: "2200"
       requestedMemoryQuota: 8000Mi
     apiVersion: v2
+    created: "2026-06-15T13:08:56.311222808Z"
+    dependencies:
+    - name: icm-test
+      repository: file://../icm-test
+      version: 1.7.0
+    description: Intershop Commerce Management - ICM Job Server Test Chart
+    digest: 4081bd870af3ae7eddee46974e5b4f7c803559ba25a28eaab92192562ad5d02e
+    name: icm-job-test
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-job-test-1.9.0/icm-job-test-1.9.0.tgz
+    version: 1.9.0
+  - annotations:
+      requestedCpuQuotaInMinutes: "2200"
+      requestedMemoryQuota: 8000Mi
+    apiVersion: v2
     created: "2026-05-29T12:00:02.908107687Z"
     dependencies:
     - name: icm-test
@@ -10204,13 +10219,13 @@ entries:
       requestedCpuQuotaInMinutes: "2200"
       requestedMemoryQuota: 8000Mi
     apiVersion: v2
-    created: "2025-11-07T10:02:30.648805792Z"
+    created: "2025-11-10T13:08:48.694115595Z"
     dependencies:
     - name: icm-test
       repository: file://../icm-test
       version: 1.0.0-alpha
     description: Intershop Commerce Management - ICM Job Server Test Chart
-    digest: 701240c3740968f557537b52341d20c665aa7e442174b378acd8a73dd243a752
+    digest: faadab2ec17f45022b0142315e970a7491d1c7ac71e28d0cc98fed72f4b0c2f5
     name: icm-job-test
     urls:
     - https://github.com/intershop/helm-charts/releases/download/icm-job-test-1.3.0-alpha/icm-job-test-1.3.0-alpha.tgz
@@ -10219,28 +10234,13 @@ entries:
       requestedCpuQuotaInMinutes: "2200"
       requestedMemoryQuota: 8000Mi
     apiVersion: v2
-    created: "2025-11-07T09:05:12.218268511Z"
+    created: "2025-11-07T12:27:53.350747291Z"
     dependencies:
     - name: icm-test
       repository: file://../icm-test
       version: 1.0.0-alpha
     description: Intershop Commerce Management - ICM Job Server Test Chart
-    digest: 15d5d7912962278011d6981ac603284bc3ed5eb5a51f6ff13e549ffa7081157f
-    name: icm-job-test
-    urls:
-    - https://github.com/intershop/helm-charts/releases/download/icm-job-test-1.3.0-alpha/icm-job-test-1.3.0-alpha.tgz
-    version: 1.3.0-alpha
-  - annotations:
-      requestedCpuQuotaInMinutes: "2200"
-      requestedMemoryQuota: 8000Mi
-    apiVersion: v2
-    created: "2025-11-10T09:45:39.149471369Z"
-    dependencies:
-    - name: icm-test
-      repository: file://../icm-test
-      version: 1.0.0-alpha
-    description: Intershop Commerce Management - ICM Job Server Test Chart
-    digest: 4e595c41c9eaf9ad39c2cf4c70bf3b40fac3b2d1568778672e0abbfccf984b97
+    digest: 1f8c35caaba90252295dc8e5f4391d4db67d243c06ae6df828f0a77dd70f8420
     name: icm-job-test
     urls:
     - https://github.com/intershop/helm-charts/releases/download/icm-job-test-1.3.0-alpha/icm-job-test-1.3.0-alpha.tgz
@@ -10294,13 +10294,13 @@ entries:
       requestedCpuQuotaInMinutes: "2200"
       requestedMemoryQuota: 8000Mi
     apiVersion: v2
-    created: "2025-11-10T13:08:48.694115595Z"
+    created: "2025-11-07T09:05:12.218268511Z"
     dependencies:
     - name: icm-test
       repository: file://../icm-test
       version: 1.0.0-alpha
     description: Intershop Commerce Management - ICM Job Server Test Chart
-    digest: faadab2ec17f45022b0142315e970a7491d1c7ac71e28d0cc98fed72f4b0c2f5
+    digest: 15d5d7912962278011d6981ac603284bc3ed5eb5a51f6ff13e549ffa7081157f
     name: icm-job-test
     urls:
     - https://github.com/intershop/helm-charts/releases/download/icm-job-test-1.3.0-alpha/icm-job-test-1.3.0-alpha.tgz
@@ -10384,13 +10384,28 @@ entries:
       requestedCpuQuotaInMinutes: "2200"
       requestedMemoryQuota: 8000Mi
     apiVersion: v2
-    created: "2025-11-07T12:27:53.350747291Z"
+    created: "2025-11-10T09:45:39.149471369Z"
     dependencies:
     - name: icm-test
       repository: file://../icm-test
       version: 1.0.0-alpha
     description: Intershop Commerce Management - ICM Job Server Test Chart
-    digest: 1f8c35caaba90252295dc8e5f4391d4db67d243c06ae6df828f0a77dd70f8420
+    digest: 4e595c41c9eaf9ad39c2cf4c70bf3b40fac3b2d1568778672e0abbfccf984b97
+    name: icm-job-test
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-job-test-1.3.0-alpha/icm-job-test-1.3.0-alpha.tgz
+    version: 1.3.0-alpha
+  - annotations:
+      requestedCpuQuotaInMinutes: "2200"
+      requestedMemoryQuota: 8000Mi
+    apiVersion: v2
+    created: "2025-11-07T10:02:30.648805792Z"
+    dependencies:
+    - name: icm-test
+      repository: file://../icm-test
+      version: 1.0.0-alpha
+    description: Intershop Commerce Management - ICM Job Server Test Chart
+    digest: 701240c3740968f557537b52341d20c665aa7e442174b378acd8a73dd243a752
     name: icm-job-test
     urls:
     - https://github.com/intershop/helm-charts/releases/download/icm-job-test-1.3.0-alpha/icm-job-test-1.3.0-alpha.tgz
@@ -14549,6 +14564,27 @@ entries:
       requestedMemoryQuota: 9Gi
     apiVersion: v2
     appVersion: 13.1.2
+    created: "2026-06-15T13:08:56.542104381Z"
+    dependencies:
+    - alias: icm-live
+      name: icm-test
+      repository: file://../icm-test
+      version: 1.7.0
+    - alias: icm-edit
+      name: icm-test
+      repository: file://../icm-test
+      version: 1.7.0
+    description: Intershop Commerce Management - ICM Replication Test Chart
+    digest: 459acfd06181fff507c6766f0eb7a42261832ca28d38291603c216fdcd265a0f
+    name: icm-replication-test
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-replication-test-1.7.0/icm-replication-test-1.7.0.tgz
+    version: 1.7.0
+  - annotations:
+      requestedCpuQuotaInMinutes: "3000"
+      requestedMemoryQuota: 9Gi
+    apiVersion: v2
+    appVersion: 13.1.2
     created: "2026-05-29T12:00:03.187420933Z"
     dependencies:
     - alias: icm-live
@@ -14780,27 +14816,6 @@ entries:
       requestedMemoryQuota: 9Gi
     apiVersion: v2
     appVersion: 13.1.2
-    created: "2025-11-10T13:08:48.870551902Z"
-    dependencies:
-    - alias: icm-live
-      name: icm-test
-      repository: file://../icm-test
-      version: 1.0.0-alpha
-    - alias: icm-edit
-      name: icm-test
-      repository: file://../icm-test
-      version: 1.0.0-alpha
-    description: Intershop Commerce Management - ICM Replication Test Chart
-    digest: c3db97eccca3ea085df3d1a60f81c39eb3405b52adcb054bf0af434100e92bd8
-    name: icm-replication-test
-    urls:
-    - https://github.com/intershop/helm-charts/releases/download/icm-replication-test-1.0.0-alpha/icm-replication-test-1.0.0-alpha.tgz
-    version: 1.0.0-alpha
-  - annotations:
-      requestedCpuQuotaInMinutes: "3000"
-      requestedMemoryQuota: 9Gi
-    apiVersion: v2
-    appVersion: 13.1.2
     created: "2025-11-07T08:04:40.679649572Z"
     dependencies:
     - alias: icm-live
@@ -15006,7 +15021,43 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/icm-replication-test-1.0.0-alpha/icm-replication-test-1.0.0-alpha.tgz
     version: 1.0.0-alpha
+  - annotations:
+      requestedCpuQuotaInMinutes: "3000"
+      requestedMemoryQuota: 9Gi
+    apiVersion: v2
+    appVersion: 13.1.2
+    created: "2025-11-10T13:08:48.870551902Z"
+    dependencies:
+    - alias: icm-live
+      name: icm-test
+      repository: file://../icm-test
+      version: 1.0.0-alpha
+    - alias: icm-edit
+      name: icm-test
+      repository: file://../icm-test
+      version: 1.0.0-alpha
+    description: Intershop Commerce Management - ICM Replication Test Chart
+    digest: c3db97eccca3ea085df3d1a60f81c39eb3405b52adcb054bf0af434100e92bd8
+    name: icm-replication-test
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-replication-test-1.0.0-alpha/icm-replication-test-1.0.0-alpha.tgz
+    version: 1.0.0-alpha
   icm-test:
+  - annotations:
+      requestedCpuQuotaInMinutes: "2200"
+      requestedMemoryQuota: 6000Mi
+    apiVersion: v2
+    created: "2026-06-15T13:08:56.778426019Z"
+    dependencies:
+    - name: icm
+      repository: file://../icm
+      version: 2.21.0
+    description: Intershop Commerce Management - ICM Test Chart
+    digest: d4bd143c1fc4ac64b0d8271bfbbc0de049d6a26c5f82eb7c3b8ddd2af96cff85
+    name: icm-test
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-test-1.7.0/icm-test-1.7.0.tgz
+    version: 1.7.0
   - annotations:
       requestedCpuQuotaInMinutes: "2200"
       requestedMemoryQuota: 6000Mi
@@ -15159,45 +15210,30 @@ entries:
     version: 1.1.0
   - annotations:
       requestedCpuQuotaInMinutes: "2200"
-      requestedMemoryQuota: 8000Mi
+      requestedMemoryQuota: 6000Mi
     apiVersion: v2
-    created: "2025-10-29T07:22:38.567884544Z"
+    created: "2025-11-07T08:04:40.939511811Z"
+    dependencies:
+    - name: icm
+      repository: file://../icm
+      version: 2.17.0-alpha
+    description: Intershop Commerce Management - ICM Test Chart
+    digest: 74a5ba682b98b2e2d9361ef2d03087fb4b121c61eaf610bb462b99c4a7c0e6e3
+    name: icm-test
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-test-1.0.0-alpha/icm-test-1.0.0-alpha.tgz
+    version: 1.0.0-alpha
+  - annotations:
+      requestedCpuQuotaInMinutes: "2200"
+      requestedMemoryQuota: 6000Mi
+    apiVersion: v2
+    created: "2025-10-29T07:37:05.659476305Z"
     dependencies:
     - name: icm
       repository: file://../icm
       version: 2.16.0
     description: Intershop Commerce Management - ICM Test Chart
-    digest: 55288279777cf6eb73c784667d4392aca971b42591debe7b67b1febedbfbfa5f
-    name: icm-test
-    urls:
-    - https://github.com/intershop/helm-charts/releases/download/icm-test-1.0.0-alpha/icm-test-1.0.0-alpha.tgz
-    version: 1.0.0-alpha
-  - annotations:
-      requestedCpuQuotaInMinutes: "2200"
-      requestedMemoryQuota: 6000Mi
-    apiVersion: v2
-    created: "2025-11-07T10:46:57.495363109Z"
-    dependencies:
-    - name: icm
-      repository: file://../icm
-      version: 2.17.0-alpha
-    description: Intershop Commerce Management - ICM Test Chart
-    digest: 4d7034896f6843ebf4b526bad51b813822b0455c8a75e900444951de4a2b7585
-    name: icm-test
-    urls:
-    - https://github.com/intershop/helm-charts/releases/download/icm-test-1.0.0-alpha/icm-test-1.0.0-alpha.tgz
-    version: 1.0.0-alpha
-  - annotations:
-      requestedCpuQuotaInMinutes: "2200"
-      requestedMemoryQuota: 6000Mi
-    apiVersion: v2
-    created: "2025-11-07T09:12:03.688390811Z"
-    dependencies:
-    - name: icm
-      repository: file://../icm
-      version: 2.17.0-alpha
-    description: Intershop Commerce Management - ICM Test Chart
-    digest: dfdfc81ca5bc01bec8e7821f2214fb6820d6edd30454c5d0965166bdb502482e
+    digest: d8c98c577320bbbf68337e339d8e28ef33b2da61eb0439b47cf07698c3cf064d
     name: icm-test
     urls:
     - https://github.com/intershop/helm-charts/releases/download/icm-test-1.0.0-alpha/icm-test-1.0.0-alpha.tgz
@@ -15221,13 +15257,13 @@ entries:
       requestedCpuQuotaInMinutes: "2200"
       requestedMemoryQuota: 6000Mi
     apiVersion: v2
-    created: "2025-11-07T08:04:40.939511811Z"
+    created: "2025-11-07T10:46:57.495363109Z"
     dependencies:
     - name: icm
       repository: file://../icm
       version: 2.17.0-alpha
     description: Intershop Commerce Management - ICM Test Chart
-    digest: 74a5ba682b98b2e2d9361ef2d03087fb4b121c61eaf610bb462b99c4a7c0e6e3
+    digest: 4d7034896f6843ebf4b526bad51b813822b0455c8a75e900444951de4a2b7585
     name: icm-test
     urls:
     - https://github.com/intershop/helm-charts/releases/download/icm-test-1.0.0-alpha/icm-test-1.0.0-alpha.tgz
@@ -15311,13 +15347,13 @@ entries:
       requestedCpuQuotaInMinutes: "2200"
       requestedMemoryQuota: 6000Mi
     apiVersion: v2
-    created: "2025-10-29T07:37:05.659476305Z"
+    created: "2025-11-07T09:12:03.688390811Z"
     dependencies:
     - name: icm
       repository: file://../icm
-      version: 2.16.0
+      version: 2.17.0-alpha
     description: Intershop Commerce Management - ICM Test Chart
-    digest: d8c98c577320bbbf68337e339d8e28ef33b2da61eb0439b47cf07698c3cf064d
+    digest: dfdfc81ca5bc01bec8e7821f2214fb6820d6edd30454c5d0965166bdb502482e
     name: icm-test
     urls:
     - https://github.com/intershop/helm-charts/releases/download/icm-test-1.0.0-alpha/icm-test-1.0.0-alpha.tgz
@@ -15408,6 +15444,21 @@ entries:
       version: 2.17.0-alpha
     description: Intershop Commerce Management - ICM Test Chart
     digest: 264303a9f82e87e2fd1b2736dfc0283419441b6b0c9bd035bca843aecd2d1993
+    name: icm-test
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/icm-test-1.0.0-alpha/icm-test-1.0.0-alpha.tgz
+    version: 1.0.0-alpha
+  - annotations:
+      requestedCpuQuotaInMinutes: "2200"
+      requestedMemoryQuota: 8000Mi
+    apiVersion: v2
+    created: "2025-10-29T07:22:38.567884544Z"
+    dependencies:
+    - name: icm
+      repository: file://../icm
+      version: 2.16.0
+    description: Intershop Commerce Management - ICM Test Chart
+    digest: 55288279777cf6eb73c784667d4392aca971b42591debe7b67b1febedbfbfa5f
     name: icm-test
     urls:
     - https://github.com/intershop/helm-charts/releases/download/icm-test-1.0.0-alpha/icm-test-1.0.0-alpha.tgz
@@ -16670,4 +16721,4 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.2.3/pwa-main-0.2.3.tgz
     version: 0.2.3
-generated: "2026-06-02T15:27:53.350915124Z"
+generated: "2026-06-15T13:08:56.779960928Z"
