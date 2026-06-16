@@ -1,3 +1,4 @@
+{{- if eq (include "icm-as.jgroups.discovery" .) "file_ping" -}}
 {{- if eq .Values.persistence.jgroups.type "local" -}}
 apiVersion: v1
 kind: PersistentVolume
@@ -15,4 +16,5 @@ spec:
   persistentVolumeReclaimPolicy: Delete
   hostPath:
     path: "{{ .Values.persistence.jgroups.local.path }}"
+{{- end -}}
 {{- end -}}
