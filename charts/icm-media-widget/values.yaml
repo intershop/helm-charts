@@ -66,8 +66,8 @@ ingress:
   hosts:
     - host: icm-cdntest-int01.icm.intershop.de
       paths:
-        - path: /mediawidget(/|$)(.*)
-          pathType: ImplementationSpecific
+        - path: /mediawidget
+          pathType: Prefix
           pathSuffix: "-keda-hip"
   tls:
     - secretName: tls-star-icm-intershop-de
