@@ -56,12 +56,13 @@ service:
 
 ingress:
   enabled: true
-  className: "nginx-icm"
+  className: "haproxy-icm"
   annotations:
-    nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-buffering: "off"
+    # HAProxy uses regex matching on ImplementationSpecific paths by default
+    haproxy.org/timeout-server: "3600s"
+    haproxy.org/timeout-client: "3600s"
+    # Disable response buffering (stream responses to the client)
+    haproxy.org/option: "http-no-delay"
   hosts:
     - host: icm-cdntest-int01.icm.intershop.de
       paths:
@@ -161,17 +162,14 @@ imgproxy:
   resources:
     ingress:
       enabled: true
-      className: "nginx-icm"
+      className: "haproxy-icm"
       annotations:
-        nginx.ingress.kubernetes.io/proxy-buffering: "on"
-        nginx.ingress.kubernetes.io/configuration-snippet: |
-          proxy_cache imgproxy_cache;
-          proxy_cache_valid 200 5m;
-          proxy_cache_use_stale error timeout http_500 http_502 http_503 http_504;
-          proxy_cache_lock on;
-          proxy_cache_revalidate on;
-          add_header X-Cache-Status $upstream_cache_status always;
-
+        # Response caching for imgproxy is configured centrally in the HAProxy controller
+        # (cache section in global-config-snippet + cache-use/cache-store rules in
+        # frontend-config-snippet), because the controller runs with
+        # `--disable-config-snippets=backend`.
+        haproxy.org/timeout-server: "3600s"
+        haproxy.org/timeout-client: "3600s"
       hosts:
         - icm-cdntest-int01.icm.intershop.de
       tls:
