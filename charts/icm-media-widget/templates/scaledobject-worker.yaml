@@ -13,6 +13,11 @@ spec:
   maxReplicaCount:  2
   pollingInterval: 30
   cooldownPeriod: 60
+  advanced:
+    # Override the auto-generated HPA name ("keda-hpa-<scaledobject>") which would
+    # otherwise exceed the 63 character limit. This name is used directly (no prefix).
+    horizontalPodAutoscalerConfig:
+      name: {{ include "icm-media-widget.fullname" . }}-worker
   triggers:
   - type: azure-blob
     metadata:
