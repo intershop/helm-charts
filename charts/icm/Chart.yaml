@@ -3,13 +3,13 @@ appVersion: "14.0.1"
 description: Intershop Commerce Management - ICM
 # name and version must be in this exact order, otherwise bump2version won't work
 name: icm
-version: 2.21.1
+version: 2.22.0-alpha
 dependencies:
   - name: icm-as
-    version: 2.14.0
+    version: 2.15.0-alpha
     repository: file://../icm-as
   - name: icm-web
-    version: 0.19.0
+    version: 0.20.0-alpha
     repository: file://../icm-web
     condition: icm-web.enabled
   - name: kubernetes-ingress
