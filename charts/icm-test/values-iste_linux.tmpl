@@ -123,12 +123,13 @@ icm:
       className: "ingress-class-${HELM_JOB_NAME}"
       annotations:
         service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-        nginx.ingress.kubernetes.io/affinity: cookie
-        nginx.ingress.kubernetes.io/affinity-mode: persistent
-        nginx.ingress.kubernetes.io/session-cookie-name: stid
-        nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
-        nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
-        nginx.ingress.kubernetes.io/proxy-body-size: "100M"
+        haproxy.org/cookie-persistence: stid
+        haproxy.org/timeout-server: "360s"
+        haproxy.org/timeout-client: "360s"
+        haproxy.org/request-set-header: |
+          X-Forwarded-Proto https
+          X-Forwarded-Host ${HELM_JOB_NAME}.${DNS_ZONE_NAME}
+          X-Forwarded-Port 443
       hosts:
         - host: "${HELM_JOB_NAME}.${DNS_ZONE_NAME}"
           paths:
@@ -139,17 +140,13 @@ icm:
           hosts:
             - "${HELM_JOB_NAME}.${DNS_ZONE_NAME}"
 
-  ingress-nginx:
+  ingress-haproxy:
     enabled: true
     controller:
       kind: Deployment
-      ingressClassByName: "true"
       ingressClassResource:
         name: "ingress-class-${HELM_JOB_NAME}"
-        controllerValue: "k8s.io/ingress-${HELM_JOB_NAME}"
       ingressClass: "ingress-class-${HELM_JOB_NAME}"
-      admissionWebhooks:
-        enabled: false
       nodeSelector:
         agentpool: agentpool2
       affinity:
@@ -163,21 +160,18 @@ icm:
                     - ${HELM_JOB_NAME}-icm-web-webadapter
             topologyKey: kubernetes.io/hostname
 
-      service:
-        external:
-          enabled: "false"
-        internal:
-          enabled: "true"
-          annotations:
-            service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-        externalTrafficPolicy: Local
       publishService:
-        enabled: "true"
+        enabled: true
+      service:
+        type: LoadBalancer
+        externalTrafficPolicy: Local
+        annotations:
+          service.beta.kubernetes.io/azure-load-balancer-internal: "true"
       config:
-        proxy-read-timeout: "360"
-        proxy-send-timeout: "360"
-        proxy-connect-timeout: "360"
-        disable-access-log: "true"
+        timeout-connect: "360s"
+        timeout-client: "360s"
+        timeout-server: "360s"
+        syslog-endpoint: "stdout"
       resources:
         requests:
           cpu: 100m

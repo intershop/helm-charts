@@ -82,7 +82,7 @@ icm-live:
       persistence:
         customdata:
           existingClaim: ${HELM_JOB_NAME}-icm-live-local-testdata-pvc
-    ingress-nginx:
+    ingress-haproxy:
       controller:
         nodeSelector: null
     mailhog:
