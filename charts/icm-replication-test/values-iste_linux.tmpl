@@ -290,6 +290,7 @@ icm-live:
       enabled: true
       controller:
         kind: Deployment
+        replicaCount: 1
         ingressClassResource:
           name: "ingress-class-${HELM_JOB_NAME}"
         ingressClass: "ingress-class-${HELM_JOB_NAME}"
