@@ -1,0 +1,109 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "pwa.componentName" (dict "root" . "component" "app") }}
+  labels:
+    {{- include "pwa.componentLabels" (dict "root" . "component" "app") | nindent 4 }}
+    {{- if .Values.app.deploymentLabels }}
+    {{- toYaml .Values.app.deploymentLabels | nindent 4 }}
+    {{- end }}
+  {{- if .Values.app.deploymentAnnotations }}
+  annotations:
+    {{- toYaml .Values.app.deploymentAnnotations | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if not .Values.app.autoscaling.enabled }}
+  replicas: {{ .Values.app.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "pwa.selectorLabels" (dict "root" . "component" "app") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "pwa.selectorLabels" (dict "root" . "component" "app") | nindent 8 }}
+        {{- if .Values.app.podLabels }}
+        {{- toYaml .Values.app.podLabels | nindent 8 }}
+        {{- end }}
+      {{- with .Values.app.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "pwa.serviceAccountName" . }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: app
+          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default (printf "release-%s" .Chart.AppVersion) }}"
+          imagePullPolicy: {{ .Values.app.image.pullPolicy }}
+          {{- with mergeOverwrite (deepCopy .Values.securityContext) .Values.app.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.app.ports.http }}
+              protocol: TCP
+            {{- if include "pwa.appMetricsEnabled" . }}
+            - name: metrics
+              containerPort: {{ .Values.app.ports.metrics }}
+              protocol: TCP
+            {{- end }}
+          env:
+            - name: ICM_BASE_URL
+              value: {{ .Values.config.icmBaseUrl | quote }}
+            {{- if .Values.config.icmBaseUrlSsr }}
+            - name: ICM_BASE_URL_SSR
+              value: {{ .Values.config.icmBaseUrlSsr | quote }}
+            {{- end }}
+            {{- if .Values.config.allowedHosts }}
+            - name: ALLOWED_HOSTS
+              value: {{ .Values.config.allowedHosts | quote }}
+            {{- end }}
+            {{- if .Values.hybrid.enabled }}
+            - name: SSR_HYBRID
+              value: "true"
+            - name: SSR_HYBRID_BACKEND
+              value: "{{ default .Values.config.icmBaseUrl .Values.hybrid.icmInternalURL }}"
+            {{- end }}
+            {{- if include "pwa.appMetricsEnabled" . }}
+            - name: PROMETHEUS
+              value: "true"
+            {{- end }}
+            {{- with .Values.app.env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with .Values.app.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.app.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.app.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.app.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if or .Values.app.affinity .Values.app.podAntiAffinity.enabled }}
+      affinity:
+        {{- with .Values.app.affinity }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- include "app.podAntiAffinity" . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.app.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -30,10 +30,10 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "pwa-cache.fullname" $ }}-{{ $name }}
+  name: {{ include "pwa.componentName" (dict "root" $ "component" "proxy") }}-{{ $name }}
   labels:
-    app.kubernetes.io/name: {{ include "pwa-main.name" $ }}
-    helm.sh/chart: {{ include "pwa-main.chart" $ }}
+    app.kubernetes.io/name: {{ include "pwa.name" $ }}
+    helm.sh/chart: {{ include "pwa.chart" $ }}
     app.kubernetes.io/instance: {{ $.Release.Name }}
     app.kubernetes.io/managed-by: {{ $.Release.Service }}
   {{- if .annotations }}
@@ -61,9 +61,9 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ include "pwa-cache.fullname" $ }}
+                name: {{ include "pwa.componentName" (dict "root" $ "component" "proxy") }}
                 port:
-                  number: {{ $.Values.cache.service.port }}
+                  number: {{ $.Values.proxy.service.port }}
   {{- end }}
 ---
 {{ end }}

@@ -1,20 +1,48 @@
-{{- if .Values.ingress.enabled }}
-Get the application URL by running this command:
-  kubectl get --namespace {{ .Release.Namespace }} ingress
-{{- else if contains "NodePort" .Values.service.type }}
-Get the application URL by running these commands:
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "pwa-main.fullname" . }})
-  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo http://$NODE_IP:$NODE_PORT
-{{- else if contains "LoadBalancer" .Values.service.type }}
-It may take a few minutes for the LoadBalancer IP to be available.
-You can watch the status of by running 'kubectl get svc -w {{ include "pwa-main.fullname" . }}'
+Intershop PWA has been deployed.
 
-Get the application URL by running these commands:
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "pwa-main.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  echo http://$SERVICE_IP:{{ .Values.service.port }}
-{{- else if contains "ClusterIP" .Values.service.type }}
-Get the application by running these commands and opening http://127.0.0.1:8080 to use the application afterwards:
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "pwa-main.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-  kubectl port-forward $POD_NAME 8080:4200
+Chart:    {{ .Chart.Name }}-{{ .Chart.Version }}
+Release:  {{ .Release.Name }}
+Namespace: {{ .Release.Namespace }}
+
+🚀 Deployment Components:
+  - app   : {{ include "pwa.componentName" (dict "root" . "component" "app") }} ({{ .Values.app.replicaCount }} replicas, Angular SSR)
+  - proxy : {{ include "pwa.componentName" (dict "root" . "component" "proxy") }} ({{ .Values.proxy.replicaCount }} replicas, nginx/OpenResty)
+
+⚙️  Configuration:
+  - ICM Base URL: {{ .Values.config.icmBaseUrl }}
+{{- if .Values.config.icmBaseUrlSsr }}
+  - ICM SSR URL: {{ .Values.config.icmBaseUrlSsr }}
 {{- end }}
+{{- if .Values.config.allowedHosts }}
+  - Allowed Hosts: {{ .Values.config.allowedHosts }}
+{{- end }}
+
+🔄 Proxy forwards traffic to app via:
+  {{ include "pwa.appUpstream" . }}
+
+{{- if .Values.ingress.enabled }}
+
+🌐 Access the PWA through the configured Ingress host(s):
+{{- if .Values.ingress.instances }}
+{{- range $key, $instance := .Values.ingress.instances }}
+{{- if $instance.hosts }}
+  Instance: {{ $key }}
+{{- range $instance.hosts }}
+  http{{ if $instance.tlsSecretName }}s{{ end }}://{{ .host }}{{ if .path }}{{ .path }}{{ end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- else }}
+
+💻 Access the PWA locally using port-forward:
+
+  kubectl --namespace {{ .Release.Namespace }} port-forward \
+    svc/{{ include "pwa.componentName" (dict "root" . "component" "proxy") }} 8080:{{ .Values.proxy.service.port }}
+
+  Then open: http://localhost:8080
+{{- end }}
+
+📚 For more information and troubleshooting, visit:
+  https://github.com/intershop/helm-charts/tree/main/charts/pwa
+  https://github.com/intershop/intershop-pwa

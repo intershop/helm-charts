@@ -1,0 +1,22 @@
+{{- if .Values.app.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "pwa.componentName" (dict "root" . "component" "app") }}
+  labels:
+    {{- include "pwa.componentLabels" (dict "root" . "component" "app") | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "pwa.componentName" (dict "root" . "component" "app") }}
+  minReplicas: {{ .Values.app.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.app.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.app.autoscaling.targetCPUUtilizationPercentage }}
+{{- end }}
