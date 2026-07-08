@@ -1,0 +1,136 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}
+  labels:
+    {{- include "pwa.componentLabels" (dict "root" . "component" "proxy") | nindent 4 }}
+    {{- if .Values.proxy.deploymentLabels }}
+    {{- toYaml .Values.proxy.deploymentLabels | nindent 4 }}
+    {{- end }}
+  {{- if .Values.proxy.deploymentAnnotations }}
+  annotations:
+    {{- toYaml .Values.proxy.deploymentAnnotations | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if not .Values.proxy.autoscaling.enabled }}
+  replicas: {{ .Values.proxy.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "pwa.selectorLabels" (dict "root" . "component" "proxy") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "pwa.selectorLabels" (dict "root" . "component" "proxy") | nindent 8 }}
+        {{- if .Values.proxy.podLabels }}
+        {{- toYaml .Values.proxy.podLabels | nindent 8 }}
+        {{- end }}
+      {{- with .Values.proxy.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "pwa.serviceAccountName" . }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: proxy
+          image: "{{ .Values.proxy.image.repository }}:{{ .Values.proxy.image.tag | default (printf "release-%s" .Chart.AppVersion) }}"
+          imagePullPolicy: {{ .Values.proxy.image.pullPolicy }}
+          {{- with mergeOverwrite (deepCopy .Values.securityContext) .Values.proxy.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.proxy.ports.http }}
+              protocol: TCP
+            {{- if include "pwa.proxyMetricsEnabled" . }}
+            - name: metrics
+              containerPort: {{ .Values.proxy.ports.metrics }}
+              protocol: TCP
+            {{- end }}
+          env:
+            # Changes on every `helm upgrade`, forcing a new pod rollout so config-only
+            # changes are picked up. Also lets you trace a running pod to its Helm revision.
+            - name: HELM_RELEASE_REVISION
+              value: "{{ .Release.Revision }}"
+            - name: UPSTREAM_PWA
+              value: {{ include "pwa.appUpstream" . | quote }}
+            - name: ICM_BASE_URL
+              value: {{ .Values.config.icmBaseUrl | quote }}
+            {{- if .Values.config.icmBaseUrlSsr }}
+            - name: ICM_BASE_URL_SSR
+              value: {{ .Values.config.icmBaseUrlSsr | quote }}
+            {{- end }}
+            {{- if and .Values.hybrid.enabled .Values.hybrid.pwaExternalPort }}
+            - name: HYBRID_FORWARDED_PORT
+              value: "{{ .Values.hybrid.pwaExternalPort }}"
+            {{- end }}
+            {{- if include "pwa.proxyMetricsEnabled" . }}
+            - name: PROMETHEUS
+              value: "true"
+            {{- end }}
+            {{- if .Values.proxy.multiChannel }}
+            - name: MULTI_CHANNEL_SOURCE
+              value: "/config/multi-channel.yaml"
+            {{- end }}
+            {{- if .Values.proxy.cacheIgnoreParams }}
+            - name: CACHING_IGNORE_PARAMS_SOURCE
+              value: "/config/caching-ignore-params.yaml"
+            {{- end }}
+            {{- if .Values.proxy.additionalHeaders }}
+            - name: ADDITIONAL_HEADERS_SOURCE
+              value: "/config/additional-headers.yaml"
+            {{- end }}
+            {{- with .Values.proxy.env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with .Values.proxy.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.proxy.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.proxy.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: proxy-config-map
+              readOnly: true
+              mountPath: "/config"
+      volumes:
+        - name: proxy-config-map
+          configMap:
+              name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-gomplate-datasources
+              items:
+                - key: multi-channel.yaml
+                  path: multi-channel.yaml
+                - key: caching-ignore-params.yaml
+                  path: caching-ignore-params.yaml
+                - key: additional-headers.yaml
+                  path: additional-headers.yaml
+      {{- with .Values.proxy.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if or .Values.proxy.affinity .Values.proxy.podAntiAffinity.enabled }}
+      affinity:
+        {{- with .Values.proxy.affinity }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- include "proxy.podAntiAffinity" . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.proxy.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

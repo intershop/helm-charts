@@ -1,52 +1,56 @@
-{{- if .Values.cache.reset.enabled -}}
+{{- if .Values.proxy.reset.enabled -}}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ .Release.Name }}-cache-reset
+  name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-reset
   namespace: {{ .Release.Namespace }}
   annotations:
     "helm.sh/hook": post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "helm.sh/hook-weight": "-5"
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ .Release.Name }}-cache-reset
+  name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-reset
   namespace: {{ .Release.Namespace }}
   annotations:
     "helm.sh/hook": post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "helm.sh/hook-weight": "-5"
 rules:
   - apiGroups: [apps]
     resources: [deployments]
-    resourceNames: [{{ include "pwa-cache.fullname" . }}]
+    resourceNames: [{{ include "pwa.componentName" (dict "root" . "component" "proxy") }}]
     verbs: [get, patch]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ .Release.Name }}-cache-reset
+  name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-reset
   namespace: {{ .Release.Namespace }}
   annotations:
     "helm.sh/hook": post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "helm.sh/hook-weight": "-5"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ .Release.Name }}-cache-reset
+  name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-reset
 subjects:
   - kind: ServiceAccount
-    name: {{ .Release.Name }}-cache-reset
+    name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-reset
     namespace: {{ .Release.Namespace }}
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ .Release.Name }}-job-cache-reset
+  name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-reset-job
   namespace: {{ .Release.Namespace }}
   annotations:
     "helm.sh/hook": post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "helm.sh/hook-weight": "0"
 spec:
   completions: 1
   parallelism: 1
@@ -54,15 +58,15 @@ spec:
   template:
     spec:
       restartPolicy: Never
-      serviceAccountName: {{ .Release.Name }}-cache-reset
+      serviceAccountName: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-reset
       containers:
         - name: kubectl
-          image: {{ .Values.cache.reset.image.repository}}:{{.Values.cache.reset.image.tag}}
-          imagePullPolicy: {{ .Values.cache.reset.image.pullPolicy }}
+          image: {{ .Values.proxy.reset.image.repository}}:{{.Values.proxy.reset.image.tag}}
+          imagePullPolicy: {{ .Values.proxy.reset.image.pullPolicy }}
           command:
             [
               "bash",
               "-c",
-              "kubectl rollout restart deployment/{{ include "pwa-cache.fullname" . }}",
+              "kubectl rollout restart deployment/{{ include "pwa.componentName" (dict "root" . "component" "proxy") }}",
             ]
 {{- end -}}
