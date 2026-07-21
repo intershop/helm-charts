@@ -110,9 +110,6 @@ icm-web:
     pagecache:
       type: emptyDir
 
-ingress-nginx:
-  enabled: false
-
 ingress-haproxy:
   enabled: false
 
