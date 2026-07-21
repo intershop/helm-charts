@@ -93,7 +93,7 @@ The `TLSDefinition` type configures which TLS secret should be used for the assi
 ----
 ingress:
   enabled: true
-  className: icm-nginx
+  className: ingress-haproxy
   annotations:
     annotation0: value0
     ...
