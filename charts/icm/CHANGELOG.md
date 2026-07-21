@@ -1,4 +1,10 @@
 
+<a name="icm-3.0.0"></a>
+## [icm-3.0.0](https://github.com/intershop/helm-charts/compare/icm-2.21.1...icm-3.0.0)
+
+> 2026-07-07
+
+
 <a name="icm-2.21.1"></a>
 ## [icm-2.21.1](https://github.com/intershop/helm-charts/compare/icm-2.21.0...icm-2.21.1)
 
