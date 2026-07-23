@@ -91,6 +91,15 @@ oms:
   # Public URL of IOM
   # Used internally by IOM for link generation.
   publicUrl:                       https://localhost
+  # Optional JSON string for OMS_CUSTOM_SECRET_CONFIG.
+  # Ignored if customSecretConfigSecretKeyRef is set.
+  customSecretConfig:
+  # Optional reference to Kubernetes secret key containing OMS_CUSTOM_SECRET_CONFIG JSON.
+  # Example:
+  # customSecretConfigSecretKeyRef:
+  #   name: oms-custom-secret
+  #   key: config.json
+  customSecretConfigSecretKeyRef:  {}
   # Shared secret for JWT creation / validation
   # Has to be at least 32 characters long.
   # If jwtSecret and jwtSecretKeyRef are left empty, a random secret is created automatically.

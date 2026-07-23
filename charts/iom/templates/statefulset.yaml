@@ -154,13 +154,13 @@ spec:
                 {{- end }}
               value: 'true'
               {{- else }}
-              value: 'false'  
+              value: 'false'
               {{- end }}
             {{- else }}
             - name: NEWRELIC_APM_ENABLED
               value: 'false'
             {{- end }}
-            
+
             {{- if .Values.datadogApm.enabled }}
             #
             # datadog APM agent settings
@@ -484,6 +484,16 @@ spec:
             - name: OMS_PUBLIC_URL
               value: {{ .Values.oms.publicUrl }}
               {{- end }}
+              {{- /* customSecretConfigSecretKeyRef has precedence over customSecretConfig */ -}}
+              {{- if .Values.oms.customSecretConfigSecretKeyRef }}
+            - name: OMS_CUSTOM_SECRET_CONFIG
+              valueFrom:
+                secretKeyRef:
+                  {{- toYaml .Values.oms.customSecretConfigSecretKeyRef | nindent 18 }}
+              {{- else if .Values.oms.customSecretConfig }}
+            - name: OMS_CUSTOM_SECRET_CONFIG
+              value: {{ .Values.oms.customSecretConfig | quote }}
+              {{- end }}
               {{- if and (empty .Values.oms.jwtSecret) (empty .Values.oms.jwtSecretKeyRef) }}
             - name: OMS_JWT_SECRET
               valueFrom:
@@ -626,14 +636,14 @@ spec:
               value: '{{ .Values.project.importTestDataTimeout }}'
               {{- end }}
             {{- end }}
-              
+
             #
             # fixed settings
             #
             # to be removed when support for IOM 4 ends.
             - name: OMS_SHARE
               value: '/var/opt/share'
-              
+
           volumeMounts:
             - name: app-share-volume
               mountPath: /var/opt/share
@@ -772,7 +782,7 @@ spec:
             {{- end }}
           {{- end }}
             #
-            # db settings, which do not depend on .Values.postgres.enabled 
+            # db settings, which do not depend on .Values.postgres.enabled
             #
           {{- if .Values.oms.db }}
             # deprecated!
@@ -840,18 +850,18 @@ spec:
             {{- end }}
           {{- end }}
         {{- end }}
-        
+
       volumes:
         - name: app-share-volume
           persistentVolumeClaim:
             claimName: {{ include "iom.fullname" . }}
-        
+
         {{- if .Values.newRelic.apm.enabled }}
         - name: newrelic-config-volume
           configMap:
             name: {{ include "iom.fullname" . }}-newrelic-config
         {{- end }}
-        
+
         {{- with .Values.nodeSelector }}
       nodeSelector:
           {{- toYaml . | nindent 8 }}

@@ -158,6 +158,17 @@ Parameters of IOM Helm Chart
 |oms.publicUrl                           |The publicly accessible base URL of IOM which could be the DNS name of the load balancer,       |https://localhost                                        |
 |                                        |etc. It is used internally for link generation.                                                 |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|oms.customSecretConfig                  |Optional JSON content to be passed to IOM as environment variable                                |                                                         |
+|                                        |*OMS_CUSTOM_SECRET_CONFIG*.                                                                     |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |- Ignored if *oms.customSecretConfigSecretKeyRef* is set.                                      |                                                         |
++----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|oms.customSecretConfigSecretKeyRef      |Instead of storing JSON content as plain text in the values file, a reference to a key within   |{}                                                       |
+|                                        |a secret can be used. For more information, see `References to entries of Kubernetes            |                                                         |
+|                                        |secrets`_.                                                                                      |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |- If set, it has precedence over *oms.customSecretConfig*.                                     |                                                         |
++----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.jwtSecret                           |The shared secret for `JSON Web Token <https://jwt.io/>`_ (JWT) creation/validation. JWTs will  |                                                         |
 |                                        |be generated with the HMAC algorithm (HS256).                                                   |                                                         |
 |                                        |                                                                                                |                                                         |
