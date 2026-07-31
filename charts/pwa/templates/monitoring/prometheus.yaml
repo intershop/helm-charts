@@ -126,13 +126,15 @@ data:
         dns_sd_configs:
           - names:
               - _metrics._tcp.{{ include "pwa-cache-metrics.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
-      - job_name: 'pwa-ssr'
+      {{- range .Values.ssr.deployments }}
+      - job_name: 'pwa-ssr-{{ .name }}'
         scrape_interval: 5s
         metrics_path: /metrics
         relabel_configs: *relabel
         dns_sd_configs:
           - names:
-              - _metrics._tcp.{{ include "pwa-main-metrics.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+              - _metrics._tcp.{{ include "pwa-main-metrics.fullname" $ }}-{{.name}}.{{ $.Release.Namespace }}.svc.cluster.local
+      {{- end }}
 
 ---
 apiVersion: v1

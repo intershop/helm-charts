@@ -1,33 +1,35 @@
+{{- range .Values.ssr.deployments -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "pwa-main.fullname" . }}
+  name: {{ include "pwa-main.fullname" $ }}-{{.name}}
   labels:
-    app.kubernetes.io/name: {{ include "pwa-main.name" . }}
-    helm.sh/chart: {{ include "pwa-main.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "pwa-main.name" $ }}
+    helm.sh/chart: {{ include "pwa-main.chart" $ }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/managed-by: {{ $.Release.Service }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ $.Values.service.type }}
   ports:
     - name: http
       protocol: TCP
-      port: {{ .Values.service.port }}
+      port: {{ $.Values.service.port }}
       targetPort: 4200
   selector:
-    app.kubernetes.io/name: {{ include "pwa-main.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "pwa-main.name" $ }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    ssr: {{.name}}
 ---
 {{- if tpl $.Values.calculated.metrics.pwa $ -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "pwa-main-metrics.fullname" . }}
+  name: {{ include "pwa-main-metrics.fullname" $ }}-{{.name}}
   labels:
-    app.kubernetes.io/name: {{ include "pwa-main.name" . }}
-    helm.sh/chart: {{ include "pwa-main.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "pwa-main.name" $ }}
+    helm.sh/chart: {{ include "pwa-main.chart" $ }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/managed-by: {{ $.Release.Service }}
   annotations:
     prometheus.io/scrape: 'true'
     prometheus.io/port: '9113'
@@ -39,6 +41,9 @@ spec:
       port: 9113
       targetPort: 9113
   selector:
-    app.kubernetes.io/name: {{ include "pwa-main.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "pwa-main.name" $ }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    ssr: {{.name}}
+---
+{{- end -}}
 {{- end -}}

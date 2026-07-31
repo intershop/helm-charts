@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "pwa-cache.name" . }}-sa
+  labels:
+    app.kubernetes.io/name: {{ include "pwa-cache.name" . }}
+    helm.sh/chart: {{ include "pwa-main.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "pwa-cache.name" . }}-role
+  labels:
+    app.kubernetes.io/name: {{ include "pwa-cache.name" . }}
+    helm.sh/chart: {{ include "pwa-main.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+rules:
+  - apiGroups: [""]
+    resources: ["endpoints"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "pwa-cache.name" . }}-rolebinding
+  labels:
+    app.kubernetes.io/name: {{ include "pwa-cache.name" . }}
+    helm.sh/chart: {{ include "pwa-main.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "pwa-cache.name" . }}-sa
+roleRef:
+  kind: Role
+  name: {{ include "pwa-cache.name" . }}-role
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,22 @@
+{{- range .Values.ssr.deployments -}}
+{{- if .hpa.enabled -}}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ssr-{{.name}}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "pwa-main.fullname" $ }}-{{ .name }}
+  minReplicas: {{ .hpa.minReplicas }}
+  maxReplicas: {{ .hpa.maxReplicas }}
+  metrics:
+    {{- toYaml .hpa.metrics | nindent 4 }}
+  {{- with .hpa.behavior }}
+  behavior:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+---
+{{- end -}}
+{{- end -}}

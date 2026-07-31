@@ -1,73 +1,77 @@
 {{- $pwaMetricsEnabled := tpl $.Values.calculated.metrics.pwa $ -}}
+{{- range .Values.ssr.deployments -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "pwa-main.fullname" . }}
+  name: {{ include "pwa-main.fullname" $ }}-{{ .name }}
   labels:
-    app.kubernetes.io/name: {{ include "pwa-main.name" . }}
-    helm.sh/chart: {{ include "pwa-main.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/name: {{ include "pwa-main.name" $ }}
+    helm.sh/chart: {{ include "pwa-main.chart" $ }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    app.kubernetes.io/managed-by: {{ $.Release.Service }}
     # TODO: remove duplication of podLabels at deployment with next major release
-    {{- if .Values.podLabels }}
-    {{- toYaml .Values.podLabels | nindent 4 }}
+    {{- if $.Values.podLabels }}
+    {{- toYaml $.Values.podLabels | nindent 4 }}
     {{- end }}
-    {{- if .Values.deploymentLabels }}
-    {{- toYaml .Values.deploymentLabels | nindent 4 }}
+    {{- if $.Values.deploymentLabels }}
+    {{- toYaml $.Values.deploymentLabels | nindent 4 }}
     {{- end }}
-  {{- if .Values.deploymentAnnotations }}
+  {{- if $.Values.deploymentAnnotations }}
   annotations:
-    {{- toYaml .Values.deploymentAnnotations | nindent 4 }}
+    {{- toYaml $.Values.deploymentAnnotations | nindent 4 }}
   {{- end }}
 spec:
   strategy:
-    type: {{ default "RollingUpdate" .Values.updateStrategy }}
-  replicas: {{ .Values.replicaCount }}
+    type: {{ default "RollingUpdate" $.Values.updateStrategy }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "pwa-main.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "pwa-main.name" $ }}
+      app.kubernetes.io/instance: {{ $.Release.Name }}
+      ssr: {{.name}}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "pwa-main.name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
-        {{- if .Values.podLabels }}
-        {{- toYaml .Values.podLabels | nindent 8 }}
+        app.kubernetes.io/name: {{ include "pwa-main.name" $ }}
+        app.kubernetes.io/instance: {{ $.Release.Name }}
+        ssr: {{.name}}
+        {{- if $.Values.podLabels }}
+        {{- toYaml $.Values.podLabels | nindent 8 }}
         {{- end }}
-      {{- if .Values.podAnnotations }}
+      {{- if $.Values.podAnnotations }}
       annotations:
-        {{- toYaml .Values.podAnnotations | nindent 8 }}
+        {{- toYaml $.Values.podAnnotations | nindent 8 }}
       {{- end }}
     spec:
-      {{- with .Values.imagePullSecrets }}
+      {{- with $.Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        - name: {{ $.Chart.Name }}
+          image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
           env:
           - name: ICM_BASE_URL
-            value: "{{ .Values.upstream.icmBaseURL }}"
-        {{- if .Values.upstream.cdnPrefixURL }}
+            value: "{{ $.Values.upstream.icmBaseURL }}"
+        {{- if $.Values.upstream.cdnPrefixURL }}
           - name: CDN_PREFIX_URL
-            value: "{{ .Values.upstream.cdnPrefixURL }}"
+            value: "{{ $.Values.upstream.cdnPrefixURL }}"
         {{- end }}
-        {{- if .Values.hybrid.enabled }}
+        {{- if $.Values.hybrid.enabled }}
           - name: SSR_HYBRID
             value: "true"
           - name: SSR_HYBRID_BACKEND
-            value: "{{ default .Values.upstream.icmBaseURL .Values.hybrid.icmInternalURL }}"
+            value: "{{ default $.Values.upstream.icmBaseURL $.Values.hybrid.icmInternalURL }}"
         {{- end }}
         {{- if $pwaMetricsEnabled }}
           - name: PROMETHEUS
             value: "true"
         {{- end }}
-        {{- with .Values.environment }}
+        {{- with $.Values.environment }}
             {{- toYaml . | nindent 10 }}
         {{- end }}
+          - name: THEME
+            value: {{ .theme | quote }}
           ports:
             - name: http
               containerPort: 4200
@@ -78,43 +82,45 @@ spec:
               protocol: TCP
           {{- end }}
           livenessProbe:
-            {{- if empty .Values.livenessProbe }}
+            {{- if empty $.Values.livenessProbe }}
             exec:
               command:
               - /bin/sh
               - -c
-              - netstat -an | egrep 4200.*LISTEN | grep 4200
+              - node /dist/livenessprobe.js
             {{- else }}
-              {{- with .Values.livenessProbe }}
+              {{- with $.Values.livenessProbe }}
               {{- toYaml . | nindent 12 }}
               {{- end }}
             {{- end }}
           readinessProbe:
-            {{- if empty .Values.readinessProbe }}
+            {{- if empty $.Values.readinessProbe }}
             exec:
               command:
               - /bin/sh
               - -c
-              - netstat -an | egrep 4200.*LISTEN | grep 4200
+              - node /dist/readinessprobe.js
             {{- else }}
-              {{- with .Values.readinessProbe }}
+              {{- with $.Values.readinessProbe }}
               {{- toYaml . | nindent 12 }}
               {{- end }}
             {{- end }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
+            {{- toYaml $.Values.resources | nindent 12 }}
+      {{- with $.Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- if or .Values.affinity .Values.podAntiAffinity.enabled }}
+    {{- if or $.Values.affinity $.Values.podAntiAffinity.enabled }}
       affinity:
-        {{- with .Values.affinity }}
+        {{- with $.Values.affinity }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
-        {{- include "pwa-main.podAntiAffinity" . | nindent 8 }}
+        {{- include "pwa-main.podAntiAffinity" $ | nindent 8 }}
     {{- end }}
-    {{- with .Values.tolerations }}
+    {{- with $.Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+---
+{{- end }}

@@ -22,7 +22,6 @@ metadata:
 spec:
   strategy:
     type: {{ default "RollingUpdate" .Values.updateStrategy }}
-  replicas: {{ .Values.cache.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "pwa-cache.name" . }}
@@ -40,6 +39,7 @@ spec:
         {{- toYaml .Values.cache.podAnnotations | nindent 8 }}
       {{- end }}
     spec:
+      serviceAccountName: {{ include "pwa-cache.name" . }}-sa
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -55,8 +55,21 @@ spec:
           env:
           - name: HELM_RELEASE_REVISION
             value: "{{ .Release.Revision }}"
-          - name: UPSTREAM_PWA
-            value: "http://{{ include "pwa-main.fullname" . }}:{{ .Values.service.port }}"
+          {{- $upstreams := "" }}
+          {{- if and (len .Values.ssr.deployments | eq 1) not (first .Values.ssr.deployments | .theme ) }}
+            {{- $upstreams = printf "%s-%s:%s" (include "pwa-main.fullname" .) (first .Values.ssr.deployments | .name) (.Values.service.port | toString) }}
+          {{- else }}
+            {{- range .Values.ssr.deployments }}
+              {{- $theme := "" }}
+              {{- if .theme }}
+              {{- end }}
+              {{- $upstreams = printf "%s%s=%s-%s:%s," $upstreams .theme (include "pwa-main.fullname" $) .name ($.Values.service.port | toString) }}
+            {{- end }}
+          {{- end }}
+          - name: UPSTREAMS
+            value: {{ $upstreams | trimSuffix "," | quote }}
+          # - name: UPSTREAM_PWA
+          #   value: "http://{{ include "pwa-main.fullname" . }}:{{ .Values.service.port }}"
           - name: ICM_BASE_URL
             value: "{{ .Values.upstream.icmBaseURL }}"
         {{- if and .Values.hybrid.enabled .Values.hybrid.pwaExternalPort }}
