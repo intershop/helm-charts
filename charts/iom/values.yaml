@@ -91,10 +91,10 @@ oms:
   # Public URL of IOM
   # Used internally by IOM for link generation.
   publicUrl:                       https://localhost
-  # Optional JSON string for OMS_CUSTOM_SECRET_CONFIG.
+  # Optional JSON string for OMS_CUSTOM_SECRET.
   # Ignored if customSecretConfigSecretKeyRef is set.
   customSecretConfig:
-  # Optional reference to Kubernetes secret key containing OMS_CUSTOM_SECRET_CONFIG JSON.
+  # Optional reference to Kubernetes secret key containing OMS_CUSTOM_SECRET JSON.
   # Example:
   # customSecretConfigSecretKeyRef:
   #   name: oms-custom-secret

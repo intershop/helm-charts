@@ -486,12 +486,12 @@ spec:
               {{- end }}
               {{- /* customSecretConfigSecretKeyRef has precedence over customSecretConfig */ -}}
               {{- if .Values.oms.customSecretConfigSecretKeyRef }}
-            - name: OMS_CUSTOM_SECRET_CONFIG
+            - name: OMS_CUSTOM_SECRET
               valueFrom:
                 secretKeyRef:
                   {{- toYaml .Values.oms.customSecretConfigSecretKeyRef | nindent 18 }}
               {{- else if .Values.oms.customSecretConfig }}
-            - name: OMS_CUSTOM_SECRET_CONFIG
+            - name: OMS_CUSTOM_SECRET
               value: {{ .Values.oms.customSecretConfig | quote }}
               {{- end }}
               {{- if and (empty .Values.oms.jwtSecret) (empty .Values.oms.jwtSecretKeyRef) }}

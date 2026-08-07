@@ -159,7 +159,7 @@ Parameters of IOM Helm Chart
 |                                        |etc. It is used internally for link generation.                                                 |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.customSecretConfig                  |Optional JSON content to be passed to IOM as environment variable                                |                                                         |
-|                                        |*OMS_CUSTOM_SECRET_CONFIG*.                                                                     |                                                         |
+|                                        |*OMS_CUSTOM_SECRET*.                                                                     |                                                         |
 |                                        |                                                                                                |                                                         |
 |                                        |- Ignored if *oms.customSecretConfigSecretKeyRef* is set.                                      |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
