@@ -484,15 +484,15 @@ spec:
             - name: OMS_PUBLIC_URL
               value: {{ .Values.oms.publicUrl }}
               {{- end }}
-              {{- /* customSecretConfigSecretKeyRef has precedence over customSecretConfig */ -}}
-              {{- if .Values.oms.customSecretConfigSecretKeyRef }}
-            - name: OMS_CUSTOM_SECRET
+              {{- /* credentialsSecretKeyRef has precedence over credentials */ -}}
+              {{- if .Values.project.credentialsSecretKeyRef }}
+            - name: CUSTOM_CREDENTIALS
               valueFrom:
                 secretKeyRef:
-                  {{- toYaml .Values.oms.customSecretConfigSecretKeyRef | nindent 18 }}
-              {{- else if .Values.oms.customSecretConfig }}
-            - name: OMS_CUSTOM_SECRET
-              value: {{ .Values.oms.customSecretConfig | quote }}
+                  {{- toYaml .Values.project.credentialsSecretKeyRef | nindent 18 }}
+              {{- else if .Values.project.credentials }}
+            - name: CUSTOM_CREDENTIALS
+              value: {{ .Values.project.credentials | quote }}
               {{- end }}
               {{- if and (empty .Values.oms.jwtSecret) (empty .Values.oms.jwtSecretKeyRef) }}
             - name: OMS_JWT_SECRET

@@ -158,17 +158,6 @@ Parameters of IOM Helm Chart
 |oms.publicUrl                           |The publicly accessible base URL of IOM which could be the DNS name of the load balancer,       |https://localhost                                        |
 |                                        |etc. It is used internally for link generation.                                                 |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|oms.customSecretConfig                  |Optional JSON content to be passed to IOM as environment variable                                |                                                         |
-|                                        |*OMS_CUSTOM_SECRET*.                                                                     |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |- Ignored if *oms.customSecretConfigSecretKeyRef* is set.                                      |                                                         |
-+----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
-|oms.customSecretConfigSecretKeyRef      |Instead of storing JSON content as plain text in the values file, a reference to a key within   |{}                                                       |
-|                                        |a secret can be used. For more information, see `References to entries of Kubernetes            |                                                         |
-|                                        |secrets`_.                                                                                      |                                                         |
-|                                        |                                                                                                |                                                         |
-|                                        |- If set, it has precedence over *oms.customSecretConfig*.                                     |                                                         |
-+----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |oms.jwtSecret                           |The shared secret for `JSON Web Token <https://jwt.io/>`_ (JWT) creation/validation. JWTs will  |                                                         |
 |                                        |be generated with the HMAC algorithm (HS256).                                                   |                                                         |
 |                                        |                                                                                                |                                                         |
@@ -809,6 +798,17 @@ Parameters of IOM Helm Chart
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |project.importTestDataTimeout           |Timeout in seconds for the import of test data. If the import has not finished before the       |"300"                                                    |
 |                                        |according amount of seconds has passed, the container will end with an error.                   |                                                         |
++----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|project.credentials                     |Optional JSON content to be passed to IOM as environment variable                                |                                                         |
+|                                        |*CUSTOM_CREDENTIALS*.                                                                     |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |- Ignored if *project.credentialsSecretKeyRef* is set.                                      |                                                         |
++----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
+|project.credentialsSecretKeyRef         |Instead of storing JSON content as plain text in the values file, a reference to a key within   |{}                                                       |
+|                                        |a secret can be used. For more information, see `References to entries of Kubernetes            |                                                         |
+|                                        |secrets`_.                                                                                      |                                                         |
+|                                        |                                                                                                |                                                         |
+|                                        |- If set, it has precedence over *project.credentials*.                                     |                                                         |
 +----------------------------------------+------------------------------------------------------------------------------------------------+---------------------------------------------------------+
 |persistence                             |Parameters of group *persistence* control how IOM's shared data is persisted.                   |                                                         |
 |                                        |                                                                                                |                                                         |

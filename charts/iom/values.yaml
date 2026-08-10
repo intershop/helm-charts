@@ -91,15 +91,6 @@ oms:
   # Public URL of IOM
   # Used internally by IOM for link generation.
   publicUrl:                       https://localhost
-  # Optional JSON string for OMS_CUSTOM_SECRET.
-  # Ignored if customSecretConfigSecretKeyRef is set.
-  customSecretConfig:
-  # Optional reference to Kubernetes secret key containing OMS_CUSTOM_SECRET JSON.
-  # Example:
-  # customSecretConfigSecretKeyRef:
-  #   name: oms-custom-secret
-  #   key: config.json
-  customSecretConfigSecretKeyRef:  {}
   # Shared secret for JWT creation / validation
   # Has to be at least 32 characters long.
   # If jwtSecret and jwtSecretKeyRef are left empty, a random secret is created automatically.
@@ -280,6 +271,15 @@ project:
   # Number of seconds after which the import of test-data has to be finished.
   # If not, the container will end with an error.
   importTestDataTimeout: 300
+  # Optional JSON string for CUSTOM_CREDENTIALS.
+  # Ignored if credentialsSecretKeyRef is set.
+  credentials:
+  # Optional reference to Kubernetes secret key containing CUSTOM_CREDENTIALS JSON.
+  # Example:
+  # credentialsSecretKeyRef:
+  #   name: oms-project-credentials
+  #   key: config.json
+  credentialsSecretKeyRef:  {}
 
 persistence:
   # Type of provisioning.
