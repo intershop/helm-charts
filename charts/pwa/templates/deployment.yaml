@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "pwa-main.fullname" $ }}-{{ .name }}
+  name: {{ include "pwa-main.fullname" $ }}-{{ .theme | default "ssr" }}
   labels:
     app.kubernetes.io/name: {{ include "pwa-main.name" $ }}
     helm.sh/chart: {{ include "pwa-main.chart" $ }}
@@ -27,13 +27,13 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ include "pwa-main.name" $ }}
       app.kubernetes.io/instance: {{ $.Release.Name }}
-      ssr: {{.name}}
+      ssr: {{ .theme | default "ssr" }}
   template:
     metadata:
       labels:
         app.kubernetes.io/name: {{ include "pwa-main.name" $ }}
         app.kubernetes.io/instance: {{ $.Release.Name }}
-        ssr: {{.name}}
+        ssr: {{ .theme | default "ssr" }}
         {{- if $.Values.podLabels }}
         {{- toYaml $.Values.podLabels | nindent 8 }}
         {{- end }}
@@ -70,8 +70,10 @@ spec:
         {{- with $.Values.environment }}
             {{- toYaml . | nindent 10 }}
         {{- end }}
+        {{- with .theme }}
           - name: THEME
-            value: {{ .theme | quote }}
+            value: {{ . | quote }}
+        {{- end }}
           ports:
             - name: http
               containerPort: 4200

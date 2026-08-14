@@ -56,14 +56,14 @@ spec:
           - name: HELM_RELEASE_REVISION
             value: "{{ .Release.Revision }}"
           {{- $upstreams := "" }}
-          {{- if and (len .Values.ssr.deployments | eq 1) not (first .Values.ssr.deployments | .theme ) }}
-            {{- $upstreams = printf "%s-%s:%s" (include "pwa-main.fullname" .) (first .Values.ssr.deployments | .name) (.Values.service.port | toString) }}
+          {{- if (len .Values.ssr.deployments | eq 1) }}
+            {{- $upstreams = printf "%s-%s:%s" (include "pwa-main.fullname" .) ((first .Values.ssr.deployments).theme | default "ssr" ) (.Values.service.port | toString) }}
           {{- else }}
             {{- range .Values.ssr.deployments }}
               {{- $theme := "" }}
               {{- if .theme }}
               {{- end }}
-              {{- $upstreams = printf "%s%s=%s-%s:%s," $upstreams .theme (include "pwa-main.fullname" $) .name ($.Values.service.port | toString) }}
+              {{- $upstreams = printf "%s%s=%s-%s:%s," $upstreams .theme (include "pwa-main.fullname" $) .theme ($.Values.service.port | toString) }}
             {{- end }}
           {{- end }}
           - name: UPSTREAMS

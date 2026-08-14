@@ -3,12 +3,12 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: ssr-{{.name}}
+  name: ssr-{{ .theme | default "ssr" }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "pwa-main.fullname" $ }}-{{ .name }}
+    name: {{ include "pwa-main.fullname" $ }}-{{ .theme | default "ssr" }}
   minReplicas: {{ .hpa.minReplicas }}
   maxReplicas: {{ .hpa.maxReplicas }}
   metrics:
