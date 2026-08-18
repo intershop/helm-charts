@@ -94,6 +94,9 @@ webadapter:
   deploymentLabels: {}
   podLabels: {}
 
+  # Customize the prefix used in typical icm-as URLs e.g. the /INTERSHOP in https://store.company.com/INTERSHOP/web/WFS/inSPIRED-inTRONICS-Site/en_US/-/USD/
+  urlMappingPrefix: "/INTERSHOP"
+
 # configure the monitoring side car (exposed Prometeus metrics gathered from webadapter) for the webadapter
 waMonitoring:
   # enable/disable the monitoring (boolean, optional, default=true)
