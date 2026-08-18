@@ -198,7 +198,7 @@ spec:
             httpGet:
               # /INTERSHOP/wastatus response code is directly linked to configuration servlet availability/validity and
               # therefore ultimately linked to ICM-AS readiness
-              path: /INTERSHOP/wastatus
+              path: {{- include "icm-web.urlMappingPrefixFull" . | indent 1 }}
               port: {{ .Values.service.httpPort }}
               httpHeaders:
                 - name: X-HEALTHCHECK

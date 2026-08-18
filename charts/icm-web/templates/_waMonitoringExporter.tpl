@@ -25,7 +25,7 @@
   - name: WA_LOG
     value: "/intershop/logs"
   - name: WA_URI
-    value: "http://localhost:8080/INTERSHOP/wastatistics"
+    value: {{- printf "http://localhost:8080%s/wastatistics" (include "icm-web.urlMappingPrefix" . ) | indent 1 }}
   - name: HTTPD_STATUS_URI
     value: "http://localhost:8080/server-status?auto"
   - name: SCRAPE_INTERVAL
