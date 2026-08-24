@@ -103,7 +103,7 @@ tests:
           path: spec.template.spec.containers
           content:
             name: icm-web-wa-monitoring
-            image: "intershophub/icm-wa-monitoring-exporter:1.1.0"
+            image: "intershophub/icm-wa-monitoring-exporter:1.2.0"
             imagePullPolicy: IfNotPresent
             env:
               - name: WA_CONFIG
@@ -149,7 +149,7 @@ tests:
           path: spec.template.spec.containers
           content:
             name: icm-web-wa-monitoring
-            image: "intershophub/icm-wa-monitoring-exporter:1.1.0"
+            image: "intershophub/icm-wa-monitoring-exporter:1.2.0"
             imagePullPolicy: IfNotPresent
             env:
               - name: WA_CONFIG
@@ -193,7 +193,7 @@ tests:
           path: spec.template.spec.containers
           content:
             name: icm-web-wa-monitoring
-            image: "intershophub/icm-wa-monitoring-exporter:1.1.0"
+            image: "intershophub/icm-wa-monitoring-exporter:1.2.0"
             imagePullPolicy: IfNotPresent
             env:
               - name: WA_CONFIG
