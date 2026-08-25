@@ -271,14 +271,8 @@ project:
   # Number of seconds after which the import of test-data has to be finished.
   # If not, the container will end with an error.
   importTestDataTimeout: 300
-  # Optional JSON string for CUSTOM_CREDENTIALS.
-  # Ignored if credentialsSecretKeyRef is set.
+  # Custom Credentials. JSON structure. optional
   credentials:
-  # Optional reference to Kubernetes secret key containing CUSTOM_CREDENTIALS JSON.
-  # Example:
-  # credentialsSecretKeyRef:
-  #   name: oms-project-credentials
-  #   key: config.json
   credentialsSecretKeyRef:  {}
 
 persistence:

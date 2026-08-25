@@ -84,10 +84,9 @@ New Features
 Secret Custom Credentials
 =========================
 
-IOM Helm Charts 3.2.0 introduce support for secret custom credentials, allowing sensitive
-configuration values to be provided through Kubernetes secrets rather than plain Helm values.
+IOM Helm Charts 3.2.0 introduce support for (secret) custom credentials.
 
-For more information, see `Helm parameters of IOM <docs/ParametersIOM.rst>`_.
+For more information, see `Helm parameters of IOM <docs/ParametersIOM.rst>` and `Secret Custom Credentials <docs/SecretKeyRef.rst>`.
 
 Requires IOM version 6.1.0 or later.
 
