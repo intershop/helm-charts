@@ -271,6 +271,9 @@ project:
   # Number of seconds after which the import of test-data has to be finished.
   # If not, the container will end with an error.
   importTestDataTimeout: 300
+  # Custom Credentials. JSON structure. optional
+  credentials:
+  credentialsSecretKeyRef:  {}
 
 persistence:
   # Type of provisioning.
