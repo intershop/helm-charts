@@ -363,29 +363,46 @@ Reference this file in the PWA Flux deployment configuration files with a refere
 # yaml-language-server: $schema=https://raw.githubusercontent.com/intershop/helm-charts/pwa-main-0.13.0/charts/pwa/values-flux.schema.json
 ```
 
-## Development
+## Non-Production Deployment
 
-Build and install the current source code version of the Helm chart from the local development folder `helm-charts/charts/pwa` with the given values file `deployment.values.yaml`:
+The default [`values.yaml`](./values.yaml) is production-oriented and secure by default. Those defaults (multiple replicas, higher resource requests, pod anti-affinity across nodes) are not always practical on local, single-node Kubernetes setups such as [kind](https://kind.sigs.k8s.io), [minikube](https://minikube.sigs.k8s.io), [k3d](https://k3d.io), or Docker Desktop.
+
+For these non-production scenarios, the chart ships a dedicated, minimal template: [`values-nonproduction.yaml.template`](./values-nonproduction.yaml.template). It overrides only what is necessary to lower the operational barrier (single replicas, reduced resource requests/limits, and disabled pod anti-affinity so pods can schedule on a single node).
+
+> [!WARNING]
+> The non-production template is intended for validating and running the chart locally. Do not use it for production deployments.
+
+To install the chart with the non-production template:
 
 ```bash
-$ helm dependency build helm-charts/charts/pwa
-$ helm install dev-release -f development.values.yaml helm-charts/charts/pwa
+$ helm install dev-release -f charts/pwa/values-nonproduction.yaml.template charts/pwa
+```
+
+You can layer your own overrides on top by passing an additional `-f my-values.yaml` after the template.
+
+## Development
+
+Build and install the current source code version of the Helm chart from the local development folder `charts/pwa` with the given values file `deployment.values.yaml`:
+
+```bash
+$ helm dependency build charts/pwa
+$ helm install dev-release -f development.values.yaml charts/pwa
 ```
 
 To render the result of using the current Helm chart, run:
 
 ```bash
-$ helm template helm-charts/charts/pwa
+$ helm template charts/pwa
 ```
 
 To see the result for a specific given values file, run:
 
 ```bash
-$ helm template -f development.values.yaml helm-charts/charts/pwa
+$ helm template -f development.values.yaml charts/pwa
 ```
 
 To see the result for a given values file, but only for one specific template (e.g., `deployment.yaml`), run:
 
 ```bash
-$ helm template -f development.values.yaml -s templates/deployment.yaml helm-charts/charts/pwa
+$ helm template -f development.values.yaml -s templates/app-deployment.yaml charts/pwa
 ```
