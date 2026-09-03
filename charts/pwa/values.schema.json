@@ -5,7 +5,7 @@
   "description": "Values used to deploy the Intershop PWA application and proxy tiers.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["config", "app", "proxy", "ingress"],
+  "required": ["config", "app", "proxy"],
   "properties": {
     "nameOverride": {
       "type": "string",
@@ -462,7 +462,7 @@
           "title": "Pod anti-affinity configuration",
           "description": "Configure pod anti-affinity rules for distributing pods across nodes",
           "additionalProperties": false,
-          "required": ["enabled", "required"],
+          "required": ["enabled"],
           "properties": {
             "enabled": {
               "type": "boolean",
