@@ -34,16 +34,19 @@ imagePullSecrets: []
 serviceAccount:
   # -- Create a ServiceAccount for the workloads.
   create: true
+  # -- Auto-mount the API token into pods. Disabled by default; the default cache-clearer
+  # reaches SSR via UPSTREAM_PWA (Service DNS), not the k8s API. Enable (plus endpoints RBAC)
+  # only for per-Pod SSR cache purging via the Endpoints API.
+  automount: false
   # -- Name of the ServiceAccount to use. Generated if empty and create=true.
   name: ""
   # -- Annotations to add to the ServiceAccount.
   annotations: {}
 
-# Pod-level security context shared by both tiers.
-podSecurityContext:
-  runAsNonRoot: false
-
-# Container-level security context shared by both tiers as a baseline.
+# Container-level security context shared by both tiers as a secure baseline.
+# readOnlyRootFilesystem is disabled because both upstream images write into their
+# own image filesystem at startup (nginx renders its config, the SSR image generates
+# its PM2 ecosystem.yml), so a read-only root filesystem would prevent them from starting.
 securityContext:
   allowPrivilegeEscalation: false
   readOnlyRootFilesystem: false
@@ -87,6 +90,15 @@ app:
   # Expose Prometheus metrics of SSR container
   metrics:
     enabled: false
+
+  # Pod security context for the app. The SSR image runs as an unprivileged user.
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
+    runAsGroup: 65534
+    fsGroup: 65534
+    seccompProfile:
+      type: RuntimeDefault
 
   # Container security context for the app. Overrides the shared defaults when needed.
   securityContext: {}
@@ -212,7 +224,15 @@ proxy:
       tag: "1"
       pullPolicy: IfNotPresent
 
-  # Container security context for the proxy. Additional capabilities are required for nginx startup.
+  # Pod security context for the proxy. The upstream OpenResty image starts its master
+  # process as root to bind the privileged HTTP port and render its config at startup, so
+  # this tier runs as root (workers still drop to an unprivileged user).
+  podSecurityContext:
+    seccompProfile:
+      type: RuntimeDefault
+
+  # Container security context for the proxy. Additional capabilities are required for nginx
+  # startup: the master runs as root, renders its config, and drops workers to an unprivileged user.
   securityContext:
     capabilities:
       add:
