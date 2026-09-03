@@ -35,7 +35,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "pwa.serviceAccountName" . }}
-      {{- with .Values.podSecurityContext }}
+      {{- with .Values.proxy.podSecurityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -108,7 +108,12 @@ spec:
             - name: proxy-config-map
               readOnly: true
               mountPath: "/config"
+            # Writable cache dir; the image's /tmp/cache is root-owned and nginx runs non-root.
+            - name: cache
+              mountPath: "/tmp/cache"
       volumes:
+        - name: cache
+          emptyDir: {}
         - name: proxy-config-map
           configMap:
               name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-gomplate-datasources

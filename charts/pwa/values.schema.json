@@ -94,6 +94,11 @@
           "type": "boolean",
           "default": true
         },
+        "automount": {
+          "type": "boolean",
+          "title": "Auto-mount the service account API token into pods",
+          "default": false
+        },
         "name": {
           "type": "string"
         },
@@ -101,11 +106,6 @@
           "$ref": "#/definitions/stringMap"
         }
       }
-    },
-    "podSecurityContext": {
-      "type": "object",
-      "title": "Pod security context",
-      "additionalProperties": true
     },
     "securityContext": {
       "type": "object",
@@ -400,6 +400,11 @@
         "securityContext": {
           "type": "object",
           "title": "Container security context",
+          "additionalProperties": true
+        },
+        "podSecurityContext": {
+          "type": "object",
+          "title": "Pod security context",
           "additionalProperties": true
         },
         "resources": {
