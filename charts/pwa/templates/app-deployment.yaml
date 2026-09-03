@@ -101,7 +101,7 @@ spec:
         {{- with .Values.app.affinity }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
-        {{- include "app.podAntiAffinity" . | nindent 8 }}
+        {{- include "pwa.podAntiAffinity" (dict "root" . "component" "app") | nindent 8 }}
       {{- end }}
       {{- with .Values.app.tolerations }}
       tolerations:
