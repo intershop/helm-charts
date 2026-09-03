@@ -1,0 +1,116 @@
+# yaml-language-server: $schema=./values.schema.json
+
+# Non-production values template for the pwa chart.
+#
+# Purpose: validate and run the chart on local / non-production Kubernetes
+# setups (kind, minikube, k3d, Docker Desktop). It overrides ONLY what is
+# necessary to lower the operational barrier on a single-node cluster.
+#
+# The default values.yaml remains production-oriented and secure by default.
+# Do NOT use this template for production deployments.
+#
+# Usage:
+#   helm install dev-release -f values-nonproduction.yaml.template charts/pwa
+
+config:
+  # Point at a reachable ICM backend for local testing.
+  icmBaseUrl: "https://develop.icm.intershop.de"
+  allowedHosts: "pwa.localdev"
+
+# --------------------------------------------------
+
+app:
+  image:
+    repository: intershophub/intershop-pwa-ssr
+    tag: "latest"
+
+  # Single replica is enough on a local single-node cluster.
+  replicaCount: 1
+
+  # env:
+  #   - name: LOGLEVEL
+  #     value: "info"
+  #   - name: LOGFORMAT
+  #     value: "text"
+  #   - name: "CONCURRENCY_SSR"
+  #     value: "1"
+
+  # Reduced footprint so the pod schedules on constrained local clusters.
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "300Mi"
+    limits:
+      cpu: "500m"
+      memory: "900Mi"
+
+  # A single-node cluster cannot satisfy pod anti-affinity across nodes.
+  podAntiAffinity:
+    enabled: false
+
+# --------------------------------------------------
+
+proxy:
+  image:
+    repository: intershophub/intershop-pwa-nginx
+    tag: "latest"
+
+  replicaCount: 1
+
+  # env:
+  #   - name: CACHE
+  #     value: "off"
+  #   - name: LOGLEVEL
+  #     value: "info"
+  #   - name: LOGFORMAT
+  #     value: "text"
+
+  # multiChannel: |
+  #   .+:
+  #     - baseHref: /b2b
+  #       channel: inSPIRED-inTRONICS_Business-Site
+  #       lang: en_US
+  #       theme: b2b
+  #     - baseHref: /b2c
+  #       channel: inSPIRED-inTRONICS-Site
+  #       lang: en_US
+  #       theme: b2c
+
+  reset:
+    enabled: false
+    # image:
+    #   repository: bitnami/kubectl
+    #   tag: latest
+
+  # Reduced footprint so the pod schedules on constrained local clusters.
+  resources:
+    requests:
+      cpu: "25m"
+      memory: "128Mi"
+    limits:
+      cpu: "250m"
+      memory: "300Mi"
+
+  # A single-node cluster cannot satisfy pod anti-affinity across nodes.
+  podAntiAffinity:
+    enabled: false
+
+# --------------------------------------------------
+
+ingress:
+  enabled: true
+  className: nginx
+  instances:
+    ingress:
+      hosts:
+        - host: pwa.localdev
+
+# --------------------------------------------------
+
+# monitoring:
+#   enabled: true
+#   prometheus:
+#     host: prometheus.pwa.localdev
+#   grafana:
+#     host: grafana.pwa.localdev
+#     password: admin
