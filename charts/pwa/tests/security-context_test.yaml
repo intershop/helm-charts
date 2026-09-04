@@ -1,0 +1,54 @@
+suite: security contexts are hardened by default
+templates:
+  - templates/app-deployment.yaml
+  - templates/proxy-deployment.yaml
+  - templates/serviceaccount.yaml
+release:
+  name: pwa
+set:
+  config.icmBaseUrl: https://icm.example.com
+tests:
+  - it: app pod runs as non-root 65534 with the runtime-default seccomp profile
+    template: templates/app-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.securityContext.runAsNonRoot
+          value: true
+      - equal:
+          path: spec.template.spec.securityContext.runAsUser
+          value: 65534
+      - equal:
+          path: spec.template.spec.securityContext.seccompProfile.type
+          value: RuntimeDefault
+
+  - it: app container drops all capabilities and forbids privilege escalation
+    template: templates/app-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation
+          value: false
+      - contains:
+          path: spec.template.spec.containers[0].securityContext.capabilities.drop
+          content: ALL
+
+  - it: proxy master stays root but keeps only the capabilities nginx needs
+    template: templates/proxy-deployment.yaml
+    asserts:
+      - isNull:
+          path: spec.template.spec.securityContext.runAsNonRoot
+      - contains:
+          path: spec.template.spec.containers[0].securityContext.capabilities.drop
+          content: ALL
+      - contains:
+          path: spec.template.spec.containers[0].securityContext.capabilities.add
+          content: CHOWN
+      - contains:
+          path: spec.template.spec.containers[0].securityContext.capabilities.add
+          content: SETUID
+
+  - it: service account disables API token automount by default
+    template: templates/serviceaccount.yaml
+    asserts:
+      - equal:
+          path: automountServiceAccountToken
+          value: false

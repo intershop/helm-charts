@@ -1,0 +1,39 @@
+suite: health probes
+templates:
+  - templates/app-deployment.yaml
+  - templates/proxy-deployment.yaml
+release:
+  name: pwa
+set:
+  config.icmBaseUrl: https://icm.example.com
+tests:
+  - it: app uses the image-provided PM2 probe scripts
+    template: templates/app-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.exec.command
+          value:
+            - node
+            - dist/livenessprobe.js
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.exec.command
+          value:
+            - node
+            - dist/readinessprobe.js
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe.exec.command
+          value:
+            - node
+            - dist/readinessprobe.js
+
+  - it: proxy uses tcpSocket probes on the http port and no startup probe
+    template: templates/proxy-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.tcpSocket.port
+          value: http
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.tcpSocket.port
+          value: http
+      - isNull:
+          path: spec.template.spec.containers[0].startupProbe

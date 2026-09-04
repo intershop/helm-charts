@@ -1,0 +1,66 @@
+suite: default values render both tiers
+templates:
+  - templates/app-deployment.yaml
+  - templates/proxy-deployment.yaml
+  - templates/app-service.yaml
+  - templates/proxy-service.yaml
+release:
+  name: pwa
+set:
+  config.icmBaseUrl: https://icm.example.com
+tests:
+  - it: renders the app Deployment with 2 replicas and component labels
+    template: templates/app-deployment.yaml
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.name
+          value: pwa-app
+      - equal:
+          path: spec.replicas
+          value: 2
+      - equal:
+          path: metadata.labels["app.kubernetes.io/component"]
+          value: app
+      - equal:
+          path: spec.template.spec.containers[0].name
+          value: app
+
+  - it: renders the proxy Deployment with component labels
+    template: templates/proxy-deployment.yaml
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.name
+          value: pwa-proxy
+      - equal:
+          path: spec.template.spec.containers[0].name
+          value: proxy
+
+  - it: app Service targets the SSR port
+    template: templates/app-service.yaml
+    documentIndex: 0
+    asserts:
+      - isKind:
+          of: Service
+      - equal:
+          path: metadata.name
+          value: pwa-app
+      - equal:
+          path: spec.ports[0].port
+          value: 4200
+
+  - it: proxy Service exposes the public HTTP port
+    template: templates/proxy-service.yaml
+    documentIndex: 0
+    asserts:
+      - isKind:
+          of: Service
+      - equal:
+          path: metadata.name
+          value: pwa-proxy
+      - equal:
+          path: spec.ports[0].port
+          value: 80

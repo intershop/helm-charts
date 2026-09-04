@@ -1,0 +1,42 @@
+suite: prometheus metrics are opt-in
+templates:
+  - templates/app-deployment.yaml
+  - templates/app-service.yaml
+release:
+  name: pwa
+set:
+  config.icmBaseUrl: https://icm.example.com
+tests:
+  - it: app exposes no metrics port by default
+    template: templates/app-deployment.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].ports
+          content:
+            name: metrics
+            containerPort: 9113
+            protocol: TCP
+
+  - it: app exposes a metrics port when enabled
+    template: templates/app-deployment.yaml
+    set:
+      app.metrics.enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].ports
+          content:
+            name: metrics
+            containerPort: 9113
+            protocol: TCP
+
+  - it: renders a headless metrics Service only when enabled
+    template: templates/app-service.yaml
+    set:
+      app.metrics.enabled: true
+    documentIndex: 1
+    asserts:
+      - isKind:
+          of: Service
+      - equal:
+          path: spec.clusterIP
+          value: None

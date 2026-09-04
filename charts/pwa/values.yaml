@@ -12,7 +12,8 @@ fullnameOverride: ""
 # General or shared values.
 config:
   # -- Base URL of the Intershop Commerce Management (ICM) backend.
-  icmBaseUrl: "https://develop.icm.intershop.de"
+  # Required; intentionally empty so installs must set a real backend and fail fast rather than defaulting to a dev URL.
+  icmBaseUrl: ""
   # -- Internal base URL of the Intershop Commerce Management (ICM) backend for SSR.
   # icmBaseUrlSsr: "http://icm-<cstmr-id>-<env>-icm-web-wa.icm-<cstmr-id>-<env>.svc.cluster.local:8080"
   # -- ALLOWED_HOSTS: "shop.example.com,*.example.com".
