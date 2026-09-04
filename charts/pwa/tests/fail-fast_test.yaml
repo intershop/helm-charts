@@ -1,0 +1,11 @@
+suite: fail-fast on invalid configuration
+templates:
+  - templates/app-deployment.yaml
+release:
+  name: pwa
+tests:
+  - it: rendering fails when the required config.icmBaseUrl is empty
+    set:
+      config.icmBaseUrl: ""
+    asserts:
+      - failedTemplate: {}

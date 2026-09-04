@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=../values.schema.json
+# chart-testing (ct) install scenario: multi-channel nginx configuration. Single-node
+# overrides so it schedules on the ephemeral kind cluster.
+config:
+  icmBaseUrl: "https://develop.icm.intershop.de"
+  allowedHosts: "pwa.localdev"
+
+app:
+  replicaCount: 1
+  podAntiAffinity:
+    enabled: false
+
+proxy:
+  replicaCount: 1
+  podAntiAffinity:
+    enabled: false
+  reset:
+    enabled: false
+  multiChannel: |
+    .+:
+      - baseHref: /en
+        channel: inSPIRED-inTRONICS-Site
+        lang: en_US
+      - baseHref: /de
+        channel: inSPIRED-inTRONICS-Site
+        lang: de_DE
+      - baseHref: /b2b
+        channel: inSPIRED-inTRONICS_Business-Site
+        lang: en_US
+        theme: b2b
