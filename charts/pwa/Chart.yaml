@@ -12,6 +12,10 @@ version: 1.0.0
 # Version of the Intershop PWA this chart deploys by default.
 appVersion: "12.1.0"
 
+# Supported Kubernetes range. Floor is 1.23 because the HPA uses the autoscaling/v2 API
+# (GA since 1.23). Helm enforces this and fails fast on older clusters.
+kubeVersion: ">=1.23.0-0"
+
 keywords:
   - intershop
   - pwa
