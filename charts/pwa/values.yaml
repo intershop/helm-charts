@@ -111,27 +111,28 @@ app:
       cpu: "1000m"
       memory: "1500Mi"
 
+  # Probes shipped in the SSR image; they check PM2 process health (per theme), not ICM,
+  # so a backend outage won't restart or de-register otherwise-healthy Pods.
+  startupProbe:
+    exec:
+      command: ["node", "dist/readinessprobe.js"]
+    periodSeconds: 5
+    timeoutSeconds: 5
+    failureThreshold: 30
+
   livenessProbe:
     exec:
-      command:
-        - /bin/sh
-        - -c
-        - netstat -an | egrep 4200.*LISTEN | grep 4200
-    initialDelaySeconds: 10
-    periodSeconds: 30
-    timeoutSeconds: 10 # TODO: new, is this useful
-    failureThreshold: 3 # TODO: new, is this useful
+      command: ["node", "dist/livenessprobe.js"]
+    periodSeconds: 20
+    timeoutSeconds: 5
+    failureThreshold: 3
 
   readinessProbe:
     exec:
-      command:
-        - /bin/sh
-        - -c
-        - netstat -an | egrep 4200.*LISTEN | grep 4200
-    initialDelaySeconds: 10
-    periodSeconds: 30
-    timeoutSeconds: 10 # TODO: new, is this useful
-    failureThreshold: 3 # TODO: new, is this useful
+      command: ["node", "dist/readinessprobe.js"]
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
 
   autoscaling:
     enabled: false
@@ -248,9 +249,22 @@ proxy:
       cpu: "1000m"
       memory: "1000Mi"
 
-  livenessProbe: {}
+  # nginx has no backend-independent health URL, so use a TCP check on the http port.
+  livenessProbe:
+    tcpSocket:
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 20
+    timeoutSeconds: 5
+    failureThreshold: 3
 
-  readinessProbe: {}
+  readinessProbe:
+    tcpSocket:
+      port: http
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
 
   autoscaling:
     enabled: false
