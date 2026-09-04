@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=../values.schema.json
+# chart-testing (ct) values for CI lint and install/upgrade tests.
+# The production default values.yaml intentionally leaves config.icmBaseUrl empty
+# (fail-fast), so CI must supply a backend here. Single-node overrides let the
+# chart install on the ephemeral kind cluster used by ct.
+config:
+  icmBaseUrl: "https://develop.icm.intershop.de"
+  allowedHosts: "pwa.localdev"
+
+app:
+  replicaCount: 1
+  podAntiAffinity:
+    enabled: false
+
+proxy:
+  replicaCount: 1
+  podAntiAffinity:
+    enabled: false
+  reset:
+    enabled: false

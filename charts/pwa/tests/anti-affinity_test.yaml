@@ -1,0 +1,43 @@
+suite: pod anti-affinity
+templates:
+  - templates/app-deployment.yaml
+release:
+  name: pwa
+set:
+  config.icmBaseUrl: https://icm.example.com
+tests:
+  - it: defaults to a preferred (soft) anti-affinity rule
+    template: templates/app-deployment.yaml
+    asserts:
+      - isNotEmpty:
+          path: spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution
+      - isNull:
+          path: spec.template.spec.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution
+
+  - it: switches to a required (hard) rule when required=true
+    template: templates/app-deployment.yaml
+    set:
+      app.podAntiAffinity.required: true
+    asserts:
+      - isNotEmpty:
+          path: spec.template.spec.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution
+      - isNull:
+          path: spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution
+
+  - it: propagates custom podLabels into the anti-affinity selector
+    template: templates/app-deployment.yaml
+    set:
+      app.podLabels:
+        team: web
+    asserts:
+      - equal:
+          path: spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchLabels.team
+          value: web
+
+  - it: omits affinity entirely when disabled
+    template: templates/app-deployment.yaml
+    set:
+      app.podAntiAffinity.enabled: false
+    asserts:
+      - isNull:
+          path: spec.template.spec.affinity
