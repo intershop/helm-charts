@@ -411,6 +411,10 @@
           "type": "object",
           "additionalProperties": true
         },
+        "startupProbe": {
+          "type": "object",
+          "additionalProperties": true
+        },
         "livenessProbe": {
           "type": "object",
           "additionalProperties": true
