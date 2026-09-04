@@ -12,6 +12,16 @@ $ helm repo update
 $ helm install my-release intershop/pwa-main
 ```
 
+## Compatibility
+
+| Requirement | Supported  |
+| ----------- | ---------- |
+| Kubernetes  | `>= 1.23`  |
+| Helm CLI    | `>= 4.0.0` |
+
+- **Kubernetes `>= 1.23`** — the chart uses the `autoscaling/v2` HorizontalPodAutoscaler API, which is GA from Kubernetes 1.23. The range is enforced via the `kubeVersion` feld in `Chart.yaml`, so `helm install`/`upgrade` fails fast on older clusters. All other resources use stable APIs (`apps/v1`, `networking.k8s.io/v1`, `batch/v1`, `rbac.authorization.k8s.io/v1`).
+- **Helm CLI `>= 4.0.0`** — the chart and its CI pipeline target Helm 4. CI validates the chart against the current stable Helm 4 release on every change.
+
 ## Release Versions
 
 The following table provides an overview of the different PWA Helm Chart versions and the minimum required PWA version to use it with.
