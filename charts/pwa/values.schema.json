@@ -108,9 +108,7 @@
       }
     },
     "securityContext": {
-      "type": "object",
-      "title": "Shared container security context",
-      "additionalProperties": true
+      "$ref": "#/definitions/containerSecurityContext"
     },
     "app": {
       "$ref": "#/definitions/deploymentConfig"
@@ -289,12 +287,115 @@
         "type": "string"
       }
     },
+    "seccompProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["RuntimeDefault", "Localhost", "Unconfined"]
+        },
+        "localhostProfile": { "type": "string" }
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "add": { "type": "array", "items": { "type": "string" } },
+        "drop": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "containerSecurityContext": {
+      "type": "object",
+      "title": "Container security context",
+      "additionalProperties": false,
+      "properties": {
+        "allowPrivilegeEscalation": { "type": "boolean" },
+        "privileged": { "type": "boolean" },
+        "readOnlyRootFilesystem": { "type": "boolean" },
+        "runAsNonRoot": { "type": "boolean" },
+        "runAsUser": { "type": "integer" },
+        "runAsGroup": { "type": "integer" },
+        "procMount": { "type": "string" },
+        "capabilities": { "$ref": "#/definitions/capabilities" },
+        "seccompProfile": { "$ref": "#/definitions/seccompProfile" },
+        "seLinuxOptions": { "type": "object" },
+        "windowsOptions": { "type": "object" },
+        "appArmorProfile": { "type": "object" }
+      }
+    },
+    "podSecurityContext": {
+      "type": "object",
+      "title": "Pod security context",
+      "additionalProperties": false,
+      "properties": {
+        "runAsNonRoot": { "type": "boolean" },
+        "runAsUser": { "type": "integer" },
+        "runAsGroup": { "type": "integer" },
+        "fsGroup": { "type": "integer" },
+        "fsGroupChangePolicy": { "type": "string" },
+        "supplementalGroups": {
+          "type": "array",
+          "items": { "type": "integer" }
+        },
+        "supplementalGroupsPolicy": { "type": "string" },
+        "sysctls": { "type": "array", "items": { "type": "object" } },
+        "seccompProfile": { "$ref": "#/definitions/seccompProfile" },
+        "seLinuxOptions": { "type": "object" },
+        "windowsOptions": { "type": "object" },
+        "appArmorProfile": { "type": "object" }
+      }
+    },
+    "resourceMap": {
+      "type": "object",
+      "additionalProperties": { "type": ["string", "number"] }
+    },
+    "resources": {
+      "type": "object",
+      "title": "Compute resources",
+      "additionalProperties": false,
+      "properties": {
+        "limits": { "$ref": "#/definitions/resourceMap" },
+        "requests": { "$ref": "#/definitions/resourceMap" },
+        "claims": { "type": "array", "items": { "type": "object" } }
+      }
+    },
+    "probe": {
+      "type": "object",
+      "title": "Health probe",
+      "additionalProperties": false,
+      "properties": {
+        "exec": { "type": "object" },
+        "httpGet": { "type": "object" },
+        "tcpSocket": { "type": "object" },
+        "grpc": { "type": "object" },
+        "initialDelaySeconds": { "type": "integer" },
+        "periodSeconds": { "type": "integer" },
+        "timeoutSeconds": { "type": "integer" },
+        "successThreshold": { "type": "integer" },
+        "failureThreshold": { "type": "integer" },
+        "terminationGracePeriodSeconds": { "type": "integer" }
+      }
+    },
+    "toleration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "key": { "type": "string" },
+        "operator": { "type": "string" },
+        "value": { "type": "string" },
+        "effect": { "type": "string" },
+        "tolerationSeconds": { "type": "integer" }
+      }
+    },
     "environmentVariable": {
       "type": "object",
       "title": "Environment variable",
       "description": "Environment variable to set in the container.",
       "required": ["name"],
-      "additionalProperties": true,
+      "additionalProperties": false,
       "properties": {
         "name": {
           "type": "string",
@@ -309,7 +410,13 @@
         },
         "valueFrom": {
           "type": "object",
-          "additionalProperties": true
+          "additionalProperties": false,
+          "properties": {
+            "configMapKeyRef": { "type": "object" },
+            "fieldRef": { "type": "object" },
+            "resourceFieldRef": { "type": "object" },
+            "secretKeyRef": { "type": "object" }
+          }
         }
       }
     },
@@ -404,30 +511,22 @@
           }
         },
         "securityContext": {
-          "type": "object",
-          "title": "Container security context",
-          "additionalProperties": true
+          "$ref": "#/definitions/containerSecurityContext"
         },
         "podSecurityContext": {
-          "type": "object",
-          "title": "Pod security context",
-          "additionalProperties": true
+          "$ref": "#/definitions/podSecurityContext"
         },
         "resources": {
-          "type": "object",
-          "additionalProperties": true
+          "$ref": "#/definitions/resources"
         },
         "startupProbe": {
-          "type": "object",
-          "additionalProperties": true
+          "$ref": "#/definitions/probe"
         },
         "livenessProbe": {
-          "type": "object",
-          "additionalProperties": true
+          "$ref": "#/definitions/probe"
         },
         "readinessProbe": {
-          "type": "object",
-          "additionalProperties": true
+          "$ref": "#/definitions/probe"
         },
         "autoscaling": {
           "type": "object",
@@ -464,8 +563,7 @@
         "tolerations": {
           "type": "array",
           "items": {
-            "type": "object",
-            "additionalProperties": true
+            "$ref": "#/definitions/toleration"
           }
         },
         "affinity": {
