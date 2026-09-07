@@ -455,6 +455,11 @@
           "type": "integer",
           "minimum": 0
         },
+        "updateStrategy": {
+          "type": "string",
+          "title": "Deployment update strategy",
+          "enum": ["RollingUpdate", "Recreate"]
+        },
         "ports": {
           "type": "object",
           "additionalProperties": false,
