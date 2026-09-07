@@ -24,11 +24,15 @@ spec:
     spec:
       containers:
         - env:
+            # Optional dev-only password; when unset Grafana keeps its own default (never run this in production).
+            {{- with (.Values.monitoring.grafana).password }}
             - name: GF_SECURITY_ADMIN_PASSWORD
-              value: {{ (.Values.monitoring.grafana).password | default "intershop" }}
+              value: {{ . | quote }}
+            {{- end }}
             - name: GF_USERS_ALLOW_SIGN_UP
               value: "false"
-          image: grafana/grafana:latest
+          image: "{{ .Values.monitoring.grafana.image.repository }}:{{ .Values.monitoring.grafana.image.tag }}"
+          imagePullPolicy: {{ .Values.monitoring.grafana.image.pullPolicy }}
           name: {{ .Chart.Name }}
           ports:
             - containerPort: 3000

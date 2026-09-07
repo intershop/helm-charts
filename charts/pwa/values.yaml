@@ -310,3 +310,19 @@ ingress:
 # ---------------------------------------------------------------------------
 monitoring:
   enabled: false
+  # Images for the development monitoring stack.
+  # :latest is acceptable for this non-production tooling.
+  prometheus:
+    image:
+      repository: prom/prometheus
+      tag: latest
+      pullPolicy: IfNotPresent
+    # host: prometheus.pwa.localdev
+  grafana:
+    image:
+      repository: grafana/grafana
+      tag: latest
+      pullPolicy: IfNotPresent
+    # host: grafana.pwa.localdev
+    # Optional dev-only admin password; when unset Grafana uses its own default. Never run monitoring in production.
+    # password: <your-dev-password>
