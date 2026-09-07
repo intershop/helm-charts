@@ -9,3 +9,10 @@ tests:
       config.icmBaseUrl: ""
     asserts:
       - failedTemplate: {}
+
+  - it: rejects unknown security-context fields (schema typo guard)
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      app.securityContext.readOnlyRootFileSystem: true
+    asserts:
+      - failedTemplate: {}
