@@ -68,6 +68,9 @@ app:
   # -- Number of app replicas (ignored when autoscaling.enabled=true).
   replicaCount: 2
 
+  # -- Deployment update strategy: RollingUpdate or Recreate.
+  updateStrategy: RollingUpdate
+
   # Ports exposed by the SSR container.
   ports:
     # -- HTTP port the SSR server listens on.
@@ -170,6 +173,9 @@ proxy:
 
   # -- Number of proxy replicas (ignored when autoscaling.enabled=true).
   replicaCount: 2
+
+  # -- Deployment update strategy: RollingUpdate or Recreate.
+  updateStrategy: RollingUpdate
 
   ports:
     # -- HTTP port nginx listens on.
