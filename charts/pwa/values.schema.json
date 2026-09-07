@@ -240,6 +240,9 @@
           "title": "Prometheus configuration",
           "additionalProperties": false,
           "properties": {
+            "image": {
+              "$ref": "#/definitions/imageReference"
+            },
             "host": {
               "type": "string",
               "title": "Prometheus host",
@@ -257,6 +260,9 @@
           "title": "Grafana configuration",
           "additionalProperties": false,
           "properties": {
+            "image": {
+              "$ref": "#/definitions/imageReference"
+            },
             "host": {
               "type": "string",
               "title": "Grafana host",
