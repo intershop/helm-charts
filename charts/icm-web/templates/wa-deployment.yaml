@@ -13,6 +13,7 @@ metadata:
       {{- toYaml .Values.webadapter.deploymentLabels | trim | nindent 4 }}
     {{- end }}
 spec:
+  progressDeadlineSeconds: 1200
   replicas: {{ .Values.webadapter.replicaCount | default 0 }}
   {{- if (ne (int .Values.webadapter.replicaCount) 0) }}
   strategy:
@@ -198,7 +199,7 @@ spec:
             httpGet:
               # /INTERSHOP/wastatus response code is directly linked to configuration servlet availability/validity and
               # therefore ultimately linked to ICM-AS readiness
-              path: /INTERSHOP/wastatus
+              path: {{- include "icm-web.urlMappingPrefixFull" . | indent 1 }}
               port: {{ .Values.service.httpPort }}
               httpHeaders:
                 - name: X-HEALTHCHECK

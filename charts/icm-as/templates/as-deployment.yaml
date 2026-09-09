@@ -15,7 +15,7 @@ metadata:
       {{- toYaml .Values.deploymentLabels | nindent 4 }}
     {{- end }}
 spec:
-  progressDeadlineSeconds: 600
+  progressDeadlineSeconds: 1200
   minReadySeconds: {{ .Values.minReadySeconds | default 30 }}
   replicas: {{ .Values.replicaCount | default 0 }}
   revisionHistoryLimit: 10
