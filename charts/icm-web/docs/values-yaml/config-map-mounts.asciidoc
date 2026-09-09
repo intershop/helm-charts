@@ -18,13 +18,18 @@ Allows values stored in Kubernetes https://kubernetes.io/docs/concepts/configura
 |configMapName|The name of the https://kubernetes.io/docs/concepts/configuration/configmap/[configMap]|string|{mandatory}|-
 |mountPath|Absolute path of the folder where to mount the file. The complete file path is [.placeholder]#`mountPath`#/[.placeholder]#`fileName`#.|path|{mandatory}|-
 |fileName|Name of the file inside the Kubernetes https://kubernetes.io/docs/concepts/configuration/configmap/[configMap]|path|{mandatory}|-
-|fileMode|https://www.linuxfoundation.org/blog/blog/classic-sysadmin-understanding-linux-file-permissions[file permissions] of the mounted file|file permissions (octal)|{optional}|`440`
+|fileMode|https://www.linuxfoundation.org/blog/blog/classic-sysadmin-understanding-linux-file-permissions[file permissions] of the mounted file|file permissions (octal)|{optional}|-
 |readOnly|If `true`, the file is mounted read-only|string|{optional}|`false`
 |===
 
 [CAUTION]
 ====
 Mounted files will hide files that are already present in the target directory coming out of the container image. Pay attention to not overwrite important files.
+====
+
+[NOTE]
+====
+The value for `fileMode` has to use an octal value as used for typical Linux file permissions.
 ====
 
 == Example
@@ -36,7 +41,7 @@ configMapMounts:
     configMapName: icm-web-httpd-conf <2>
     mountPath: /intershop/conf/httpd <3>
     fileName: httpd.conf <3>
-    fileMode: 440 <4>
+    fileMode: 0440 <4>
     readOnly: true <5>
 ----
 
@@ -45,5 +50,5 @@ Given a https://kubernetes.io/docs/concepts/configuration/configmap/[configMap] 
 <1> Use mount name `httpd-config`
 <2> Get data from https://kubernetes.io/docs/concepts/configuration/configmap/[configMap] `icm-web-httpd-conf`
 <3> Reference configMap entry `httpd.conf` and make it available at `/intershop/conf/httpd/httpd.conf`
-<4> Set file permissions to `440` (readable by owner and group, not writable)
+<4> Set file permissions to `0440` (readable by owner and group, not writable)
 <5> Mount the file read-only (somehow redundant because of the file permissions)
