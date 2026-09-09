@@ -11,6 +11,8 @@
 # helm-docs template; only the generated README.md ships with the package.
 README.md.gotmpl
 ci/
+# maintenance tooling (values migration), not runtime chart content.
+scripts/
 # helm-unittest suites and their results are test assets, not runtime manifests.
 # Anchored so it excludes only the chart-root tests/, not templates/tests/.
 /tests/
