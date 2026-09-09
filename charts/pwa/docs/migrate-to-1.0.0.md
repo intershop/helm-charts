@@ -1,13 +1,18 @@
 # Migration to 1.0.0
 
 > [!IMPORTANT]
-> 1.0.0 is a **major, breaking restructure** of the PWA Helm chart. Almost every value has
-> moved or been renamed. Read this guide and adapt your values file **before** upgrading.
+> 1.0.0 is a **major, breaking restructure** of the PWA Helm chart. Almost every value has moved or been renamed.
+> Read this guide and adapt your values file **before** upgrading.
 
 The two tiers are now first-class, explicitly-named sections:
 
 - the **SSR application** (previously configured at the **top level**, resources named `*-pwa-main`) is now under **`app`** (resources named `*-pwa-app`);
 - the **nginx reverse proxy** (previously under **`cache`**, resources named `*-pwa-cache`) is now under **`proxy`** (resources named `*-pwa-proxy`).
+
+> [!TIP]
+> You don't have to hunt down every obsolete key by hand.
+> If a removed or renamed 0.x value is still present, `helm install`/`upgrade`/`template` **fails fast** with a message naming the key and its 1.0.0 replacement.
+> Fix the reported key and re-run until it succeeds.
 
 ## Values mapping (0.13.0 → 1.0.0)
 
@@ -114,8 +119,7 @@ Deployment/Service names changed with the tier rename:
 | `<release>-pwa-cache` | `<release>-pwa-proxy` |
 
 > [!IMPORTANT]
-> Anything that selects these resources **by name** — monitoring dashboards, `NetworkPolicy`,
-> `ServiceMonitor`, external scripts — must be updated. This is the easiest change to miss.
+> Anything that selects these resources **by name** — monitoring dashboards, `NetworkPolicy`, `ServiceMonitor`, external scripts — must be updated. This is the easiest change to miss.
 
 ## Verifying your upgrade
 

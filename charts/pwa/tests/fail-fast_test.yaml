@@ -16,3 +16,17 @@ tests:
       app.securityContext.readOnlyRootFileSystem: true
     asserts:
       - failedTemplate: {}
+
+  - it: rejects an unknown key under the app tier (schema typo guard)
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      app.replicaCont: 1
+    asserts:
+      - failedTemplate: {}
+
+  - it: rejects an unknown key under the proxy tier (schema typo guard)
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      proxy.badKey: true
+    asserts:
+      - failedTemplate: {}
