@@ -12,6 +12,7 @@
   },
   "files.associations": {
     "charts/**/templates/**/*.yaml": "helm",
-    "*.yaml.template": "yaml"
+    "*.yaml.template": "yaml",
+    "*.md.gotmpl": "markdown"
   }
 }

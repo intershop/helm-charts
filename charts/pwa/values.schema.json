@@ -28,13 +28,13 @@
           "minLength": 1
         },
         "icmBaseUrlSsr": {
-          "type": "string",
+          "type": ["string", "null"],
           "title": "Internal ICM base URL",
           "description": "Internal ICM base URL used by server-side rendering.",
           "minLength": 1
         },
         "allowedHosts": {
-          "type": "string",
+          "type": ["string", "null"],
           "title": "Allowed hosts",
           "description": "Comma-separated host names accepted by the SSR application.",
           "minLength": 1
@@ -54,13 +54,13 @@
           "default": false
         },
         "icmInternalURL": {
-          "type": "string",
+          "type": ["string", "null"],
           "title": "Internal ICM Web Adapter URL",
           "description": "Internal Kubernetes URL of the ICM Web Adapter. Required only when ICM runs in the same namespace.",
           "minLength": 1
         },
         "pwaExternalPort": {
-          "type": "integer",
+          "type": ["integer", "null"],
           "title": "External PWA port",
           "description": "External PWA port forwarded to Responsive Starter Store requests when it differs from the default port.",
           "minimum": 1,

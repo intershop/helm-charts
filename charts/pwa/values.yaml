@@ -5,30 +5,36 @@
 #   app   -> Angular SSR application server (Node.js), sits behind the proxy
 #   proxy -> nginx/OpenResty reverse proxy (public front door)
 
-# -- Overrides for the chart name used in resource names.
+# -- Override the chart name used in resource names.
 nameOverride: ""
+# -- Override the fully qualified release name.
 fullnameOverride: ""
 
-# General or shared values.
+# General or shared values used by both tiers.
 config:
   # -- Base URL of the Intershop Commerce Management (ICM) backend.
   # Required; intentionally empty so installs must set a real backend and fail fast rather than defaulting to a dev URL.
   icmBaseUrl: ""
-  # -- Internal base URL of the Intershop Commerce Management (ICM) backend for SSR.
-  # icmBaseUrlSsr: "http://icm-<cstmr-id>-<env>-icm-web-wa.icm-<cstmr-id>-<env>.svc.cluster.local:8080"
-  # -- ALLOWED_HOSTS: "shop.example.com,*.example.com".
-  # allowedHosts: "shop.example.com,*.example.com"
+  # -- (string) Internal ICM base URL used by SSR. Optional; leave unset to skip the ICM_BASE_URL_SSR env var.
+  # e.g. "http://icm-<cstmr-id>-<env>-icm-web-wa.icm-<cstmr-id>-<env>.svc.cluster.local:8080"
+  icmBaseUrlSsr:
+  # -- (string) Comma-separated ALLOWED_HOSTS for the SSR app. Optional; leave unset to skip the ALLOWED_HOSTS env var.
+  # e.g. "shop.example.com,*.example.com"
+  allowedHosts:
 
-## @param hybrid Set to enable PWA Hybrid Approach. This means pages are produced by PWA or ICM.
-## You can specify the icm-web-wa service internal URL for Kubernetes deployments.
-## Communication cannot be routed through ICM Ingress controller.
-##
+# PWA Hybrid Approach: pages produced by PWA or ICM. Specify the icm-web-wa service internal
+# URL for Kubernetes deployments; traffic cannot be routed through the ICM Ingress controller.
 hybrid:
+  # -- Enable the PWA Hybrid Approach deployment.
   enabled: false
-  # icmInternalURL: https://kubernetes-icm-web-wa:8443
-  # pwaExternalPort: 443
+  # -- (string) Internal Kubernetes URL of the ICM Web Adapter. Optional; only needed when ICM runs in the same namespace.
+  # e.g. https://kubernetes-icm-web-wa:8443
+  icmInternalURL:
+  # -- (int) External PWA port forwarded to Responsive Starter Store requests. Optional; defaults to the standard port when unset.
+  # e.g. 443
+  pwaExternalPort:
 
-# Image pull secrets applied to both tiers' pods.
+# -- Image pull secrets applied to both tiers' pods.
 imagePullSecrets: []
 # - name: regcred
 
@@ -48,6 +54,8 @@ serviceAccount:
 # readOnlyRootFilesystem is disabled because both upstream images write into their
 # own image filesystem at startup (nginx renders its config, the SSR image generates
 # its PM2 ecosystem.yml), so a read-only root filesystem would prevent them from starting.
+# -- Container security context shared by both tiers (secure baseline: drop all caps, no privilege escalation).
+# @default -- see [values.yaml](./values.yaml)
 securityContext:
   allowPrivilegeEscalation: false
   readOnlyRootFilesystem: false
@@ -55,14 +63,16 @@ securityContext:
     drop:
       - ALL
 
-# ---------------------------------------------------------------------------
-# app — Angular SSR application server (Node.js)
-# ---------------------------------------------------------------------------
+## ===========================================================================
+## app — Angular SSR application server (Node.js)
+## ===========================================================================
 app:
   image:
+    # -- SSR container image repository.
     repository: intershophub/intershop-pwa-ssr
     # -- Image tag. Defaults to the chart appVersion when empty.
     tag: ""
+    # -- Image pull policy.
     pullPolicy: IfNotPresent
 
   # -- Number of app replicas (ignored when autoscaling.enabled=true).
@@ -79,23 +89,25 @@ app:
     metrics: 9113
 
   service:
+    # -- Kubernetes Service type for the SSR service.
     type: ClusterIP
     # -- Service port that the proxy talks to.
     port: 4200
 
-  # Extra environment variables for the SSR server.
   # ICM_BASE_URL, ICM_BASE_URL_SSR, ALLOWED_HOSTS are injected from .config automatically.
+  # -- Extra environment variables for the SSR container.
   env: []
   # - name: LOGLEVEL
   #   value: "info"
   # - name: LOGFORMAT
   #   value: "text"
 
-  # Expose Prometheus metrics of SSR container
   metrics:
+    # -- Expose Prometheus metrics of the SSR container.
     enabled: false
 
-  # Pod security context for the app. The SSR image runs as an unprivileged user.
+  # -- Pod security context for the app (runs as unprivileged user 65534).
+  # @default -- see [values.yaml](./values.yaml)
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 65534
@@ -104,9 +116,11 @@ app:
     seccompProfile:
       type: RuntimeDefault
 
-  # Container security context for the app. Overrides the shared defaults when needed.
+  # -- Container security context for the app; overrides the shared baseline when set.
   securityContext: {}
 
+  # -- Resource requests/limits for the SSR container.
+  # @default -- see [values.yaml](./values.yaml)
   resources:
     requests:
       cpu: "100m"
@@ -117,6 +131,8 @@ app:
 
   # Probes shipped in the SSR image; they check PM2 process health (per theme), not ICM,
   # so a backend outage won't restart or de-register otherwise-healthy Pods.
+  # -- Startup probe for the SSR container (PM2 readiness).
+  # @default -- see [values.yaml](./values.yaml)
   startupProbe:
     exec:
       command: ["node", "dist/readinessprobe.js"]
@@ -124,6 +140,8 @@ app:
     timeoutSeconds: 5
     failureThreshold: 30
 
+  # -- Liveness probe for the SSR container (PM2 process health, not ICM).
+  # @default -- see [values.yaml](./values.yaml)
   livenessProbe:
     exec:
       command: ["node", "dist/livenessprobe.js"]
@@ -131,6 +149,8 @@ app:
     timeoutSeconds: 5
     failureThreshold: 3
 
+  # -- Readiness probe for the SSR container (PM2 process health, not ICM).
+  # @default -- see [values.yaml](./values.yaml)
   readinessProbe:
     exec:
       command: ["node", "dist/readinessprobe.js"]
@@ -138,16 +158,23 @@ app:
     timeoutSeconds: 5
     failureThreshold: 3
 
+  # -- HorizontalPodAutoscaler for the SSR tier.
+  # @default -- see [values.yaml](./values.yaml)
   autoscaling:
     enabled: false
     minReplicas: 2
     maxReplicas: 10
     targetCPUUtilizationPercentage: 75
 
+  # -- Node selector for SSR pods.
   nodeSelector: {}
+  # -- Tolerations for SSR pods.
   tolerations: []
+  # -- Node/pod affinity for SSR pods (merged with podAntiAffinity).
   affinity: {}
 
+  # -- Pod anti-affinity to spread SSR replicas across nodes.
+  # @default -- see [values.yaml](./values.yaml)
   podAntiAffinity:
     # enable/disable default anti-affinity
     enabled: true
@@ -156,19 +183,25 @@ app:
     # false: use preferredDuringSchedulingIgnoredDuringExecution (soft rule; best-effort)
     required: false
 
+  # -- Extra annotations for SSR pods.
   podAnnotations: {}
+  # -- Extra labels for SSR pods.
   podLabels: {}
+  # -- Extra annotations for the SSR Deployment.
   deploymentAnnotations: {}
+  # -- Extra labels for the SSR Deployment.
   deploymentLabels: {}
 
-# ---------------------------------------------------------------------------
-# proxy — nginx/OpenResty reverse proxy (public front door)
-# ---------------------------------------------------------------------------
+## ===========================================================================
+## proxy — nginx/OpenResty reverse proxy (public front door)
+## ===========================================================================
 proxy:
   image:
+    # -- Proxy container image repository.
     repository: intershophub/intershop-pwa-nginx
     # -- Image tag. Defaults to the chart appVersion when empty.
     tag: ""
+    # -- Image pull policy.
     pullPolicy: IfNotPresent
 
   # -- Number of proxy replicas (ignored when autoscaling.enabled=true).
@@ -184,13 +217,14 @@ proxy:
     metrics: 9113
 
   service:
+    # -- Kubernetes Service type for the public proxy service.
     type: ClusterIP
     # -- Public service port.
     port: 80
 
-  # Extra environment variables for the proxy.
   # UPSTREAM_PWA, ICM_BASE_URL, ICM_BASE_URL_SSR are injected
   # automatically. Add multi-channel / identity-provider config here.
+  # -- Extra environment variables for the proxy container.
   env: []
   # - name: LOGLEVEL
   #   value: "info"
@@ -199,6 +233,7 @@ proxy:
 
   # Expose Prometheus metrics of nginx container
   metrics:
+    # -- Expose Prometheus metrics of the proxy (nginx) container.
     enabled: false
 
   # Multi-Channel/-Site configuration object
@@ -209,12 +244,14 @@ proxy:
   #     - baseHref: /b2c
   #       channel: inSPIRED-inTRONICS-Site
   #       theme: b2c
+  # -- Multi-channel/-site routing configuration (YAML string).
   multiChannel: ""
 
   # Additional headers configuration object
   # additionalHeaders: |
   #   headers:
   #     - X-Frame-Options: 'SAMEORIGIN'
+  # -- Additional response headers configuration (YAML string).
   additionalHeaders: ""
 
   # Ignore query parameters during caching
@@ -222,9 +259,11 @@ proxy:
   #   params:
   #     - utm_source
   #     - utm_campaign
+  # -- Query parameters nginx ignores when caching (YAML string).
   cacheIgnoreParams: ""
 
-  # Enable proxy reset job after upgrade to purge the proxy cache of the SSR rendered pages.
+  # -- Post-upgrade job that restarts the proxy to purge cached SSR pages.
+  # @default -- see [values.yaml](./values.yaml)
   reset:
     enabled: true
     image:
@@ -232,15 +271,18 @@ proxy:
       tag: "1"
       pullPolicy: IfNotPresent
 
-  # Pod security context for the proxy. The upstream OpenResty image starts its master
-  # process as root to bind the privileged HTTP port and render its config at startup, so
-  # this tier runs as root (workers still drop to an unprivileged user).
+  # The upstream OpenResty image starts its master process as root to bind the privileged
+  # HTTP port and render its config at startup (workers still drop to an unprivileged user).
+  # -- Pod security context for the proxy (master runs as root).
+  # @default -- see [values.yaml](./values.yaml)
   podSecurityContext:
     seccompProfile:
       type: RuntimeDefault
 
-  # Container security context for the proxy. Additional capabilities are required for nginx
-  # startup: the master runs as root, renders its config, and drops workers to an unprivileged user.
+  # Additional capabilities are required for nginx startup: the master renders its config
+  # and drops workers to an unprivileged user.
+  # -- Container security context for the proxy (adds CHOWN/SETGID/SETUID).
+  # @default -- see [values.yaml](./values.yaml)
   securityContext:
     capabilities:
       add:
@@ -248,6 +290,8 @@ proxy:
         - SETGID
         - SETUID
 
+  # -- Resource requests/limits for the proxy container.
+  # @default -- see [values.yaml](./values.yaml)
   resources:
     requests:
       cpu: "50m"
@@ -257,6 +301,8 @@ proxy:
       memory: "1000Mi"
 
   # nginx has no backend-independent health URL, so use a TCP check on the http port.
+  # -- Liveness probe for the proxy container (TCP check on the http port).
+  # @default -- see [values.yaml](./values.yaml)
   livenessProbe:
     tcpSocket:
       port: http
@@ -265,6 +311,8 @@ proxy:
     timeoutSeconds: 5
     failureThreshold: 3
 
+  # -- Readiness probe for the proxy container (TCP check on the http port).
+  # @default -- see [values.yaml](./values.yaml)
   readinessProbe:
     tcpSocket:
       port: http
@@ -273,16 +321,23 @@ proxy:
     timeoutSeconds: 5
     failureThreshold: 3
 
+  # -- HorizontalPodAutoscaler for the proxy tier.
+  # @default -- see [values.yaml](./values.yaml)
   autoscaling:
     enabled: false
     minReplicas: 2
     maxReplicas: 6
     targetCPUUtilizationPercentage: 75
 
+  # -- Node selector for proxy pods.
   nodeSelector: {}
+  # -- Tolerations for proxy pods.
   tolerations: []
+  # -- Node/pod affinity for proxy pods (merged with podAntiAffinity).
   affinity: {}
 
+  # -- Pod anti-affinity to spread proxy replicas across nodes.
+  # @default -- see [values.yaml](./values.yaml)
   podAntiAffinity:
     # enable/disable default anti-affinity
     enabled: true
@@ -291,16 +346,22 @@ proxy:
     # false: use preferredDuringSchedulingIgnoredDuringExecution (soft rule; best-effort)
     required: false
 
+  # -- Extra annotations for proxy pods.
   podAnnotations: {}
+  # -- Extra labels for proxy pods.
   podLabels: {}
+  # -- Extra annotations for the proxy Deployment.
   deploymentAnnotations: {}
+  # -- Extra labels for the proxy Deployment.
   deploymentLabels: {}
 
-# ---------------------------------------------------------------------------
-# Ingress — for external access. Routes public traffic to the proxy
-# ---------------------------------------------------------------------------
+## ===========================================================================
+## Ingress — for external access. Routes public traffic to the proxy
+## ===========================================================================
 ingress:
+  # -- Enable creation of Ingress resources.
   enabled: false
+  # -- IngressClass name for all instances.
   className: nginx
 ## example for a configured Ingress instance
 #   instances:
@@ -311,19 +372,24 @@ ingress:
 #       hosts:
 #         - host: pwa.example.local
 
-# ---------------------------------------------------------------------------
-# Monitoring — with Prometheus and Grafana (for development and testing)
-# ---------------------------------------------------------------------------
+## ===========================================================================
+## Monitoring — with Prometheus and Grafana (for development and testing)
+## ===========================================================================
 monitoring:
+  # -- Deploy the in-cluster Prometheus + Grafana stack (development/testing only).
   enabled: false
   # Images for the development monitoring stack.
   # :latest is acceptable for this non-production tooling.
+  # -- Prometheus image and optional host for the monitoring stack.
+  # @default -- see [values.yaml](./values.yaml)
   prometheus:
     image:
       repository: prom/prometheus
       tag: latest
       pullPolicy: IfNotPresent
     # host: prometheus.pwa.localdev
+  # -- Grafana image, optional host, and optional dev admin password.
+  # @default -- see [values.yaml](./values.yaml)
   grafana:
     image:
       repository: grafana/grafana
