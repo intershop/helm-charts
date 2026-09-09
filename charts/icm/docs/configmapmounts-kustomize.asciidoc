@@ -90,7 +90,7 @@ spec:
           mountPath: <mount-path>  # Where to mount the file # Result = <mount-path>/<file-1>
           configMapName: <config-map-name>  # Must match kustomization.yaml
           fileName: <file-1>       # Name of the file in the configMap
-          fileMode: 440
+          fileMode: 0440
           readOnly: true
 ----
 
@@ -180,7 +180,7 @@ spec:
         mountPath: /intershop/public  # Target directory in pod
         configMapName: webadapter-overrides
         fileName: robots.txt          # Will replace /intershop/public/robots.txt
-        fileMode: 440
+        fileMode: 0440
         readOnly: true
 ----
 
@@ -214,7 +214,7 @@ spec:
         mountPath: /intershop/public
         configMapName: webadapter-overrides-4mtbhkhkfh
         fileName: robots.txt
-        fileMode: 440
+        fileMode: 0440
         readOnly: true
 ----
 
@@ -224,7 +224,7 @@ After deployment:
 
 * The original `/intershop/public/robots.txt` in the container will be replaced.
 * The Web Adapter will use the custom `robots.txt` from the integration environment.
-* The file will have permissions set to 440 (read-only).
+* The file will have permissions set to 0440 (read-only).
 
 == Additional Information
 
@@ -277,7 +277,7 @@ spec:
         mountPath: /app/images # Target directory in the container
         configMapName: binary-file-config
         fileName: image.png
-        fileMode: 440
+        fileMode: 0440
         readOnly: true
 ----
 
