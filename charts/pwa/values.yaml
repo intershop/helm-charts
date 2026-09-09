@@ -131,11 +131,12 @@ app:
 
   # Probes shipped in the SSR image; they check PM2 process health (per theme), not ICM,
   # so a backend outage won't restart or de-register otherwise-healthy Pods.
+  # Scripts live at /dist in the image (matching its HEALTHCHECK/ENTRYPOINT), so use absolute paths.
   # -- Startup probe for the SSR container (PM2 readiness).
   # @default -- see [values.yaml](./values.yaml)
   startupProbe:
     exec:
-      command: ["node", "dist/readinessprobe.js"]
+      command: ["node", "/dist/readinessprobe.js"]
     periodSeconds: 5
     timeoutSeconds: 5
     failureThreshold: 30
@@ -144,7 +145,7 @@ app:
   # @default -- see [values.yaml](./values.yaml)
   livenessProbe:
     exec:
-      command: ["node", "dist/livenessprobe.js"]
+      command: ["node", "/dist/livenessprobe.js"]
     periodSeconds: 20
     timeoutSeconds: 5
     failureThreshold: 3
@@ -153,7 +154,7 @@ app:
   # @default -- see [values.yaml](./values.yaml)
   readinessProbe:
     exec:
-      command: ["node", "dist/readinessprobe.js"]
+      command: ["node", "/dist/readinessprobe.js"]
     periodSeconds: 10
     timeoutSeconds: 5
     failureThreshold: 3

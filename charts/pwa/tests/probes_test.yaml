@@ -14,17 +14,17 @@ tests:
           path: spec.template.spec.containers[0].livenessProbe.exec.command
           value:
             - node
-            - dist/livenessprobe.js
+            - /dist/livenessprobe.js
       - equal:
           path: spec.template.spec.containers[0].readinessProbe.exec.command
           value:
             - node
-            - dist/readinessprobe.js
+            - /dist/readinessprobe.js
       - equal:
           path: spec.template.spec.containers[0].startupProbe.exec.command
           value:
             - node
-            - dist/readinessprobe.js
+            - /dist/readinessprobe.js
 
   - it: proxy uses tcpSocket probes on the http port and no startup probe
     template: templates/proxy-deployment.yaml
