@@ -222,10 +222,10 @@ testConnection:
 resources:
   limits:
     cpu: 1000m
-    memory: 3Gi
+    memory: 4Gi
   requests:
     cpu: 1000m
-    memory: 3Gi
+    memory: 4Gi
 
 # configure an external database for ICM
 # in case value "mssql.enabled" is true - this section will be ignored
