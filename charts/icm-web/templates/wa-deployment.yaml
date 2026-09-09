@@ -13,6 +13,7 @@ metadata:
       {{- toYaml .Values.webadapter.deploymentLabels | trim | nindent 4 }}
     {{- end }}
 spec:
+  progressDeadlineSeconds: 1200
   replicas: {{ .Values.webadapter.replicaCount | default 0 }}
   {{- if (ne (int .Values.webadapter.replicaCount) 0) }}
   strategy:
