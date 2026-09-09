@@ -8,7 +8,8 @@
 *.bak
 *.orig
 *.log
-README.md.tmpl
+# helm-docs template; only the generated README.md ships with the package.
+README.md.gotmpl
 ci/
 # helm-unittest suites and their results are test assets, not runtime manifests.
 # Anchored so it excludes only the chart-root tests/, not templates/tests/.
