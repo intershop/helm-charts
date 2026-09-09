@@ -1,5 +1,5 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "IntershopPWAFluxHelmValuesSchema",
   "title": "The Intershop PWA Helm Values Schema for Flux",
   "description": "Integrate the Helm Values Schema to define values necessary to deploy Intershops PWA with Flux environments.",
