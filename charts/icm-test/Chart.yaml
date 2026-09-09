@@ -1,11 +1,11 @@
 apiVersion: v2
 description: Intershop Commerce Management - ICM Test Chart
 name: icm-test
-version: 2.0.0
+version: 2.1.0
 annotations:
   requestedMemoryQuota: 6000Mi
   requestedCpuQuotaInMinutes: "2200"
 dependencies:
   - name: icm
-    version: 3.0.0
+    version: 3.1.0
     repository: file://../icm
