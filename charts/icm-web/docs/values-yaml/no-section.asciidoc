@@ -15,6 +15,7 @@
 |<<_example_nameOverride,fullnameOverride>>|Overrides the names/prefix of the several deployed resources which normally is calculated from chart and release name|string|{optional}|[.placeholder]#empty string#
 |<<_example_nameOverride,nameOverride>>|Overrides the name used for label `app.kubernetes.io/name` which normally is calculated from chart name|string|{optional}|[.placeholder]#empty string#
 |<<_example_nodeSelector,nodeSelector>>|https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector[Node selector configuration]|yaml object|{optional}|`{}`
+|<<_example_urlMappingPrefix,urlMappingPrefix>>|Overrides the URL mapping prefix expected to be used by the link:../../../icm-as/docs/values-yaml.asciidoc[icm-as]|string (incl. leading `/`)|{optional}|`/INTERSHOP`
 |===
 
 == Examples
@@ -136,4 +137,22 @@ spec:
 [CAUTION]
 ====
 When node selectors are used, the attribute `webadapter.schedulePodsPreferredEvenlyAcrossNodes` is ignored so the node selection rules defined by `nodeSelector` are applied.
+====
+
+[#_example_urlMappingPrefix]
+=== urlMappingPrefix
+
+Configuring `urlMappingPrefix` like this:
+[source,yaml]
+----
+urlMappingPrefix: "/MYCUSTOMPREFIX"
+----
+will result in:
+
+* the Web Adapter using this prefix for its readiness probe
+* the link:wa-monitoring.asciidoc[Web Adapter Monitoring] sidecar to access the Web Adapter using this prefix
+
+[CAUTION]
+====
+When configuring the `urlMappingPrefix` using a different then its default value you also need to use the same prefix for the link:../../../icm-as/docs/values-yaml.asciidoc[icm-as] configuration.
 ====
