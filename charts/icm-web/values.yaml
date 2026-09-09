@@ -19,7 +19,7 @@ operationalContext:
 
 webadapter:
   image:
-    repository: intershophub/icm-webadapter:2.7.0
+    repository: intershophub/icm-webadapter:2.10.2
     pullPolicy: IfNotPresent
   # disable HTTP/2 protocol support if required
   disableHTTP2: false
@@ -94,13 +94,16 @@ webadapter:
   deploymentLabels: {}
   podLabels: {}
 
+  # Customize the prefix used in typical icm-as URLs e.g. the /INTERSHOP in https://store.company.com/INTERSHOP/web/WFS/inSPIRED-inTRONICS-Site/en_US/-/USD/
+  urlMappingPrefix: "/INTERSHOP"
+
 # configure the monitoring side car (exposed Prometeus metrics gathered from webadapter) for the webadapter
 waMonitoring:
   # enable/disable the monitoring (boolean, optional, default=true)
   enabled: true
   image:
     # which image to be used (docker image reference, mandatory)
-    repository: "intershophub/icm-wa-monitoring-exporter:1.1.0"
+    repository: intershophub/icm-wa-monitoring-exporter:1.2.0
     # pull policy for the image (pullPolicy, optional, default="IfNotPresent")
     pullPolicy: "IfNotPresent"
   # how long to keep waStatistics related metrics available while the related app server is unavailable (syntax compatible with Go duration, optional, default="30s")
