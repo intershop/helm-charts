@@ -1,5 +1,5 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "IntershopPWAHelmValuesSchema",
   "title": "Intershop PWA Helm Values",
   "description": "Values used to deploy the Intershop PWA application and proxy tiers.",
@@ -14,6 +14,66 @@
     "fullnameOverride": {
       "type": "string",
       "title": "Fully qualified application name override"
+    },
+    "cache": {
+      "$comment": "REMOVED in 1.0.0 (renamed to proxy.*). Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "upstream": {
+      "$comment": "REMOVED in 1.0.0 (replaced by config.*). Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "calculated": {
+      "$comment": "REMOVED in 1.0.0 (internal section). Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "environment": {
+      "$comment": "REMOVED in 1.0.0 (use app.env/proxy.env). Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "affinity": {
+      "$comment": "MOVED in 1.0.0 to app.affinity/proxy.affinity. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "deploymentAnnotations": {
+      "$comment": "MOVED in 1.0.0 to app.*/proxy.*. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "deploymentLabels": {
+      "$comment": "MOVED in 1.0.0 to app.*/proxy.*. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "image": {
+      "$comment": "MOVED in 1.0.0 to app.image/proxy.image. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "livenessProbe": {
+      "$comment": "MOVED in 1.0.0 to app.livenessProbe/proxy.livenessProbe. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "metrics": {
+      "$comment": "MOVED in 1.0.0 to app.metrics/proxy.metrics. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "nodeSelector": {
+      "$comment": "MOVED in 1.0.0 to app.nodeSelector/proxy.nodeSelector. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "podAnnotations": {
+      "$comment": "MOVED in 1.0.0 to app.*/proxy.*. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "podAntiAffinity": {
+      "$comment": "MOVED in 1.0.0 to app.podAntiAffinity/proxy.podAntiAffinity. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "podLabels": {
+      "$comment": "MOVED in 1.0.0 to app.podLabels/proxy.podLabels. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "readinessProbe": {
+      "$comment": "MOVED in 1.0.0 to app.readinessProbe/proxy.readinessProbe. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "replicaCount": {
+      "$comment": "MOVED in 1.0.0 to app.replicaCount/proxy.replicaCount. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "resources": {
+      "$comment": "MOVED in 1.0.0 to app.resources/proxy.resources. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "service": {
+      "$comment": "MOVED in 1.0.0 to app.service/proxy.service. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "tolerations": {
+      "$comment": "MOVED in 1.0.0 to app.tolerations/proxy.tolerations. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "updateStrategy": {
+      "$comment": "MOVED in 1.0.0 to app.updateStrategy/proxy.updateStrategy. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
     },
     "config": {
       "type": "object",
@@ -103,19 +163,25 @@
           "type": "string"
         },
         "annotations": {
-          "$ref": "#/definitions/stringMap"
+          "$ref": "#/$defs/stringMap"
         }
       }
     },
     "securityContext": {
-      "$ref": "#/definitions/containerSecurityContext"
+      "$ref": "#/$defs/containerSecurityContext"
     },
     "app": {
-      "$ref": "#/definitions/deploymentConfig"
+      "allOf": [{ "$ref": "#/$defs/deploymentConfig" }],
+      "properties": {
+        "environment": {
+          "$comment": "REMOVED in 1.0.0 (use app.env). Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+        }
+      },
+      "unevaluatedProperties": false
     },
     "proxy": {
       "allOf": [
-        { "$ref": "#/definitions/deploymentConfig" },
+        { "$ref": "#/$defs/deploymentConfig" },
         {
           "type": "object",
           "title": "Reverse proxy tier",
@@ -147,13 +213,19 @@
                   "default": true
                 },
                 "image": {
-                  "$ref": "#/definitions/imageReference"
+                  "$ref": "#/$defs/imageReference"
                 }
               }
             }
           }
         }
-      ]
+      ],
+      "properties": {
+        "extraEnvVars": {
+          "$comment": "REMOVED in 1.0.0 (renamed to proxy.env). Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+        }
+      },
+      "unevaluatedProperties": false
     },
     "ingress": {
       "type": "object",
@@ -190,7 +262,7 @@
               },
               "annotations": {
                 "title": "Ingress annotations",
-                "$ref": "#/definitions/stringMap"
+                "$ref": "#/$defs/stringMap"
               },
               "hosts": {
                 "type": "array",
@@ -239,7 +311,7 @@
           "additionalProperties": false,
           "properties": {
             "image": {
-              "$ref": "#/definitions/imageReference"
+              "$ref": "#/$defs/imageReference"
             },
             "host": {
               "type": "string",
@@ -249,7 +321,7 @@
             },
             "annotations": {
               "title": "Prometheus ingress annotations",
-              "$ref": "#/definitions/stringMap"
+              "$ref": "#/$defs/stringMap"
             }
           }
         },
@@ -259,7 +331,7 @@
           "additionalProperties": false,
           "properties": {
             "image": {
-              "$ref": "#/definitions/imageReference"
+              "$ref": "#/$defs/imageReference"
             },
             "host": {
               "type": "string",
@@ -269,7 +341,7 @@
             },
             "annotations": {
               "title": "Grafana ingress annotations",
-              "$ref": "#/definitions/stringMap"
+              "$ref": "#/$defs/stringMap"
             },
             "password": {
               "type": "string",
@@ -280,7 +352,7 @@
       }
     }
   },
-  "definitions": {
+  "$defs": {
     "stringMap": {
       "type": "object",
       "additionalProperties": {
@@ -319,8 +391,8 @@
         "runAsUser": { "type": "integer" },
         "runAsGroup": { "type": "integer" },
         "procMount": { "type": "string" },
-        "capabilities": { "$ref": "#/definitions/capabilities" },
-        "seccompProfile": { "$ref": "#/definitions/seccompProfile" },
+        "capabilities": { "$ref": "#/$defs/capabilities" },
+        "seccompProfile": { "$ref": "#/$defs/seccompProfile" },
         "seLinuxOptions": { "type": "object" },
         "windowsOptions": { "type": "object" },
         "appArmorProfile": { "type": "object" }
@@ -342,7 +414,7 @@
         },
         "supplementalGroupsPolicy": { "type": "string" },
         "sysctls": { "type": "array", "items": { "type": "object" } },
-        "seccompProfile": { "$ref": "#/definitions/seccompProfile" },
+        "seccompProfile": { "$ref": "#/$defs/seccompProfile" },
         "seLinuxOptions": { "type": "object" },
         "windowsOptions": { "type": "object" },
         "appArmorProfile": { "type": "object" }
@@ -357,8 +429,8 @@
       "title": "Compute resources",
       "additionalProperties": false,
       "properties": {
-        "limits": { "$ref": "#/definitions/resourceMap" },
-        "requests": { "$ref": "#/definitions/resourceMap" },
+        "limits": { "$ref": "#/$defs/resourceMap" },
+        "requests": { "$ref": "#/$defs/resourceMap" },
         "claims": { "type": "array", "items": { "type": "object" } }
       }
     },
@@ -449,7 +521,7 @@
       "type": "object",
       "properties": {
         "image": {
-          "$ref": "#/definitions/imageReference"
+          "$ref": "#/$defs/imageReference"
         },
         "replicaCount": {
           "type": "integer",
@@ -499,7 +571,7 @@
           "description": "Additional environment variables to set in the container.",
           "default": [],
           "items": {
-            "$ref": "#/definitions/environmentVariable"
+            "$ref": "#/$defs/environmentVariable"
           }
         },
         "metrics": {
@@ -516,22 +588,22 @@
           }
         },
         "securityContext": {
-          "$ref": "#/definitions/containerSecurityContext"
+          "$ref": "#/$defs/containerSecurityContext"
         },
         "podSecurityContext": {
-          "$ref": "#/definitions/podSecurityContext"
+          "$ref": "#/$defs/podSecurityContext"
         },
         "resources": {
-          "$ref": "#/definitions/resources"
+          "$ref": "#/$defs/resources"
         },
         "startupProbe": {
-          "$ref": "#/definitions/probe"
+          "$ref": "#/$defs/probe"
         },
         "livenessProbe": {
-          "$ref": "#/definitions/probe"
+          "$ref": "#/$defs/probe"
         },
         "readinessProbe": {
-          "$ref": "#/definitions/probe"
+          "$ref": "#/$defs/probe"
         },
         "autoscaling": {
           "type": "object",
@@ -563,12 +635,12 @@
           }
         },
         "nodeSelector": {
-          "$ref": "#/definitions/stringMap"
+          "$ref": "#/$defs/stringMap"
         },
         "tolerations": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/toleration"
+            "$ref": "#/$defs/toleration"
           }
         },
         "affinity": {
@@ -597,16 +669,16 @@
           }
         },
         "podAnnotations": {
-          "$ref": "#/definitions/stringMap"
+          "$ref": "#/$defs/stringMap"
         },
         "podLabels": {
-          "$ref": "#/definitions/stringMap"
+          "$ref": "#/$defs/stringMap"
         },
         "deploymentAnnotations": {
-          "$ref": "#/definitions/stringMap"
+          "$ref": "#/$defs/stringMap"
         },
         "deploymentLabels": {
-          "$ref": "#/definitions/stringMap"
+          "$ref": "#/$defs/stringMap"
         }
       }
     }
