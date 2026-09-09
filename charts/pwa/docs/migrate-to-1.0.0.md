@@ -14,6 +14,63 @@ The two tiers are now first-class, explicitly-named sections:
 > If a removed or renamed 0.x value is still present, `helm install`/`upgrade`/`template` **fails fast** with a message naming the key and its 1.0.0 replacement.
 > Fix the reported key and re-run until it succeeds.
 
+## Automated migration
+
+The repository provides a helper script that applies the mapping below for you while preserving comments and formatting: [`charts/pwa/scripts/migrate-to-1.0.0.py`](../scripts/migrate-to-1.0.0.py). It is intentionally **not** part of the published chart package, so grab it from the repository.
+
+### Getting the script
+
+Download just the file (pin to the release tag, or use `main` for the latest):
+
+```bash
+curl -fsSLO https://raw.githubusercontent.com/intershop/helm-charts/pwa-1.0.0/charts/pwa/scripts/migrate-to-1.0.0.py
+```
+
+…or clone the repository and run it from there (recommended if you want `--validate`, since a local copy of the chart is then available):
+
+```bash
+git clone https://github.com/intershop/helm-charts.git
+cd helm-charts
+```
+
+Then install the requirements (Python 3.8+):
+
+```bash
+python -m pip install ruamel.yaml   # required
+# the `helm` CLI is needed only for --validate
+```
+
+It handles two kinds of input:
+
+- **Flux `HelmRelease` files** — transforms `spec.values` and bumps the chart reference (`pwa-main` → `pwa`, `0.x` → `1.0.0`).
+- **Bare values files** — transforms the whole document (only when the file is named directly; see below).
+
+By default it runs as a **dry-run** and only reports what it would change — nothing is written until you pass `--write` (or `--output-suffix`).
+
+### Common commands
+
+In the examples below, `MIGRATE` stands for `python migrate-to-1.0.0.py` — adjust the path to wherever you saved the script (e.g. `python charts/pwa/scripts/migrate-to-1.0.0.py` from a repo clone).
+
+| Goal                             | Command                                     |
+| -------------------------------- | ------------------------------------------- |
+| Preview one file (report only)   | `MIGRATE release.yaml`                      |
+| Preview with a unified diff      | `MIGRATE release.yaml --show-diff`          |
+| Migrate in place (keep a backup) | `MIGRATE release.yaml --write --backup`     |
+| Migrate to a new file            | `MIGRATE release.yaml -o .1.0.0.yaml`       |
+| Migrate a whole GitOps tree      | `MIGRATE path/to/flux-repo -r --write`      |
+| Also schema-check each result    | `MIGRATE release.yaml --write --validate`   |
+| Add an IDE `$schema` reference   | `MIGRATE release.yaml --write --add-schema` |
+
+### Good to know
+
+- **Batch scans are HelmRelease-only.** Pointed at a directory (`-r`), the tool migrates **only** `HelmRelease` documents whose chart is `pwa-main`; other charts, other kinds, and bare values files are left untouched, so mixed folder trees are safe. A bare values file is migrated **only** when you name it directly on the command line.
+- **Idempotent.** Re-running does nothing to already-migrated files (their chart is now `pwa`).
+- **`--validate`** renders each migrated result against the chart (`helm template`) so any remaining issue — including a pre-existing typo — surfaces immediately. It needs a local copy of the chart: from a repo clone the default works; if you downloaded only the script, point it at a chart with `--chart-dir` (e.g. `helm pull intershop/pwa --untar` first).
+- **`--add-schema`** prepends a `# yaml-language-server: $schema=…` line so editors with the YAML extension validate the file live as you edit. HelmRelease files get the Flux schema, bare values files the values schema, pinned to `--target-version`; any existing modeline is replaced.
+- **Not handled:** `spec.valuesFrom` (values stored in an external ConfigMap/Secret) can't be rewritten by a file tool; the run warns if it is present. Unknown/custom keys are left as-is and are caught later by schema validation.
+
+Run `MIGRATE --help` for the full list of options.
+
 ## Values mapping (0.13.0 → 1.0.0)
 
 | 0.13.0                                                                                                                                                                                                                                                                          | 1.0.0                                                                                        |
