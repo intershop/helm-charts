@@ -24,5 +24,3 @@ monitoring:
     host: prometheus.pwa.localdev
   grafana:
     host: grafana.pwa.localdev
-    # Non-production test credential only.
-    password: admin
