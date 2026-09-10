@@ -6,14 +6,14 @@ runs:
     - name: Install Helm
       uses: azure/setup-helm@v5.0.1
       with:
-        version: v4.2.3
+        version: v4.3.0
 
     # Python is required because `ct lint` runs Yamale (https://github.com/23andMe/Yamale) and
     # yamllint (https://github.com/adrienverge/yamllint) which require Python
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: actions/setup-python@v7.0.0
       with:
-        python-version: 3.13
+        python-version: "3.14"
 
     - name: Set up chart-testing
       uses: helm/chart-testing-action@v2.8.0
@@ -26,5 +26,5 @@ runs:
         if [[ -n $(helm plugin list | grep unittest) ]]; then
           echo "Helm plugin unittest already installed."
         else
-          helm plugin install https://github.com/helm-unittest/helm-unittest.git --version=v0.7.2 --verify=false
+          helm plugin install https://github.com/helm-unittest/helm-unittest.git --version=v1.1.2 --verify=false
         fi
