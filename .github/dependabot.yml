@@ -1,0 +1,18 @@
+# Keeps GitHub Actions versions current (ADR-0050.15). Full-pinned action versions are
+# proposed as grouped PRs; helm-unittest and Helm CLI pins are managed manually.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    # "/" covers .github/workflows; the composite actions are listed explicitly.
+    directories:
+      - "/"
+      - "/.github/template/base"
+      - "/.github/template/unittest"
+    schedule:
+      interval: "weekly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "chore"
