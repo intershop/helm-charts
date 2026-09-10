@@ -4,9 +4,36 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-updateStrategy: RollingUpdate
+ssr:
+  deployments:
+    - theme: b2c
+      hpa:
+        enabled: true
+        minReplicas: 2
+        maxReplicas: 8
+        metrics:
+          - type: Resource
+            resource:
+              name: cpu
+              target:
+                type: Utilization
+                averageUtilization: 1000
+        behavior: null
+    - theme: b2b
+      hpa:
+        enabled: true
+        minReplicas: 2
+        maxReplicas: 8
+        metrics:
+          - type: Resource
+            resource:
+              name: cpu
+              target:
+                type: Utilization
+                averageUtilization: 1000
+        behavior: null
 
-replicaCount: 1
+updateStrategy: RollingUpdate
 
 image:
   repository: intershophub/intershop-pwa-ssr
@@ -107,6 +134,19 @@ readinessProbe: {}
   # periodSeconds: 30
 
 cache:
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 5
+    metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            averageUtilization: 750
+    behavior: null
+
   ####
   ## @param nginx ignore query parameters during caching
   ##   cacheIgnoreParams: |
@@ -154,7 +194,25 @@ cache:
   ##            lang: de_DE
   ##    - name: FOO
   ##      value: BAR
-  extraEnvVars: []
+  extraEnvVars:
+    - name: MULTI_CHANNEL
+      value: |
+        .+:
+          - baseHref: /en
+            channel: inSPIRED-inTRONICS_Business-Site
+            lang: en_US
+            theme: b2b
+          - baseHref: /de
+            channel: inSPIRED-inTRONICS_Business-Site
+            lang: de_DE
+            theme: b2b
+          - baseHref: /fr
+            channel: inSPIRED-inTRONICS_Business-Site
+            lang: fr_FR
+            theme: b2b
+          - baseHref: /b2c
+            channel: inSPIRED-inTRONICS-Site
+            theme: b2c
 
   ## @param reset Enable cache reset job after upgrade
   ## reset:
@@ -184,8 +242,6 @@ cache:
     ## @param metrics.enabled Expose Prometheus metrics of NGINX container
     ##
     enabled: false
-
-  replicaCount: 1
 
   image:
     repository: intershophub/intershop-pwa-nginx
