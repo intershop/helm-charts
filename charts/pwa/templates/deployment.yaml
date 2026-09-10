@@ -89,7 +89,7 @@ spec:
               command:
               - /bin/sh
               - -c
-              - node /dist/livenessprobe.js
+              - netstat -an | egrep 4200.*LISTEN | grep 4200
             {{- else }}
               {{- with $.Values.livenessProbe }}
               {{- toYaml . | nindent 12 }}
@@ -101,7 +101,7 @@ spec:
               command:
               - /bin/sh
               - -c
-              - node /dist/readinessprobe.js
+              - netstat -an | egrep 4200.*LISTEN | grep 4200
             {{- else }}
               {{- with $.Values.readinessProbe }}
               {{- toYaml . | nindent 12 }}
