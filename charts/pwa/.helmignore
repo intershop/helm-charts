@@ -10,6 +10,9 @@
 *.log
 # helm-docs template; only the generated README.md ships with the package.
 README.md.gotmpl
+# release tooling / repo-side artifacts read from the working tree during CI, not chart content.
+.bumpversion.toml
+RELEASE_NOTES.md
 ci/
 # maintenance tooling (values migration), not runtime chart content.
 scripts/
