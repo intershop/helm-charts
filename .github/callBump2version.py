@@ -63,7 +63,7 @@ def handle_subprocess_error(subprocess_result, error_message):
 
 def bumpVersion(chart, bump):
   print(f"Bumping version of \'{chart.value}\' to next \'{bump.value}\' value.")
-  bumpver_process = subprocess.run(f"bump-my-version --allow-dirty bump {bump.value}",
+  bumpver_process = subprocess.run(f"bump-my-version bump --allow-dirty {bump.value}",
                                      shell=True,
                                      cwd=f"./charts/{chart.value}",
                                      capture_output=True)
