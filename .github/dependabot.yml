@@ -1,5 +1,7 @@
 # Keeps GitHub Actions versions current (ADR-0050.15). Full-pinned action versions are
-# proposed as grouped PRs; helm-unittest and Helm CLI pins are managed manually.
+# proposed as grouped PRs. Tool versions passed as action inputs or installed via shell
+# (Helm CLI, chart-testing, helm-unittest, git-chglog) are not Dependabot-trackable and
+# are managed manually.
 version: 2
 updates:
   - package-ecosystem: "github-actions"
@@ -9,9 +11,22 @@ updates:
       - "/.github/template/base"
       - "/.github/template/unittest"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     groups:
       github-actions:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "chore"
+
+  - package-ecosystem: "pip"
+    # Python tooling pinned in the bump-version composite action's requirements.txt.
+    directories:
+      - "/.github/template/bump-version"
+    schedule:
+      interval: "monthly"
+    groups:
+      pip:
         patterns:
           - "*"
     commit-message:

@@ -11,3 +11,5 @@ build/**
 **/tests/__results__
 values-*.yaml
 *~
+__pycache__/
+*.pyc
