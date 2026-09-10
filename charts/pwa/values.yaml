@@ -1,212 +1,181 @@
 # yaml-language-server: $schema=./values.schema.json
 
-# Default values for pwa-main.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+# Default values for the pwa chart.
+# This chart deploys two peer tiers:
+#   app   -> Angular SSR application server (Node.js), sits behind the proxy
+#   proxy -> nginx/OpenResty reverse proxy (public front door)
 
-updateStrategy: RollingUpdate
-
-replicaCount: 1
-
-image:
-  repository: intershophub/intershop-pwa-ssr
-  tag: latest
-  pullPolicy: Always
-
-imagePullSecrets: []
+# -- Override the chart name used in resource names.
 nameOverride: ""
+# -- Override the fully qualified release name.
 fullnameOverride: ""
 
-upstream:
-  icmBaseURL: https://develop.icm.intershop.de
+# General or shared values used by both tiers.
+config:
+  # -- Base URL of the Intershop Commerce Management (ICM) backend.
+  # Required; intentionally empty so installs must set a real backend and fail fast rather than defaulting to a dev URL.
+  icmBaseUrl: ""
+  # -- (string) Internal ICM base URL used by SSR. Optional; leave unset to skip the ICM_BASE_URL_SSR env var.
+  # e.g. "http://icm-<cstmr-id>-<env>-icm-web-wa.icm-<cstmr-id>-<env>.svc.cluster.local:8080"
+  icmBaseUrlSsr:
+  # -- (string) Comma-separated ALLOWED_HOSTS for the SSR app. Optional; leave unset to skip the ALLOWED_HOSTS env var.
+  # e.g. "shop.example.com,*.example.com"
+  allowedHosts:
 
-  ## @param cdnPrefixURL The base URL of your CDN
-  ## E.g.:
-  ## cdnPrefixURL: "https://www.example.com"
-  cdnPrefixURL: ""
-
-service:
-  type: ClusterIP
-  port: 4200
-
-##
-## @param hybrid Set to enable PWA Hybrid Approach. This means pages are produced by PWA or ICM.
-## You can specify the icm-web-wa service internal URL for Kubernetes deployments.
-## Communication cannot be routed through ICM Ingress controller.
-##
+# PWA Hybrid Approach: pages produced by PWA or ICM. Specify the icm-web-wa service internal
+# URL for Kubernetes deployments; traffic cannot be routed through the ICM Ingress controller.
 hybrid:
+  # -- Enable the PWA Hybrid Approach deployment.
   enabled: false
-  # icmInternalURL: https://kubernetes-icm-web-wa:8443
-  # pwaExternalPort: 443
+  # -- (string) Internal Kubernetes URL of the ICM Web Adapter. Optional; only needed when ICM runs in the same namespace.
+  # e.g. https://kubernetes-icm-web-wa:8443
+  icmInternalURL:
+  # -- (int) External PWA port forwarded to Responsive Starter Store requests. Optional; defaults to the standard port when unset.
+  # e.g. 443
+  pwaExternalPort:
 
-resources: {}
+# -- Image pull secrets applied to both tiers' pods.
+imagePullSecrets: []
+# - name: regcred
 
-nodeSelector: {}
+serviceAccount:
+  # -- Create a ServiceAccount for the workloads.
+  create: true
+  # -- Auto-mount the API token into pods. Disabled by default; the default cache-clearer
+  # reaches SSR via UPSTREAM_PWA (Service DNS), not the k8s API. Enable (plus endpoints RBAC)
+  # only for per-Pod SSR cache purging via the Endpoints API.
+  automount: false
+  # -- Name of the ServiceAccount to use. Generated if empty and create=true.
+  name: ""
+  # -- Annotations to add to the ServiceAccount.
+  annotations: {}
 
-tolerations: []
+# Container-level security context shared by both tiers as a secure baseline.
+# readOnlyRootFilesystem is disabled because both upstream images write into their
+# own image filesystem at startup (nginx renders its config, the SSR image generates
+# its PM2 ecosystem.yml), so a read-only root filesystem would prevent them from starting.
+# -- Container security context shared by both tiers (secure baseline: drop all caps, no privilege escalation).
+# @default -- see [values.yaml](./values.yaml)
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop:
+      - ALL
 
-affinity: {}
-
-podAntiAffinity:
-  # enable/disable default anti-affinity
-  enabled: true
-  # enable/disable hard rule for distributing pods across nodes
-  # true: use requiredDuringSchedulingIgnoredDuringExecution (hard rule; pod may stay Pending if no suitable node is available)
-  # false: use preferredDuringSchedulingIgnoredDuringExecution (soft rule; best-effort)
-  required: false
-
-## Annotations for SSR Pods and SSR deployment
-## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
-podAnnotations: {}
-deploymentAnnotations: {}
-
-### Labels for SSR Pods and SSR deployment
-### ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
-podLabels: {}
-deploymentLabels: {}
-
-## @param environment Extra environment variables to be set on SSR containers
-## E.g.:
-## environment:
-##   - name: FOO
-##     value: BAR
-##   - name: FEATURES
-##     value: |
-##       - punchout
-##       - quickorder
-##   - name: IDENTITY_PROVIDERS
-##     value: |
-##       {
-##         "Punchout": {"type": "PUNCHOUT"}
-##       }
-environment: []
-
-## Prometheus Exporter / Metrics
-##
-metrics:
-  ## @param metrics.enabled Expose Prometheus metrics of SSR container
-  ##
-  enabled: false
-
-livenessProbe: {}
-  # exec:
-  #   command:
-  #   - /bin/sh
-  #   - -c
-  #   - netstat -an | egrep 4200.*LISTEN | grep 4200
-  # initialDelaySeconds: 10
-  # periodSeconds: 30
-
-readinessProbe: {}
-  # exec:
-  #   command:
-  #   - /bin/sh
-  #   - -c
-  #   - netstat -an | egrep 4200.*LISTEN | grep 4200
-  # initialDelaySeconds: 10
-  # periodSeconds: 30
-
-cache:
-  ####
-  ## @param nginx ignore query parameters during caching
-  ##   cacheIgnoreParams: |
-  ##     params:
-  ##       - utm_source
-  ##       - utm_campaign
-  #### empty cacheIgnoreParams example
-  ##   cacheIgnoreParams: |
-  ##     params: []
-  cacheIgnoreParams: ""
-
-  ####
-  ## @param Multi-channel/-site configuration object
-  ##  multiChannel: |
-  ##    .+:
-  ##      - baseHref: /b2b
-  ##        channel: default
-  ##      - baseHref: /b2c
-  ##        channel: default
-  ##        theme: b2c
-  multiChannel: ""
-
-  ####
-  ## @param additional headers configuration object
-  ## additionalHeaders: |
-  ##   headers:
-  ##     - X-Frame-Options: 'SAMEORIGIN'
-  #### no additional headers example
-  ##   additionalHeaders: |
-  ##     headers: []
-  additionalHeaders: ""
-
-  ####
-  ## @param extraEnvVars Extra environment variables to be set on NGINX containers
-  ## E.g:
-  ##  extraEnvVars:
-  ##    - name: MULTI_CHANNEL
-  ##      value: |
-  ##        .+:
-  ##          - baseHref: /en
-  ##            channel: default
-  ##            lang: en_US
-  ##          - baseHref: /de
-  ##            channel: default
-  ##            lang: de_DE
-  ##    - name: FOO
-  ##      value: BAR
-  extraEnvVars: []
-
-  ## @param reset Enable cache reset job after upgrade
-  ## reset:
-  ##   enabled: true
-  ##   image:
-  ##     repository: bitnami/kubectl
-  ##     tag: latest
-  reset:
-    enabled: true
-    image:
-      repository: ishcp.azurecr.io/ishops/cronjob-utils
-      tag: "1"
-      pullPolicy: Always
-
-  ####
-  ## @param prefetch Specify settings for the prefetch job that heats up caches
-  ## E.g.:
-  ## prefetch:
-  ##   - host: customer-int.pwa.intershop.de
-  ##     path: /
-  ##     cron: "0 0 * * *"
-  prefetch: []
-
-  ## Prometheus Exporter / Metrics
-  ##
-  metrics:
-    ## @param metrics.enabled Expose Prometheus metrics of NGINX container
-    ##
-    enabled: false
-
-  replicaCount: 1
-
+## ===========================================================================
+## app — Angular SSR application server (Node.js)
+## ===========================================================================
+app:
   image:
-    repository: intershophub/intershop-pwa-nginx
-    tag: latest
-    pullPolicy: Always
+    # -- SSR container image repository.
+    repository: intershophub/intershop-pwa-ssr
+    # -- Image tag. Defaults to the chart appVersion when empty.
+    tag: ""
+    # -- Image pull policy.
+    pullPolicy: IfNotPresent
 
-  nameOverride: ""
-  fullnameOverride: ""
+  # -- Number of app replicas (ignored when autoscaling.enabled=true).
+  replicaCount: 2
+
+  # -- Deployment update strategy: RollingUpdate or Recreate.
+  updateStrategy: RollingUpdate
+
+  # Ports exposed by the SSR container.
+  ports:
+    # -- HTTP port the SSR server listens on.
+    http: 4200
+    # -- Prometheus metrics port.
+    metrics: 9113
 
   service:
+    # -- Kubernetes Service type for the SSR service.
     type: ClusterIP
+    # -- Service port that the proxy talks to.
     port: 4200
 
-  resources: {}
+  # ICM_BASE_URL, ICM_BASE_URL_SSR, ALLOWED_HOSTS are injected from .config automatically.
+  # -- Extra environment variables for the SSR container.
+  env: []
+  # - name: LOGLEVEL
+  #   value: "info"
+  # - name: LOGFORMAT
+  #   value: "text"
 
+  metrics:
+    # -- Expose Prometheus metrics of the SSR container.
+    enabled: false
+
+  # -- Pod security context for the app (runs as unprivileged user 65534).
+  # @default -- see [values.yaml](./values.yaml)
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
+    runAsGroup: 65534
+    fsGroup: 65534
+    seccompProfile:
+      type: RuntimeDefault
+
+  # -- Container security context for the app; overrides the shared baseline when set.
+  securityContext: {}
+
+  # -- Resource requests/limits for the SSR container.
+  # @default -- see [values.yaml](./values.yaml)
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "600Mi"
+    limits:
+      cpu: "1000m"
+      memory: "1500Mi"
+
+  # Probes shipped in the SSR image; they check PM2 process health (per theme), not ICM,
+  # so a backend outage won't restart or de-register otherwise-healthy Pods.
+  # Scripts live at /dist in the image (matching its HEALTHCHECK/ENTRYPOINT), so use absolute paths.
+  # -- Startup probe for the SSR container (PM2 readiness).
+  # @default -- see [values.yaml](./values.yaml)
+  startupProbe:
+    exec:
+      command: ["node", "/dist/readinessprobe.js"]
+    periodSeconds: 5
+    timeoutSeconds: 5
+    failureThreshold: 30
+
+  # -- Liveness probe for the SSR container (PM2 process health, not ICM).
+  # @default -- see [values.yaml](./values.yaml)
+  livenessProbe:
+    exec:
+      command: ["node", "/dist/livenessprobe.js"]
+    periodSeconds: 20
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+  # -- Readiness probe for the SSR container (PM2 process health, not ICM).
+  # @default -- see [values.yaml](./values.yaml)
+  readinessProbe:
+    exec:
+      command: ["node", "/dist/readinessprobe.js"]
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+  # -- HorizontalPodAutoscaler for the SSR tier.
+  # @default -- see [values.yaml](./values.yaml)
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 75
+
+  # -- Node selector for SSR pods.
   nodeSelector: {}
-
+  # -- Tolerations for SSR pods.
   tolerations: []
-
+  # -- Node/pod affinity for SSR pods (merged with podAntiAffinity).
   affinity: {}
 
+  # -- Pod anti-affinity to spread SSR replicas across nodes.
+  # @default -- see [values.yaml](./values.yaml)
   podAntiAffinity:
     # enable/disable default anti-affinity
     enabled: true
@@ -215,28 +184,187 @@ cache:
     # false: use preferredDuringSchedulingIgnoredDuringExecution (soft rule; best-effort)
     required: false
 
-  ## Annotations for nginx Pods and nginx deployment
-  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  # -- Extra annotations for SSR pods.
   podAnnotations: {}
-  deploymentAnnotations: {}
-
-  ### Labels for nginx/cache Pods and nginx/cache deployment
-  ### ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  # -- Extra labels for SSR pods.
   podLabels: {}
+  # -- Extra annotations for the SSR Deployment.
+  deploymentAnnotations: {}
+  # -- Extra labels for the SSR Deployment.
   deploymentLabels: {}
 
-  livenessProbe: {}
+## ===========================================================================
+## proxy — nginx/OpenResty reverse proxy (public front door)
+## ===========================================================================
+proxy:
+  image:
+    # -- Proxy container image repository.
+    repository: intershophub/intershop-pwa-nginx
+    # -- Image tag. Defaults to the chart appVersion when empty.
+    tag: ""
+    # -- Image pull policy.
+    pullPolicy: IfNotPresent
 
-  readinessProbe: {}
+  # -- Number of proxy replicas (ignored when autoscaling.enabled=true).
+  replicaCount: 2
 
+  # -- Deployment update strategy: RollingUpdate or Recreate.
+  updateStrategy: RollingUpdate
+
+  ports:
+    # -- HTTP port nginx listens on.
+    http: 80
+    # -- Prometheus metrics port.
+    metrics: 9113
+
+  service:
+    # -- Kubernetes Service type for the public proxy service.
+    type: ClusterIP
+    # -- Public service port.
+    port: 80
+
+  # UPSTREAM_PWA, ICM_BASE_URL, ICM_BASE_URL_SSR are injected
+  # automatically. Add multi-channel / identity-provider config here.
+  # -- Extra environment variables for the proxy container.
+  env: []
+  # - name: LOGLEVEL
+  #   value: "info"
+  # - name: LOGFORMAT
+  #   value: "text"
+
+  # Expose Prometheus metrics of nginx container
+  metrics:
+    # -- Expose Prometheus metrics of the proxy (nginx) container.
+    enabled: false
+
+  # Multi-Channel/-Site configuration object
+  # multiChannel: |
+  #   .+:
+  #     - baseHref: /b2b
+  #       channel: inSPIRED-inTRONICS_Business-Site
+  #     - baseHref: /b2c
+  #       channel: inSPIRED-inTRONICS-Site
+  #       theme: b2c
+  # -- Multi-channel/-site routing configuration (YAML string).
+  multiChannel: ""
+
+  # Additional headers configuration object
+  # additionalHeaders: |
+  #   headers:
+  #     - X-Frame-Options: 'SAMEORIGIN'
+  # -- Additional response headers configuration (YAML string).
+  additionalHeaders: ""
+
+  # Ignore query parameters during caching
+  # cacheIgnoreParams: |
+  #   params:
+  #     - utm_source
+  #     - utm_campaign
+  # -- Query parameters nginx ignores when caching (YAML string).
+  cacheIgnoreParams: ""
+
+  # -- Post-upgrade job that restarts the proxy to purge cached SSR pages.
+  # @default -- see [values.yaml](./values.yaml)
+  reset:
+    enabled: true
+    image:
+      repository: ishcp.azurecr.io/ishops/cronjob-utils
+      tag: "1"
+      pullPolicy: IfNotPresent
+
+  # The upstream OpenResty image starts its master process as root to bind the privileged
+  # HTTP port and render its config at startup (workers still drop to an unprivileged user).
+  # -- Pod security context for the proxy (master runs as root).
+  # @default -- see [values.yaml](./values.yaml)
+  podSecurityContext:
+    seccompProfile:
+      type: RuntimeDefault
+
+  # Additional capabilities are required for nginx startup: the master renders its config
+  # and drops workers to an unprivileged user.
+  # -- Container security context for the proxy (adds CHOWN/SETGID/SETUID).
+  # @default -- see [values.yaml](./values.yaml)
+  securityContext:
+    capabilities:
+      add:
+        - CHOWN
+        - SETGID
+        - SETUID
+
+  # -- Resource requests/limits for the proxy container.
+  # @default -- see [values.yaml](./values.yaml)
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "250Mi"
+    limits:
+      cpu: "1000m"
+      memory: "1000Mi"
+
+  # nginx has no backend-independent health URL, so use a TCP check on the http port.
+  # -- Liveness probe for the proxy container (TCP check on the http port).
+  # @default -- see [values.yaml](./values.yaml)
+  livenessProbe:
+    tcpSocket:
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 20
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+  # -- Readiness probe for the proxy container (TCP check on the http port).
+  # @default -- see [values.yaml](./values.yaml)
+  readinessProbe:
+    tcpSocket:
+      port: http
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+  # -- HorizontalPodAutoscaler for the proxy tier.
+  # @default -- see [values.yaml](./values.yaml)
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 75
+
+  # -- Node selector for proxy pods.
+  nodeSelector: {}
+  # -- Tolerations for proxy pods.
+  tolerations: []
+  # -- Node/pod affinity for proxy pods (merged with podAntiAffinity).
+  affinity: {}
+
+  # -- Pod anti-affinity to spread proxy replicas across nodes.
+  # @default -- see [values.yaml](./values.yaml)
+  podAntiAffinity:
+    # enable/disable default anti-affinity
+    enabled: true
+    # enable/disable hard rule for distributing pods across nodes
+    # true: use requiredDuringSchedulingIgnoredDuringExecution (hard rule; pod may stay Pending if no suitable node is available)
+    # false: use preferredDuringSchedulingIgnoredDuringExecution (soft rule; best-effort)
+    required: false
+
+  # -- Extra annotations for proxy pods.
+  podAnnotations: {}
+  # -- Extra labels for proxy pods.
+  podLabels: {}
+  # -- Extra annotations for the proxy Deployment.
+  deploymentAnnotations: {}
+  # -- Extra labels for the proxy Deployment.
+  deploymentLabels: {}
+
+## ===========================================================================
+## Ingress — for external access. Routes public traffic to the proxy
+## ===========================================================================
 ingress:
+  # -- Enable creation of Ingress resources.
   enabled: false
+  # -- IngressClass name for all instances.
   className: nginx
-
-## example for enabled and configured Ingress
-# ingress:
-#   enabled: true
-#   className: nginx
+## example for a configured Ingress instance
 #   instances:
 #     ingress:
 #       annotations:
@@ -245,9 +373,29 @@ ingress:
 #       hosts:
 #         - host: pwa.example.local
 
-# Calculated values
-# use with `{{ tpl $.Values.calculated.X.Y $ }}`
-calculated:
-  metrics:
-    pwa: "{{ if or (.Values.metrics).enabled (.Values.monitoring).enabled }}on{{ end }}"
-    nginx: "{{ if or (.Values.cache.metrics).enabled (.Values.monitoring).enabled }}on{{ end }}"
+## ===========================================================================
+## Monitoring — with Prometheus and Grafana (for development and testing)
+## ===========================================================================
+monitoring:
+  # -- Deploy the in-cluster Prometheus + Grafana stack (development/testing only).
+  enabled: false
+  # Images for the development monitoring stack.
+  # :latest is acceptable for this non-production tooling.
+  # -- Prometheus image and optional host for the monitoring stack.
+  # @default -- see [values.yaml](./values.yaml)
+  prometheus:
+    image:
+      repository: prom/prometheus
+      tag: latest
+      pullPolicy: IfNotPresent
+    # host: prometheus.pwa.localdev
+  # -- Grafana image, optional host, and optional dev admin password.
+  # @default -- see [values.yaml](./values.yaml)
+  grafana:
+    image:
+      repository: grafana/grafana
+      tag: latest
+      pullPolicy: IfNotPresent
+    # host: grafana.pwa.localdev
+    # Optional dev-only admin password; when unset Grafana uses its own default. Never run monitoring in production.
+    # password: <your-dev-password>

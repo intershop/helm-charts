@@ -1,0 +1,20 @@
+# Patterns to ignore when building packages.
+.DS_Store
+.git/
+.gitignore
+.vscode/
+*.tmproj
+*.swp
+*.bak
+*.orig
+*.log
+# helm-docs template; only the generated README.md ships with the package.
+README.md.gotmpl
+ci/
+# maintenance tooling (values migration), not runtime chart content.
+scripts/
+# docs are read on GitHub / Artifact Hub, not from the package; only README.md ships.
+docs/
+# helm-unittest suites and their results are test assets, not runtime manifests.
+# Anchored so it excludes only the chart-root tests/, not templates/tests/.
+/tests/

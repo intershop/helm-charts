@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=../values.schema.json
+# chart-testing (ct) install scenario: full observability path — Prometheus metrics on both
+# tiers plus the in-cluster Prometheus/Grafana monitoring stack. Single-node overrides so it
+# schedules on the ephemeral kind cluster.
+config:
+  icmBaseUrl: "https://develop.icm.intershop.de"
+  allowedHosts: "pwa.localdev"
+
+app:
+  replicaCount: 1
+  podAntiAffinity:
+    enabled: false
+
+proxy:
+  replicaCount: 1
+  podAntiAffinity:
+    enabled: false
+  reset:
+    enabled: false
+
+monitoring:
+  enabled: true
+  prometheus:
+    host: prometheus.pwa.localdev
+  grafana:
+    host: grafana.pwa.localdev

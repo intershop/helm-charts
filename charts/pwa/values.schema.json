@@ -1,331 +1,273 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "IntershopPWAHelmValuesSchema",
+  "title": "Intershop PWA Helm Values",
+  "description": "Values used to deploy the Intershop PWA application and proxy tiers.",
   "type": "object",
-  "title": "The Intershop PWA Helm Values Schema",
-  "description": "The Helm Values Schema to define values necessary to deploy Intershop PWA",
-  "required": ["upstream", "cache"],
+  "additionalProperties": false,
+  "required": ["config", "app", "proxy"],
   "properties": {
-    "updateStrategy": {
+    "nameOverride": {
       "type": "string",
-      "title": "Update strategy",
-      "description": "Kubernetes update strategy",
-      "default": "RollingUpdate",
-      "enum": ["RollingUpdate", "Recreate"]
+      "title": "Chart name override"
     },
-    "image": {
-      "$ref": "#/definitions/imageReference"
+    "fullnameOverride": {
+      "type": "string",
+      "title": "Fully qualified application name override"
+    },
+    "cache": {
+      "$comment": "REMOVED in 1.0.0 (renamed to proxy.*). Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
     },
     "upstream": {
+      "$comment": "REMOVED in 1.0.0 (replaced by config.*). Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "calculated": {
+      "$comment": "REMOVED in 1.0.0 (internal section). Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "environment": {
+      "$comment": "REMOVED in 1.0.0 (use app.env/proxy.env). Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "affinity": {
+      "$comment": "MOVED in 1.0.0 to app.affinity/proxy.affinity. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "deploymentAnnotations": {
+      "$comment": "MOVED in 1.0.0 to app.*/proxy.*. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "deploymentLabels": {
+      "$comment": "MOVED in 1.0.0 to app.*/proxy.*. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "image": {
+      "$comment": "MOVED in 1.0.0 to app.image/proxy.image. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "livenessProbe": {
+      "$comment": "MOVED in 1.0.0 to app.livenessProbe/proxy.livenessProbe. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "metrics": {
+      "$comment": "MOVED in 1.0.0 to app.metrics/proxy.metrics. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "nodeSelector": {
+      "$comment": "MOVED in 1.0.0 to app.nodeSelector/proxy.nodeSelector. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "podAnnotations": {
+      "$comment": "MOVED in 1.0.0 to app.*/proxy.*. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "podAntiAffinity": {
+      "$comment": "MOVED in 1.0.0 to app.podAntiAffinity/proxy.podAntiAffinity. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "podLabels": {
+      "$comment": "MOVED in 1.0.0 to app.podLabels/proxy.podLabels. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "readinessProbe": {
+      "$comment": "MOVED in 1.0.0 to app.readinessProbe/proxy.readinessProbe. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "replicaCount": {
+      "$comment": "MOVED in 1.0.0 to app.replicaCount/proxy.replicaCount. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "resources": {
+      "$comment": "MOVED in 1.0.0 to app.resources/proxy.resources. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "service": {
+      "$comment": "MOVED in 1.0.0 to app.service/proxy.service. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "tolerations": {
+      "$comment": "MOVED in 1.0.0 to app.tolerations/proxy.tolerations. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "updateStrategy": {
+      "$comment": "MOVED in 1.0.0 to app.updateStrategy/proxy.updateStrategy. Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+    },
+    "config": {
       "type": "object",
-      "title": "The upstream schema",
-      "default": {},
-      "required": ["icmBaseURL"],
+      "title": "Shared PWA configuration",
+      "additionalProperties": false,
+      "required": ["icmBaseUrl"],
       "properties": {
-        "icmBaseURL": {
+        "icmBaseUrl": {
           "type": "string",
-          "title": "The base URL of ICM",
-          "description": "The base URL of your Intershop Commerce Management installation",
-          "examples": ["https://develop.icm.intershop.de"]
+          "title": "ICM base URL",
+          "description": "Base URL of the Intershop Commerce Management backend.",
+          "minLength": 1
         },
-        "cdnPrefixURL": {
-          "type": "string",
-          "title": "The base URL of your CDN",
-          "description": "The base URL of your used Content Delivery Network service",
-          "examples": ["https://www.example.com"]
+        "icmBaseUrlSsr": {
+          "type": ["string", "null"],
+          "title": "Internal ICM base URL",
+          "description": "Internal ICM base URL used by server-side rendering.",
+          "minLength": 1
+        },
+        "allowedHosts": {
+          "type": ["string", "null"],
+          "title": "Allowed hosts",
+          "description": "Comma-separated host names accepted by the SSR application.",
+          "minLength": 1
         }
-      },
-      "additionalProperties": false
+      }
     },
     "hybrid": {
       "type": "object",
-      "title": "The hybrid schema",
-      "description": "Activate the Hybrid Approach of PWA (if ICM is deployed in the same namespace, it should be referenced via ICMs internal URL)",
+      "title": "Hybrid approach configuration",
+      "description": "Activate the PWA Hybrid Approach. When ICM runs in the same namespace, configure its internal Web Adapter URL.",
+      "additionalProperties": false,
       "required": ["enabled"],
       "properties": {
         "enabled": {
           "type": "boolean",
-          "title": "Enable or disable Hybrid Approach deployment",
+          "title": "Enable or disable the hybrid approach",
           "default": false
         },
         "icmInternalURL": {
-          "type": "string",
-          "title": "ICM Web Adapter service internal Kubernetes URL",
-          "description": "The ICM Web Adapter service internal Kubernetes URL (only necessary if ICM is deployed in the same Kubernetes namespace)"
+          "type": ["string", "null"],
+          "title": "Internal ICM Web Adapter URL",
+          "description": "Internal Kubernetes URL of the ICM Web Adapter. Required only when ICM runs in the same namespace.",
+          "minLength": 1
         },
         "pwaExternalPort": {
-          "type": "integer",
-          "title": "PWA's external port",
-          "description": "The PWA's external port that will be forwarded to the Responsive Starter Store requests (only necessary if it is not the default port)"
+          "type": ["integer", "null"],
+          "title": "External PWA port",
+          "description": "External PWA port forwarded to Responsive Starter Store requests when it differs from the default port.",
+          "minimum": 1,
+          "maximum": 65535
         }
       }
     },
-    "environment": {
+    "imagePullSecrets": {
       "type": "array",
-      "title": "Additional SSR process environment variables",
-      "description": "Additional SSR process environment variables to set",
-      "default": [],
+      "title": "Image pull secrets",
+      "description": "Image pull secrets applied to both tiers' pods.",
       "items": {
-        "$ref": "#/definitions/environmentItem"
-      }
-    },
-    "metrics": {
-      "type": "object",
-      "form": true,
-      "title": "Prometheus metrics details",
-      "properties": {
-        "enabled": {
-          "type": "boolean",
-          "title": "Create Prometheus metrics exporter",
-          "form": true
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          }
         }
       }
     },
-    "monitoring": {
+    "serviceAccount": {
       "type": "object",
-      "title": "Configure Monitoring",
+      "title": "Service account configuration",
       "additionalProperties": false,
+      "required": ["create", "name"],
       "properties": {
-        "enabled": {
+        "create": {
           "type": "boolean",
-          "title": "Enable or disable monitoring",
-          "additionalProperties": false,
+          "default": true
+        },
+        "automount": {
+          "type": "boolean",
+          "title": "Auto-mount the service account API token into pods",
           "default": false
         },
-        "prometheus": {
-          "type": "object",
-          "title": "Prometheus configuration",
-          "additionalProperties": false,
-          "properties": {
-            "host": {
-              "type": "string",
-              "title": "Prometheus host",
-              "description": "Host to expose Prometheus"
-            },
-            "annotations": {
-              "type": "object",
-              "title": "Prometheus Ingress annotations",
-              "additionalProperties": {
-                "type": "string"
-              }
-            }
-          }
+        "name": {
+          "type": "string"
         },
-        "grafana": {
-          "type": "object",
-          "title": "Grafana configuration",
-          "additionalProperties": false,
-          "properties": {
-            "host": {
-              "type": "string",
-              "title": "Grafana host",
-              "description": "Host to expose Grafana"
-            },
-            "annotations": {
-              "type": "object",
-              "title": "Grafana Ingress annotations",
-              "additionalProperties": {
-                "type": "string"
-              }
-            },
-            "password": {
-              "type": "string",
-              "title": "Grafana admin password"
-            }
-          }
+        "annotations": {
+          "$ref": "#/$defs/stringMap"
         }
       }
     },
-    "podAntiAffinity": {
-      "$ref": "#/definitions/podAntiAffinityConfig"
+    "securityContext": {
+      "$ref": "#/$defs/containerSecurityContext"
     },
-    "cache": {
-      "type": "object",
-      "title": "The cache schema",
-      "default": {},
-      "required": [],
+    "app": {
+      "allOf": [{ "$ref": "#/$defs/deploymentConfig" }],
       "properties": {
-        "image": {
-          "$ref": "#/definitions/imageReference"
-        },
-        "cacheIgnoreParams": {
-          "type": "string",
-          "title": "Configure nginx caching behavior",
-          "description": "nginx ignores query parameters during caching",
-          "additionalProperties": true
-        },
-        "multiChannel": {
-          "type": "string",
-          "title": "Configure top-level URL to appserver URL mapping",
-          "description": "Multi-channel/-site configuration object"
-        },
-        "additionalHeaders": {
-          "type": "string",
-          "title": "Configure additional headers",
-          "description": "nginx adds specified header for every page response"
-        },
+        "environment": {
+          "$comment": "REMOVED in 1.0.0 (use app.env). Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "proxy": {
+      "allOf": [
+        { "$ref": "#/$defs/deploymentConfig" },
+        {
+          "type": "object",
+          "title": "Reverse proxy tier",
+          "properties": {
+            "multiChannel": {
+              "type": "string",
+              "title": "Configure top-level URL to app server URL mapping",
+              "description": "Multi-channel/-site configuration object"
+            },
+            "additionalHeaders": {
+              "type": "string",
+              "title": "Additional response headers configuration",
+              "description": "nginx adds specified header for every page response"
+            },
+            "cacheIgnoreParams": {
+              "type": "string",
+              "title": "Ignored cache query parameters configuration",
+              "description": "nginx ignores query parameters during caching"
+            },
+            "reset": {
+              "type": "object",
+              "title": "Proxy cache reset job after upgrade",
+              "additionalProperties": false,
+              "required": ["enabled"],
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "description": "Enable proxy/nginx reset/restart job after upgrade",
+                  "default": true
+                },
+                "image": {
+                  "$ref": "#/$defs/imageReference"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
         "extraEnvVars": {
-          "type": "array",
-          "title": "Extra environment variables on nginx containers",
-          "description": "Extra environment variables to be set on NGINX containers",
-          "items": {
-            "$ref": "#/definitions/environmentItem"
-          }
-        },
-        "reset": {
-          "type": "object",
-          "title": "Cache reset job after upgrade",
-          "description": "Enable nginx/cache reset/restart job after upgrade",
-          "required": ["enabled"],
-          "properties": {
-            "enabled": {
-              "type": "boolean",
-              "title": "Enable or disable nginx/cache reset job after upgrade",
-              "default": true
-            },
-            "image": {
-              "$ref": "#/definitions/imageReference"
-            }
-          }
-        },
-        "prefetch": {
-          "type": "array",
-          "title": "Prefetch job settings",
-          "description": "Specify settings for the prefetch job that heats up caches",
-          "default": [],
-          "items": {
-            "type": "object",
-            "required": ["host"],
-            "properties": {
-              "host": {
-                "type": "string",
-                "title": "The fully qualified hostname of the site"
-              },
-              "protocol": {
-                "type": "string",
-                "title": "The protocol under which to access the site",
-                "default": "https"
-              },
-              "path": {
-                "type": "string",
-                "title": "The path to the first page that is going to be crawled",
-                "default": "/"
-              },
-              "cron": {
-                "type": "string",
-                "title": "The cron job schedule",
-                "default": "0 0 * * *"
-              },
-              "stop": {
-                "type": "integer",
-                "title": "The maximum duration (in seconds) of a running prefetch job",
-                "default": "3600"
-              },
-              "args": {
-                "type": "string",
-                "title": "The arguments for the wget job",
-                "default": "'--timeout=15', '--spider', '--no-check-certificate', '--retry-connrefused', '--tries=5', '--execute=robots=off', '--recursive', '--level=0', '--no-verbose'"
-              },
-              "image": {
-                "type": "string",
-                "title": "The special wget image to use for this prefetch job",
-                "default": "31099/wget:alpine-3.19"
-              },
-              "successfulJobsHistoryLimit": {
-                "type": "integer",
-                "title": "The number of successful jobs to keep",
-                "default": "0"
-              },
-              "failedJobsHistoryLimit": {
-                "type": "integer",
-                "title": "The number of failed jobs to keep",
-                "default": "1"
-              }
-            }
-          },
-          "metrics": {
-            "type": "object",
-            "form": true,
-            "title": "Prometheus metrics details",
-            "properties": {
-              "enabled": {
-                "type": "boolean",
-                "title": "Create Prometheus metrics exporter",
-                "form": true
-              }
-            }
-          }
-        },
-        "podAntiAffinity": {
-          "$ref": "#/definitions/podAntiAffinityConfig"
+          "$comment": "REMOVED in 1.0.0 (renamed to proxy.env). Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
         }
-      }
-    },
-    "redis": {
-      "type": "object",
-      "title": "Redis cache details",
-      "required": ["uri"],
-      "additionalProperties": false,
-      "properties": {
-        "uri": {
-          "type": "string",
-          "title": "Redis URI",
-          "description": "Redis URI"
-        },
-        "keepCache": {
-          "type": "boolean",
-          "title": "Don't flush Redis cache on deployment",
-          "default": false
-        },
-        "cliImage": {
-          "type": "string",
-          "title": "Redis CLI image",
-          "description": "Image containing the Redis CLI for the flush job",
-          "default": "bitnami/redis"
-        }
-      }
+      },
+      "unevaluatedProperties": false
     },
     "ingress": {
-      "additionalProperties": false,
       "type": "object",
       "title": "Ingress configuration",
-      "description": "Configure the Ingress for the PWA",
+      "description": "Configure external ingress access to the PWA proxy.",
+      "additionalProperties": false,
+      "required": ["enabled", "className"],
       "properties": {
         "enabled": {
           "type": "boolean",
-          "title": "Enable Ingress",
+          "title": "Enable ingress",
           "default": false
         },
         "className": {
           "type": "string",
           "title": "Ingress class name",
-          "default": "nginx"
+          "default": "nginx",
+          "minLength": 1
         },
         "instances": {
           "type": "object",
           "title": "Ingress instances",
-          "description": "Configure different Ingress instances",
+          "description": "Configure one or more ingress instances.",
           "additionalProperties": {
             "type": "object",
             "title": "Ingress instance",
             "additionalProperties": false,
+            "required": ["hosts"],
             "properties": {
               "tlsSecretName": {
                 "type": "string",
-                "title": "TLS secret name"
+                "title": "TLS secret name",
+                "minLength": 1
               },
               "annotations": {
-                "type": "object",
-                "title": "Ingress Annotations",
-                "default": {},
-                "additionalProperties": {
-                  "type": "string"
-                }
+                "title": "Ingress annotations",
+                "$ref": "#/$defs/stringMap"
               },
               "hosts": {
                 "type": "array",
                 "title": "Ingress hosts",
-                "default": [],
+                "minItems": 1,
                 "items": {
                   "type": "object",
                   "title": "Ingress host",
@@ -335,12 +277,13 @@
                     "host": {
                       "type": "string",
                       "title": "Host name",
-                      "default": ""
+                      "minLength": 1
                     },
                     "tlsSecretName": {
                       "type": "string",
                       "title": "TLS secret name override",
-                      "description": "TLS secret name override for this host"
+                      "description": "TLS secret name override for this host.",
+                      "minLength": 1
                     }
                   }
                 }
@@ -349,18 +292,186 @@
           }
         }
       }
+    },
+    "monitoring": {
+      "type": "object",
+      "title": "Configure monitoring",
+      "description": "Optionally deploy Prometheus and Grafana for development and testing.",
+      "additionalProperties": false,
+      "required": ["enabled"],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false,
+          "title": "Enable or disable monitoring"
+        },
+        "prometheus": {
+          "type": "object",
+          "title": "Prometheus configuration",
+          "additionalProperties": false,
+          "properties": {
+            "image": {
+              "$ref": "#/$defs/imageReference"
+            },
+            "host": {
+              "type": "string",
+              "title": "Prometheus host",
+              "description": "Host to expose Prometheus",
+              "minLength": 1
+            },
+            "annotations": {
+              "title": "Prometheus ingress annotations",
+              "$ref": "#/$defs/stringMap"
+            }
+          }
+        },
+        "grafana": {
+          "type": "object",
+          "title": "Grafana configuration",
+          "additionalProperties": false,
+          "properties": {
+            "image": {
+              "$ref": "#/$defs/imageReference"
+            },
+            "host": {
+              "type": "string",
+              "title": "Grafana host",
+              "description": "Host to expose Grafana",
+              "minLength": 1
+            },
+            "annotations": {
+              "title": "Grafana ingress annotations",
+              "$ref": "#/$defs/stringMap"
+            },
+            "password": {
+              "type": "string",
+              "title": "Grafana admin password"
+            }
+          }
+        }
+      }
     }
   },
-  "definitions": {
-    "environmentItem": {
+  "$defs": {
+    "stringMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "seccompProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["RuntimeDefault", "Localhost", "Unconfined"]
+        },
+        "localhostProfile": { "type": "string" }
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "add": { "type": "array", "items": { "type": "string" } },
+        "drop": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "containerSecurityContext": {
+      "type": "object",
+      "title": "Container security context",
+      "additionalProperties": false,
+      "properties": {
+        "allowPrivilegeEscalation": { "type": "boolean" },
+        "privileged": { "type": "boolean" },
+        "readOnlyRootFilesystem": { "type": "boolean" },
+        "runAsNonRoot": { "type": "boolean" },
+        "runAsUser": { "type": "integer" },
+        "runAsGroup": { "type": "integer" },
+        "procMount": { "type": "string" },
+        "capabilities": { "$ref": "#/$defs/capabilities" },
+        "seccompProfile": { "$ref": "#/$defs/seccompProfile" },
+        "seLinuxOptions": { "type": "object" },
+        "windowsOptions": { "type": "object" },
+        "appArmorProfile": { "type": "object" }
+      }
+    },
+    "podSecurityContext": {
+      "type": "object",
+      "title": "Pod security context",
+      "additionalProperties": false,
+      "properties": {
+        "runAsNonRoot": { "type": "boolean" },
+        "runAsUser": { "type": "integer" },
+        "runAsGroup": { "type": "integer" },
+        "fsGroup": { "type": "integer" },
+        "fsGroupChangePolicy": { "type": "string" },
+        "supplementalGroups": {
+          "type": "array",
+          "items": { "type": "integer" }
+        },
+        "supplementalGroupsPolicy": { "type": "string" },
+        "sysctls": { "type": "array", "items": { "type": "object" } },
+        "seccompProfile": { "$ref": "#/$defs/seccompProfile" },
+        "seLinuxOptions": { "type": "object" },
+        "windowsOptions": { "type": "object" },
+        "appArmorProfile": { "type": "object" }
+      }
+    },
+    "resourceMap": {
+      "type": "object",
+      "additionalProperties": { "type": ["string", "number"] }
+    },
+    "resources": {
+      "type": "object",
+      "title": "Compute resources",
+      "additionalProperties": false,
+      "properties": {
+        "limits": { "$ref": "#/$defs/resourceMap" },
+        "requests": { "$ref": "#/$defs/resourceMap" },
+        "claims": { "type": "array", "items": { "type": "object" } }
+      }
+    },
+    "probe": {
+      "type": "object",
+      "title": "Health probe",
+      "additionalProperties": false,
+      "properties": {
+        "exec": { "type": "object" },
+        "httpGet": { "type": "object" },
+        "tcpSocket": { "type": "object" },
+        "grpc": { "type": "object" },
+        "initialDelaySeconds": { "type": "integer" },
+        "periodSeconds": { "type": "integer" },
+        "timeoutSeconds": { "type": "integer" },
+        "successThreshold": { "type": "integer" },
+        "failureThreshold": { "type": "integer" },
+        "terminationGracePeriodSeconds": { "type": "integer" }
+      }
+    },
+    "toleration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "key": { "type": "string" },
+        "operator": { "type": "string" },
+        "value": { "type": "string" },
+        "effect": { "type": "string" },
+        "tolerationSeconds": { "type": "integer" }
+      }
+    },
+    "environmentVariable": {
       "type": "object",
       "title": "Environment variable",
-      "description": "Environment variable to set",
-      "required": ["name", "value"],
+      "description": "Environment variable to set in the container.",
+      "required": ["name"],
       "additionalProperties": false,
       "properties": {
         "name": {
           "type": "string",
+          "minLength": 1,
           "title": "Name",
           "description": "Name of the environment variable"
         },
@@ -368,51 +479,206 @@
           "type": "string",
           "title": "Value",
           "description": "Value of the environment variable"
+        },
+        "valueFrom": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "configMapKeyRef": { "type": "object" },
+            "fieldRef": { "type": "object" },
+            "resourceFieldRef": { "type": "object" },
+            "secretKeyRef": { "type": "object" }
+          }
         }
       }
     },
     "imageReference": {
       "type": "object",
-      "description": "Reference to an OCI image",
+      "title": "OCI image reference",
       "additionalProperties": false,
+      "required": ["repository", "tag"],
       "properties": {
         "repository": {
           "type": "string",
-          "title": "Repository",
+          "title": "Image repository",
           "description": "Reference to an image repository/image name.",
-          "examples": ["busybox", "some-acr.azurecr.io/busybox"]
+          "minLength": 1,
+          "examples": ["intershophub/intershop-pwa-ssr"]
         },
         "tag": {
           "type": "string",
-          "title": "Image Tag",
-          "description": "Image tag/version",
-          "examples": ["1.0.0", "latest"]
+          "title": "Image tag",
+          "description": "Defaults to release-<chart appVersion> when empty."
         },
         "pullPolicy": {
           "type": "string",
-          "title": "ImagePullPolicy",
-          "description": "Valid imagePullPolicy according to Kubernetes specs",
+          "title": "Image pull policy",
           "enum": ["Always", "IfNotPresent", "Never"]
         }
       }
     },
-    "podAntiAffinityConfig": {
+    "deploymentConfig": {
       "type": "object",
-      "title": "Pod anti-affinity configuration",
-      "description": "Configure pod anti-affinity rules for distributing pods across nodes",
-      "additionalProperties": false,
       "properties": {
-        "enabled": {
-          "type": "boolean",
-          "title": "Enable pod anti-affinity",
-          "description": "Enable or disable default anti-affinity rules",
-          "default": true
+        "image": {
+          "$ref": "#/$defs/imageReference"
         },
-        "required": {
-          "type": "boolean",
-          "title": "Use hard anti-affinity rule",
-          "description": "true: requiredDuringSchedulingIgnoredDuringExecution (hard rule; pod may stay Pending if no suitable node is available), false: preferredDuringSchedulingIgnoredDuringExecution (soft rule; best-effort)",
-          "default": false
+        "replicaCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "updateStrategy": {
+          "type": "string",
+          "title": "Deployment update strategy",
+          "enum": ["RollingUpdate", "Recreate"]
+        },
+        "ports": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["http", "metrics"],
+          "properties": {
+            "http": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "metrics": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            }
+          }
+        },
+        "service": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "port"],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["ClusterIP", "NodePort", "LoadBalancer"]
+            },
+            "port": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            }
+          }
+        },
+        "env": {
+          "type": "array",
+          "title": "Extra environment variables",
+          "description": "Additional environment variables to set in the container.",
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/environmentVariable"
+          }
+        },
+        "metrics": {
+          "type": "object",
+          "title": "Prometheus metrics details",
+          "additionalProperties": false,
+          "required": ["enabled"],
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Create Prometheus metrics exporter",
+              "default": false
+            }
+          }
+        },
+        "securityContext": {
+          "$ref": "#/$defs/containerSecurityContext"
+        },
+        "podSecurityContext": {
+          "$ref": "#/$defs/podSecurityContext"
+        },
+        "resources": {
+          "$ref": "#/$defs/resources"
+        },
+        "startupProbe": {
+          "$ref": "#/$defs/probe"
+        },
+        "livenessProbe": {
+          "$ref": "#/$defs/probe"
+        },
+        "readinessProbe": {
+          "$ref": "#/$defs/probe"
+        },
+        "autoscaling": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "enabled",
+            "minReplicas",
+            "maxReplicas",
+            "targetCPUUtilizationPercentage"
+          ],
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": false
+            },
+            "minReplicas": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "maxReplicas": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "targetCPUUtilizationPercentage": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        },
+        "nodeSelector": {
+          "$ref": "#/$defs/stringMap"
+        },
+        "tolerations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/toleration"
+          }
+        },
+        "affinity": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "podAntiAffinity": {
+          "type": "object",
+          "title": "Pod anti-affinity configuration",
+          "description": "Configure pod anti-affinity rules for distributing pods across nodes",
+          "additionalProperties": false,
+          "required": ["enabled"],
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Enable pod anti-affinity",
+              "description": "Enable or disable default anti-affinity rules",
+              "default": true
+            },
+            "required": {
+              "type": "boolean",
+              "title": "Use hard anti-affinity rule",
+              "description": "true: requiredDuringSchedulingIgnoredDuringExecution (hard rule; pod may stay Pending if no suitable node is available), false: preferredDuringSchedulingIgnoredDuringExecution (soft rule; best-effort)",
+              "default": false
+            }
+          }
+        },
+        "podAnnotations": {
+          "$ref": "#/$defs/stringMap"
+        },
+        "podLabels": {
+          "$ref": "#/$defs/stringMap"
+        },
+        "deploymentAnnotations": {
+          "$ref": "#/$defs/stringMap"
+        },
+        "deploymentLabels": {
+          "$ref": "#/$defs/stringMap"
         }
       }
     }

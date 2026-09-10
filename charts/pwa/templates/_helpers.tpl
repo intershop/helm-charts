@@ -1,147 +1,65 @@
-{{/* vim: set filetype=mustache: */}}
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "pwa-main.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
+{{- define "pwa.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
 
 {{/*
 Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
 */}}
-{{- define "pwa-main.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- if contains $name .Release.Name -}}
-{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-{{- end -}}
-{{- end -}}
+{{- define "pwa.fullname" -}}
+{{- if .Values.fullnameOverride }}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
 
 {{/*
-Create chart name and version as used by the chart label.
+Chart name and version as used by the chart label.
 */}}
-{{- define "pwa-main.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
+{{- define "pwa.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- end }}
 
 {{/*
-pwa pod anti affinity
+Common labels (chart-wide). Not component specific.
 */}}
-{{- define "pwa-main.podAntiAffinity" -}}
-{{- if .Values.podAntiAffinity.enabled -}}
-podAntiAffinity:
-  {{- if .Values.podAntiAffinity.required }}
-  requiredDuringSchedulingIgnoredDuringExecution:
-    - topologyKey: "kubernetes.io/hostname"
-      labelSelector:
-        matchLabels:
-          app.kubernetes.io/name: {{ include "pwa-main.name" . }}
-          app.kubernetes.io/instance: {{ .Release.Name }}
-          {{- if .Values.podLabels }}
-          {{- toYaml .Values.podLabels | nindent 10 }}
-          {{- end }}
-  {{- else }}
-  preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 100
-      podAffinityTerm:
-        topologyKey: "kubernetes.io/hostname"
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/name: {{ include "pwa-main.name" . }}
-            app.kubernetes.io/instance: {{ .Release.Name }}
-            {{- if .Values.podLabels }}
-            {{- toYaml .Values.podLabels | nindent 12 }}
-            {{- end }}
-  {{- end }}
-{{- end -}}
-{{- end -}}
+{{- define "pwa.labels" -}}
+helm.sh/chart: {{ include "pwa.chart" . }}
+app.kubernetes.io/name: {{ include "pwa.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/part-of: {{ include "pwa.name" . }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
 
 {{/*
-    ingress configuration
+Name of the ServiceAccount to use.
 */}}
-{{- define "pwa-ingress.service" -}}
-{{- printf "%s" (include  "pwa-cache.fullname" . ) -}}
-{{- end -}}
+{{- define "pwa.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "pwa.fullname" .) .Values.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.serviceAccount.name }}
+{{- end }}
+{{- end }}
 
 {{/*
-pwa cache variables
+Selector labels for a component (stable, immutable set).
+Usage: {{ include "pwa.selectorLabels" (dict "root" . "component" "app") }}
 */}}
-{{- define "pwa-cache.fullname" -}}
-{{- printf "%s-%s" (include  "pwa-main.fullname" . ) "cache" -}}
-{{- end -}}
+{{- define "pwa.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "pwa.name" .root }}
+app.kubernetes.io/instance: {{ .root.Release.Name }}
+app.kubernetes.io/component: {{ .component }}
+{{- end }}
 
-{{- define "pwa-cache.name" -}}
-{{- printf "%s-%s" (include  "pwa-main.name" . ) "cache" -}}
-{{- end -}}
-
-{{/*
-pwa cache pod anti affinity
-*/}}
-{{- define "pwa-cache.podAntiAffinity" -}}
-{{- if .Values.cache.podAntiAffinity.enabled -}}
-podAntiAffinity:
-  {{- if .Values.cache.podAntiAffinity.required }}
-  requiredDuringSchedulingIgnoredDuringExecution:
-    - topologyKey: "kubernetes.io/hostname"
-      labelSelector:
-        matchLabels:
-          app.kubernetes.io/name: {{ include "pwa-cache.name" . }}
-          app.kubernetes.io/instance: {{ .Release.Name }}
-          {{- if .Values.cache.podLabels }}
-          {{- toYaml .Values.cache.podLabels | nindent 10 }}
-          {{- end }}
-  {{- else }}
-  preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 100
-      podAffinityTerm:
-        topologyKey: "kubernetes.io/hostname"
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/name: {{ include "pwa-cache.name" . }}
-            app.kubernetes.io/instance: {{ .Release.Name }}
-            {{- if .Values.cache.podLabels }}
-            {{- toYaml .Values.cache.podLabels | nindent 12 }}
-            {{- end }}
-  {{- end }}
-{{- end -}}
-{{- end -}}
-
-{{- define "pwa-cache-metrics.fullname" -}}
-{{- printf "%s-%s" (include  "pwa-cache.fullname" . ) "metrics" -}}
-{{- end -}}
-
-{{- define "pwa-main-metrics.fullname" -}}
-{{- printf "%s-%s" (include  "pwa-main.fullname" . ) "metrics" -}}
-{{- end -}}
-
-{{- define "pwa-cache-clear.fullname" -}}
-{{- printf "%s-%s" (include  "pwa-cache.fullname" . ) "clear" -}}
-{{- end -}}
-
-{{- define "pwa-cache-clear.name" -}}
-{{- printf "%s-%s" (include  "pwa-cache.name" . ) "clear" -}}
-{{- end -}}
-
-{{/*
-Print jobname of pwa prefetch cron job. Jobname is only allowed to contain 51 chars.
-Usage:
-{{ include "pwa-prefetch.jobname" (dict "host" .host "path" .path "context" $) }}
-*/}}
-{{- define "pwa-prefetch.jobname" -}}
-{{- printf "prefetch-%.43s" (sha1sum (cat .host (default "/" .path))) -}}
-{{- end -}}
-
-{{/*
-Print url of initial page to start crawling
-Usage:
-{{ include "pwa-prefetch.url" (dict "protocol" .protocol "host" .host "path" .path) }}*/}}
-{{- define "pwa-prefetch.url" -}}
-{{- printf "%s://%s%s" (default "https" .protocol) .host (default "/" .path) -}}
-{{- end -}}

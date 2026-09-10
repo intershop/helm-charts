@@ -1,0 +1,66 @@
+suite: deprecation guards for removed 0.x values
+templates:
+  - templates/deprecations.yaml
+release:
+  name: pwa
+tests:
+  - it: renders nothing when no deprecated keys are set
+    set:
+      config.icmBaseUrl: https://icm.example.com
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: fails with a migration pointer when the removed `cache` key is set
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      cache:
+        replicaCount: 1
+    asserts:
+      - failedTemplate:
+          errorMessage: "values: `cache.*` was renamed to `proxy.*` in chart 1.0.0. Move your nginx configuration under `proxy:`. See the migration guide at charts/pwa/docs/migrate-to-1.0.0.md."
+
+  - it: fails when the removed `upstream` key is set
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      upstream:
+        icmBaseURL: https://icm.example.com
+    asserts:
+      - failedTemplate: {}
+
+  - it: fails when the removed internal `calculated` key is set
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      calculated:
+        foo: bar
+    asserts:
+      - failedTemplate: {}
+
+  - it: fails when a renamed top-level SSR key is set
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      replicaCount: 3
+    asserts:
+      - failedTemplate: {}
+
+  - it: fails when `app.environment` is used instead of `app.env`
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      app:
+        environment:
+          - name: FOO
+            value: bar
+    asserts:
+      - failedTemplate:
+          errorMessage: "values: `app.environment` is not valid in chart 1.0.0; set SSR environment variables via `app.env`. See the migration guide at charts/pwa/docs/migrate-to-1.0.0.md."
+
+  - it: fails when `proxy.extraEnvVars` is used instead of `proxy.env`
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      proxy:
+        extraEnvVars:
+          - name: FOO
+            value: bar
+    asserts:
+      - failedTemplate:
+          errorMessage: "values: `proxy.extraEnvVars` was renamed to `proxy.env` in chart 1.0.0. See the migration guide at charts/pwa/docs/migrate-to-1.0.0.md."

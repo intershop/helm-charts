@@ -5,7 +5,7 @@ metadata:
   name: {{ include "pwa-prometheus.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "pwa-prometheus.name" . }}
-    helm.sh/chart: {{ include "pwa-main.chart" . }}
+    helm.sh/chart: {{ include "pwa.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
@@ -29,7 +29,8 @@ spec:
             - --web.console.libraries=/etc/prometheus/console_libraries
             - --web.console.templates=/etc/prometheus/consoles
             - --web.enable-lifecycle
-          image: prom/prometheus:latest
+          image: "{{ .Values.monitoring.prometheus.image.repository }}:{{ .Values.monitoring.prometheus.image.tag }}"
+          imagePullPolicy: {{ .Values.monitoring.prometheus.image.pullPolicy }}
           name: {{ .Chart.Name }}
           ports:
             - containerPort: 9090
@@ -60,7 +61,7 @@ metadata:
   name: {{ include "pwa-prometheus.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "pwa-prometheus.name" . }}
-    helm.sh/chart: {{ include "pwa-main.chart" . }}
+    helm.sh/chart: {{ include "pwa.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
@@ -80,7 +81,7 @@ metadata:
   name: {{ include "pwa-prometheus.fullname" . }}
   labels:
     app.kubernetes.io/name: {{ include "pwa-prometheus.name" . }}
-    helm.sh/chart: {{ include "pwa-main.chart" . }}
+    helm.sh/chart: {{ include "pwa.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
   {{- with ((.Values.monitoring).prometheus).annotations }}
@@ -113,7 +114,7 @@ metadata:
 data:
   prometheus.yml: |
     scrape_configs:
-      - job_name: 'pwa-nginx'
+      - job_name: 'pwa-proxy'
         scrape_interval: 5s
         metrics_path: /metrics
         relabel_configs: &relabel
@@ -125,14 +126,14 @@ data:
             target_label: instance
         dns_sd_configs:
           - names:
-              - _metrics._tcp.{{ include "pwa-cache-metrics.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
-      - job_name: 'pwa-ssr'
+              - _metrics._tcp.{{ include "pwa.proxyMetricsFullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+      - job_name: 'pwa-app'
         scrape_interval: 5s
         metrics_path: /metrics
         relabel_configs: *relabel
         dns_sd_configs:
           - names:
-              - _metrics._tcp.{{ include "pwa-main-metrics.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+              - _metrics._tcp.{{ include "pwa.appMetricsFullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
 ---
 apiVersion: v1
