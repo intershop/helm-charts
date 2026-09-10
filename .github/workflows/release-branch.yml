@@ -132,6 +132,7 @@ jobs:
       - name: Create changelog commits
         run: |
           mkdir git-chglog
+          # git-chglog is archived (read-only since 2026-01-26); v0.15.4 is its final release.
           wget -q -O - https://github.com/git-chglog/git-chglog/releases/download/v0.15.4/git-chglog_0.15.4_linux_amd64.tar.gz | tar xzf - -C git-chglog
 
           all=("${{ steps.read-release-input-parameter.outputs.release-input-parameter }}")
