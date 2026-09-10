@@ -1,0 +1,25 @@
+[tool.bumpversion]
+current_version = "1.0.0"
+
+[[tool.bumpversion.files]]
+filename = "Chart.yaml"
+# anchor on the leading newline so only the chart `version` is bumped, never `appVersion`
+search = "\nversion: {current_version}"
+replace = "\nversion: {new_version}"
+
+# HelmRelease example snippet, in both the rendered README and its gotmpl source
+[[tool.bumpversion.files]]
+glob = "README.md*"
+search = "version: {current_version}"
+replace = "version: {new_version}"
+
+# $schema / $ref URLs that pin the chart tag
+[[tool.bumpversion.files]]
+glob = "README.md*"
+search = "/helm-charts/pwa-{current_version}/charts/"
+replace = "/helm-charts/pwa-{new_version}/charts/"
+
+[[tool.bumpversion.files]]
+filename = "values-flux.schema.json"
+search = "/helm-charts/pwa-{current_version}/charts/"
+replace = "/helm-charts/pwa-{new_version}/charts/"

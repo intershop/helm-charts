@@ -7,7 +7,7 @@ Installs the [Intershop PWA](https://github.com/intershop/intershop-pwa) in a Ku
 ```bash
 $ helm repo add intershop https://intershop.github.io/helm-charts
 $ helm repo update
-$ helm install my-release intershop/pwa-main
+$ helm install my-release intershop/pwa
 ```
 
 ## Compatibility
