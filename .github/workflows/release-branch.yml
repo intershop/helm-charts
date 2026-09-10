@@ -9,166 +9,167 @@ jobs:
     outputs:
       matrix: ${{ steps.matrix.outputs.matrix }}
     steps:
-    - name: Checkout
-      uses: actions/checkout@v7.0.1
-      with:
-        fetch-depth: 0
-    - name: Determine changed charts
-      id: matrix
-      run: |
-        set -x
-        git rev-list --count origin/main..$(git branch --show-current)
-        changed_directories=$(echo $(git diff --name-only origin/main) | grep -o 'charts/[^/]*' | cut -d '/' -f 2)
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Determine changed charts
+        id: matrix
+        run: |
+          set -x
+          git rev-list --count origin/main..$(git branch --show-current)
+          changed_directories=$(echo $(git diff --name-only origin/main) | grep -o 'charts/[^/]*' | cut -d '/' -f 2)
 
-        if [[ -z "$changed_directories" ]]; then
-          echo "No chart changes detected. Chore changes need to be released manually." 1>&2
-          exit 1
-        fi
-
-        # Entferne Duplikate mit tr und sort
-        unique_changed_directories=$(echo "$changed_directories" | tr ' ' '\n' | sort -u | tr '\n' ' ')
-        echo "unique_changed_directories: ${unique_changed_directories}"
-
-        arr=($unique_changed_directories)
-        for element in "${arr[@]}"; do
-          if [ -d "charts/$element" ]; then
-            formatted_output+=" \"$element\","
-          else
-            echo "Warning: Directory charts/$element does not exist, skipping..." 1>&2
+          if [[ -z "$changed_directories" ]]; then
+            echo "No chart changes detected. Chore changes need to be released manually." 1>&2
+            exit 1
           fi
-        done
-        formatted_output=${formatted_output%,} # Entferne das letzte Komma
 
-        echo "matrix=[ $formatted_output ]" >> $GITHUB_OUTPUT
+          # Entferne Duplikate mit tr und sort
+          unique_changed_directories=$(echo "$changed_directories" | tr ' ' '\n' | sort -u | tr '\n' ' ')
+          echo "unique_changed_directories: ${unique_changed_directories}"
 
-        # to be able to exchange the version information in the next jobs
-        touch release-input-parameter.txt
-    - name: Create artifact
-      uses: actions/upload-artifact@v7.0.1
-      with:
-        name: release-input-parameter
-        path: release-input-parameter.txt
-        overwrite: true
+          arr=($unique_changed_directories)
+          for element in "${arr[@]}"; do
+            if [ -d "charts/$element" ]; then
+              formatted_output+=" \"$element\","
+            else
+              echo "Warning: Directory charts/$element does not exist, skipping..." 1>&2
+            fi
+          done
+          formatted_output=${formatted_output%,} # Entferne das letzte Komma
+
+          echo "matrix=[ $formatted_output ]" >> $GITHUB_OUTPUT
+
+          # to be able to exchange the version information in the next jobs
+          touch release-input-parameter.txt
+      - name: Create artifact
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: release-input-parameter
+          path: release-input-parameter.txt
+          overwrite: true
 
   determine-semantic-version:
     needs:
-    - find-charts-to-release
+      - find-charts-to-release
     strategy:
       matrix:
         value: ${{fromJSON(needs.find-charts-to-release.outputs.matrix)}}
       max-parallel: 1
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v7.0.1
-      with: #fetch all commits, not just the last one
-        fetch-depth: 0
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with: #fetch all commits, not just the last one
+          fetch-depth: 0
 
-    - name: Determine semantic version in loop
-      id: version
-      uses: paulhatch/semantic-version@v6.0.3
-      with:
-        tag_prefix: "${{ matrix.value }}-"
-        change_path: "charts/${{ matrix.value }}"
-        major_pattern: "BREAKING_CHANGE"
-        minor_pattern: '/feat\s*(\(\w+\)*)?:/'
-        search_commit_body: true
-        debug: true
+      - name: Determine semantic version in loop
+        id: version
+        uses: paulhatch/semantic-version@v6.0.3
+        with:
+          tag_prefix: '${{ matrix.value }}-'
+          change_path: 'charts/${{ matrix.value }}'
+          major_pattern: 'BREAKING_CHANGE'
+          minor_pattern: '/feat\s*(\(\w+\)*)?:/'
+          search_commit_body: true
+          debug: true
 
-    - uses: actions/download-artifact@v8.0.1
-      with:
-        name: release-input-parameter
+      - uses: actions/download-artifact@v8.0.1
+        with:
+          name: release-input-parameter
 
-    - name: Create the release input parameters
-      id: create-release-input-parameter
-      run: |
-        set -x
-        #echo "debug_output: ${{ steps.version.outputs.debug_output }}"
-        #echo "previous_version : ${{ steps.version.outputs.previous_version }}"
-        #echo "is_tagged  : ${{ steps.version.outputs.is_tagged }}"
-        #echo "version_type  : ${{ steps.version.outputs.version_type }}"
-        #echo "previous_commit   : ${{ steps.version.outputs.previous_commit }}"
-        #echo "previous_version   : ${{ steps.version.outputs.previous_version }}"
-        echo -n " ${{ matrix.value }}:${{ steps.version.outputs.version_type }}" >> release-input-parameter.txt
-    - name: Update artifact
-      uses: actions/upload-artifact@v7.0.1
-      with:
-        name: release-input-parameter
-        path: release-input-parameter.txt
-        overwrite: true
+      - name: Create the release input parameters
+        id: create-release-input-parameter
+        run: |
+          set -x
+          #echo "debug_output: ${{ steps.version.outputs.debug_output }}"
+          #echo "previous_version : ${{ steps.version.outputs.previous_version }}"
+          #echo "is_tagged  : ${{ steps.version.outputs.is_tagged }}"
+          #echo "version_type  : ${{ steps.version.outputs.version_type }}"
+          #echo "previous_commit   : ${{ steps.version.outputs.previous_commit }}"
+          #echo "previous_version   : ${{ steps.version.outputs.previous_version }}"
+          echo -n " ${{ matrix.value }}:${{ steps.version.outputs.version_type }}" >> release-input-parameter.txt
+      - name: Update artifact
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: release-input-parameter
+          path: release-input-parameter.txt
+          overwrite: true
 
   release:
     needs:
-    - determine-semantic-version
+      - determine-semantic-version
     permissions:
       pull-requests: write
       contents: write
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v7.0.1
-      with: #fetch all commits, not just the last one
-        fetch-depth: 0
-    - uses: actions/download-artifact@v8.0.1
-      with:
-        name: release-input-parameter
-    - name: Read release input parameter
-      id: read-release-input-parameter
-      run: |
-        release_inputs=$(cat release-input-parameter.txt | xargs)
-        echo "release_inputs: $release_inputs"
-        echo "release-input-parameter=$release_inputs" >> $GITHUB_OUTPUT
-        rm -f release-input-parameter.txt
-    - name: Bump versions
-      uses: ./.github/template/bump-version
-      with:
-        changes: ${{ steps.read-release-input-parameter.outputs.release-input-parameter }}
-    - name: Create bump version commits
-      run: |
-        git config user.name "$GITHUB_ACTOR"
-        git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-        git add -A
-        git commit -m "chore: bump versions of ${{ steps.read-release-input-parameter.outputs.release-input-parameter }}"
-    - name: Create changelog commits
-      run: |
-        mkdir git-chglog
-        wget -q -O - https://github.com/git-chglog/git-chglog/releases/download/v0.15.4/git-chglog_0.15.4_linux_amd64.tar.gz | tar xzf - -C git-chglog
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with: #fetch all commits, not just the last one
+          fetch-depth: 0
+      - uses: actions/download-artifact@v8.0.1
+        with:
+          name: release-input-parameter
+      - name: Read release input parameter
+        id: read-release-input-parameter
+        run: |
+          release_inputs=$(cat release-input-parameter.txt | xargs)
+          echo "release_inputs: $release_inputs"
+          echo "release-input-parameter=$release_inputs" >> $GITHUB_OUTPUT
+          rm -f release-input-parameter.txt
+      - name: Bump versions
+        uses: ./.github/template/bump-version
+        with:
+          changes: ${{ steps.read-release-input-parameter.outputs.release-input-parameter }}
+      - name: Create bump version commits
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: bump versions of ${{ steps.read-release-input-parameter.outputs.release-input-parameter }}"
+      - name: Create changelog commits
+        run: |
+          mkdir git-chglog
+          # git-chglog is archived (read-only since 2026-01-26); v0.15.4 is its final release.
+          wget -q -O - https://github.com/git-chglog/git-chglog/releases/download/v0.15.4/git-chglog_0.15.4_linux_amd64.tar.gz | tar xzf - -C git-chglog
 
-        all=("${{ steps.read-release-input-parameter.outputs.release-input-parameter }}")
-        for i in $all; do
-          IFS=':' read -ra my_array <<< "$i"
-          ./git-chglog/git-chglog \
-            --path ./charts/${my_array[0]} \
-            --tag-filter-pattern "^${my_array[0]}-\d+.\d+.\d+$" \
-            --next-tag ${my_array[0]}-$(grep -A0 '^version:' ./charts/${my_array[0]}/Chart.yaml | awk '{print $2}' | sed 's/\"//g') \
-            -o ./charts/${my_array[0]}/CHANGELOG.md
+          all=("${{ steps.read-release-input-parameter.outputs.release-input-parameter }}")
+          for i in $all; do
+            IFS=':' read -ra my_array <<< "$i"
+            ./git-chglog/git-chglog \
+              --path ./charts/${my_array[0]} \
+              --tag-filter-pattern "^${my_array[0]}-\d+.\d+.\d+$" \
+              --next-tag ${my_array[0]}-$(grep -A0 '^version:' ./charts/${my_array[0]}/Chart.yaml | awk '{print $2}' | sed 's/\"//g') \
+              -o ./charts/${my_array[0]}/CHANGELOG.md
 
-          ./git-chglog/git-chglog \
-            --path ./charts/${my_array[0]} \
-            --tag-filter-pattern "^${my_array[0]}-\d+.\d+.\d+$" \
-            --next-tag ${my_array[0]}-$(grep -A0 '^version:' ./charts/${my_array[0]}/Chart.yaml | awk '{print $2}' | sed 's/\"//g') \
-            -o ./charts/${my_array[0]}/RELEASE_NOTES.md \
-            ${my_array[0]}-$(grep -A0 '^version:' ./charts/${my_array[0]}/Chart.yaml | awk '{print $2}' | sed 's/\"//g')
-        done
+            ./git-chglog/git-chglog \
+              --path ./charts/${my_array[0]} \
+              --tag-filter-pattern "^${my_array[0]}-\d+.\d+.\d+$" \
+              --next-tag ${my_array[0]}-$(grep -A0 '^version:' ./charts/${my_array[0]}/Chart.yaml | awk '{print $2}' | sed 's/\"//g') \
+              -o ./charts/${my_array[0]}/RELEASE_NOTES.md \
+              ${my_array[0]}-$(grep -A0 '^version:' ./charts/${my_array[0]}/Chart.yaml | awk '{print $2}' | sed 's/\"//g')
+          done
 
-        rm -Rf git-chglog
+          rm -Rf git-chglog
 
-        git config user.name "$GITHUB_ACTOR"
-        git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-        git add -A
-        git commit -m "chore: generated changelog+release notes for ${{ steps.read-release-input-parameter.outputs.release-input-parameter }}"
-    - name: Reset main branch with changes from develop/?
-      run: |
-        git checkout main
-        git reset --hard ${{ github.ref_name }}
-    - name: Create Release Branch & PR
-      id: pr
-      uses: peter-evans/create-pull-request@v8.1.1
-      with: # commits all changes and creates the release branch and PR. If one already exists, it is updated.
-        token: ${{ secrets.PR_CREATOR_TOKEN }}
-        branch: release/${{ github.ref_name }}
-        base: main
-        title: Release ${{ steps.read-release-input-parameter.outputs.release-input-parameter }}
-        commit-message: "release: ${{ steps.read-release-input-parameter.outputs.release-input-parameter }} and dependent charts"
-        delete-branch: true
-        labels: automated pr
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: generated changelog+release notes for ${{ steps.read-release-input-parameter.outputs.release-input-parameter }}"
+      - name: Reset main branch with changes from develop/?
+        run: |
+          git checkout main
+          git reset --hard ${{ github.ref_name }}
+      - name: Create Release Branch & PR
+        id: pr
+        uses: peter-evans/create-pull-request@v8.1.1
+        with: # commits all changes and creates the release branch and PR. If one already exists, it is updated.
+          token: ${{ secrets.PR_CREATOR_TOKEN }}
+          branch: release/${{ github.ref_name }}
+          base: main
+          title: Release ${{ steps.read-release-input-parameter.outputs.release-input-parameter }}
+          commit-message: 'release: ${{ steps.read-release-input-parameter.outputs.release-input-parameter }} and dependent charts'
+          delete-branch: true
+          labels: automated pr
