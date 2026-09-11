@@ -1,178 +1,176 @@
-# Default values for icm-media-widget.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-replicaCount: 1
-
-image:
-  repository: icmbuild.azurecr.io/intershop/icm-media-widget
-  pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.0.0-alpha"
-
-imagePullSecrets: []
-nameOverride: ""
+# Breaking chart revision. Supply reviewed values; defaults intentionally fail validation.
+# tests/values.yaml is OFFLINE ONLY, never a deployable environment.
 fullnameOverride: ""
+imagePullSecrets: [ ]
+azure:
+  tenantId: ""
+  controlEndpoint: ""
+  mediaEndpoint: ""
+  directoryTable: TenantDirectory
+  credentialsTable: ShopCredentials
+  runtimeTable: TenantRuntime
+  drainTable: TenantDrain
+  controlTable: TenantRegistry
+  proofsTable: TenantProofs
+  credentialReference: ""
 
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Automatically mount a ServiceAccount's API credentials?
-  automount: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
+components:
+  widget:
+    image: { repository: "", tag: "", pullPolicy: IfNotPresent }
+    clientId: ""
+    replicas: 1
+    resources: { requests: { cpu: 250m, memory: 512Mi, ephemeral-storage: 1Gi }, limits: { memory: 1Gi, ephemeral-storage: 2Gi } }
+    scratchBytes: 1073741824
+    rolloutRevision: ""
+  archive:
+    image: { repository: "", tag: "", pullPolicy: IfNotPresent }
+    clientId: ""
+    replicas: 0
+    resources: { requests: { cpu: 500m, memory: 1Gi, ephemeral-storage: 8Gi }, limits: { memory: 2Gi, ephemeral-storage: 9Gi } }
+    scratchBytes: 8589934592
+    rolloutRevision: ""
+  rest:
+    image: { repository: "", tag: "", pullPolicy: IfNotPresent }
+    clientId: ""
+    replicas: 1
+    resources: { requests: { cpu: 500m, memory: 512Mi, ephemeral-storage: 1Gi }, limits: { memory: 1Gi, ephemeral-storage: 2Gi } }
+    scratchBytes: 1073741824
+    rolloutRevision: ""
+  coordinator:
+    image: { repository: "", tag: "", pullPolicy: IfNotPresent }
+    clientId: ""
+    replicas: 1
+    resources: { requests: { cpu: 250m, memory: 512Mi, ephemeral-storage: 1Gi }, limits: { memory: 1Gi, ephemeral-storage: 2Gi } }
+    scratchBytes: 1073741824
+    rolloutRevision: ""
+  controlApi:
+    image: { repository: "", tag: "", pullPolicy: IfNotPresent }
+    clientId: ""
+    replicas: 1
+    resources: { requests: { cpu: 250m, memory: 512Mi, ephemeral-storage: 1Gi }, limits: { memory: 1Gi, ephemeral-storage: 2Gi } }
+    scratchBytes: 1073741824
+    rolloutRevision: ""
+  provisioner:
+    image: { repository: "", tag: "", pullPolicy: IfNotPresent }
+    clientId: ""
+    replicas: 1
+    resources: { requests: { cpu: 250m, memory: 512Mi, ephemeral-storage: 1Gi }, limits: { memory: 1Gi, ephemeral-storage: 2Gi } }
+    scratchBytes: 1073741824
+    rolloutRevision: ""
 
-podAnnotations: {}
-podLabels: {}
-
-environments:
-  DEBUGGING: "false"
-
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-deployment:
-  container:
-    port_1: 8080
-    port_2: 8081
-    port_3: 8082
-
-service:
-  type: ClusterIP
-  port_1: 8080
-  port_2: 8081
-  port_3: 8082
-
-ingress:
-  enabled: true
-  className: "haproxy-icm"
-  annotations:
-    # HAProxy uses regex matching on ImplementationSpecific paths by default
-    haproxy.org/timeout-server: "3600s"
-    haproxy.org/timeout-client: "3600s"
-    # Disable response buffering (stream responses to the client)
-    haproxy.org/option: "http-no-delay"
-  hosts:
-    - host: icm-cdntest-int01.icm.intershop.de
-      paths:
-        - path: /mediawidget
-          pathType: Prefix
-          pathSuffix: "-keda-hip"
-  tls:
-    - secretName: tls-star-icm-intershop-de
-      hosts:
-        - icm-cdntest-int01.icm.intershop.de
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-livenessProbe:
-  httpGet:
-    path: /mediawidget/q/health/live
-    port: 8080
-readinessProbe:
-  httpGet:
-    path: /mediawidget/q/health/ready
-    port: 8080
-
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
-# Additional volumes on the output Deployment definition.
-volumes: []
-# - name: foo
-#   secret:
-#     secretName: mysecret
-#     optional: false
-
-# Additional volumeMounts on the output Deployment definition.
-volumeMounts: []
-# - name: foo
-#   mountPath: "/etc/foo"
-#   readOnly: true
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
-
-# Worker configuration
+upload:
+  maxBytes: 0
+  maxOutstanding: 0
+  grantSeconds: 0
 worker:
-  replicaCount: 1
-  image:
-    repository: icmbuild.azurecr.io/intershop/icm-media-widget-worker
-    pullPolicy: Always
-    tag: "1.0.0-alpha"
-  service:
-    type: ClusterIP
-    port: 8080
-  environments:
-    AZURE_BLOB_STORAGE_CONNECTION: <your connection string>
-  resources: {}
-  livenessProbe:
-    httpGet:
-      path: /q/health/live
-      port: 8080
-  readinessProbe:
-    httpGet:
-      path: /q/health/ready
-      port: 8080
-  volumes: []
-  volumeMounts: []
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
+  maxConcurrentJobs: 0
+  maxJobsPerTenant: 0
+  localConcurrency: 0
+  localPerTenantConcurrency: 0
+  maxArchiveEntries: 0
+  maxExpandedBytes: 0
+  maxImagePixels: 0
+  maxImageBytes: 0
+  maxImageOutputBytes: 0
+  nativeHeapMb: 256
+  nativeAddressSpaceBytes: 2147483648
+  maxImageRequestBytes: 0
+  maxImageDimension: 0
+  maxProcessingSeconds: 0
+  discoveryPageSize: 0
+  jobsPerTenantScan: 0
+  scanSeconds: 0
+  metricsMaxAgeSeconds: 0
+  terminalRetentionHours: 0
+control:
+  installationId: ""
+  maxTenantsPerOwner: 0
+  maxCredentialsPerTenant: 0
+  maxOriginsPerTenant: 0
+  maxAttempts: 0
+  drainMaxAgeSeconds: 0
+  maxTenantsPerSweep: 0
+  memberRole: ""
+  operatorRole: ""
+  csrfSecret: { name: "", key: "" }
+jwt:
+  issuer: ""
+  audience: ""
+  keyId: ""
+  signingSecret: { name: "", key: "" }
+  verificationSecret: { name: "", key: "" }
+oidc:
+  issuer: ""
+  clientId: ""
+  audience: ""
+  approvedCompanyTenant: ""
+  clientSecret: { name: "", key: "" }
+  sessionSecret: { name: "", key: "" }
+  rolesClaim: ""
+origins:
+  approved: [ ]
 
 imgproxy:
-  image:
-    repo: ghcr.io/imgproxy/imgproxy
-    tag: v3.30.0
-  env:
-    IMGPROXY_USE_ABS: "true"
-    IMGPROXY_ABS_NAME: "chaptersbinfrastorage"
-    IMGPROXY_ABS_KEY: "<your azure blob storage key>"
-    IMGPROXY_PATH_PREFIX: "/imgproxy"
-    IMGPROXY_TTL: "60"
-    IMGPROXY_USE_ETAG: "true"
-  resources:
-    ingress:
-      enabled: true
-      className: "haproxy-icm"
-      annotations:
-        # Response caching for imgproxy is configured centrally in the HAProxy controller
-        # (cache section in global-config-snippet + cache-use/cache-store rules in
-        # frontend-config-snippet), because the controller runs with
-        # `--disable-config-snippets=backend`.
-        haproxy.org/timeout-server: "3600s"
-        haproxy.org/timeout-client: "3600s"
-      hosts:
-        - icm-cdntest-int01.icm.intershop.de
-      tls:
-        - secretName: tls-star-icm-intershop-de
-          hosts:
-            - icm-cdntest-int01.icm.intershop.de
+  image: { repository: ghcr.io/imgproxy/imgproxy, tag: v3.30.0, pullPolicy: IfNotPresent }
+  replicas: 1
+  clientId: ""
+  signingKey: { name: "", key: "" }
+  signingSalt: { name: "", key: "" }
+  ttlSeconds: 60
+  maxSourceBytes: 0
+  maxSourceMegapixels: 0
+  maxResultDimension: 0
+  resources: { requests: { cpu: 250m, memory: 256Mi, ephemeral-storage: 256Mi }, limits: { memory: 512Mi, ephemeral-storage: 512Mi } }
+  rolloutRevision: ""
+
+ingress:
+  className: ""
+  public: { host: "", tlsSecret: "", annotations: { } }
+  management: { host: "", tlsSecret: "", annotations: { } }
+  control: { host: "", tlsSecret: "", annotations: { } }
+networkPolicy:
+  ingressNamespace: ""
+  ingressPodLabels: { }
+  kedaNamespace: ""
+  kedaPodLabels: { }
+  dnsNamespace: kube-system
+  dnsPodLabels: { k8s-app: kube-dns }
+
+scaling:
+  enabled: true
+  maxReplicas: 4
+  pollingSeconds: 15
+  cooldownSeconds: 300
+  targetJobs: 1
+  failureThreshold: 3
+  fallbackReplicas: 1
+  stabilizationSeconds: 300
+
+# Optional, pre-installed KEDA HTTP add-on; never installed by this chart.
+httpScaling:
+  addOnVersion: "0.11.1"
+  clusterDomain: cluster.local
+  interceptor:
+    namespace: ""
+    service: ""
+    port: 8080
+    podPort: 8080
+    podLabels: { }
+  widget:
+    enabled: false
+    # Vaadin sessions are pod-local. Do not add replicas without a session-aware architecture.
+    minReplicas: 1
+    maxReplicas: 1
+    targetConcurrency: 10
+    scaledownSeconds: 600
+    conditionWaitSeconds: 20
+    responseHeaderSeconds: 630
+  rest:
+    enabled: false
+    minReplicas: 0
+    maxReplicas: 4
+    targetConcurrency: 1
+    scaledownSeconds: 600
+    # Leave room inside the worker JWT's 60-second lifetime for forwarding and verification.
+    conditionWaitSeconds: 20
+    responseHeaderSeconds: 630

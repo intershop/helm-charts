@@ -1,0 +1,12 @@
+# Synthetic overlay; external infrastructure must already exist in a real installation.
+httpScaling:
+  interceptor:
+    namespace: fixture-http
+    service: fixture-http-interceptor-proxy
+    podLabels:
+      app.kubernetes.io/name: keda-add-ons-http
+      app.kubernetes.io/component: interceptor
+  widget:
+    enabled: true
+  rest:
+    enabled: true

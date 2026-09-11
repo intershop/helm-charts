@@ -1,0 +1,261 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["azure", "components", "upload", "worker", "control", "jwt", "oidc", "origins", "imgproxy", "ingress", "networkPolicy", "scaling", "httpScaling"],
+  "properties": {
+    "fullnameOverride": {"type": "string", "maxLength": 40, "pattern": "^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"},
+    "imagePullSecrets": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["name"], "properties": {"name": {"$ref": "#/definitions/name"}}}},
+    "azure": {
+      "type": "object", "additionalProperties": false,
+      "required": ["tenantId", "controlEndpoint", "mediaEndpoint", "directoryTable", "credentialsTable", "runtimeTable", "drainTable", "controlTable", "proofsTable", "credentialReference"],
+      "properties": {
+        "tenantId": {"$ref": "#/definitions/uuid"},
+        "controlEndpoint": {"type": "string", "pattern": "^https://[a-z0-9]{3,24}\\.table\\.core\\.windows\\.net$"},
+        "mediaEndpoint": {"type": "string", "pattern": "^https://[a-z0-9]{3,24}\\.blob\\.core\\.windows\\.net$"},
+        "directoryTable": {"$ref": "#/definitions/table"},
+        "credentialsTable": {"$ref": "#/definitions/table"},
+        "runtimeTable": {"$ref": "#/definitions/table"},
+        "drainTable": {"$ref": "#/definitions/table"},
+        "controlTable": {"$ref": "#/definitions/table"},
+        "proofsTable": {"$ref": "#/definitions/table"},
+        "credentialReference": {"const": "workload-identity"}
+      }
+    },
+    "components": {
+      "type": "object", "additionalProperties": false,
+      "required": ["widget", "archive", "rest", "coordinator", "controlApi", "provisioner"],
+      "properties": {
+        "widget": {"$ref": "#/definitions/alwaysOn"},
+        "archive": {"$ref": "#/definitions/component"},
+        "rest": {"$ref": "#/definitions/alwaysOn"},
+        "coordinator": {"allOf": [{"$ref": "#/definitions/alwaysOn"}, {"properties": {"replicas": {"maximum": 1}}}]},
+        "controlApi": {"$ref": "#/definitions/alwaysOn"},
+        "provisioner": {"$ref": "#/definitions/alwaysOn"}
+      }
+    },
+    "upload": {
+      "type": "object", "additionalProperties": false, "required": ["maxBytes", "maxOutstanding", "grantSeconds"],
+      "properties": {
+        "maxBytes": {"$ref": "#/definitions/positive"},
+        "maxOutstanding": {"type": "integer", "minimum": 1, "maximum": 256},
+        "grantSeconds": {"type": "integer", "minimum": 1, "maximum": 900}
+      }
+    },
+    "worker": {
+      "type": "object", "additionalProperties": false,
+      "required": ["maxConcurrentJobs", "maxJobsPerTenant", "localConcurrency", "localPerTenantConcurrency", "maxArchiveEntries", "maxExpandedBytes", "maxImagePixels", "maxImageBytes", "maxImageOutputBytes", "nativeHeapMb", "nativeAddressSpaceBytes", "maxImageRequestBytes", "maxImageDimension", "maxProcessingSeconds", "discoveryPageSize", "jobsPerTenantScan", "scanSeconds", "metricsMaxAgeSeconds", "terminalRetentionHours"],
+      "properties": {
+        "maxConcurrentJobs": {"type": "integer", "minimum": 1, "maximum": 64},
+        "maxJobsPerTenant": {"type": "integer", "minimum": 1, "maximum": 64},
+        "localConcurrency": {"type": "integer", "minimum": 1, "maximum": 64},
+        "localPerTenantConcurrency": {"type": "integer", "minimum": 1, "maximum": 64},
+        "maxArchiveEntries": {"$ref": "#/definitions/positive"},
+        "maxExpandedBytes": {"$ref": "#/definitions/positive"},
+        "maxImagePixels": {"$ref": "#/definitions/positive"},
+        "maxImageBytes": {"type": "integer", "minimum": 1, "maximum": 2147483639},
+        "maxImageOutputBytes": {"type": "integer", "minimum": 1, "maximum": 2147483639},
+        "nativeHeapMb": {"type": "integer", "minimum": 64, "maximum": 1024},
+        "nativeAddressSpaceBytes": {"type": "integer", "minimum": 603979776, "maximum": 8589934592},
+        "maxImageRequestBytes": {"type": "integer", "minimum": 1, "maximum": 2147483639},
+        "maxImageDimension": {"$ref": "#/definitions/positive"},
+        "maxProcessingSeconds": {"$ref": "#/definitions/positive"},
+        "discoveryPageSize": {"type": "integer", "minimum": 1, "maximum": 1000},
+        "jobsPerTenantScan": {"type": "integer", "minimum": 1, "maximum": 10000},
+        "scanSeconds": {"type": "integer", "minimum": 1, "maximum": 300},
+        "metricsMaxAgeSeconds": {"type": "integer", "minimum": 1, "maximum": 600},
+        "terminalRetentionHours": {"$ref": "#/definitions/positive"}
+      }
+    },
+    "control": {
+      "type": "object", "additionalProperties": false,
+      "required": ["installationId", "maxTenantsPerOwner", "maxCredentialsPerTenant", "maxOriginsPerTenant", "maxAttempts", "drainMaxAgeSeconds", "maxTenantsPerSweep", "memberRole", "operatorRole", "csrfSecret"],
+      "properties": {
+        "installationId": {"$ref": "#/definitions/name"},
+        "maxTenantsPerOwner": {"type": "integer", "minimum": 1, "maximum": 100},
+        "maxCredentialsPerTenant": {"type": "integer", "minimum": 1, "maximum": 32},
+        "maxOriginsPerTenant": {"type": "integer", "minimum": 1, "maximum": 32},
+        "maxAttempts": {"type": "integer", "minimum": 1, "maximum": 20},
+        "drainMaxAgeSeconds": {"type": "integer", "minimum": 1, "maximum": 300},
+        "maxTenantsPerSweep": {"type": "integer", "minimum": 1, "maximum": 10000},
+        "memberRole": {"$ref": "#/definitions/text"},
+        "operatorRole": {"$ref": "#/definitions/text"},
+        "csrfSecret": {"$ref": "#/definitions/secret"}
+      }
+    },
+    "jwt": {
+      "type": "object", "additionalProperties": false, "required": ["issuer", "audience", "keyId", "signingSecret", "verificationSecret"],
+      "properties": {
+        "issuer": {"$ref": "#/definitions/text"},
+        "audience": {"$ref": "#/definitions/text"},
+        "keyId": {"$ref": "#/definitions/text"},
+        "signingSecret": {"$ref": "#/definitions/secret"},
+        "verificationSecret": {"$ref": "#/definitions/secret"}
+      }
+    },
+    "oidc": {
+      "type": "object", "additionalProperties": false, "required": ["issuer", "clientId", "audience", "approvedCompanyTenant", "clientSecret", "sessionSecret", "rolesClaim"],
+      "properties": {
+        "issuer": {"type": "string", "pattern": "^https://[^/?#@ ]+(/[^?# ]*)?$"},
+        "clientId": {"$ref": "#/definitions/text"},
+        "audience": {"allOf": [{"$ref": "#/definitions/text"}], "description": "Must equal oidc.clientId; cross-field equality enforced by validate.yaml because JSON Schema draft-07 has no data reference."},
+        "approvedCompanyTenant": {"$ref": "#/definitions/uuid"},
+        "clientSecret": {"$ref": "#/definitions/secret"},
+        "sessionSecret": {"$ref": "#/definitions/secret"},
+        "rolesClaim": {"$ref": "#/definitions/text"}
+      }
+    },
+    "origins": {
+      "type": "object", "additionalProperties": false, "required": ["approved"],
+      "properties": {"approved": {"type": "array", "minItems": 1, "maxItems": 64, "uniqueItems": true, "items": {"type": "string", "pattern": "^https://[a-zA-Z0-9.-]+(:[0-9]+)?$"}}}
+    },
+    "imgproxy": {
+      "type": "object", "additionalProperties": false, "required": ["image", "replicas", "clientId", "signingKey", "signingSalt", "ttlSeconds", "maxSourceBytes", "maxSourceMegapixels", "maxResultDimension", "resources", "rolloutRevision"],
+      "properties": {
+        "image": {"allOf": [{"$ref": "#/definitions/image"}, {"properties": {"repository": {"const": "ghcr.io/imgproxy/imgproxy"}, "tag": {"const": "v3.30.0"}}}]},
+        "replicas": {"type": "integer", "minimum": 1},
+        "clientId": {"$ref": "#/definitions/uuid"},
+        "signingKey": {"$ref": "#/definitions/secret"},
+        "signingSalt": {"$ref": "#/definitions/secret"},
+        "ttlSeconds": {"type": "integer", "minimum": 1, "maximum": 3600},
+        "maxSourceBytes": {"$ref": "#/definitions/positive"},
+        "maxSourceMegapixels": {"$ref": "#/definitions/positive"},
+        "maxResultDimension": {"$ref": "#/definitions/positive"},
+        "resources": {"$ref": "#/definitions/resources"},
+        "rolloutRevision": {"type": "string"}
+      }
+    },
+    "ingress": {
+      "type": "object", "additionalProperties": false, "required": ["className", "public", "management", "control"],
+      "properties": {
+        "className": {"$ref": "#/definitions/name"},
+        "public": {"$ref": "#/definitions/route"},
+        "management": {"$ref": "#/definitions/route"},
+        "control": {"$ref": "#/definitions/route"}
+      }
+    },
+    "networkPolicy": {
+      "type": "object", "additionalProperties": false, "required": ["ingressNamespace", "ingressPodLabels", "kedaNamespace", "kedaPodLabels", "dnsNamespace", "dnsPodLabels"],
+      "properties": {
+        "ingressNamespace": {"$ref": "#/definitions/name"},
+        "ingressPodLabels": {"$ref": "#/definitions/labels"},
+        "kedaNamespace": {"$ref": "#/definitions/name"},
+        "kedaPodLabels": {"$ref": "#/definitions/labels"},
+        "dnsNamespace": {"$ref": "#/definitions/name"},
+        "dnsPodLabels": {"$ref": "#/definitions/labels"}
+      }
+    },
+    "httpScaling": {
+      "type": "object", "additionalProperties": false,
+      "required": ["addOnVersion", "clusterDomain", "interceptor", "widget", "rest"],
+      "properties": {
+        "addOnVersion": {"const": "0.11.1"},
+        "clusterDomain": {"type": "string", "maxLength": 253, "pattern": "^[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?)+$"},
+        "interceptor": {
+          "type": "object", "additionalProperties": false,
+          "required": ["namespace", "service", "port", "podPort", "podLabels"],
+          "properties": {
+            "namespace": {"type": "string"},
+            "service": {"type": "string"},
+            "port": {"$ref": "#/definitions/port"},
+            "podPort": {"$ref": "#/definitions/port"},
+            "podLabels": {"type": "object", "additionalProperties": {"type": "string", "minLength": 1}}
+          }
+        },
+        "widget": {
+          "allOf": [
+            {"$ref": "#/definitions/httpScaler"},
+            {"properties": {"minReplicas": {"const": 1}, "maxReplicas": {"const": 1}}}
+          ],
+          "description": "The current Vaadin session architecture supports only one intercepted widget replica; HTTP request counts are not active-session counts."
+        },
+        "rest": {"$ref": "#/definitions/httpScaler"}
+      },
+      "allOf": [{
+        "if": {"anyOf": [
+          {"properties": {"widget": {"properties": {"enabled": {"const": true}}}}},
+          {"properties": {"rest": {"properties": {"enabled": {"const": true}}}}}
+        ]},
+        "then": {"properties": {"interceptor": {"properties": {
+          "namespace": {"$ref": "#/definitions/name"},
+          "service": {"$ref": "#/definitions/name"},
+          "podLabels": {"$ref": "#/definitions/labels"}
+        }}}}
+      }]
+    },
+    "scaling": {
+      "type": "object", "additionalProperties": false, "required": ["enabled", "maxReplicas", "pollingSeconds", "cooldownSeconds", "targetJobs", "failureThreshold", "fallbackReplicas", "stabilizationSeconds"],
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "maxReplicas": {"type": "integer", "minimum": 1, "maximum": 128},
+        "pollingSeconds": {"type": "integer", "minimum": 1, "maximum": 300},
+        "cooldownSeconds": {"type": "integer", "minimum": 60},
+        "targetJobs": {"$ref": "#/definitions/positive"},
+        "failureThreshold": {"type": "integer", "minimum": 1, "maximum": 10},
+        "fallbackReplicas": {"type": "integer", "minimum": 1, "maximum": 128},
+        "stabilizationSeconds": {"type": "integer", "minimum": 60, "maximum": 3600}
+      }
+    }
+  },
+  "definitions": {
+    "port": {"type": "integer", "minimum": 1, "maximum": 65535},
+    "httpScaler": {
+      "type": "object", "additionalProperties": false,
+      "required": ["enabled", "minReplicas", "maxReplicas", "targetConcurrency", "scaledownSeconds", "conditionWaitSeconds", "responseHeaderSeconds"],
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "minReplicas": {"type": "integer", "minimum": 0, "maximum": 128},
+        "maxReplicas": {"type": "integer", "minimum": 1, "maximum": 128},
+        "targetConcurrency": {"type": "integer", "minimum": 1, "maximum": 10000},
+        "scaledownSeconds": {"type": "integer", "minimum": 60, "maximum": 86400},
+        "conditionWaitSeconds": {"type": "integer", "minimum": 1, "maximum": 30},
+        "responseHeaderSeconds": {"type": "integer", "minimum": 1, "maximum": 86400}
+      }
+    },
+    "text": {"type": "string", "minLength": 1},
+    "name": {"type": "string", "minLength": 1, "maxLength": 63, "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"},
+    "uuid": {"type": "string", "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"},
+    "table": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9]{2,62}$"},
+    "positive": {"type": "integer", "minimum": 1, "maximum": 9007199254740991},
+    "secret": {
+      "type": "object", "additionalProperties": false, "required": ["name", "key"],
+      "properties": {"name": {"$ref": "#/definitions/name"}, "key": {"type": "string", "minLength": 1, "pattern": "^[-._a-zA-Z0-9]+$"}}
+    },
+    "image": {
+      "type": "object", "additionalProperties": false, "required": ["repository", "tag", "pullPolicy"],
+      "properties": {
+        "repository": {"type": "string", "minLength": 1, "pattern": "^[a-z0-9][a-z0-9.:/_-]*$"},
+        "tag": {"type": "string", "minLength": 1, "pattern": "^[a-zA-Z0-9_][a-zA-Z0-9_.-]*$", "not": {"enum": ["latest", "main", "master"]}},
+        "pullPolicy": {"enum": ["IfNotPresent", "Always", "Never"]}
+      }
+    },
+    "resources": {
+      "type": "object", "required": ["requests", "limits"],
+      "properties": {
+        "requests": {"type": "object", "required": ["cpu", "memory", "ephemeral-storage"]},
+        "limits": {"type": "object", "required": ["memory", "ephemeral-storage"]}
+      }
+    },
+    "component": {
+      "type": "object", "additionalProperties": false, "required": ["image", "clientId", "replicas", "resources", "scratchBytes", "rolloutRevision"],
+      "properties": {
+        "image": {"$ref": "#/definitions/image"},
+        "clientId": {"$ref": "#/definitions/uuid"},
+        "replicas": {"type": "integer", "minimum": 0, "maximum": 128},
+        "resources": {"$ref": "#/definitions/resources"},
+        "scratchBytes": {"$ref": "#/definitions/positive"},
+        "rolloutRevision": {"type": "string"}
+      }
+    },
+    "alwaysOn": {"allOf": [{"$ref": "#/definitions/component"}, {"properties": {"replicas": {"minimum": 1}}}]},
+    "route": {
+      "type": "object", "additionalProperties": false, "required": ["host", "tlsSecret", "annotations"],
+      "properties": {
+        "host": {"type": "string", "pattern": "^[a-z0-9]([a-z0-9.-]*[a-z0-9])?\\.[a-z]{2,}$"},
+        "tlsSecret": {"$ref": "#/definitions/name"},
+        "annotations": {"type": "object", "additionalProperties": {"type": "string"}}
+      }
+    },
+    "labels": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "string", "minLength": 1}}
+  }
+}

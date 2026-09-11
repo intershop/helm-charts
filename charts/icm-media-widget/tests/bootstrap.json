@@ -1,0 +1,50 @@
+{
+  "subscriptionId": "00000000-0000-0000-0000-000000000001",
+  "tenantId": "00000000-0000-0000-0000-000000000002",
+  "resourceGroup": "fixture-only",
+  "resourceGroupRegion": "offline-only",
+  "mediaRegion": "offline-only",
+  "controlRegion": "offline-only",
+  "mediaAccount": "fixturemedia",
+  "controlAccount": "fixturecontrol",
+  "sku": "Standard_LRS",
+  "installationId": "fixture-installation",
+  "aksOidcIssuer": "https://aks.invalid/fixture/",
+  "namespace": "fixture-media",
+  "fullname": "fixture-media",
+  "armEndpoint": "https://management.invalid",
+  "approvedCompanyTenant": "00000000-0000-0000-0000-000000000002",
+  "companyIssuer": "https://identity.invalid/company",
+  "approvedOrigins": ["https://shop-a.invalid", "https://shop-b.invalid"],
+  "controlAllowedIps": ["192.0.2.1"],
+  "blobSoftDeleteDays": 14,
+  "containerSoftDeleteDays": 14,
+  "corsMaxAgeSeconds": 300,
+  "tables": {
+    "registry": "TenantRegistry",
+    "directory": "TenantDirectory",
+    "credentials": "ShopCredentials",
+    "runtime": "TenantRuntime",
+    "drain": "TenantDrain",
+    "proofs": "TenantProofs"
+  },
+  "identities": {
+    "widget": "fixture-widget",
+    "archive": "fixture-archive",
+    "rest": "fixture-rest",
+    "coordinator": "fixture-coordinator",
+    "control-api": "fixture-control-api",
+    "provisioner": "fixture-provisioner",
+    "imgproxy": "fixture-imgproxy"
+  },
+  "roles": {
+    "tableReader": "76199698-9eea-4c19-bc75-cec21354c6b6",
+    "tableContributor": "0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3",
+    "blobDelegator": "db58b8e5-c6ad-4a2a-8342-4190687cbf4a",
+    "containerManager": "00000000-0000-0000-0000-000000000021",
+    "dataReader": "00000000-0000-0000-0000-000000000022",
+    "dataWriter": "00000000-0000-0000-0000-000000000023",
+    "dataReadWriter": "00000000-0000-0000-0000-000000000024",
+    "dataManager": "00000000-0000-0000-0000-000000000025"
+  }
+}

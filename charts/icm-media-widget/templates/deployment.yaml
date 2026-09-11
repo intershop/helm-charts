@@ -1,73 +1,130 @@
+{{- $root := . }}
+{{- range $role, $component := .Values.components }}
+{{- $suffix := include "media.component" $role }}
+{{- $name := printf "%s-%s" (include "media.name" $root) $suffix }}
+{{- $config := include "media.config" (dict "root" $root "role" $role) }}
+{{- $healthRoot := ternary "/mediawidget/q/health" "/q/health" (eq $role "widget") }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $name }}
+data:
+  {{- $config | nindent 2 }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "icm-media-widget.fullname" . }}
+  name: {{ $name }}
   labels:
-    {{- include "icm-media-widget.labels" . | nindent 4 }}
+    {{- include "media.labels" $root | nindent 4 }}
+    app.kubernetes.io/component: {{ $suffix }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  {{- if or (eq $role "coordinator") (and (eq $role "widget") $root.Values.httpScaling.widget.enabled) }}
+  strategy: {type: Recreate}
+  {{- end }}
+  {{- $httpScaled := and (has $role (list "widget" "rest")) (dig $role "enabled" false $root.Values.httpScaling) }}
+  {{- if not (or $httpScaled (and (eq $role "archive") $root.Values.scaling.enabled)) }}
+  replicas: {{ $component.replicas }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "icm-media-widget.selectorLabels" . | nindent 6 }}
+      {{- include "media.labels" $root | nindent 6 }}
+      app.kubernetes.io/component: {{ $suffix }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        checksum/config: {{ $config | sha256sum }}
+        checksum/identity: {{ dict "clientId" $component.clientId "tenantId" $root.Values.azure.tenantId | toJson | sha256sum }}
+        # External secret contents are never read by Helm; bump only affected roles on rotation.
+        media/rollout-revision: {{ $component.rolloutRevision | quote }}
       labels:
-        {{- include "icm-media-widget.labels" . | nindent 8 }}
-        {{- with .Values.podLabels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
+        {{- include "media.labels" $root | nindent 8 }}
+        app.kubernetes.io/component: {{ $suffix }}
+        azure.workload.identity/use: "true"
     spec:
-      {{- with .Values.imagePullSecrets }}
+      serviceAccountName: {{ $name }}
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: {{ if and (eq $role "rest") $root.Values.httpScaling.rest.enabled }}{{ add 30 (int $root.Values.httpScaling.rest.responseHeaderSeconds) }}{{ else }}90{{ end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile: {type: RuntimeDefault}
+      {{- with $root.Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "icm-media-widget.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
-          env:
-          {{- range $key, $value := .Values.environments }}
-          - name: {{ $key }}
-            value: {{ $value | quote }}
-          {{- end }}
+        - name: {{ $suffix }}
+          image: {{ printf "%s:%s" $component.image.repository $component.image.tag | quote }}
+          imagePullPolicy: {{ $component.image.pullPolicy }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: ["ALL"]}
           ports:
-          - containerPort: {{ .Values.deployment.container.port_1 }}
-          - containerPort: {{ .Values.deployment.container.port_2 }}
-          - containerPort: {{ .Values.deployment.container.port_3 }}
-          livenessProbe:
-            {{- toYaml .Values.livenessProbe | nindent 12 }}
-          readinessProbe:
-            {{- toYaml .Values.readinessProbe | nindent 12 }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-          {{- with .Values.volumeMounts }}
-          volumeMounts:
-            {{- toYaml . | nindent 12 }}
+            - {name: http, containerPort: 8080}
+          envFrom:
+            - configMapRef: {name: {{ $name }}}
+          {{- if eq $role "widget" }}
+          env:
+            {{- include "media.secretEnv" (dict "TENANCY_IMGPROXY_KEY" $root.Values.imgproxy.signingKey "TENANCY_IMGPROXY_SALT" $root.Values.imgproxy.signingSalt) | nindent 12 }}
+          {{- else if eq $role "controlApi" }}
+          env:
+            {{- include "media.secretEnv" (dict "QUARKUS_OIDC_CREDENTIALS_SECRET" $root.Values.oidc.clientSecret "QUARKUS_OIDC_TOKEN_STATE_MANAGER_ENCRYPTION_SECRET" $root.Values.oidc.sessionSecret "CONTROL_CSRF_KEY" $root.Values.control.csrfSecret) | nindent 12 }}
           {{- end }}
-      {{- with .Values.volumes }}
+          startupProbe:
+            {{- if eq $role "provisioner" }}
+            exec:
+              command: ["java", "-cp", "/app/app/*", "com.intershop.cdn.controlplane.HealthProbe"]
+            {{- else }}
+            httpGet: {path: {{ $healthRoot }}/live, port: http}
+            {{- end }}
+            timeoutSeconds: 5
+            failureThreshold: 60
+            periodSeconds: 5
+          livenessProbe:
+            {{- if eq $role "provisioner" }}
+            exec:
+              command: ["java", "-cp", "/app/app/*", "com.intershop.cdn.controlplane.HealthProbe"]
+            {{- else }}
+            httpGet: {path: {{ $healthRoot }}/live, port: http}
+            {{- end }}
+            timeoutSeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            {{- if eq $role "provisioner" }}
+            exec:
+              command: ["java", "-cp", "/app/app/*", "com.intershop.cdn.controlplane.HealthProbe", "ready"]
+            {{- else }}
+            httpGet: {path: {{ $healthRoot }}/ready, port: http}
+            {{- end }}
+            timeoutSeconds: 5
+            periodSeconds: 5
+          resources:
+            {{- toYaml $component.resources | nindent 12 }}
+          volumeMounts:
+            - {name: scratch, mountPath: /media-runtime}
+            {{- if has $role (list "widget" "rest") }}
+            - {name: jwt-key, mountPath: /var/run/media-keys, readOnly: true}
+            {{- end }}
       volumes:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        - name: scratch
+          emptyDir: {sizeLimit: {{ $component.scratchBytes | int64 | quote }}}
+        {{- if has $role (list "widget" "rest") }}
+        - name: jwt-key
+          secret:
+            defaultMode: 0440
+            {{- if eq $role "widget" }}
+            secretName: {{ $root.Values.jwt.signingSecret.name }}
+            items:
+              - {key: {{ $root.Values.jwt.signingSecret.key | quote }}, path: signing.pem}
+            {{- else }}
+            secretName: {{ $root.Values.jwt.verificationSecret.name }}
+            items:
+              - {key: {{ $root.Values.jwt.verificationSecret.key | quote }}, path: verification.pem}
+            {{- end }}
+        {{- end }}
+{{- end }}

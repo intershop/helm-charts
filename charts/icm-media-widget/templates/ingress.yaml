@@ -1,56 +1,43 @@
-{{- if .Values.ingress.enabled -}}
-{{- $root := . -}}
-{{- $svcPort := .Values.service.port_1 -}}
-{{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
-  {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
-  {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
-  {{- end }}
-{{- end }}
-{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- $root := . }}
+{{- range $route := list "public" "management" "control" }}
+{{- $settings := index $root.Values.ingress $route }}
+---
 apiVersion: networking.k8s.io/v1
-{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
-apiVersion: extensions/v1beta1
-{{- end }}
 kind: Ingress
 metadata:
-  name: {{ template "icm-media-widget.fullname" . }}
-  labels:
-    {{- include "icm-media-widget.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
+  name: {{ include "media.name" $root }}-{{ $route }}
+  {{- with $settings.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingressClassName: {{ .Values.ingress.className }}
-  {{- end }}
-  {{- if .Values.ingress.tls }}
+  ingressClassName: {{ $root.Values.ingress.className | quote }}
   tls:
-    {{- range .Values.ingress.tls }}
-    - hosts:
-        {{- range .hosts }}
-        - {{ . | quote }}
-        {{- end }}
-      secretName: {{ .secretName }}
-    {{- end }}
-  {{- end }}
+    - hosts: [{{ $settings.host | quote }}]
+      secretName: {{ $settings.tlsSecret | quote }}
   rules:
-    {{- range .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
+    - host: {{ $settings.host | quote }}
       http:
         paths:
-          {{- range .paths }}
-          - path: {{ .path }}
-            {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
-            pathType: {{ .pathType }}
-            {{- end }}
+          {{- if eq $route "public" }}
+          - path: /mediawidget/public/tenants/
+            pathType: Prefix
             backend:
               service:
-                name: {{ include "icm-media-widget.fullname" $root }}{{ .pathSuffix }}
-                port:
-                  number: {{ $svcPort }}
+                name: {{ include "media.name" $root }}-widget{{ if $root.Values.httpScaling.widget.enabled }}-interceptor{{ end }}
+                port: {number: {{ if $root.Values.httpScaling.widget.enabled }}{{ $root.Values.httpScaling.interceptor.port }}{{ else }}8080{{ end }}}
+          - path: /imgproxy/
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "media.name" $root }}-imgproxy
+                port: {number: 8080}
+          {{- else }}
+          - path: {{ if eq $route "management" }}/mediawidget{{ else }}/{{ end }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "media.name" $root }}-{{ if eq $route "control" }}control-api{{ else }}widget{{ if $root.Values.httpScaling.widget.enabled }}-interceptor{{ end }}{{ end }}
+                port: {number: {{ if and (eq $route "management") $root.Values.httpScaling.widget.enabled }}{{ $root.Values.httpScaling.interceptor.port }}{{ else }}8080{{ end }}}
           {{- end }}
-    {{- end }}
 {{- end }}

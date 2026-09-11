@@ -1,0 +1,93 @@
+# Synthetic render-only values. No credentials or usable accounts.
+fullnameOverride: fixture-media
+azure:
+  tenantId: 00000000-0000-0000-0000-000000000001
+  controlEndpoint: https://fixturecontrol.table.core.windows.net
+  mediaEndpoint: https://fixturemedia.blob.core.windows.net
+  drainTable: TenantDrain
+  credentialReference: workload-identity
+components:
+  widget:
+    image: {repository: registry.invalid/widget, tag: "2.0.0-test"}
+    clientId: 00000000-0000-0000-0000-000000000011
+  archive:
+    image: {repository: registry.invalid/worker, tag: "2.0.0-archive"}
+    clientId: 00000000-0000-0000-0000-000000000012
+  rest:
+    image: {repository: registry.invalid/worker, tag: "2.0.0-rest"}
+    clientId: 00000000-0000-0000-0000-000000000013
+  coordinator:
+    image: {repository: registry.invalid/worker, tag: "2.0.0-coordinator"}
+    clientId: 00000000-0000-0000-0000-000000000014
+  controlApi:
+    image: {repository: registry.invalid/control, tag: "2.0.0-api"}
+    clientId: 00000000-0000-0000-0000-000000000015
+  provisioner:
+    image: {repository: registry.invalid/control, tag: "2.0.0-provisioner"}
+    clientId: 00000000-0000-0000-0000-000000000016
+upload:
+  maxBytes: 104857600
+  maxOutstanding: 4
+  grantSeconds: 300
+worker:
+  maxConcurrentJobs: 4
+  maxJobsPerTenant: 1
+  localConcurrency: 1
+  localPerTenantConcurrency: 1
+  maxArchiveEntries: 1000
+  maxExpandedBytes: 1073741824
+  maxImagePixels: 25000000
+  maxImageBytes: 26214400
+  maxImageOutputBytes: 26214400
+  maxImageRequestBytes: 52428800
+  maxImageDimension: 4096
+  maxProcessingSeconds: 600
+  discoveryPageSize: 50
+  jobsPerTenantScan: 100
+  scanSeconds: 10
+  metricsMaxAgeSeconds: 30
+  terminalRetentionHours: 168
+control:
+  installationId: fixture-installation
+  maxTenantsPerOwner: 3
+  maxCredentialsPerTenant: 4
+  maxOriginsPerTenant: 4
+  maxAttempts: 5
+  drainMaxAgeSeconds: 60
+  maxTenantsPerSweep: 100
+  memberRole: media-company-member
+  operatorRole: media-platform-operator
+  csrfSecret: {name: fixture-control-csrf, key: csrf-key}
+jwt:
+  issuer: fixture-widget
+  audience: fixture-resize
+  keyId: fixture-key-1
+  signingSecret: {name: fixture-worker-signing, key: private.pem}
+  verificationSecret: {name: fixture-worker-verification, key: public.pem}
+oidc:
+  issuer: https://identity.invalid/company
+  clientId: fixture-control-client
+  audience: fixture-control-client
+  approvedCompanyTenant: 00000000-0000-0000-0000-000000000001
+  clientSecret: {name: fixture-company-oidc, key: client-secret}
+  sessionSecret: {name: fixture-company-session, key: encryption-secret}
+  rolesClaim: groups
+origins:
+  approved: [https://shop-a.invalid, https://shop-b.invalid]
+imgproxy:
+  clientId: 00000000-0000-0000-0000-000000000017
+  signingKey: {name: fixture-imgproxy, key: key}
+  signingSalt: {name: fixture-imgproxy, key: salt}
+  maxSourceBytes: 26214400
+  maxSourceMegapixels: 25
+  maxResultDimension: 4096
+ingress:
+  className: fixture-ingress
+  public: {host: images.invalid, tlsSecret: fixture-public-tls}
+  management: {host: management.invalid, tlsSecret: fixture-management-tls}
+  control: {host: control.invalid, tlsSecret: fixture-control-tls}
+networkPolicy:
+  ingressNamespace: fixture-ingress
+  ingressPodLabels: {app.kubernetes.io/name: ingress-controller}
+  kedaNamespace: fixture-keda
+  kedaPodLabels: {app.kubernetes.io/name: keda-operator}

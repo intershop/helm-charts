@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "media.name" . }}-imgproxy
+spec:
+  replicas: {{ .Values.imgproxy.replicas }}
+  selector:
+    matchLabels:
+      {{- include "media.labels" . | nindent 6 }}
+      app.kubernetes.io/component: imgproxy
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ dict "imgproxy" .Values.imgproxy "mediaEndpoint" .Values.azure.mediaEndpoint "tenantId" .Values.azure.tenantId | toJson | sha256sum }}
+        media/rollout-revision: {{ .Values.imgproxy.rolloutRevision | quote }}
+      labels:
+        {{- include "media.labels" . | nindent 8 }}
+        app.kubernetes.io/component: imgproxy
+        azure.workload.identity/use: "true"
+    spec:
+      serviceAccountName: {{ include "media.name" . }}-imgproxy
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile: {type: RuntimeDefault}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: imgproxy
+          image: {{ printf "%s:%s" .Values.imgproxy.image.repository .Values.imgproxy.image.tag | quote }}
+          imagePullPolicy: {{ .Values.imgproxy.image.pullPolicy }}
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities: {drop: ["ALL"]}
+          ports:
+            - {name: http, containerPort: 8080}
+          env:
+            {{- include "media.secretEnv" (dict "IMGPROXY_KEY" .Values.imgproxy.signingKey "IMGPROXY_SALT" .Values.imgproxy.signingSalt) | nindent 12 }}
+            - {name: IMGPROXY_PATH_PREFIX, value: "/imgproxy"}
+            - {name: TMPDIR, value: "/media-runtime"}
+            - {name: IMGPROXY_HEALTH_CHECK_PATH, value: "/health"}
+            - {name: IMGPROXY_USE_ABS, value: "true"}
+            - {name: IMGPROXY_ABS_ENDPOINT, value: {{ .Values.azure.mediaEndpoint | quote }}}
+            - name: IMGPROXY_ABS_NAME
+              value: {{ first (splitList "." (trimPrefix "https://" .Values.azure.mediaEndpoint)) | quote }}
+            # Verified in v3.30.0's pinned azidentity v1.12.0: no node-identity fallback.
+            - {name: AZURE_TOKEN_CREDENTIALS, value: "WorkloadIdentityCredential"}
+            - name: IMGPROXY_ALLOWED_SOURCES
+              value: "abs://t-*-images/"
+            - {name: IMGPROXY_ALLOW_PRIVATE_SOURCE_ADDRESSES, value: "false"}
+            - {name: IMGPROXY_ALLOW_LOOPBACK_SOURCE_ADDRESSES, value: "false"}
+            - {name: IMGPROXY_ALLOW_LINK_LOCAL_SOURCE_ADDRESSES, value: "false"}
+            - {name: IMGPROXY_MAX_REDIRECTS, value: "0"}
+            - {name: IMGPROXY_ALLOW_SECURITY_OPTIONS, value: "false"}
+            - {name: IMGPROXY_SIGNATURE_SIZE, value: "32"}
+            - {name: IMGPROXY_USE_ETAG, value: "true"}
+            - {name: IMGPROXY_TTL, value: {{ .Values.imgproxy.ttlSeconds | quote }}}
+            - {name: IMGPROXY_MAX_SRC_FILE_SIZE, value: {{ .Values.imgproxy.maxSourceBytes | int64 | quote }}}
+            - {name: IMGPROXY_MAX_SRC_RESOLUTION, value: {{ .Values.imgproxy.maxSourceMegapixels | int64 | quote }}}
+            - {name: IMGPROXY_MAX_RESULT_DIMENSION, value: {{ .Values.imgproxy.maxResultDimension | int64 | quote }}}
+          livenessProbe:
+            httpGet: {path: /imgproxy/health, port: http}
+          readinessProbe:
+            httpGet: {path: /imgproxy/health, port: http}
+          resources:
+            {{- toYaml .Values.imgproxy.resources | nindent 12 }}
+          volumeMounts:
+            - {name: scratch, mountPath: /media-runtime}
+      volumes:
+        - name: scratch
+          emptyDir: {sizeLimit: 256Mi}

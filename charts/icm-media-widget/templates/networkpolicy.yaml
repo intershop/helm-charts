@@ -1,0 +1,98 @@
+{{- $root := . }}
+{{- range $role := list "widget" "archive" "rest" "coordinator" "control-api" "provisioner" "imgproxy" }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "media.name" $root }}-{{ $role }}
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "media.labels" $root | nindent 6 }}
+      app.kubernetes.io/component: {{ $role }}
+  policyTypes: [Ingress, Egress]
+  {{- if has $role (list "archive" "provisioner") }}
+  ingress: []
+  {{- else }}
+  ingress:
+    - from:
+        {{- if and (has $role (list "widget" "rest")) (index $root.Values.httpScaling $role).enabled }}
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ $root.Values.httpScaling.interceptor.namespace }}
+          podSelector:
+            matchLabels:
+              {{- toYaml $root.Values.httpScaling.interceptor.podLabels | nindent 14 }}
+        {{- else if eq $role "rest" }}
+        - podSelector:
+            matchLabels:
+              {{- include "media.labels" $root | nindent 14 }}
+              app.kubernetes.io/component: widget
+        {{- else if eq $role "coordinator" }}
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ $root.Values.networkPolicy.kedaNamespace }}
+          podSelector:
+            matchLabels:
+              {{- toYaml $root.Values.networkPolicy.kedaPodLabels | nindent 14 }}
+        {{- else }}
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ $root.Values.networkPolicy.ingressNamespace }}
+          podSelector:
+            matchLabels:
+              {{- toYaml $root.Values.networkPolicy.ingressPodLabels | nindent 14 }}
+        {{- if eq $role "imgproxy" }}
+        - podSelector:
+            matchLabels:
+              {{- include "media.labels" $root | nindent 14 }}
+              app.kubernetes.io/component: widget
+        {{- end }}
+        {{- end }}
+      ports:
+        - {protocol: TCP, port: 8080}
+  {{- end }}
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ $root.Values.networkPolicy.dnsNamespace }}
+          podSelector:
+            matchLabels:
+              {{- toYaml $root.Values.networkPolicy.dnsPodLabels | nindent 14 }}
+      ports:
+        - {protocol: UDP, port: 53}
+        - {protocol: TCP, port: 53}
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except: [10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 127.0.0.0/8, 169.254.0.0/16]
+      ports:
+        - {protocol: TCP, port: 443}
+    {{- if eq $role "widget" }}
+    {{- if $root.Values.httpScaling.rest.enabled }}
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ $root.Values.httpScaling.interceptor.namespace }}
+          podSelector:
+            matchLabels:
+              {{- toYaml $root.Values.httpScaling.interceptor.podLabels | nindent 14 }}
+      ports:
+        - {protocol: TCP, port: {{ $root.Values.httpScaling.interceptor.podPort }}}
+    {{- end }}
+    - to:
+        {{- if not $root.Values.httpScaling.rest.enabled }}
+        - podSelector:
+            matchLabels:
+              {{- include "media.labels" $root | nindent 14 }}
+              app.kubernetes.io/component: rest
+        {{- end }}
+        - podSelector:
+            matchLabels:
+              {{- include "media.labels" $root | nindent 14 }}
+              app.kubernetes.io/component: imgproxy
+      ports:
+        - {protocol: TCP, port: 8080}
+    {{- end }}
+{{- end }}

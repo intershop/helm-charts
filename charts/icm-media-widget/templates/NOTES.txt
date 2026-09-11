@@ -1,22 +1,16 @@
-1. Get the application URL by running these commands:
-{{- if .Values.ingress.enabled }}
-{{- range $host := .Values.ingress.hosts }}
-  {{- range .paths }}
-  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
-  {{- end }}
+PRODUCTION CUTOVER BLOCKED. See README.md and docs/CUTOVER.md.
+Public images: https://{{ .Values.ingress.public.host }}/mediawidget/public/tenants/{tenantId}/images/{path}
+Management: https://{{ .Values.ingress.management.host }}/mediawidget (shop backend credentials required)
+Company portal: https://{{ .Values.ingress.control.host }} (application OIDC required)
+No Azure resources, secrets, or live data migration are managed by this chart.
+The Azure workload identity webhook is an external prerequisite.
+{{- if or .Values.scaling.enabled .Values.httpScaling.widget.enabled .Values.httpScaling.rest.enabled }}
+KEDA is an external prerequisite; this chart does not install it.
 {{- end }}
-{{- else if contains "NodePort" .Values.service.type }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "icm-media-widget.fullname" . }})
-  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo http://$NODE_IP:$NODE_PORT
-{{- else if contains "LoadBalancer" .Values.service.type }}
-     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-           You can watch its status by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "icm-media-widget.fullname" . }}'
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "icm-media-widget.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-  echo http://$SERVICE_IP:{{ .Values.service.port }}
-{{- else if contains "ClusterIP" .Values.service.type }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "icm-media-widget.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-  export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
-  echo "Visit http://127.0.0.1:8080 to use your application"
-  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:$CONTAINER_PORT
+{{- if or .Values.httpScaling.widget.enabled .Values.httpScaling.rest.enabled }}
+HTTP scaling requires pre-installed HTTP add-on 0.11.1 / KEDA 2.18 and reviewed interceptor networking.
+Verify ExternalName/Host forwarding and live activation; see README.md.
+{{- if .Values.httpScaling.widget.enabled }}
+The HTTP-intercepted widget remains a stateful singleton, not an elastic UI pool.
+{{- end }}
 {{- end }}

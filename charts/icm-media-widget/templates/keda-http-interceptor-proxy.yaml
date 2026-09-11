@@ -1,12 +1,15 @@
+{{- $root := . }}
+{{- range $role := list "widget" "rest" }}
+{{- if (index $root.Values.httpScaling $role).enabled }}
+---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "icm-media-widget.fullname" . }}-keda-hip
-  labels:
-    {{- include "icm-media-widget.labels" . | nindent 4 }}
+  name: {{ include "media.name" $root }}-{{ $role }}-interceptor
 spec:
   type: ExternalName
-  externalName: keda-add-ons-http-interceptor-proxy.keda.svc.cluster.local
+  externalName: {{ printf "%s.%s.svc.%s" $root.Values.httpScaling.interceptor.service $root.Values.httpScaling.interceptor.namespace $root.Values.httpScaling.clusterDomain | quote }}
   ports:
-    - port: 8080
-      targetPort: 8080
+    - {name: http, port: {{ $root.Values.httpScaling.interceptor.port }}, protocol: TCP}
+{{- end }}
+{{- end }}

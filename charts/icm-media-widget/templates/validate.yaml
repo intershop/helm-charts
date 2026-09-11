@@ -1,0 +1,52 @@
+{{- $ids := list }}
+{{- range $role, $component := .Values.components }}
+{{- if has (lower $component.clientId) $ids }}{{ fail "Each component requires a DISTINCT workload identity clientId" }}{{ end }}
+{{- $ids = append $ids (lower $component.clientId) }}
+{{- end }}
+{{- if or .Values.httpScaling.widget.enabled .Values.httpScaling.rest.enabled }}
+{{- if not (semverCompare ">=1.31.0-0 <1.34.0-0" .Capabilities.KubeVersion.Version) }}{{ fail "HTTP add-on 0.11.1 requires the reviewed Kubernetes 1.31-1.33 compatibility range; keep HTTP scaling disabled on other versions" }}{{ end }}
+{{- range $role := list "widget" "rest" }}
+{{- $settings := index $.Values.httpScaling $role }}
+{{- if $settings.enabled }}
+{{- if gt (int $settings.minReplicas) (int $settings.maxReplicas) }}{{ fail "HTTP minReplicas must not exceed maxReplicas" }}{{ end }}
+{{- if le (int $settings.responseHeaderSeconds) (int $.Values.worker.maxProcessingSeconds) }}{{ fail "HTTP responseHeaderSeconds must exceed worker.maxProcessingSeconds; also align application and ingress timeouts" }}{{ end }}
+{{- end }}
+{{- end }}
+{{- $restHost := include "media.restHost" . }}
+{{- if gt (len $restHost) 253 }}{{ fail "Generated REST interceptor hostname exceeds the DNS length limit" }}{{ end }}
+{{- $interceptorHost := printf "%s.%s.svc.%s" .Values.httpScaling.interceptor.service .Values.httpScaling.interceptor.namespace .Values.httpScaling.clusterDomain }}
+{{- if gt (len $interceptorHost) 253 }}{{ fail "Interceptor service hostname exceeds the DNS length limit" }}{{ end }}
+{{- range $route := list "public" "management" "control" }}
+{{- if eq (index $.Values.ingress $route).host $restHost }}{{ fail "Internal REST interceptor hostname must not be used for a public ingress" }}{{ end }}
+{{- end }}
+{{- end }}
+{{- if has (lower .Values.imgproxy.clientId) $ids }}{{ fail "imgproxy requires a DISTINCT images-only workload identity" }}{{ end }}
+{{- $hosts := list }}
+{{- range $route := list "public" "management" "control" }}
+{{- $host := (index $.Values.ingress $route).host }}
+{{- if has $host $hosts }}{{ fail "public, management and control ingress hosts must be distinct" }}{{ end }}
+{{- $hosts = append $hosts $host }}
+{{- end }}
+{{- $tables := list }}
+{{- range $table := list .Values.azure.directoryTable .Values.azure.credentialsTable .Values.azure.runtimeTable .Values.azure.drainTable .Values.azure.controlTable .Values.azure.proofsTable }}
+{{- if has (lower $table) $tables }}{{ fail "Each Azure Table must have a distinct name for table-scoped RBAC" }}{{ end }}
+{{- $tables = append $tables (lower $table) }}
+{{- end }}
+{{- if ne .Values.oidc.audience .Values.oidc.clientId }}{{ fail "oidc.audience must equal oidc.clientId (StartupGate contract)" }}{{ end }}
+{{- if eq (first (splitList "." (trimPrefix "https://" .Values.azure.controlEndpoint))) (first (splitList "." (trimPrefix "https://" .Values.azure.mediaEndpoint))) }}
+{{- fail "Media and control storage must use separate accounts" }}
+{{- end }}
+{{- if gt (int .Values.scaling.fallbackReplicas) (int .Values.scaling.maxReplicas) }}{{ fail "fallbackReplicas must not exceed maxReplicas" }}{{ end }}
+{{- if lt (int .Values.worker.metricsMaxAgeSeconds) (mul 2 (int .Values.worker.scanSeconds)) }}{{ fail "metricsMaxAgeSeconds must be at least twice scanSeconds" }}{{ end }}
+{{- if gt (int .Values.worker.maxJobsPerTenant) (int .Values.worker.maxConcurrentJobs) }}{{ fail "maxJobsPerTenant must not exceed maxConcurrentJobs" }}{{ end }}
+{{- if gt (int .Values.worker.localPerTenantConcurrency) (int .Values.worker.localConcurrency) }}{{ fail "localPerTenantConcurrency must not exceed localConcurrency" }}{{ end }}
+{{- if gt (int64 .Values.worker.maxImageOutputBytes) (int64 .Values.worker.maxImageBytes) }}{{ fail "maxImageOutputBytes must not exceed maxImageBytes (worker startup contract)" }}{{ end }}
+{{- if lt (int64 .Values.worker.nativeAddressSpaceBytes) (mul (add 512 (int .Values.worker.nativeHeapMb)) 1048576) }}{{ fail "nativeAddressSpaceBytes must cover nativeHeapMb plus 512 MiB (worker startup contract)" }}{{ end }}
+{{- if and (not .Values.scaling.enabled) (lt (int .Values.components.archive.replicas) 1) }}{{ fail "archive.replicas must be positive when scaling is disabled" }}{{ end }}
+{{- if lt (int64 .Values.worker.maxExpandedBytes) (int64 .Values.worker.maxImageBytes) }}{{ fail "maxExpandedBytes must cover maxImageBytes" }}{{ end }}
+{{- if lt (int64 .Values.worker.maxImageRequestBytes) (add 4096 (div (mul 4 (add (int64 .Values.worker.maxImageBytes) 2)) 3)) }}{{ fail "maxImageRequestBytes must cover base64 image bytes plus request overhead" }}{{ end }}
+{{- $archiveScratch := mul (int64 .Values.worker.maxConcurrentJobs) (add (int64 .Values.upload.maxBytes) (int64 .Values.worker.maxExpandedBytes)) }}
+{{- if lt (int64 .Values.components.archive.scratchBytes) $archiveScratch }}{{ fail "archive.scratchBytes must cover concurrent compressed and expanded archives" }}{{ end }}
+{{- range $role := list "widget" "rest" }}
+{{- if lt (int64 (index $.Values.components $role).scratchBytes) (mul (int64 $.Values.worker.maxConcurrentJobs) (int64 $.Values.worker.maxImageRequestBytes)) }}{{ fail "widget/rest scratchBytes must cover concurrent request bodies" }}{{ end }}
+{{- end }}
