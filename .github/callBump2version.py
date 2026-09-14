@@ -79,7 +79,7 @@ def addAllDependencies(chart: ProductType, upgrade: UpgradeType, dict: dict):
 
 # argv must be in the format "chart1:upgrade1 chart2:upgrade2"
 # dependent charts are computed and do not have to be specified
-# note: this cannot be used for the iom chart since they don't use bump2version
+# note: this cannot be used for the iom chart since it does not use bump-my-version
 def main(argv):
   # parse arguments and figure out dependencies
   deps = dict()

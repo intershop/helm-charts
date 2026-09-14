@@ -27,12 +27,12 @@ If you have any questions feel free, to also send them to devcommunity@intershop
 ## Contribution Process
 
 1. Fork the repository.
-2. Use the appropriate `develop\?` branch as base for your feature branch. See [Release Process](https://github.com/intershop/helm-charts/wiki/Release-Process).
+2. Use the appropriate `develop/<team>` branch as base for your feature branch. See [Releasing](./RELEASING.md).
 3. Work on changes.
 4. Comment the changes.
 5. Check whether the changes comply with the the rules (design etc.).
 6. Commit changes according to our Commit Message Guidelines.
-7. Create a pull request into the `develop\?` base branch.
+7. Create a pull request into the `develop/<team>` base branch.
 8. Add as much information as needed.
 9. Reference the solved issue.
 10. Wait for the review.
@@ -47,7 +47,7 @@ These rules are essential to our automated release process and the later rollout
 
 Some rules to be emphasized for chart related commits:
 
-- Every commit starting with `BREAKING CHANGE(icm):` will be treated as a _MAJOR_ change. Please also use the commit message body to give detailed information.
+- To mark a _MAJOR_ (breaking) change, add a `BREAKING CHANGE:` footer to the commit body while keeping a normal `feat`/`fix` header. The footer both triggers the major version bump and adds a dedicated **BREAKING CHANGE** section to the generated changelog. The `!` shorthand in the header (e.g. `feat(icm)!:`) also triggers the major bump and the commit still appears under its type, but only the footer adds the dedicated **BREAKING CHANGE** section, so prefer the footer.
 - A commit message starting with `feat(icm):` (or e.g.: `feat(pwa):`) will get a _MINOR_ change.
 - The rest will be _PATCH_.
 
@@ -55,6 +55,14 @@ Please also enhance your commit message with an existing **GitHub issue number**
 
 Here is a sample commit message: `feat(icm): my short commit description (#123)`
 
-Chart unrelated commits (like e.g., docs, chore, build, test) will not be taken into account but should still be conventional and as informative as possible.
+A breaking change adds a `BREAKING CHANGE:` footer:
+
+```
+feat(icm): my short commit description (#123)
+
+BREAKING CHANGE: describe what breaks and the migration path for existing deployments
+```
+
+Whether a commit counts toward a chart's release is decided by the files it touches, not by its type: only commits that modify files under `charts/<chart>/` trigger a release for that chart. Among those, anything that is neither a `feat` nor a breaking change results in a _PATCH_ (this includes `docs`, `chore`, `build`, `test`, etc.). Commits that touch no chart directory are not released automatically, but should still be conventional and as informative as possible.
 
 All of this will help to read and interpret our changelogs and release notes.

@@ -70,7 +70,7 @@ jobs:
         with:
           tag_prefix: '${{ matrix.value }}-'
           change_path: 'charts/${{ matrix.value }}'
-          major_pattern: 'BREAKING_CHANGE'
+          major_pattern: '/!:|BREAKING CHANGE:/'
           minor_pattern: '/feat\s*(\(\w+\)*)?:/'
           search_commit_body: true
           debug: true
