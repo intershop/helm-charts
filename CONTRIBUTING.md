@@ -32,13 +32,13 @@ If you have any questions feel free, to also send them to devcommunity@intershop
 4. Comment the changes.
 5. Check whether the changes comply with the the rules (design etc.).
 6. Commit changes according to our Commit Message Guidelines.
-6. Create a pull request into the `develop\?` base branch.
-7. Add as much information as needed.
-8. Reference the solved issue.
-9. Wait for the review.
-10. The pull request is approved, denied (with explanation) or sent back for further information.
-11. We are trying to react as fast as possible to pull requests, issues, feedback and any other community interaction. However, we cannot guarantee a particular timeframe for every answer. We hope you understand and apologize for any inconveniences.
-12. If the pull request is approved, the changes shall be merged via squash commit to improve commit history readability.
+7. Create a pull request into the `develop\?` base branch.
+8. Add as much information as needed.
+9. Reference the solved issue.
+10. Wait for the review.
+11. The pull request is approved, denied (with explanation) or sent back for further information.
+12. We are trying to react as fast as possible to pull requests, issues, feedback and any other community interaction. However, we cannot guarantee a particular timeframe for every answer. We hope you understand and apologize for any inconveniences.
+13. If the pull request is approved, the changes shall be merged via squash commit to improve commit history readability.
 
 ## Commit Message Guidelines
 
@@ -46,9 +46,10 @@ In general, we comply with the rules and formats of [Conventional Commits](https
 These rules are essential to our automated release process and the later rollout of a helm chart. Commit messages will be used to determine the new semantic version and shall help updating existing projects.
 
 Some rules to be emphasized for chart related commits:
-* Every commit starting with `BREAKING CHANGE(icm):` will be treated as a _MAJOR_ change. Please also use the commit message body to give detailed information.
-* A commit message starting with `feat(icm):` (or e.g.: `feat(pwa):`) will get a _MINOR_ change.
-* The rest will be _PATCH_.
+
+- Every commit starting with `BREAKING CHANGE(icm):` will be treated as a _MAJOR_ change. Please also use the commit message body to give detailed information.
+- A commit message starting with `feat(icm):` (or e.g.: `feat(pwa):`) will get a _MINOR_ change.
+- The rest will be _PATCH_.
 
 Please also enhance your commit message with an existing **GitHub issue number**, where detailed information could be found. Github will later on link the commit to the issue ticket automatically.
 
