@@ -11,3 +11,4 @@ build/**
 **/tests/__results__
 values-*.yaml
 *~
+node_modules/
