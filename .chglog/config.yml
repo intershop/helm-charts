@@ -20,11 +20,12 @@ options:
       refactor: Code Refactoring
       docs: Documentation
   header:
-    pattern: "^(\\w*)(?:\\(([\\w\\$\\.\\-\\*\\s]*)\\))?\\:\\s(.*)$"
+    # !? tolerates the Conventional Commits breaking-change shorthand (e.g. feat(icm)!:)
+    pattern: "^(\\w*)(?:\\(([\\w\\$\\.\\-\\*\\s]*)\\))?!?\\:\\s(.*)$"
     pattern_maps:
       - Type
       - Scope
       - Subject
   notes:
     keywords:
-      - BREAKING_CHANGE
+      - BREAKING CHANGE
