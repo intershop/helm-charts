@@ -23,9 +23,9 @@ Please check the one that applies to this PR using "x".
 - [ ] Documentation content changes
 - [ ] Application / infrastructure changes
 
-## Release ##
+## Release
 
-Be sure that pull requests are build according to the defined release process [here](https://github.com/intershop/helm-charts/wiki/Release-Process). As a main part to mention here is that the semantic version type will be read from the commit messages (`BREAKING CHANGE(icm):` marks a *major* change, `feat(icm):` marks *minor* changes and the rest will be *patch*. So the developer must already know and is responsible.
+Be sure that pull requests are build according to the defined release process [here](https://github.com/intershop/helm-charts/wiki/Release-Process). As a main part to mention here is that the semantic version type will be read from the commit messages (`BREAKING CHANGE(icm):` marks a _major_ change, `feat(icm):` marks _minor_ changes and the rest will be _patch_. So the developer must already know and is responsible.
 
 ## What Is the Current Behavior?
 
