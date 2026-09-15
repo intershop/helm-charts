@@ -18,7 +18,7 @@ tests:
         replicaCount: 1
     asserts:
       - failedTemplate:
-          errorMessage: "values: `cache.*` was renamed to `proxy.*` in chart 1.0.0. Move your nginx configuration under `proxy:`. See the migration guide at charts/pwa/docs/migrate-to-1.0.0.md."
+          errorMessage: 'values: `cache.*` was renamed to `proxy.*` in chart 1.0.0. Move your nginx configuration under `proxy:`. See the migration guide at charts/pwa/docs/migrate-to-1.0.0.md.'
 
   - it: fails when the removed `upstream` key is set
     set:
@@ -52,7 +52,7 @@ tests:
             value: bar
     asserts:
       - failedTemplate:
-          errorMessage: "values: `app.environment` is not valid in chart 1.0.0; set SSR environment variables via `app.env`. See the migration guide at charts/pwa/docs/migrate-to-1.0.0.md."
+          errorMessage: 'values: `app.environment` is not valid in chart 1.0.0; set SSR environment variables via `app.env`. See the migration guide at charts/pwa/docs/migrate-to-1.0.0.md.'
 
   - it: fails when `proxy.extraEnvVars` is used instead of `proxy.env`
     set:
@@ -63,4 +63,4 @@ tests:
             value: bar
     asserts:
       - failedTemplate:
-          errorMessage: "values: `proxy.extraEnvVars` was renamed to `proxy.env` in chart 1.0.0. See the migration guide at charts/pwa/docs/migrate-to-1.0.0.md."
+          errorMessage: 'values: `proxy.extraEnvVars` was renamed to `proxy.env` in chart 1.0.0. See the migration guide at charts/pwa/docs/migrate-to-1.0.0.md.'

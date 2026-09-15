@@ -6,15 +6,15 @@
 #   proxy -> nginx/OpenResty reverse proxy (public front door)
 
 # -- Override the chart name used in resource names.
-nameOverride: ""
+nameOverride: ''
 # -- Override the fully qualified release name.
-fullnameOverride: ""
+fullnameOverride: ''
 
 # General or shared values used by both tiers.
 config:
   # -- Base URL of the Intershop Commerce Management (ICM) backend.
   # Required; intentionally empty so installs must set a real backend and fail fast rather than defaulting to a dev URL.
-  icmBaseUrl: ""
+  icmBaseUrl: ''
   # -- (string) Internal ICM base URL used by SSR. Optional; leave unset to skip the ICM_BASE_URL_SSR env var.
   # e.g. "http://icm-<cstmr-id>-<env>-icm-web-wa.icm-<cstmr-id>-<env>.svc.cluster.local:8080"
   icmBaseUrlSsr:
@@ -46,7 +46,7 @@ serviceAccount:
   # only for per-Pod SSR cache purging via the Endpoints API.
   automount: false
   # -- Name of the ServiceAccount to use. Generated if empty and create=true.
-  name: ""
+  name: ''
   # -- Annotations to add to the ServiceAccount.
   annotations: {}
 
@@ -71,7 +71,7 @@ app:
     # -- SSR container image repository.
     repository: intershophub/intershop-pwa-ssr
     # -- Image tag. Defaults to the chart appVersion when empty.
-    tag: ""
+    tag: ''
     # -- Image pull policy.
     pullPolicy: IfNotPresent
 
@@ -123,11 +123,11 @@ app:
   # @default -- see [values.yaml](./values.yaml)
   resources:
     requests:
-      cpu: "100m"
-      memory: "600Mi"
+      cpu: '100m'
+      memory: '600Mi'
     limits:
-      cpu: "1000m"
-      memory: "1500Mi"
+      cpu: '1000m'
+      memory: '1500Mi'
 
   # Probes shipped in the SSR image; they check PM2 process health (per theme), not ICM,
   # so a backend outage won't restart or de-register otherwise-healthy Pods.
@@ -136,7 +136,7 @@ app:
   # @default -- see [values.yaml](./values.yaml)
   startupProbe:
     exec:
-      command: ["node", "/dist/readinessprobe.js"]
+      command: ['node', '/dist/readinessprobe.js']
     periodSeconds: 5
     timeoutSeconds: 5
     failureThreshold: 30
@@ -145,7 +145,7 @@ app:
   # @default -- see [values.yaml](./values.yaml)
   livenessProbe:
     exec:
-      command: ["node", "/dist/livenessprobe.js"]
+      command: ['node', '/dist/livenessprobe.js']
     periodSeconds: 20
     timeoutSeconds: 5
     failureThreshold: 3
@@ -154,7 +154,7 @@ app:
   # @default -- see [values.yaml](./values.yaml)
   readinessProbe:
     exec:
-      command: ["node", "/dist/readinessprobe.js"]
+      command: ['node', '/dist/readinessprobe.js']
     periodSeconds: 10
     timeoutSeconds: 5
     failureThreshold: 3
@@ -201,7 +201,7 @@ proxy:
     # -- Proxy container image repository.
     repository: intershophub/intershop-pwa-nginx
     # -- Image tag. Defaults to the chart appVersion when empty.
-    tag: ""
+    tag: ''
     # -- Image pull policy.
     pullPolicy: IfNotPresent
 
@@ -246,14 +246,14 @@ proxy:
   #       channel: inSPIRED-inTRONICS-Site
   #       theme: b2c
   # -- Multi-channel/-site routing configuration (YAML string).
-  multiChannel: ""
+  multiChannel: ''
 
   # Additional headers configuration object
   # additionalHeaders: |
   #   headers:
   #     - X-Frame-Options: 'SAMEORIGIN'
   # -- Additional response headers configuration (YAML string).
-  additionalHeaders: ""
+  additionalHeaders: ''
 
   # Ignore query parameters during caching
   # cacheIgnoreParams: |
@@ -261,7 +261,7 @@ proxy:
   #     - utm_source
   #     - utm_campaign
   # -- Query parameters nginx ignores when caching (YAML string).
-  cacheIgnoreParams: ""
+  cacheIgnoreParams: ''
 
   # -- Post-upgrade job that restarts the proxy to purge cached SSR pages.
   # @default -- see [values.yaml](./values.yaml)
@@ -269,7 +269,7 @@ proxy:
     enabled: true
     image:
       repository: ishcp.azurecr.io/ishops/cronjob-utils
-      tag: "1"
+      tag: '1'
       pullPolicy: IfNotPresent
 
   # The upstream OpenResty image starts its master process as root to bind the privileged
@@ -295,11 +295,11 @@ proxy:
   # @default -- see [values.yaml](./values.yaml)
   resources:
     requests:
-      cpu: "50m"
-      memory: "250Mi"
+      cpu: '50m'
+      memory: '250Mi'
     limits:
-      cpu: "1000m"
-      memory: "1000Mi"
+      cpu: '1000m'
+      memory: '1000Mi'
 
   # nginx has no backend-independent health URL, so use a TCP check on the http port.
   # -- Liveness probe for the proxy container (TCP check on the http port).
