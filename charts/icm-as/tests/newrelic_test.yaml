@@ -187,6 +187,75 @@ tests:
           path: data["newrelic.yml"]
           pattern: '(?m)^\W{4}metrics:\n\W{6}enabled: false$'
 
+  - it: should leave error collector defaults unchanged when not configured
+    set:
+      newrelic.enabled: true
+    template: templates/config-newrelic-yaml-cm.yaml
+    asserts:
+      - notMatchRegex:
+          path: data["newrelic.yml"]
+          pattern: 'error_collector:'
+
+  - it: should configure HTTP 401 as an expected error
+    set:
+      newrelic.enabled: true
+      newrelic.apm.errorCollector.expected_status_codes: "401"
+    template: templates/config-newrelic-yaml-cm.yaml
+    asserts:
+      - matchRegex:
+          path: data["newrelic.yml"]
+          pattern: '(?m)^  error_collector:\n    expected_status_codes: "401"$'
+
+  - it: should preserve expected status code ranges
+    set:
+      newrelic.enabled: true
+      newrelic.apm.errorCollector.expected_status_codes: "401,409-410"
+    template: templates/config-newrelic-yaml-cm.yaml
+    asserts:
+      - matchRegex:
+          path: data["newrelic.yml"]
+          pattern: '(?m)^  error_collector:\n    expected_status_codes: 401,409-410$'
+
+  - it: should preserve expected status code lists
+    set:
+      newrelic.enabled: true
+      newrelic.apm.errorCollector.expected_status_codes:
+        - 401
+        - 409
+    template: templates/config-newrelic-yaml-cm.yaml
+    asserts:
+      - matchRegex:
+          path: data["newrelic.yml"]
+          pattern: '(?m)^  error_collector:\n    expected_status_codes:\n    - 401\n    - 409$'
+
+  - it: should preserve structured expected error classes and messages
+    set:
+      newrelic.enabled: true
+      newrelic.apm.errorCollector:
+        expected_classes:
+          - class_name: com.example.ExpectedException
+            message: "Known failure: retry later"
+        expected_messages:
+          com.example.ValidationException:
+            - "Invalid input: missing value"
+    template: templates/config-newrelic-yaml-cm.yaml
+    asserts:
+      - matchRegex:
+          path: data["newrelic.yml"]
+          pattern: '(?m)^  error_collector:\n    expected_classes:\n    - class_name: com.example.ExpectedException\n      message: ''Known failure: retry later''$'
+      - matchRegex:
+          path: data["newrelic.yml"]
+          pattern: '(?m)^    expected_messages:\n      com.example.ValidationException:\n      - ''Invalid input: missing value''$'
+
+  - it: should not render agent configuration when New Relic is disabled
+    set:
+      newrelic.enabled: false
+      newrelic.apm.errorCollector.expected_status_codes: "401"
+    template: templates/config-newrelic-yaml-cm.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
   - it: should fail if both New Relic and OpenTelemetry are enabled
     values:
       - ../values.yaml
