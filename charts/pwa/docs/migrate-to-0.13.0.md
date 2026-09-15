@@ -39,7 +39,7 @@ affinity:
               operator: In
               values:
                 - my-custom-app
-        topologyKey: "kubernetes.io/hostname"
+        topologyKey: 'kubernetes.io/hostname'
 ```
 
 This will conflict with the new default `podAntiAffinity.enabled: true` setting.

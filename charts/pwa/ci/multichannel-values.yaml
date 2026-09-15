@@ -2,8 +2,8 @@
 # chart-testing (ct) install scenario: multi-channel nginx configuration. Single-node
 # overrides so it schedules on the ephemeral kind cluster.
 config:
-  icmBaseUrl: "https://develop.icm.intershop.de"
-  allowedHosts: "pwa.localdev"
+  icmBaseUrl: 'https://develop.icm.intershop.de'
+  allowedHosts: 'pwa.localdev'
 
 app:
   replicaCount: 1

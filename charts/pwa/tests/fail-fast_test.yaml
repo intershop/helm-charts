@@ -6,7 +6,7 @@ release:
 tests:
   - it: rendering fails when the required config.icmBaseUrl is empty
     set:
-      config.icmBaseUrl: ""
+      config.icmBaseUrl: ''
     asserts:
       - failedTemplate: {}
 

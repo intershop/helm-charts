@@ -3,8 +3,8 @@
 # tiers plus the in-cluster Prometheus/Grafana monitoring stack. Single-node overrides so it
 # schedules on the ephemeral kind cluster.
 config:
-  icmBaseUrl: "https://develop.icm.intershop.de"
-  allowedHosts: "pwa.localdev"
+  icmBaseUrl: 'https://develop.icm.intershop.de'
+  allowedHosts: 'pwa.localdev'
 
 app:
   replicaCount: 1

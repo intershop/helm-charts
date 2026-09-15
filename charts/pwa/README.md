@@ -212,7 +212,7 @@ ingress:
         - host: ${pwa_hostname}-edit.pwa.intershop.de
       tlsSecretName: tls-star-pwa-intershop-de
       annotations:
-        kubernetes.io/tls-acme: "false"
+        kubernetes.io/tls-acme: 'false'
         # xxx.xxx.xxx.xxx and yyy.yyy.yyy.yyy are valid IP-Addresses to be whitelisted
         configuration-snippet: |-
           satisfy any;
@@ -225,7 +225,7 @@ ingress:
         - host: ${pwa_hostname}-live.pwa.intershop.de
       tlsSecretName: tls-star-pwa-intershop-de
       annotations:
-        kubernetes.io/tls-acme: "false"
+        kubernetes.io/tls-acme: 'false'
 ```
 
 ## Pod Anti-Affinity
