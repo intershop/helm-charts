@@ -1,0 +1,31 @@
+# Helm / Go templates — contain {{ ... }} and are not valid YAML, so Prettier cannot parse them.
+charts/**/templates/**
+**/*.tpl
+**/*.tmpl
+
+# Chart formatting is rolled out chart-by-chart. All charts are excluded for now;
+# remove a chart's line to onboard it to Prettier.
+charts/icm/**
+charts/icm-as/**
+charts/icm-job/**
+charts/icm-job-test/**
+charts/icm-replication-test/**
+charts/icm-test/**
+charts/icm-web/**
+charts/iom/**
+charts/pwa/**
+
+# Generated files (managed by git-chglog / release tooling).
+**/CHANGELOG.md
+**/RELEASE_NOTES.md
+charts/**/release-notes/**
+.chglog/
+
+# Local, untracked developer override files (see .gitignore).
+values-*.yaml
+
+# Dependencies and build output.
+package-lock.json
+node_modules/
+**/charts/*.tgz
+build/
