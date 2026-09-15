@@ -12,6 +12,10 @@ data:
   newrelic.yml:  |-
     common: &default_settings
       app_name: "{{ template "icm-as.fullname" . }}-appserver"
+      {{- with .Values.newrelic.apm.errorCollector }}
+      error_collector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       application_logging:
         enabled: true
         forwarding:
