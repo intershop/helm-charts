@@ -63,7 +63,7 @@ def handle_subprocess_error(subprocess_result, error_message):
 
 def bumpVersion(chart, bump):
   print(f"Bumping version of \'{chart.value}\' to next \'{bump.value}\' value.")
-  bumpver_process = subprocess.run(f"bump-my-version --allow-dirty bump {bump.value}",
+  bumpver_process = subprocess.run(f"bump-my-version bump --allow-dirty {bump.value}",
                                      shell=True,
                                      cwd=f"./charts/{chart.value}",
                                      capture_output=True)
@@ -79,7 +79,7 @@ def addAllDependencies(chart: ProductType, upgrade: UpgradeType, dict: dict):
 
 # argv must be in the format "chart1:upgrade1 chart2:upgrade2"
 # dependent charts are computed and do not have to be specified
-# note: this cannot be used for the iom chart since they don't use bump2version
+# note: this cannot be used for the iom chart since it does not use bump-my-version
 def main(argv):
   # parse arguments and figure out dependencies
   deps = dict()
