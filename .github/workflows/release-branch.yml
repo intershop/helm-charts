@@ -138,18 +138,25 @@ jobs:
           all=("${{ steps.read-release-input-parameter.outputs.release-input-parameter }}")
           for i in $all; do
             IFS=':' read -ra my_array <<< "$i"
-            ./git-chglog/git-chglog \
-              --path ./charts/${my_array[0]} \
-              --tag-filter-pattern "^${my_array[0]}-\d+.\d+.\d+$" \
-              --next-tag ${my_array[0]}-$(grep -A0 '^version:' ./charts/${my_array[0]}/Chart.yaml | awk '{print $2}' | sed 's/\"//g') \
-              -o ./charts/${my_array[0]}/CHANGELOG.md
+            chart=${my_array[0]}
+            version=$(grep -A0 '^version:' ./charts/${chart}/Chart.yaml | awk '{print $2}' | sed 's/\"//g')
+            tag=${chart}-${version}
 
+            # generate ONLY the new version's section
             ./git-chglog/git-chglog \
-              --path ./charts/${my_array[0]} \
-              --tag-filter-pattern "^${my_array[0]}-\d+.\d+.\d+$" \
-              --next-tag ${my_array[0]}-$(grep -A0 '^version:' ./charts/${my_array[0]}/Chart.yaml | awk '{print $2}' | sed 's/\"//g') \
-              -o ./charts/${my_array[0]}/RELEASE_NOTES.md \
-              ${my_array[0]}-$(grep -A0 '^version:' ./charts/${my_array[0]}/Chart.yaml | awk '{print $2}' | sed 's/\"//g')
+              --path ./charts/${chart} \
+              --tag-filter-pattern "^${chart}-\d+.\d+.\d+$" \
+              --next-tag ${tag} \
+              -o /tmp/${chart}-new-section.md \
+              ${tag}
+
+            # prepend it to the existing changelog so earlier sections (and manual edits) are kept verbatim
+            touch ./charts/${chart}/CHANGELOG.md
+            { cat /tmp/${chart}-new-section.md; echo; cat ./charts/${chart}/CHANGELOG.md; } > /tmp/${chart}-changelog.md
+            mv /tmp/${chart}-changelog.md ./charts/${chart}/CHANGELOG.md
+
+            # release notes always contain only the newest version
+            cp /tmp/${chart}-new-section.md ./charts/${chart}/RELEASE_NOTES.md
           done
 
           rm -Rf git-chglog
