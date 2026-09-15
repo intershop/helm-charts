@@ -9,6 +9,13 @@
       "options": {
         "proseWrap": "preserve"
       }
+    },
+    {
+      "files": "*.gotmpl",
+      "options": {
+        "parser": "markdown",
+        "proseWrap": "preserve"
+      }
     }
   ]
 }

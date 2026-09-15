@@ -608,12 +608,7 @@
         "autoscaling": {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "enabled",
-            "minReplicas",
-            "maxReplicas",
-            "targetCPUUtilizationPercentage"
-          ],
+          "required": ["enabled", "minReplicas", "maxReplicas", "targetCPUUtilizationPercentage"],
           "properties": {
             "enabled": {
               "type": "boolean",

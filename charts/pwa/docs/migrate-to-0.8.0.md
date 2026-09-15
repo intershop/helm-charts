@@ -21,11 +21,12 @@ ingress:
   instances:
     ingress:
       annotations:
-        kubernetes.io/tls-acme: "false"
+        kubernetes.io/tls-acme: 'false'
       tlsSecretName: tls-star-pwa-intershop-de
       hosts:
         - host: pwa.example.local
 ```
+
 A configuration example for the new `ingress` declaration format with host specific `tlsSecretName` overrides is as follows.
 
 ```yaml
@@ -35,7 +36,7 @@ ingress:
   instances:
     ingress:
       annotations:
-        kubernetes.io/tls-acme: "false"
+        kubernetes.io/tls-acme: 'false'
       tlsSecretName: tls-star-pwa-intershop-de
       hosts:
         - host: pwa.example.local
@@ -45,17 +46,16 @@ ingress:
           tlsSecretName: else.tls-star-pwa-intershop-de
 ```
 
-
 The migration from the previous `ingress` and `ingresssplit` configurations can be seen in the examples below.
 
-__Old__
+**Old**
 
 ```yaml
 ingress:
   enabled: true
   className: nginx
   annotations:
-    kubernetes.io/tls-acme: "false"
+    kubernetes.io/tls-acme: 'false'
   hosts:
     - host: pwa.example.local
       paths:
@@ -68,7 +68,7 @@ ingresssplit:
   enabled: true
   className: nginx
   annotations:
-    kubernetes.io/tls-acme: "false"
+    kubernetes.io/tls-acme: 'false'
     configuration-snippet: |-
       satisfy any;
       allow xxx.xxx.xxx.xxx;
@@ -86,7 +86,7 @@ ingresssplit:
     - secretName: tls-star-pwa-intershop-de
 ```
 
-__New__
+**New**
 
 ```yaml
 ingress:
@@ -95,13 +95,13 @@ ingress:
   instances:
     ingress:
       annotations:
-        kubernetes.io/tls-acme: "false"
+        kubernetes.io/tls-acme: 'false'
       tlsSecretName: tls-star-pwa-intershop-de
       hosts:
         - host: pwa.example.local
     ingresssplit:
       annotations:
-        kubernetes.io/tls-acme: "false"
+        kubernetes.io/tls-acme: 'false'
         configuration-snippet: |-
           satisfy any;
           allow xxx.xxx.xxx.xxx;

@@ -124,7 +124,7 @@ cache:
         channel: inSPIRED-inTRONICS-Site
   extraEnvVars:
     - name: CACHE
-      value: "on"
+      value: 'on'
 ```
 
 After (1.0.0):
@@ -146,7 +146,7 @@ proxy:
         channel: inSPIRED-inTRONICS-Site
   env:
     - name: CACHE
-      value: "on"
+      value: 'on'
 ```
 
 ## Removed values
