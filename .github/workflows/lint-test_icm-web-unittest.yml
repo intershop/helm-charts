@@ -1,8 +1,8 @@
-name: "Unit test icm-web chart"
+name: 'Unit test icm-web chart'
 on:
   pull_request:
     paths:
-      - "charts/icm-web/**"
+      - 'charts/icm-web/**'
 
 jobs:
   lint-test-icm-web-unittest:
