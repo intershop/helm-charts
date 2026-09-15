@@ -1,16 +1,16 @@
 # Add 'Repo' label to any root file or ".github" directory file changes
 Repo:
   - changed-files:
-    - any-glob-to-any-file:
-      - '*'
-      - '.github/**'
+      - any-glob-to-any-file:
+          - '*'
+          - '.github/**'
 
 iom:
   - changed-files:
       - any-glob-to-any-file:
-        - charts/iom/**
+          - charts/iom/**
 
 pwa:
   - changed-files:
       - any-glob-to-any-file:
-        - charts/pwa/**
+          - charts/pwa/**
