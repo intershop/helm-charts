@@ -62,7 +62,65 @@ The `APM` type contains the following attributes:
 |===
 |Attribute |Description |Type |Mandatory |Default Value
 |enabled|enables/disables the APM data|boolean|{optional}|`true`
+|errorCollector|Java agent error collector settings|<<_errorCollectorType,ErrorCollector>>|{optional}|`{}`
 |===
+
+[#_errorCollectorType]
+=== Type `ErrorCollector`
+
+The `newrelic.apm.errorCollector` map is rendered unchanged under `common.error_collector` in the agent's `newrelic.yml`.
+Use the Java agent's original snake_case keys. An empty map leaves the agent defaults unchanged.
+The chart does not validate these keys; the Java agent bundled with the application image must support the configured options.
+For APM, both `newrelic.enabled` and `newrelic.apm.enabled` must be `true`.
+
+Expected errors remain available for investigation but do not affect the application's APM error rate or Apdex score.
+Unlike expected errors, ignored errors are not reported at all.
+
+[cols="1,3,1",options="header"]
+|===
+|Attribute |Description |Type
+|expected_status_codes|HTTP status codes to mark as expected, for example `"401"` or `"401,409-410"`|string, integer, or list of integers
+|expected_classes|Exception classes to mark as expected; entries can contain `class_name` and an optional `message`|list
+|expected_messages|Fully qualified exception class names mapped to lists of message substrings|map
+|===
+
+For example, to match an exception only when its message contains a specific string:
+
+[source,yaml]
+----
+newrelic:
+  apm:
+    errorCollector:
+      expected_classes:
+        - class_name: com.example.ValidationException
+          message: "Missing required field"
+----
+
+Server-side agent configuration can override local settings. Ignore rules take precedence over expected-error rules.
+Calls to `noticeError` with an explicit `expected` argument also take precedence over local expected-error rules.
+See https://docs.newrelic.com/docs/apm/agents/java-agent/configuration/java-agent-error-configuration/[Java agent error configuration] for supported matching rules and precedence.
+
+[IMPORTANT]
+====
+The chart mounts `newrelic.yml` using a ConfigMap `subPath`. Existing pods do not receive updates to this mounted file.
+Recreate the application-server pods after changing `newrelic.apm.errorCollector`; updating the ConfigMap alone does not trigger a rollout.
+====
+
+When using the parent `icm` chart in a Flux HelmRelease, set the values under `spec.values.icm-as.newrelic.apm`:
+
+[source,yaml]
+----
+spec:
+  values:
+    icm-as:
+      newrelic:
+        apm:
+          errorCollector:
+            expected_status_codes: "401"
+----
+
+The HelmRelease must reference a published `icm` version whose `icm-as` dependency includes this option.
+Adding these values to a release pinned to an older chart does not configure expected errors.
 
 === Example
 
@@ -77,11 +135,14 @@ newrelic:
     enabled: true <3>
   apm:
     enabled: true <4>
+    errorCollector:
+      expected_status_codes: "401" <5>
 ----
 <1> Enable New Relic monitoring
 <2> For the license key, use the secret `newrelic-license` and key `license`
 <3> Enable metrics monitoring
 <4> Enable APM monitoring
+<5> Report HTTP 401 errors as expected errors
 
 === Defaults
 
@@ -99,4 +160,5 @@ metrics:
 ----
 apm:
   enabled: true
+  errorCollector: {}
 ----

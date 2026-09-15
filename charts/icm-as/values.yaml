@@ -107,6 +107,18 @@ newrelic:
   apm:
     # fine-grained option to disable apm for cost reduction
     enabled: true
+    # Optional Java agent settings, passed unchanged to common.error_collector in newrelic.yml.
+    # Use the agent's original snake_case keys; {} leaves the agent defaults unchanged.
+    # expected_status_codes: HTTP codes, e.g. "401", "401,409-410", or [401, 409].
+    # expected_classes: list of entries with a fully qualified class_name and an optional message substring.
+    # expected_messages: map of fully qualified exception class names to lists of message substrings.
+    # ignore_* rules suppress reporting entirely and take precedence over expected_* rules.
+    # https://docs.newrelic.com/docs/apm/agents/java-agent/configuration/java-agent-error-configuration/
+    # Example:
+    # errorCollector:
+    #   expected_status_codes: "401"
+    # Recreate application-server pods after changes; the ConfigMap subPath mount does not receive updates.
+    errorCollector: {}
 
 # configuration for metrics about infrastructure components
 infrastructureMonitoring:
