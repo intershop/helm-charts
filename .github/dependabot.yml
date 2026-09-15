@@ -2,17 +2,17 @@
 # proposed as grouped PRs; helm-unittest and Helm CLI pins are managed manually.
 version: 2
 updates:
-  - package-ecosystem: "github-actions"
+  - package-ecosystem: 'github-actions'
     # "/" covers .github/workflows; the composite actions are listed explicitly.
     directories:
-      - "/"
-      - "/.github/template/base"
-      - "/.github/template/unittest"
+      - '/'
+      - '/.github/template/base'
+      - '/.github/template/unittest'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     groups:
       github-actions:
         patterns:
-          - "*"
+          - '*'
     commit-message:
-      prefix: "chore"
+      prefix: 'chore'
