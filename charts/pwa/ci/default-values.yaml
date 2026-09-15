@@ -4,8 +4,8 @@
 # (fail-fast), so CI must supply a backend here. Single-node overrides let the
 # chart install on the ephemeral kind cluster used by ct.
 config:
-  icmBaseUrl: "https://develop.icm.intershop.de"
-  allowedHosts: "pwa.localdev"
+  icmBaseUrl: 'https://develop.icm.intershop.de'
+  allowedHosts: 'pwa.localdev'
 
 app:
   replicaCount: 1
