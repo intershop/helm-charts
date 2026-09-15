@@ -1,0 +1,13 @@
+{
+  "name": "helm-charts-tooling",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Developer tooling (formatting) for the Intershop Helm charts repository.",
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "3.9.6"
+  }
+}
