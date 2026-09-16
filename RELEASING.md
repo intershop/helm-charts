@@ -53,9 +53,13 @@ want to release.
    e.g. bumping `icm-as` also bumps `icm`, `icm-test`, `icm-job-test` and `icm-replication-test`.
    The dependency map lives in `callBump2version.py`. The `iom` chart is excluded (it does not use
    `bump-my-version`) and is versioned separately.
-5. **`CHANGELOG.md` and `RELEASE_NOTES.md` are generated** per chart with
+5. **The changelog is updated** per chart with
    [`git-chglog`](https://github.com/git-chglog/git-chglog) using the shared config in
-   [`.chglog/`](.chglog). These files are produced by the pipeline — do not hand-maintain them.
+   [`.chglog/`](.chglog). Only the **new version's** section is generated and **prepended** to the
+   chart's existing `CHANGELOG.md`, so earlier sections (and any manual corrections) are kept
+   verbatim. `RELEASE_NOTES.md` is overwritten with just that newest section (it is the body of the
+   published release). Because history is preserved in the file, the changelog is not fully
+   re-derived from git on every release.
 6. **A release PR** (`release/<branch>` → `main`) is opened with the version bumps and generated
    changelogs.
 7. **On merge into `main`**, the [`Release Charts`](.github/workflows/release-charts.yml) workflow
