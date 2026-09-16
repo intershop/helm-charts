@@ -60,6 +60,8 @@ jobs:
           title: 'chore: integrate main to develop/${{ matrix.branch }}'
           body: 'Automated PR to sync main into develop/${{ matrix.branch }}'
           draft: false
+          # keeps these sync PRs out of the GitHub auto-generated release notes (see .github/release.yml)
+          labels: ignore-for-release-notes
       - name: Verify PR was successfully created
         id: verify_pr
         run: |
