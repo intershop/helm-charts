@@ -1,80 +1,90 @@
 
-<a name="icm-replication-test-2.0.0"></a>
-## [icm-replication-test-2.0.0](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.7.1...icm-replication-test-2.0.0)
+<a name="icm-replication-test-2.1.1"></a>
+# [icm-replication-test-2.1.1](https://github.com/intershop/helm-charts/releases/tag/icm-replication-test-2.1.1) (2026-09-15)
 
-> 2026-07-07
+Compare with previous release: [icm-replication-test-2.1.0...icm-replication-test-2.1.1](https://github.com/intershop/helm-charts/compare/icm-replication-test-2.1.0...icm-replication-test-2.1.1)
+
+
+<a name="icm-replication-test-2.1.0"></a>
+# [icm-replication-test-2.1.0](https://github.com/intershop/helm-charts/releases/tag/icm-replication-test-2.1.0) (2026-09-09)
+
+Compare with previous release: [icm-replication-test-2.0.0...icm-replication-test-2.1.0](https://github.com/intershop/helm-charts/compare/icm-replication-test-2.0.0...icm-replication-test-2.1.0)
+
+
+<a name="icm-replication-test-2.0.0"></a>
+# [icm-replication-test-2.0.0](https://github.com/intershop/helm-charts/releases/tag/icm-replication-test-2.0.0) (2026-07-21)
+
+Compare with previous release: [icm-replication-test-1.7.1...icm-replication-test-2.0.0](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.7.1...icm-replication-test-2.0.0)
 
 
 <a name="icm-replication-test-1.7.1"></a>
-## [icm-replication-test-1.7.1](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.7.0...icm-replication-test-1.7.1)
+# [icm-replication-test-1.7.1](https://github.com/intershop/helm-charts/releases/tag/icm-replication-test-1.7.1) (2026-06-17)
 
-> 2026-06-17
+Compare with previous release: [icm-replication-test-1.7.0...icm-replication-test-1.7.1](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.7.0...icm-replication-test-1.7.1)
 
 
 <a name="icm-replication-test-1.7.0"></a>
-## [icm-replication-test-1.7.0](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.6.0...icm-replication-test-1.7.0)
+# [icm-replication-test-1.7.0](https://github.com/intershop/helm-charts/releases/tag/icm-replication-test-1.7.0) (2026-06-15)
 
-> 2026-06-15
+Compare with previous release: [icm-replication-test-1.6.0...icm-replication-test-1.7.0](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.6.0...icm-replication-test-1.7.0)
 
 
 <a name="icm-replication-test-1.6.0"></a>
-## [icm-replication-test-1.6.0](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.5.1...icm-replication-test-1.6.0)
+# [icm-replication-test-1.6.0](https://github.com/intershop/helm-charts/releases/tag/icm-replication-test-1.6.0) (2026-05-29)
 
-> 2026-05-29
+Compare with previous release: [icm-replication-test-1.5.1...icm-replication-test-1.6.0](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.5.1...icm-replication-test-1.6.0)
 
 
 <a name="icm-replication-test-1.5.1"></a>
-## [icm-replication-test-1.5.1](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.5.0...icm-replication-test-1.5.1)
+# [icm-replication-test-1.5.1](https://github.com/intershop/helm-charts/releases/tag/icm-replication-test-1.5.1) (2026-05-08)
 
-> 2026-05-08
+Compare with previous release: [icm-replication-test-1.5.0...icm-replication-test-1.5.1](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.5.0...icm-replication-test-1.5.1)
 
 
 <a name="icm-replication-test-1.5.0"></a>
-## [icm-replication-test-1.5.0](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.4.0...icm-replication-test-1.5.0)
+# [icm-replication-test-1.5.0](https://github.com/intershop/helm-charts/releases/tag/icm-replication-test-1.5.0) (2026-04-30)
 
-> 2026-04-30
+Compare with previous release: [icm-replication-test-1.4.0...icm-replication-test-1.5.0](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.4.0...icm-replication-test-1.5.0)
 
 
 <a name="icm-replication-test-1.4.0"></a>
-## [icm-replication-test-1.4.0](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.3.1...icm-replication-test-1.4.0)
+# [icm-replication-test-1.4.0](https://github.com/intershop/helm-charts/releases/tag/icm-replication-test-1.4.0) (2026-04-27)
 
-> 2026-04-27
+Compare with previous release: [icm-replication-test-1.3.1...icm-replication-test-1.4.0](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.3.1...icm-replication-test-1.4.0)
 
 
 <a name="icm-replication-test-1.3.1"></a>
-## [icm-replication-test-1.3.1](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.3.0...icm-replication-test-1.3.1)
+# [icm-replication-test-1.3.1](https://github.com/intershop/helm-charts/releases/tag/icm-replication-test-1.3.1) (2026-04-20)
 
-> 2026-04-20
+Compare with previous release: [icm-replication-test-1.3.0...icm-replication-test-1.3.1](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.3.0...icm-replication-test-1.3.1)
 
 
 <a name="icm-replication-test-1.3.0"></a>
-## [icm-replication-test-1.3.0](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.2.1...icm-replication-test-1.3.0)
+# [icm-replication-test-1.3.0](https://github.com/intershop/helm-charts/releases/tag/icm-replication-test-1.3.0) (2026-03-30)
 
-> 2026-03-30
+Compare with previous release: [icm-replication-test-1.2.1...icm-replication-test-1.3.0](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.2.1...icm-replication-test-1.3.0)
 
-### Features
+## Features
 
 * **icm:** no monitoring for ISTE needed ([#1193](https://github.com/intershop/helm-charts/issues/1193))
 
 
 <a name="icm-replication-test-1.2.1"></a>
-## [icm-replication-test-1.2.1](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.2.0...icm-replication-test-1.2.1)
+# [icm-replication-test-1.2.1](https://github.com/intershop/helm-charts/releases/tag/icm-replication-test-1.2.1) (2025-11-20)
 
-> 2025-11-20
+Compare with previous release: [icm-replication-test-1.2.0...icm-replication-test-1.2.1](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.2.0...icm-replication-test-1.2.1)
 
 
 <a name="icm-replication-test-1.2.0"></a>
-## [icm-replication-test-1.2.0](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.1.0...icm-replication-test-1.2.0)
+# [icm-replication-test-1.2.0](https://github.com/intershop/helm-charts/releases/tag/icm-replication-test-1.2.0) (2025-11-18)
 
-> 2025-11-18
+Compare with previous release: [icm-replication-test-1.1.0...icm-replication-test-1.2.0](https://github.com/intershop/helm-charts/compare/icm-replication-test-1.1.0...icm-replication-test-1.2.0)
 
 
 <a name="icm-replication-test-1.1.0"></a>
-## icm-replication-test-1.1.0
+# [icm-replication-test-1.1.0](https://github.com/intershop/helm-charts/releases/tag/icm-replication-test-1.1.0) (2025-11-17)
 
-> 2025-11-17
-
-### Features
+## Features
 
 * **icm:** split up icm test chart ([#1105](https://github.com/intershop/helm-charts/issues/1105))
 
