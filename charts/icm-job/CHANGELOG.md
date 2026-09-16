@@ -1,24 +1,24 @@
 
 <a name="icm-job-1.2.0"></a>
-## [icm-job-1.2.0](https://github.com/intershop/helm-charts/compare/icm-job-1.1.0...icm-job-1.2.0)
+# [icm-job-1.2.0](https://github.com/intershop/helm-charts/releases/tag/icm-job-1.2.0) (2026-03-30)
 
-> 2026-03-30
+Compare with previous release: [icm-job-1.1.0...icm-job-1.2.0](https://github.com/intershop/helm-charts/compare/icm-job-1.1.0...icm-job-1.2.0)
 
-### Bug Fixes
-
-* **icm:** copilot suggestions ([#1203](https://github.com/intershop/helm-charts/issues/1203))
-
-### Features
+## Features
 
 * **icm:** new operator image has no kube-rbac-proxy anymore ([#1203](https://github.com/intershop/helm-charts/issues/1203)) BREAKING CHANGE
 
+## Bug Fixes
+
+* **icm:** copilot suggestions ([#1203](https://github.com/intershop/helm-charts/issues/1203))
+
 
 <a name="icm-job-1.1.0"></a>
-## [icm-job-1.1.0](https://github.com/intershop/helm-charts/compare/icm-job-1.0.1...icm-job-1.1.0)
+# [icm-job-1.1.0](https://github.com/intershop/helm-charts/releases/tag/icm-job-1.1.0) (2023-11-29)
 
-> 2023-11-29
+Compare with previous release: [icm-job-1.0.1...icm-job-1.1.0](https://github.com/intershop/helm-charts/compare/icm-job-1.0.1...icm-job-1.1.0)
 
-### Bug Fixes
+## Bug Fixes
 
 * consume job-operator:1.0.1 ([#470](https://github.com/intershop/helm-charts/issues/470))
 * integrate jobcontroller official release ([#456](https://github.com/intershop/helm-charts/issues/456))
@@ -26,13 +26,11 @@
 
 
 <a name="icm-job-1.0.1"></a>
-## [icm-job-1.0.1](https://github.com/intershop/helm-charts/compare/icm-job-1.0.0...icm-job-1.0.1)
+# [icm-job-1.0.1](https://github.com/intershop/helm-charts/releases/tag/icm-job-1.0.1) (2023-07-04)
 
-> 2023-07-04
+Compare with previous release: [icm-job-1.0.0...icm-job-1.0.1](https://github.com/intershop/helm-charts/compare/icm-job-1.0.0...icm-job-1.0.1)
 
 
 <a name="icm-job-1.0.0"></a>
-## icm-job-1.0.0
-
-> 2023-06-30
+# [icm-job-1.0.0](https://github.com/intershop/helm-charts/releases/tag/icm-job-1.0.0) (2023-06-30)
 
