@@ -155,8 +155,15 @@ jobs:
             { cat /tmp/${chart}-new-section.md; echo; cat ./charts/${chart}/CHANGELOG.md; } > /tmp/${chart}-changelog.md
             mv /tmp/${chart}-changelog.md ./charts/${chart}/CHANGELOG.md
 
-            # release notes always contain only the newest version
-            cp /tmp/${chart}-new-section.md ./charts/${chart}/RELEASE_NOTES.md
+            # release notes: only the newest version, with larger headings (# version, ## sections) via a
+            # dedicated template so it sits better next to GitHub's auto-generated notes on the release page
+            ./git-chglog/git-chglog \
+              --template .chglog/RELEASE_NOTES.tpl.md \
+              --path ./charts/${chart} \
+              --tag-filter-pattern "^${chart}(-main)?-\d+.\d+.\d+$" \
+              --next-tag ${tag} \
+              -o ./charts/${chart}/RELEASE_NOTES.md \
+              ${tag}
           done
 
           rm -Rf git-chglog
@@ -179,4 +186,7 @@ jobs:
           title: Release ${{ steps.read-release-input-parameter.outputs.release-input-parameter }}
           commit-message: 'release: ${{ steps.read-release-input-parameter.outputs.release-input-parameter }} and dependent charts'
           delete-branch: true
-          labels: automated pr
+          # ignore-for-release-notes keeps this meta release PR out of the GitHub auto-generated notes (.github/release.yml)
+          labels: |
+            automated pr
+            ignore-for-release-notes
