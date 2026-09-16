@@ -1,7 +1,4 @@
 {{ range .Versions }}
-<a name="{{ .Tag.Name }}"></a>
-# [{{ .Tag.Name }}]({{ $.Info.RepositoryURL }}/releases/tag/{{ .Tag.Name }}) ({{ datetime "2006-01-02" .Tag.Date }})
-
 {{ if .Tag.Previous }}Compare with previous release: [{{ .Tag.Previous.Name }}...{{ .Tag.Name }}]({{ $.Info.RepositoryURL }}/compare/{{ .Tag.Previous.Name }}...{{ .Tag.Name }})
 
 {{ end -}}
