@@ -13,6 +13,14 @@ options:
         - refactor
         - docs
   commit_groups:
+    # order sections by user relevance instead of the default alphabetical (uses commit types)
+    sort_by: Custom
+    title_order:
+      - feat
+      - fix
+      - perf
+      - refactor
+      - docs
     title_maps:
       feat: Features
       fix: Bug Fixes
