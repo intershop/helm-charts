@@ -24,6 +24,7 @@ spec:
     metadata:
       labels:
         {{- include "pwa.selectorLabels" (dict "root" . "component" "app") | nindent 8 }}
+        app.kubernetes.io/version: {{ include "pwa.componentVersion" (dict "root" . "component" "app") | quote }}
         {{- if .Values.app.podLabels }}
         {{- toYaml .Values.app.podLabels | nindent 8 }}
         {{- end }}
