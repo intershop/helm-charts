@@ -163,7 +163,7 @@ These change how a **default** install behaves, even if you do not touch the val
 
 - **Secure-by-default** — pods now run non-root, drop all Linux capabilities, and do not auto-mount the API token (`serviceAccount.automount: false`). If you relied on root or on the token, opt back in explicitly.
 - **Probes** — the `app` tier now ships liveness/readiness/startup probes based on the SSR image's PM2 scripts; the `proxy` tier uses TCP-socket probes. Previously both were empty.
-- **Image tags** default to the chart `appVersion` (was `latest`) and **pull policy** defaults to `IfNotPresent` (was `Always`) — for reproducible deployments.
+- **Image tags** default to `release-<chart appVersion>` (was `latest`) and **pull policy** defaults to `IfNotPresent` (was `Always`) — for reproducible deployments.
 - **Replica counts** default to `2` per tier (was `1`) and **resource requests/limits** are now set — for a production baseline.
 - **`updateStrategy`** is now per tier (`app.updateStrategy` / `proxy.updateStrategy`), still defaulting to `RollingUpdate`.
 

@@ -29,17 +29,25 @@ Chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
-Common labels (chart-wide). Not component specific.
+Common labels without a version (version is component-specific; see pwa.componentLabels).
 */}}
-{{- define "pwa.labels" -}}
+{{- define "pwa.commonLabels" -}}
 helm.sh/chart: {{ include "pwa.chart" . }}
 app.kubernetes.io/name: {{ include "pwa.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/part-of: {{ include "pwa.name" . }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Chart-wide labels for resources not tied to an image (e.g. the ServiceAccount);
+version defaults to the chart appVersion.
+*/}}
+{{- define "pwa.labels" -}}
+{{ include "pwa.commonLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
-app.kubernetes.io/part-of: {{ include "pwa.name" . }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*

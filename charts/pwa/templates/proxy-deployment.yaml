@@ -24,6 +24,7 @@ spec:
     metadata:
       labels:
         {{- include "pwa.selectorLabels" (dict "root" . "component" "proxy") | nindent 8 }}
+        app.kubernetes.io/version: {{ include "pwa.componentVersion" (dict "root" . "component" "proxy") | quote }}
         {{- if .Values.proxy.podLabels }}
         {{- toYaml .Values.proxy.podLabels | nindent 8 }}
         {{- end }}

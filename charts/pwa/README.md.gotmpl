@@ -42,7 +42,7 @@ First major release — a breaking restructure into explicit **`app`** (Angular 
 
 - Secure-by-default: non-root, dropped Linux capabilities, no service-account token automount.
 - Production defaults: 2 replicas per tier, resource requests/limits, liveness/readiness/startup probes.
-- Image tags default to the chart `appVersion` (was `latest`); pull policy `IfNotPresent` (was `Always`).
+- Image tags default to `release-<chart appVersion>` (was `latest`); pull policy `IfNotPresent` (was `Always`).
 - Requires **Helm 4** and **Kubernetes 1.23+**.
 
 ---
