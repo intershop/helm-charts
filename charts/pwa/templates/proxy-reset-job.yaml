@@ -4,6 +4,8 @@ kind: ServiceAccount
 metadata:
   name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-reset
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "pwa.componentLabels" (dict "root" . "component" "proxy") | nindent 4 }}
   annotations:
     "helm.sh/hook": post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -14,6 +16,8 @@ kind: Role
 metadata:
   name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-reset
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "pwa.componentLabels" (dict "root" . "component" "proxy") | nindent 4 }}
   annotations:
     "helm.sh/hook": post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -29,6 +33,8 @@ kind: RoleBinding
 metadata:
   name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-reset
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "pwa.componentLabels" (dict "root" . "component" "proxy") | nindent 4 }}
   annotations:
     "helm.sh/hook": post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -47,6 +53,8 @@ kind: Job
 metadata:
   name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-reset-job
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "pwa.componentLabels" (dict "root" . "component" "proxy") | nindent 4 }}
   annotations:
     "helm.sh/hook": post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded

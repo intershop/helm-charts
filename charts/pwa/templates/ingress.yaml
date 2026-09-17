@@ -32,10 +32,7 @@ kind: Ingress
 metadata:
   name: {{ include "pwa.componentName" (dict "root" $ "component" "proxy") }}-{{ $name }}
   labels:
-    app.kubernetes.io/name: {{ include "pwa.name" $ }}
-    helm.sh/chart: {{ include "pwa.chart" $ }}
-    app.kubernetes.io/instance: {{ $.Release.Name }}
-    app.kubernetes.io/managed-by: {{ $.Release.Service }}
+    {{- include "pwa.componentLabels" (dict "root" $ "component" "proxy") | nindent 4 }}
   {{- if .annotations }}
   annotations:
     {{- toYaml .annotations | nindent 4 }}
