@@ -1,0 +1,11 @@
+# With --no-lift-env: the two env entries stay in app.env, only icmBaseUrl moves.
+config:
+  icmBaseUrl: https://icm.example.com
+app:
+  env:
+    - name: LOGLEVEL
+      value: info
+    - name: ICM_BASE_URL_SSR
+      value: http://icm-web-wa:8080
+    - name: ALLOWED_HOSTS
+      value: shop.example.com,*.example.com
