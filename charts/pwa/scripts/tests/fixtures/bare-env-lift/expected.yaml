@@ -1,0 +1,9 @@
+# Default behavior: ICM_BASE_URL_SSR / ALLOWED_HOSTS lift out of app.env into config.
+config:
+  icmBaseUrl: https://icm.example.com
+  icmBaseUrlSsr: http://icm-web-wa:8080
+  allowedHosts: shop.example.com,*.example.com
+app:
+  env:
+    - name: LOGLEVEL
+      value: info

@@ -1,0 +1,18 @@
+# Expected: chart bumped pwa-main -> pwa, version 0.13.0 -> 1.0.0, values migrated.
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pwa
+spec:
+  chart:
+    spec:
+      chart: pwa
+      version: 1.0.0
+  values:
+    config:
+      icmBaseUrl: https://icm.example.com
+    app:
+      replicaCount: 2
+    proxy:
+      reset:
+        enabled: false
