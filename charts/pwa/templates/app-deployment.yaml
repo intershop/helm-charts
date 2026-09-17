@@ -60,6 +60,10 @@ spec:
               protocol: TCP
             {{- end }}
           env:
+            # Changes on every `helm upgrade`, forcing a new pod rollout so config-only
+            # changes are picked up. Also lets you trace a running pod to its Helm revision.
+            - name: HELM_RELEASE_REVISION
+              value: "{{ .Release.Revision }}"
             - name: ICM_BASE_URL
               value: {{ .Values.config.icmBaseUrl | quote }}
             {{- if .Values.config.icmBaseUrlSsr }}
