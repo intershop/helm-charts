@@ -28,6 +28,8 @@ spec:
           imagePullPolicy: {{ .Values.monitoring.prometheus.image.pullPolicy }}
           name: {{ .Chart.Name }}
           ports:
+            # Dev-only: hostPort exposes Prometheus on the node without an Ingress; it also caps
+            # this Deployment to one pod per node. Never enable monitoring on a shared cluster.
             - containerPort: 9090
               hostPort: 9090
               protocol: TCP

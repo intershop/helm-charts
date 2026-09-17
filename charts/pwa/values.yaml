@@ -116,7 +116,8 @@ app:
     seccompProfile:
       type: RuntimeDefault
 
-  # -- Container security context for the app; overrides the shared baseline when set.
+  # mergeOverwrite ignores empty values, so a baseline key cannot be unset with [] or {}; use a non-empty override.
+  # -- Container security context for the app, deep-merged onto the shared `securityContext` baseline (per-key overrides win).
   securityContext: {}
 
   # -- Resource requests/limits for the SSR container.
