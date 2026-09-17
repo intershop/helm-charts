@@ -30,6 +30,8 @@ spec:
           imagePullPolicy: {{ .Values.monitoring.grafana.image.pullPolicy }}
           name: {{ .Chart.Name }}
           ports:
+            # Dev-only: hostPort exposes Grafana on the node without an Ingress; it also caps
+            # this Deployment to one pod per node. Never enable monitoring on a shared cluster.
             - containerPort: 3000
               hostPort: 3000
               protocol: TCP

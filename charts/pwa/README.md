@@ -21,10 +21,11 @@ $ helm install my-release intershop/pwa
 
 ### 1.0.0
 
-First major release — a breaking restructure into explicit **`app`** (Angular SSR) and **`proxy`** (nginx) tiers. Read the [Migration to 1.0.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-1.0.0.md) guide before upgrading.
+First major release — the chart is **renamed `pwa-main` → `pwa`** and restructured into explicit **`app`** (Angular SSR) and **`proxy`** (nginx) tiers. Read the [Migration to 1.0.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-1.0.0.md) guide before upgrading.
 
 **Breaking**
 
+- **Chart renamed `pwa-main` → `pwa`.** Update your Helm reference (`intershop/pwa-main` → `intershop/pwa`) and, for Flux, `spec.chart.spec.chart: pwa-main` → `pwa`. Release tags change from `pwa-main-X.Y.Z` to `pwa-X.Y.Z`.
 - Values restructured: top-level SSR config → `app.*`; `cache.*` → `proxy.*`.
 - `upstream.icmBaseURL` → `config.icmBaseUrl` — now **required** (no dev default; install fails fast if unset).
 - Resource names `*-pwa-main` / `*-pwa-cache` → `*-pwa-app` / `*-pwa-proxy` — update anything that selects them by name (dashboards, `NetworkPolicy`, scripts).
@@ -111,7 +112,7 @@ Also changes to the `README.md.gotmpl` require a manual regeneration. `README.md
 | app.env | list | `[]` | Extra environment variables for the SSR container. |
 | app.metrics.enabled | bool | `false` | Expose Prometheus metrics of the SSR container. |
 | app.podSecurityContext | object | see [values.yaml](./values.yaml) | Pod security context for the app (runs as unprivileged user 65534). |
-| app.securityContext | object | `{}` | Container security context for the app; overrides the shared baseline when set. |
+| app.securityContext | object | `{}` | Container security context for the app, deep-merged onto the shared `securityContext` baseline (per-key overrides win). |
 | app.resources | object | see [values.yaml](./values.yaml) | Resource requests/limits for the SSR container. |
 | app.startupProbe | object | see [values.yaml](./values.yaml) | Startup probe for the SSR container (PM2 readiness). |
 | app.livenessProbe | object | see [values.yaml](./values.yaml) | Liveness probe for the SSR container (PM2 process health, not ICM). |

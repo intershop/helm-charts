@@ -9,6 +9,15 @@ The two tiers are now first-class, explicitly-named sections:
 - the **SSR application** (previously configured at the **top level**, resources named `*-pwa-main`) is now under **`app`** (resources named `*-pwa-app`);
 - the **nginx reverse proxy** (previously under **`cache`**, resources named `*-pwa-cache`) is now under **`proxy`** (resources named `*-pwa-proxy`).
 
+> [!IMPORTANT]
+> **The chart itself is renamed `pwa-main` → `pwa`.** This is separate from the tier/resource renames above and affects how you reference the chart:
+>
+> - **Helm:** `helm install/upgrade <release> intershop/pwa` (was `intershop/pwa-main`).
+> - **Flux:** set `spec.chart.spec.chart: pwa` (was `pwa-main`) — the migration script does this for you.
+> - **Release tags:** now `pwa-X.Y.Z` (were `pwa-main-X.Y.Z`).
+>
+> The old `pwa-main` chart is no longer published; upgrading in place requires switching to the `pwa` chart reference.
+
 > [!TIP]
 > You don't have to hunt down every obsolete key by hand.
 > If a removed or renamed 0.x value is still present, `helm install`/`upgrade`/`template` **fails fast** with a message naming the key and its 1.0.0 replacement.
@@ -177,14 +186,14 @@ Deployment/Service names changed with the tier rename:
 | `<release>-pwa-cache` | `<release>-pwa-proxy` |
 
 > [!IMPORTANT]
-> Anything that selects these resources **by name** — monitoring dashboards, `NetworkPolicy`, `ServiceMonitor`, external scripts — must be updated. This is the easiest change to miss.
+> Anything that selects these resources **by name** — monitoring dashboards, `NetworkPolicy`, `ServiceMonitor`, external scripts — must be updated.
 
 ## Verifying your upgrade
 
 Preview the change before applying (requires the `helm-diff` plugin):
 
 ```bash
-helm diff upgrade <release> intershop/pwa-main -f your-values.yaml
+helm diff upgrade <release> intershop/pwa -f your-values.yaml
 ```
 
 After upgrading, confirm the new resource names exist:
