@@ -15,13 +15,34 @@ Usage: {{ include "pwa.componentName" (dict "root" . "component" "app") }}
 {{- end }}
 
 {{/*
-Full label set for a component (common labels + component label).
+Full label set for a component (common labels + component + version).
+The version label tracks the component's deployed image tag so it stays truthful
+when app.image.tag / proxy.image.tag is overridden (not just the chart appVersion).
 Usage: {{ include "pwa.componentLabels" (dict "root" . "component" "app") }}
 */}}
 {{- define "pwa.componentLabels" -}}
-{{ include "pwa.labels" .root }}
+{{ include "pwa.commonLabels" .root }}
 app.kubernetes.io/component: {{ .component }}
+{{- with (include "pwa.componentVersion" (dict "root" .root "component" .component)) }}
+app.kubernetes.io/version: {{ . | quote }}
 {{- end }}
+{{- end }}
+
+{{/*
+Version label value for a tier (app/proxy): the deployed image tag, else the default
+release-<appVersion>. Guarded to a valid label value (<=63 chars, no trailing -._).
+Components without an image config (e.g. the dev-only monitoring stack) get no version label.
+*/}}
+{{- define "pwa.componentVersion" -}}
+{{- $cfg := index .root.Values .component -}}
+{{- if kindIs "map" $cfg -}}
+{{- $tag := "" -}}
+{{- if kindIs "map" $cfg.image -}}
+{{- $tag = $cfg.image.tag -}}
+{{- end -}}
+{{- $tag | default (printf "release-%s" .root.Chart.AppVersion) | trunc 63 | trimSuffix "-" | trimSuffix "." | trimSuffix "_" -}}
+{{- end -}}
+{{- end -}}
 
 {{/*
 Fully qualified in-cluster hostname the proxy uses to reach the app service.

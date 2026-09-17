@@ -42,7 +42,7 @@ First major release — a breaking restructure into explicit **`app`** (Angular 
 
 - Secure-by-default: non-root, dropped Linux capabilities, no service-account token automount.
 - Production defaults: 2 replicas per tier, resource requests/limits, liveness/readiness/startup probes.
-- Image tags default to the chart `appVersion` (was `latest`); pull policy `IfNotPresent` (was `Always`).
+- Image tags default to `release-<chart appVersion>` (was `latest`); pull policy `IfNotPresent` (was `Always`).
 - Requires **Helm 4** and **Kubernetes 1.23+**.
 
 ---
@@ -100,7 +100,7 @@ Also changes to the `README.md.gotmpl` require a manual regeneration. `README.md
 | serviceAccount.annotations | object | `{}` | Annotations to add to the ServiceAccount. |
 | securityContext | object | see [values.yaml](./values.yaml) | Container security context shared by both tiers (secure baseline: drop all caps, no privilege escalation). |
 | app.image.repository | string | `"intershophub/intershop-pwa-ssr"` | SSR container image repository. |
-| app.image.tag | string | `""` | Image tag. Defaults to the chart appVersion when empty. |
+| app.image.tag | string | `""` | Image tag. Defaults to `release-<chart appVersion>` when empty. |
 | app.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy. |
 | app.replicaCount | int | `2` | Number of app replicas (ignored when autoscaling.enabled=true). |
 | app.updateStrategy | string | `"RollingUpdate"` | Deployment update strategy: RollingUpdate or Recreate. |
@@ -126,7 +126,7 @@ Also changes to the `README.md.gotmpl` require a manual regeneration. `README.md
 | app.deploymentAnnotations | object | `{}` | Extra annotations for the SSR Deployment. |
 | app.deploymentLabels | object | `{}` | Extra labels for the SSR Deployment. |
 | proxy.image.repository | string | `"intershophub/intershop-pwa-nginx"` | Proxy container image repository. |
-| proxy.image.tag | string | `""` | Image tag. Defaults to the chart appVersion when empty. |
+| proxy.image.tag | string | `""` | Image tag. Defaults to `release-<chart appVersion>` when empty. |
 | proxy.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy. |
 | proxy.replicaCount | int | `2` | Number of proxy replicas (ignored when autoscaling.enabled=true). |
 | proxy.updateStrategy | string | `"RollingUpdate"` | Deployment update strategy: RollingUpdate or Recreate. |
