@@ -70,7 +70,7 @@ app:
   image:
     # -- SSR container image repository.
     repository: intershophub/intershop-pwa-ssr
-    # -- Image tag. Defaults to the chart appVersion when empty.
+    # -- Image tag. Defaults to `release-<chart appVersion>` when empty.
     tag: ''
     # -- Image pull policy.
     pullPolicy: IfNotPresent
@@ -200,7 +200,7 @@ proxy:
   image:
     # -- Proxy container image repository.
     repository: intershophub/intershop-pwa-nginx
-    # -- Image tag. Defaults to the chart appVersion when empty.
+    # -- Image tag. Defaults to `release-<chart appVersion>` when empty.
     tag: ''
     # -- Image pull policy.
     pullPolicy: IfNotPresent

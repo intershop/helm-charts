@@ -42,6 +42,49 @@ tests:
           path: metadata.labels["app.kubernetes.io/managed-by"]
           value: Helm
 
+  # --- version label tracks the deployed image tag (not just chart appVersion) ---
+  - it: app version label defaults to the release-<appVersion> image tag
+    template: templates/app-deployment.yaml
+    asserts:
+      - equal:
+          path: metadata.labels["app.kubernetes.io/version"]
+          value: release-12.1.0
+
+  - it: app version label follows an overridden app.image.tag
+    template: templates/app-deployment.yaml
+    set:
+      app.image.tag: analysts_11_1_0_1
+    asserts:
+      - equal:
+          path: metadata.labels["app.kubernetes.io/version"]
+          value: analysts_11_1_0_1
+
+  - it: proxy version label is independent of the app tier
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.image.tag: 1.0.175
+      app.image.tag: release-14.2.0
+    asserts:
+      - equal:
+          path: metadata.labels["app.kubernetes.io/version"]
+          value: 1.0.175
+
+  # --- version label reaches the Pods, but never the (immutable) selector ------
+  - it: app Pod template carries the version label tracking the tag
+    template: templates/app-deployment.yaml
+    set:
+      app.image.tag: release-14.2.0
+    asserts:
+      - equal:
+          path: spec.template.metadata.labels["app.kubernetes.io/version"]
+          value: release-14.2.0
+
+  - it: the Deployment selector never includes the version label
+    template: templates/app-deployment.yaml
+    asserts:
+      - notExists:
+          path: spec.selector.matchLabels["app.kubernetes.io/version"]
+
   # --- Services ----------------------------------------------------------------
   - it: app Service carries the component label set
     template: templates/app-service.yaml
