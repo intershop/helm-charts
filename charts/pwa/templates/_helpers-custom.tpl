@@ -65,11 +65,7 @@ podAntiAffinity:
     - topologyKey: "kubernetes.io/hostname"
       labelSelector:
         matchLabels:
-          app.kubernetes.io/name: {{ include "pwa.componentName" (dict "root" .root "component" .component) }}
-          app.kubernetes.io/instance: {{ .root.Release.Name }}
-          {{- if $cfg.podLabels }}
-          {{- toYaml $cfg.podLabels | nindent 10 }}
-          {{- end }}
+          {{- include "pwa.selectorLabels" (dict "root" .root "component" .component) | nindent 10 }}
   {{- else }}
   preferredDuringSchedulingIgnoredDuringExecution:
     - weight: 100
@@ -77,11 +73,7 @@ podAntiAffinity:
         topologyKey: "kubernetes.io/hostname"
         labelSelector:
           matchLabels:
-            app.kubernetes.io/name: {{ include "pwa.componentName" (dict "root" .root "component" .component) }}
-            app.kubernetes.io/instance: {{ .root.Release.Name }}
-            {{- if $cfg.podLabels }}
-            {{- toYaml $cfg.podLabels | nindent 12 }}
-            {{- end }}
+            {{- include "pwa.selectorLabels" (dict "root" .root "component" .component) | nindent 12 }}
   {{- end }}
 {{- end -}}
 {{- end -}}
