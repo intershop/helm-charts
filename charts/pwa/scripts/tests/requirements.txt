@@ -1,0 +1,3 @@
+# Test dependencies for the PWA 0.x -> 1.0.0 migration script.
+ruamel.yaml>=0.17
+pytest>=7
