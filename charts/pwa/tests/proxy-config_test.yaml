@@ -1,0 +1,93 @@
+suite: proxy multi-channel / headers / cache-ignore wiring
+release:
+  name: pwa
+set:
+  config.icmBaseUrl: https://icm.example.com
+tests:
+  # The ConfigMap must always carry the three named keys the Deployment mounts;
+  # a missing key would hang the proxy Pod in ContainerCreating.
+  - it: ConfigMap always renders the three mounted keys (defaults)
+    template: templates/proxy-configmap.yaml
+    asserts:
+      - isNotEmpty:
+          path: data["multi-channel.yaml"]
+      - isNotEmpty:
+          path: data["caching-ignore-params.yaml"]
+      - isNotEmpty:
+          path: data["additional-headers.yaml"]
+
+  - it: ConfigMap carries custom multiChannel / cacheIgnoreParams content
+    template: templates/proxy-configmap.yaml
+    set:
+      proxy.multiChannel: |
+        .+:
+          - baseHref: /b2c
+            channel: inSPIRED-inTRONICS-Site
+      proxy.cacheIgnoreParams: |
+        params:
+          - utm_source
+    asserts:
+      - equal:
+          path: data["multi-channel.yaml"]
+          value: |-
+            .+:
+              - baseHref: /b2c
+                channel: inSPIRED-inTRONICS-Site
+      - equal:
+          path: data["caching-ignore-params.yaml"]
+          value: |-
+            params:
+              - utm_source
+
+  - it: the Deployment mounts all three ConfigMap keys
+    template: templates/proxy-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes[?(@.name=='proxy-config-map')].configMap.items
+          content:
+            key: multi-channel.yaml
+            path: multi-channel.yaml
+      - contains:
+          path: spec.template.spec.volumes[?(@.name=='proxy-config-map')].configMap.items
+          content:
+            key: caching-ignore-params.yaml
+            path: caching-ignore-params.yaml
+      - contains:
+          path: spec.template.spec.volumes[?(@.name=='proxy-config-map')].configMap.items
+          content:
+            key: additional-headers.yaml
+            path: additional-headers.yaml
+
+  # The proxy env only references a config source when the matching value is set.
+  - it: sets the config-source env vars only when the values are provided
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.multiChannel: 'x'
+      proxy.cacheIgnoreParams: 'y'
+      proxy.additionalHeaders: 'z'
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: MULTI_CHANNEL_SOURCE
+            value: /config/multi-channel.yaml
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: CACHING_IGNORE_PARAMS_SOURCE
+            value: /config/caching-ignore-params.yaml
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ADDITIONAL_HEADERS_SOURCE
+            value: /config/additional-headers.yaml
+
+  - it: omits the config-source env vars by default
+    template: templates/proxy-deployment.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: MULTI_CHANNEL_SOURCE
+            value: /config/multi-channel.yaml
+          any: true
