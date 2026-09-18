@@ -608,7 +608,7 @@
         "autoscaling": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["enabled", "minReplicas", "maxReplicas", "targetCPUUtilizationPercentage"],
+          "required": ["enabled", "minReplicas", "maxReplicas"],
           "properties": {
             "enabled": {
               "type": "boolean",
@@ -623,9 +623,23 @@
               "minimum": 1
             },
             "targetCPUUtilizationPercentage": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 100
+              "type": ["integer", "null"],
+              "minimum": 1
+            },
+            "targetMemoryUtilizationPercentage": {
+              "type": ["integer", "null"],
+              "minimum": 1
+            },
+            "metrics": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            },
+            "behavior": {
+              "type": "object",
+              "additionalProperties": true
             }
           }
         },

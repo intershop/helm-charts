@@ -166,7 +166,14 @@ app:
     enabled: false
     minReplicas: 2
     maxReplicas: 10
+    # CPU/memory target is a percentage of the container's requests (not limits),
+    # so with small requests these values can far exceed 100. Set to null to drop the metric.
     targetCPUUtilizationPercentage: 75
+    targetMemoryUtilizationPercentage:
+    # Advanced: when non-empty, `metrics` replaces the CPU/memory shortcuts above with a raw
+    # autoscaling/v2 metrics list; `behavior` sets scale-up/down policies. See [values.yaml](./values.yaml).
+    metrics: []
+    behavior: {}
 
   # -- Node selector for SSR pods.
   nodeSelector: {}
@@ -329,7 +336,14 @@ proxy:
     enabled: false
     minReplicas: 2
     maxReplicas: 6
+    # CPU/memory target is a percentage of the container's requests (not limits),
+    # so with small requests these values can far exceed 100. Set to null to drop the metric.
     targetCPUUtilizationPercentage: 75
+    targetMemoryUtilizationPercentage:
+    # Advanced: when non-empty, `metrics` replaces the CPU/memory shortcuts above with a raw
+    # autoscaling/v2 metrics list; `behavior` sets scale-up/down policies. See [values.yaml](./values.yaml).
+    metrics: []
+    behavior: {}
 
   # -- Node selector for proxy pods.
   nodeSelector: {}
