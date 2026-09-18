@@ -1,0 +1,16 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: demo
+  namespace: demo
+spec:
+  chart:
+    spec:
+      chart: pwa
+      version: 1.0.0
+  releaseName: demo
+  values:
+    app:
+      replicaCount: 4
+    proxy:
+      replicaCount: 2

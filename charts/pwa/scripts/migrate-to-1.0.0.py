@@ -20,6 +20,11 @@ The 0.x -> 1.0.0 mapping mirrors charts/pwa/docs/migrate-to-1.0.0.md:
   * ICM_BASE_URL_SSR/ALLOWED_HOSTS env entries -> config.icmBaseUrlSsr/allowedHosts
   * upstream.cdnPrefixURL, cache.prefetch, cache.init, calculated -> removed
 
+Directory mode also folds standalone ``HorizontalPodAutoscaler`` manifests into the matching
+HelmRelease's ``spec.values.<tier>.autoscaling`` (tier from the HPA's scaleTargetRef name:
+``*-pwa-main``/``*-pwa-app`` -> app, ``*-pwa-main-cache``/``*-pwa-proxy`` -> proxy) and removes
+the now-redundant manifest (and its kustomization.yaml entry). Applied only with --write.
+
 Usage:
   python migrate-to-1.0.0.py PATH [PATH ...] [options]
 
@@ -347,6 +352,223 @@ def _validate_values(values, chart_dir: Path, yaml: YAML) -> list[str]:
         os.unlink(tmp)
 
 
+# --- HPA folding (folder mode only) -----------------------------------------
+# In a GitOps tree, projects often keep standalone HorizontalPodAutoscaler manifests next
+# to the HelmRelease. The 1.0.0 chart configures autoscaling via values instead, so fold
+# each HPA into its HelmRelease's spec.values.<tier>.autoscaling and drop the manifest.
+HPA_KIND = "HorizontalPodAutoscaler"
+
+# An HPA manifest is routed by its FILE NAME to the sibling HelmRelease in the same
+# directory: "<release>[-pwa]-hpa-<suffix>.yaml" -> "<release>.yaml". Routing by release
+# NAME across the tree is unsafe -- another chart's HelmRelease (e.g. icm) may share the
+# same release name and wrongly receive the config.
+HPA_FILE_RE = re.compile(r"^(?P<base>.+?)(?:-pwa)?-hpa-(?P<suffix>[^.]+)$", re.IGNORECASE)
+
+# HPA file-name suffix -> chart tier.
+HPA_SUFFIX_TIER = {"ssr": "app", "nginx": "proxy", "cache": "proxy"}
+
+# scaleTargetRef.name suffix -> tier, used only as a fallback when the file-name suffix is
+# unfamiliar. Most specific first so "-pwa-main-cache" wins over "-pwa-main".
+HPA_TARGET_SUFFIXES = [
+    ("-pwa-main-cache", "proxy"),
+    ("-pwa-proxy", "proxy"),
+    ("-pwa-cache", "proxy"),
+    ("-pwa-main", "app"),
+    ("-pwa-app", "app"),
+]
+
+
+def _hpa_tier_from_scale_ref(scale_name: str):
+    """Tier from a scaleTargetRef name, or None. Fallback when the file-name suffix is unknown."""
+    for suffix, tier in HPA_TARGET_SUFFIXES:
+        if scale_name.endswith(suffix):
+            return tier
+    return None
+
+
+def _pwa_helmrelease_doc(docs):
+    """Return the first PWA (chart pwa/pwa-main) HelmRelease document in a file, or None."""
+    for doc in docs:
+        if not (isinstance(doc, dict) and doc.get("kind") == "HelmRelease"):
+            continue
+        spec = doc.get("spec")
+        chart_spec = spec.get("chart") if isinstance(spec, dict) else None
+        inner = chart_spec.get("spec") if isinstance(chart_spec, dict) else None
+        chart = inner.get("chart") if isinstance(inner, dict) else None
+        if chart in (NEW_CHART_NAME, MIGRATABLE_CHART):
+            return doc
+    return None
+
+
+def _copy_eol_comment(src, src_key, dst, dst_key) -> None:
+    """Move an end-of-line comment from src[src_key] to dst[dst_key] (best-effort).
+
+    Lets the arithmetic comment on an HPA's averageUtilization survive the collapse into
+    the targetCPU/MemoryUtilizationPercentage shortcut.
+    """
+    src_ca = getattr(src, "ca", None)
+    token = src_ca.items.get(src_key) if src_ca is not None else None
+    eol = token[2] if token else None
+    if eol is not None:
+        dst.ca.items[dst_key] = [None, None, eol, None]
+
+
+def _hpa_autoscaling(spec) -> CommentedMap:
+    """Build a chart `autoscaling` values block from a HorizontalPodAutoscaler spec.
+
+    Standard CPU/memory Resource-utilization metrics become the targetCPU/Memory shortcuts
+    (carrying any end-of-line comment); any other metric kind keeps the raw `metrics` list.
+    `behavior` passes through verbatim.
+    """
+    out = CommentedMap()
+    out["enabled"] = True
+    for key in ("minReplicas", "maxReplicas"):
+        if key in spec:
+            out[key] = spec[key]
+    metrics = spec.get("metrics") or []
+    cpu_tgt = mem_tgt = None
+    only_resource_util = True
+    for metric in metrics:
+        res = metric.get("resource") if isinstance(metric, dict) else None
+        tgt = res.get("target") if isinstance(res, dict) else None
+        if (isinstance(metric, dict) and metric.get("type") == "Resource" and isinstance(tgt, dict)
+                and tgt.get("type") == "Utilization" and tgt.get("averageUtilization") is not None
+                and res.get("name") in ("cpu", "memory")):
+            if res["name"] == "cpu":
+                cpu_tgt = tgt
+            else:
+                mem_tgt = tgt
+        else:
+            only_resource_util = False
+    if metrics and only_resource_util:
+        if cpu_tgt is not None:
+            out["targetCPUUtilizationPercentage"] = cpu_tgt["averageUtilization"]
+            _copy_eol_comment(cpu_tgt, "averageUtilization", out, "targetCPUUtilizationPercentage")
+        if mem_tgt is not None:
+            out["targetMemoryUtilizationPercentage"] = mem_tgt["averageUtilization"]
+            _copy_eol_comment(mem_tgt, "averageUtilization", out, "targetMemoryUtilizationPercentage")
+    elif metrics:
+        out["metrics"] = metrics  # custom/external/object metrics -> keep the list verbatim
+    if "behavior" in spec:
+        out["behavior"] = spec["behavior"]
+    return out
+
+
+def fold_hpas_in_directory(directory: Path, args, report: Report) -> int:
+    """Fold standalone HPA manifests into their sibling PWA HelmRelease.
+
+    Each HPA file is routed by name -- "<release>[-pwa]-hpa-<suffix>.yaml" -> "<release>.yaml"
+    in the same directory -- and only when that sibling is a PWA HelmRelease. Returns the
+    number folded. Applies changes only with --write; otherwise reports the plan (dry-run).
+    """
+    yaml = _new_yaml()
+    files = sorted(directory.rglob(args.glob) if args.recursive else directory.glob(args.glob))
+    loaded: dict = {}
+    originals: dict = {}
+    for f in files:
+        try:
+            text = f.read_text(encoding="utf-8")
+            loaded[f] = list(yaml.load_all(text))
+            originals[f] = text
+        except Exception:  # noqa: BLE001
+            continue
+
+    write_docs: dict = {}
+    delete_files: list = []
+    folded = 0
+
+    for f, docs in loaded.items():
+        if not any(isinstance(d, dict) and d.get("kind") == HPA_KIND for d in docs):
+            continue
+        match = HPA_FILE_RE.match(f.stem)
+        if not match:
+            report.warn(f"{f.name}: does not match '<release>-hpa-<tier>' naming; left as-is")
+            continue
+        base, suffix = match.group("base"), match.group("suffix")
+        file_tier = HPA_SUFFIX_TIER.get(suffix.lower())
+
+        # Route to the sibling HelmRelease file of the same name in the same directory.
+        target_file = next(
+            (f.with_name(base + ext) for ext in (".yaml", ".yml") if f.with_name(base + ext) in loaded),
+            None,
+        )
+        if target_file is None:
+            report.warn(f"{f.name}: no sibling HelmRelease '{base}.yaml'; left as-is")
+            continue
+        hr_doc = _pwa_helmrelease_doc(loaded[target_file])
+        if hr_doc is None:
+            report.warn(f"{f.name}: {target_file.name} is not a PWA HelmRelease; left as-is")
+            continue
+
+        keep: list = []
+        for doc in docs:
+            if not (isinstance(doc, dict) and doc.get("kind") == HPA_KIND):
+                keep.append(doc)
+                continue
+            spec = doc.get("spec") if isinstance(doc.get("spec"), dict) else {}
+            tier = file_tier or _hpa_tier_from_scale_ref(str((spec.get("scaleTargetRef") or {}).get("name", "")))
+            if tier is None:
+                report.warn(f"{f.name}: cannot determine tier from suffix '{suffix}'; left as-is")
+                keep.append(doc)
+                continue
+            values = _ensure(hr_doc.setdefault("spec", CommentedMap()), "values")
+            tier_map = _ensure(values, tier)
+            if "autoscaling" in tier_map:
+                report.warn(f"{target_file.name}: {tier}.autoscaling already set; left {f.name} as-is")
+                keep.append(doc)
+                continue
+            tier_map["autoscaling"] = _hpa_autoscaling(spec)
+            report.map(f"{f.name}", f"{target_file.name}: spec.values.{tier}.autoscaling")
+            write_docs[target_file] = loaded[target_file]
+            folded += 1
+        if len(keep) != len(docs):
+            if keep:
+                write_docs[f] = keep
+            else:
+                delete_files.append(f)
+
+    if folded == 0:
+        if report.warnings or args.verbose:
+            print(report.render())
+        return 0
+
+    # Drop each deleted HPA file from the kustomization.yaml in its own directory.
+    deleted_by_dir: dict = {}
+    for f in delete_files:
+        deleted_by_dir.setdefault(f.parent, set()).add(f.name)
+    for kf in [p for p in loaded if p.name in ("kustomization.yaml", "kustomization.yml")]:
+        names = deleted_by_dir.get(kf.parent)
+        if not names:
+            continue
+        for doc in loaded[kf]:
+            res = doc.get("resources") if isinstance(doc, dict) else None
+            if isinstance(res, list) and any(str(r) in names for r in res):
+                res[:] = [r for r in res if str(r) not in names]
+                write_docs[kf] = loaded[kf]
+                report.map(f"{kf.name}: resources", f"removed {', '.join(sorted(names))}")
+
+    print(report.render())
+    if not args.write:
+        for path in sorted(write_docs, key=str):
+            print(f"  would update: {path}")
+        for path in delete_files:
+            print(f"  would remove: {path}")
+        print("  dry-run: no files written (use --write to apply HPA folding)")
+        return folded
+
+    for path, pdocs in write_docs.items():
+        yaml.explicit_start = _starts_with_doc_marker(originals.get(path, "")) if len(pdocs) <= 1 else True
+        text = _dump_all(yaml, pdocs)
+        if args.backup:
+            path.with_suffix(path.suffix + ".bak").write_text(originals[path], encoding="utf-8")
+        path.write_text(text, encoding="utf-8")
+        print(f"  updated: {path}")
+    for path in delete_files:
+        path.unlink()
+        print(f"  removed: {path}")
+    return folded
+
+
 def process_file(path: Path, args, explicit: bool = False) -> bool:
     yaml = _new_yaml()
     original = path.read_text(encoding="utf-8")
@@ -450,7 +672,16 @@ def main(argv: list[str] | None = None) -> int:
         if process_file(path, args, explicit):
             changed += 1
 
+    # Folder mode only: fold standalone HPA manifests into their HelmRelease's values.
+    hpa_folded = 0
+    for raw in args.paths:
+        p = Path(raw)
+        if p.is_dir():
+            hpa_folded += fold_hpas_in_directory(p, args, Report(f"HPA folding: {p}"))
+
     print(f"\nSummary: migrated {changed} of {total} scanned file(s).")
+    if hpa_folded:
+        print(f"Folded {hpa_folded} HorizontalPodAutoscaler(s) into HelmRelease values.")
     return 0
 
 
