@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
+import shutil
 from pathlib import Path
 
 import pytest
@@ -160,3 +161,105 @@ def test_non_pwa_helmrelease_is_untouched():
 
     assert changed is False
     assert _plain(doc) == before
+
+
+# --- folder-mode HPA folding ------------------------------------------------
+
+def _copy_hpa_folder(tmp_path):
+    dst = tmp_path / "pwa"
+    shutil.copytree(FIXTURES / "hpa-folder", dst)
+    return dst
+
+
+def test_hpa_folding_injects_autoscaling_and_removes_manifests(tmp_path):
+    dst = _copy_hpa_folder(tmp_path)
+
+    rc = migrate.main(["-r", "--write", str(dst)])
+    assert rc == 0
+
+    # The PWA HPA manifests are removed...
+    assert not (dst / "release-live-hpa-ssr.yaml").exists()
+    assert not (dst / "release-live-pwa-hpa-nginx.yaml").exists()
+    # ...and dropped from the kustomization resource list.
+    resources = [str(r) for r in _load(dst / "kustomization.yaml")["resources"]]
+    assert "release-live-hpa-ssr.yaml" not in resources
+    assert "release-live-pwa-hpa-nginx.yaml" not in resources
+    assert "release-live.yaml" in resources
+
+    # The live release gains both tiers' autoscaling (ssr -> app, nginx -> proxy).
+    live = _plain(_load(dst / "release-live.yaml"))
+    app_as = live["spec"]["values"]["app"]["autoscaling"]
+    assert app_as["enabled"] is True
+    assert app_as["minReplicas"] == 4
+    assert app_as["maxReplicas"] == 16
+    assert app_as["targetCPUUtilizationPercentage"] == 1500
+    assert app_as["behavior"]["scaleDown"]["stabilizationWindowSeconds"] == 900
+
+    proxy_as = live["spec"]["values"]["proxy"]["autoscaling"]
+    assert proxy_as["targetCPUUtilizationPercentage"] == 750
+    assert proxy_as["targetMemoryUtilizationPercentage"] == 80
+
+
+def test_hpa_folding_routes_by_filename_not_release_name(tmp_path):
+    # release-icm.yaml shares the release name "demo" with release-live.yaml. Routing by
+    # file name (not release name) must keep the pwa HPA out of the icm HelmRelease.
+    dst = _copy_hpa_folder(tmp_path)
+
+    migrate.main(["-r", "--write", str(dst)])
+
+    icm = _plain(_load(dst / "release-icm.yaml"))
+    assert "autoscaling" not in icm["spec"]["values"].get("app", {})
+    assert "autoscaling" not in icm["spec"]["values"].get("proxy", {})
+
+
+def test_hpa_folding_skips_non_pwa_sibling(tmp_path):
+    # An HPA whose sibling HelmRelease is not a PWA chart is left untouched.
+    dst = _copy_hpa_folder(tmp_path)
+
+    migrate.main(["-r", "--write", str(dst)])
+
+    assert (dst / "release-icm-hpa-ssr.yaml").exists()
+    resources = [str(r) for r in _load(dst / "kustomization.yaml")["resources"]]
+    assert "release-icm-hpa-ssr.yaml" in resources
+
+
+def test_hpa_folding_leaves_other_releases_untouched(tmp_path):
+    dst = _copy_hpa_folder(tmp_path)
+
+    migrate.main(["-r", "--write", str(dst)])
+
+    edit = _plain(_load(dst / "release-edit.yaml"))
+    assert "autoscaling" not in edit["spec"]["values"].get("app", {})
+
+
+def test_hpa_folding_preserves_metric_comment(tmp_path):
+    # The arithmetic comment on averageUtilization survives the collapse to the shortcut.
+    dst = _copy_hpa_folder(tmp_path)
+
+    migrate.main(["-r", "--write", str(dst)])
+
+    text = (dst / "release-live.yaml").read_text(encoding="utf-8")
+    assert "targetCPUUtilizationPercentage: 1500 # limits=3000m" in text
+
+
+def test_hpa_folding_is_idempotent(tmp_path):
+    dst = _copy_hpa_folder(tmp_path)
+
+    migrate.main(["-r", "--write", str(dst)])
+    rc = migrate.main(["-r", "--write", str(dst)])
+
+    assert rc == 0
+    live = _plain(_load(dst / "release-live.yaml"))
+    assert live["spec"]["values"]["app"]["autoscaling"]["targetCPUUtilizationPercentage"] == 1500
+
+
+def test_hpa_folding_dry_run_writes_nothing(tmp_path):
+    dst = _copy_hpa_folder(tmp_path)
+
+    migrate.main(["-r", str(dst)])
+
+    # Dry-run: manifests stay, no autoscaling injected.
+    assert (dst / "release-live-hpa-ssr.yaml").exists()
+    live = _plain(_load(dst / "release-live.yaml"))
+    assert "autoscaling" not in live["spec"]["values"].get("app", {})
+
