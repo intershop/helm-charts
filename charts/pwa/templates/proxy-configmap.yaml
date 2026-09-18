@@ -5,22 +5,22 @@ metadata:
   labels:
     {{- include "pwa.componentLabels" (dict "root" . "component" "proxy") | nindent 4 }}
 data:
-  {{- if .Values.proxy.multiChannel }}
-  multi-channel.yaml: {{- .Values.proxy.multiChannel | toYaml | indent 4}}
-  {{- else }}
   multi-channel.yaml: |-
+    {{- if .Values.proxy.multiChannel }}
+    {{- .Values.proxy.multiChannel | nindent 4 }}
+    {{- else }}
     .+:
       channel: default
-  {{- end -}}
-  {{- if .Values.proxy.cacheIgnoreParams }}
-  caching-ignore-params.yaml: {{- .Values.proxy.cacheIgnoreParams | toYaml | indent 4}}
-  {{- else }}
+    {{- end }}
   caching-ignore-params.yaml: |-
+    {{- if .Values.proxy.cacheIgnoreParams }}
+    {{- .Values.proxy.cacheIgnoreParams | nindent 4 }}
+    {{- else }}
     params: []
-  {{- end -}}
-  {{- if .Values.proxy.additionalHeaders }}
-  additional-headers.yaml: {{- .Values.proxy.additionalHeaders | toYaml | indent 4}}
-  {{- else }}
+    {{- end }}
   additional-headers.yaml: |-
+    {{- if .Values.proxy.additionalHeaders }}
+    {{- .Values.proxy.additionalHeaders | nindent 4 }}
+    {{- else }}
     headers: []
-  {{- end -}}
+    {{- end }}
