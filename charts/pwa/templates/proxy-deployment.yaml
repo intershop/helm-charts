@@ -123,14 +123,14 @@ spec:
           emptyDir: {}
         - name: proxy-config-map
           configMap:
-              name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-gomplate-datasources
-              items:
-                - key: multi-channel.yaml
-                  path: multi-channel.yaml
-                - key: caching-ignore-params.yaml
-                  path: caching-ignore-params.yaml
-                - key: additional-headers.yaml
-                  path: additional-headers.yaml
+            name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-gomplate-datasources
+            items:
+              - key: multi-channel.yaml
+                path: multi-channel.yaml
+              - key: caching-ignore-params.yaml
+                path: caching-ignore-params.yaml
+              - key: additional-headers.yaml
+                path: additional-headers.yaml
       {{- with .Values.proxy.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
