@@ -181,6 +181,47 @@ When `enabled` is set to `true` and `required` is `false` (default), Kubernetes 
 
 When `required` is set to `true`, Kubernetes will enforce that pods must be scheduled on different nodes. This provides stronger guarantees but may result in pods remaining in a Pending state if insufficient nodes are available.
 
+## Autoscaling (HPA)
+
+Each tier can be scaled independently by a [HorizontalPodAutoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) (`autoscaling/v2`) via `app.autoscaling` and `proxy.autoscaling`. The simple case uses CPU and (optionally) memory target shortcuts:
+
+```yaml
+app:
+  autoscaling:
+    enabled: true
+    minReplicas: 4
+    maxReplicas: 16
+    targetCPUUtilizationPercentage: 1500
+    targetMemoryUtilizationPercentage: 80 # optional; omit/null to skip
+```
+
+> [!IMPORTANT]
+> The target percentage is relative to the container's **resource requests**, not its limits. Because the requests are deliberately small, healthy targets are often **far above 100** (e.g. `100m` request with a `1500` target ≈ `1500m`). This is expected, not a typo.
+
+When autoscaling is enabled the Deployment omits `spec.replicas`, so `replicaCount` is ignored and Helm does not fight the autoscaler on upgrades.
+
+For finer control, provide scale-up/down `behavior` and/or a raw `metrics` list. When `metrics` is non-empty it **replaces** the CPU/memory shortcuts above:
+
+```yaml
+proxy:
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 4
+    targetCPUUtilizationPercentage: 750
+    behavior:
+      scaleDown:
+        stabilizationWindowSeconds: 1800 # scale down only after 30 min below target
+      scaleUp:
+        stabilizationWindowSeconds: 60
+        policies:
+          - type: Percent
+            value: 100
+            periodSeconds: 15
+```
+
+Both `metrics` and `behavior` are passed through verbatim, so any `autoscaling/v2` construct (custom/external metrics, per-policy tuning) is supported.
+
 ## Pod Labels
 
 To introduce specific labels for the Pods needed for monitoring, change your values file or HelmRelease to the following:
