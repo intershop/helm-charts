@@ -12,11 +12,30 @@ spec:
     name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}
   minReplicas: {{ .Values.proxy.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.proxy.autoscaling.maxReplicas }}
+  {{- if .Values.proxy.autoscaling.metrics }}
   metrics:
+    {{- toYaml .Values.proxy.autoscaling.metrics | nindent 4 }}
+  {{- else }}
+  metrics:
+    {{- with .Values.proxy.autoscaling.targetCPUUtilizationPercentage }}
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: {{ .Values.proxy.autoscaling.targetCPUUtilizationPercentage }}
+          averageUtilization: {{ . }}
+    {{- end }}
+    {{- with .Values.proxy.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ . }}
+    {{- end }}
+  {{- end }}
+  {{- with .Values.proxy.autoscaling.behavior }}
+  behavior:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 {{- end }}
