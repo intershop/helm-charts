@@ -1,0 +1,67 @@
+suite: hybrid approach env wiring
+release:
+  name: pwa
+set:
+  config.icmBaseUrl: https://icm.example.com
+tests:
+  - it: sets no hybrid env vars when hybrid is disabled
+    template: templates/app-deployment.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SSR_HYBRID
+            value: 'true'
+          any: true
+
+  - it: enables SSR hybrid mode and defaults the backend to config.icmBaseUrl
+    template: templates/app-deployment.yaml
+    set:
+      hybrid.enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SSR_HYBRID
+            value: 'true'
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SSR_HYBRID_BACKEND
+            value: https://icm.example.com
+
+  - it: overrides the hybrid backend with hybrid.icmInternalURL
+    template: templates/app-deployment.yaml
+    set:
+      hybrid.enabled: true
+      hybrid.icmInternalURL: https://internal-wa:8443
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SSR_HYBRID_BACKEND
+            value: https://internal-wa:8443
+
+  - it: forwards the external port to the proxy only when set
+    template: templates/proxy-deployment.yaml
+    set:
+      hybrid.enabled: true
+      hybrid.pwaExternalPort: 443
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: HYBRID_FORWARDED_PORT
+            value: '443'
+
+  - it: omits HYBRID_FORWARDED_PORT when the external port is unset
+    template: templates/proxy-deployment.yaml
+    set:
+      hybrid.enabled: true
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: HYBRID_FORWARDED_PORT
+            value: '443'
+          any: true

@@ -1,0 +1,35 @@
+{{- /*
+Deprecation guards for chart 1.0.0.
+
+Fail fast with a migration pointer when an obsolete 0.x value is still set.
+The guarded keys are re-admitted (permissively) in values.schema.json so that
+schema validation passes and these targeted messages are shown instead of a
+generic "additionalProperties not allowed" error.
+
+Remove this file and the deprecated entries in values.schema.json in the next
+major version, once the 0.x -> 1.0.0 migration window has closed.
+*/ -}}
+{{- $guide := "the migration guide at charts/pwa/docs/migrate-to-1.0.0.md" -}}
+{{- if hasKey .Values "cache" -}}
+{{- fail (printf "values: `cache.*` was renamed to `proxy.*` in chart 1.0.0. Move your nginx configuration under `proxy:`. See %s." $guide) -}}
+{{- end -}}
+{{- if hasKey .Values "upstream" -}}
+{{- fail (printf "values: `upstream.*` was replaced by `config.*` in chart 1.0.0 (`upstream.icmBaseURL` -> `config.icmBaseUrl`, now required; `upstream.cdnPrefixURL` was removed). See %s." $guide) -}}
+{{- end -}}
+{{- if hasKey .Values "calculated" -}}
+{{- fail (printf "values: the internal `calculated` section was removed in chart 1.0.0; delete it from your values. See %s." $guide) -}}
+{{- end -}}
+{{- if hasKey .Values "environment" -}}
+{{- fail (printf "values: top-level `environment` was removed in chart 1.0.0; set SSR variables via `app.env` (and proxy variables via `proxy.env`). See %s." $guide) -}}
+{{- end -}}
+{{- if hasKey .Values.app "environment" -}}
+{{- fail (printf "values: `app.environment` is not valid in chart 1.0.0; set SSR environment variables via `app.env`. See %s." $guide) -}}
+{{- end -}}
+{{- if hasKey .Values.proxy "extraEnvVars" -}}
+{{- fail (printf "values: `proxy.extraEnvVars` was renamed to `proxy.env` in chart 1.0.0. See %s." $guide) -}}
+{{- end -}}
+{{- range $key := (list "affinity" "deploymentAnnotations" "deploymentLabels" "image" "livenessProbe" "metrics" "nodeSelector" "podAnnotations" "podAntiAffinity" "podLabels" "readinessProbe" "replicaCount" "resources" "service" "tolerations" "updateStrategy") -}}
+{{- if hasKey $.Values $key -}}
+{{- fail (printf "values: top-level `%s` (SSR configuration) moved under `app.%s` in chart 1.0.0 (the proxy tier has its own `proxy.%s`). See %s." $key $key $key $guide) -}}
+{{- end -}}
+{{- end -}}

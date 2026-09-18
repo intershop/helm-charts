@@ -11,6 +11,8 @@
     "editor.formatOnSave": false
   },
   "files.associations": {
-    "charts/**/templates/**/*.yaml": "helm"
+    "charts/**/templates/**/*.yaml": "helm",
+    "*.yaml.template": "yaml",
+    "*.md.gotmpl": "markdown"
   }
 }

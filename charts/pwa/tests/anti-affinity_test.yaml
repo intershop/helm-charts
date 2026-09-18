@@ -1,0 +1,58 @@
+suite: pod anti-affinity
+templates:
+  - templates/app-deployment.yaml
+release:
+  name: pwa
+set:
+  config.icmBaseUrl: https://icm.example.com
+tests:
+  - it: defaults to a preferred (soft) anti-affinity rule that selects the tier's Pods
+    template: templates/app-deployment.yaml
+    asserts:
+      - isNotEmpty:
+          path: spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution
+      - isNull:
+          path: spec.template.spec.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution
+      - equal:
+          path: spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchLabels
+          value:
+            app.kubernetes.io/name: pwa
+            app.kubernetes.io/instance: pwa
+            app.kubernetes.io/component: app
+
+  - it: switches to a required (hard) rule that selects the tier's Pods when required=true
+    template: templates/app-deployment.yaml
+    set:
+      app.podAntiAffinity.required: true
+    asserts:
+      - isNotEmpty:
+          path: spec.template.spec.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution
+      - isNull:
+          path: spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution
+      - equal:
+          path: spec.template.spec.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchLabels
+          value:
+            app.kubernetes.io/name: pwa
+            app.kubernetes.io/instance: pwa
+            app.kubernetes.io/component: app
+
+  - it: keeps custom podLabels out of the anti-affinity selector
+    template: templates/app-deployment.yaml
+    set:
+      app.podLabels:
+        team: web
+    asserts:
+      - equal:
+          path: spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchLabels
+          value:
+            app.kubernetes.io/name: pwa
+            app.kubernetes.io/instance: pwa
+            app.kubernetes.io/component: app
+
+  - it: omits affinity entirely when disabled
+    template: templates/app-deployment.yaml
+    set:
+      app.podAntiAffinity.enabled: false
+    asserts:
+      - isNull:
+          path: spec.template.spec.affinity

@@ -1,0 +1,41 @@
+{{- if .Values.proxy.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}
+  labels:
+    {{- include "pwa.componentLabels" (dict "root" . "component" "proxy") | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}
+  minReplicas: {{ .Values.proxy.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.proxy.autoscaling.maxReplicas }}
+  {{- if .Values.proxy.autoscaling.metrics }}
+  metrics:
+    {{- toYaml .Values.proxy.autoscaling.metrics | nindent 4 }}
+  {{- else }}
+  metrics:
+    {{- with .Values.proxy.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ . }}
+    {{- end }}
+    {{- with .Values.proxy.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ . }}
+    {{- end }}
+  {{- end }}
+  {{- with .Values.proxy.autoscaling.behavior }}
+  behavior:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}
