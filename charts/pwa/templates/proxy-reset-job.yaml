@@ -72,9 +72,7 @@ spec:
           image: {{ .Values.proxy.reset.image.repository}}:{{.Values.proxy.reset.image.tag}}
           imagePullPolicy: {{ .Values.proxy.reset.image.pullPolicy }}
           command:
-            [
-              "bash",
-              "-c",
-              "kubectl rollout restart deployment/{{ include "pwa.componentName" (dict "root" . "component" "proxy") }}",
-            ]
+            - bash
+            - -c
+            - kubectl rollout restart deployment/{{ include "pwa.componentName" (dict "root" . "component" "proxy") }}
 {{- end -}}
