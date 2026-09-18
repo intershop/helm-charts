@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
+import shutil
 from pathlib import Path
 
 import pytest
@@ -160,3 +161,72 @@ def test_non_pwa_helmrelease_is_untouched():
 
     assert changed is False
     assert _plain(doc) == before
+
+
+# --- folder-mode HPA folding ------------------------------------------------
+
+def _copy_hpa_folder(tmp_path):
+    dst = tmp_path / "pwa"
+    shutil.copytree(FIXTURES / "hpa-folder", dst)
+    return dst
+
+
+def test_hpa_folding_injects_autoscaling_and_removes_manifests(tmp_path):
+    dst = _copy_hpa_folder(tmp_path)
+
+    rc = migrate.main(["-r", "--write", str(dst)])
+    assert rc == 0
+
+    # Standalone HPA manifests are removed...
+    assert not (dst / "hpa-ssr.yaml").exists()
+    assert not (dst / "hpa-cache.yaml").exists()
+    # ...and dropped from the kustomization resource list.
+    resources = [str(r) for r in _load(dst / "kustomization.yaml")["resources"]]
+    assert "hpa-ssr.yaml" not in resources
+    assert "hpa-cache.yaml" not in resources
+    assert "release-live.yaml" in resources
+
+    # The live release gains both tiers' autoscaling.
+    live = _plain(_load(dst / "release-live.yaml"))
+    app_as = live["spec"]["values"]["app"]["autoscaling"]
+    assert app_as["enabled"] is True
+    assert app_as["minReplicas"] == 4
+    assert app_as["maxReplicas"] == 16
+    assert app_as["targetCPUUtilizationPercentage"] == 1500
+    assert app_as["behavior"]["scaleDown"]["stabilizationWindowSeconds"] == 900
+
+    proxy_as = live["spec"]["values"]["proxy"]["autoscaling"]
+    assert proxy_as["targetCPUUtilizationPercentage"] == 750
+    assert proxy_as["targetMemoryUtilizationPercentage"] == 80
+
+
+def test_hpa_folding_leaves_other_releases_untouched(tmp_path):
+    dst = _copy_hpa_folder(tmp_path)
+
+    migrate.main(["-r", "--write", str(dst)])
+
+    edit = _plain(_load(dst / "release-edit.yaml"))
+    assert "autoscaling" not in edit["spec"]["values"].get("app", {})
+
+
+def test_hpa_folding_is_idempotent(tmp_path):
+    dst = _copy_hpa_folder(tmp_path)
+
+    migrate.main(["-r", "--write", str(dst)])
+    rc = migrate.main(["-r", "--write", str(dst)])
+
+    assert rc == 0
+    live = _plain(_load(dst / "release-live.yaml"))
+    assert live["spec"]["values"]["app"]["autoscaling"]["targetCPUUtilizationPercentage"] == 1500
+
+
+def test_hpa_folding_dry_run_writes_nothing(tmp_path):
+    dst = _copy_hpa_folder(tmp_path)
+
+    migrate.main(["-r", str(dst)])
+
+    # Dry-run: manifests stay, no autoscaling injected.
+    assert (dst / "hpa-ssr.yaml").exists()
+    live = _plain(_load(dst / "release-live.yaml"))
+    assert "autoscaling" not in live["spec"]["values"].get("app", {})
+
