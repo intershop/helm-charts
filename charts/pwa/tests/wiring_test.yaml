@@ -1,0 +1,95 @@
+suite: proxy-to-app wiring and shared config injection
+release:
+  name: pwa
+set:
+  config.icmBaseUrl: https://icm.example.com
+tests:
+  # UPSTREAM_PWA is the proxy -> app connection; it must resolve to the app
+  # Service name and port, tracking name overrides and the service port.
+  - it: proxy UPSTREAM_PWA points at the app Service name and port
+    template: templates/proxy-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: UPSTREAM_PWA
+            value: http://pwa-app:4200
+
+  - it: UPSTREAM_PWA follows nameOverride and the app service port
+    template: templates/proxy-deployment.yaml
+    set:
+      nameOverride: foo
+      app.service.port: 9999
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: UPSTREAM_PWA
+            value: http://pwa-foo-app:9999
+
+  # ICM_BASE_URL is injected into both tiers from .config.
+  - it: injects ICM_BASE_URL into both tiers
+    templates:
+      - templates/app-deployment.yaml
+      - templates/proxy-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ICM_BASE_URL
+            value: https://icm.example.com
+
+  - it: injects the optional ICM_BASE_URL_SSR only when set
+    template: templates/app-deployment.yaml
+    set:
+      config.icmBaseUrlSsr: http://icm-web-wa:8080
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ICM_BASE_URL_SSR
+            value: http://icm-web-wa:8080
+
+  - it: omits ICM_BASE_URL_SSR when unset
+    template: templates/app-deployment.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ICM_BASE_URL_SSR
+            value: http://icm-web-wa:8080
+          any: true
+
+  - it: injects the optional ALLOWED_HOSTS only when set
+    template: templates/app-deployment.yaml
+    set:
+      config.allowedHosts: shop.example.com,*.example.com
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ALLOWED_HOSTS
+            value: shop.example.com,*.example.com
+
+  # --- imagePullSecrets and updateStrategy ------------------------------------
+  - it: propagates imagePullSecrets to both tiers
+    templates:
+      - templates/app-deployment.yaml
+      - templates/proxy-deployment.yaml
+    set:
+      imagePullSecrets:
+        - name: regcred
+    asserts:
+      - contains:
+          path: spec.template.spec.imagePullSecrets
+          content:
+            name: regcred
+
+  - it: honors a per-tier Recreate update strategy
+    template: templates/app-deployment.yaml
+    set:
+      app.updateStrategy: Recreate
+    asserts:
+      - equal:
+          path: spec.strategy.type
+          value: Recreate
