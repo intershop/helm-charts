@@ -89,10 +89,9 @@ Also changes to the `README.md.gotmpl` require a manual regeneration. `README.md
 | nameOverride | string | `""` | Override the chart name used in resource names. |
 | fullnameOverride | string | `""` | Override the fully qualified release name. |
 | config.icmBaseUrl | string | `""` | Base URL of the Intershop Commerce Management (ICM) backend. Required; intentionally empty so installs must set a real backend and fail fast rather than defaulting to a dev URL. |
-| config.icmBaseUrlSsr | string | `nil` | Internal ICM base URL used by SSR. Optional; leave unset to skip the ICM_BASE_URL_SSR env var. e.g. "http://icm-<cstmr-id>-<env>-icm-web-wa.icm-<cstmr-id>-<env>.svc.cluster.local:8080" |
+| config.icmBaseUrlSsr | string | `nil` | Internal Kubernetes URL of the ICM Web Adapter used by SSR or Hybrid Approach. Optional; leave unset to skip the ICM_BASE_URL_SSR env var. e.g. "http://icm-<cstmr-id>-<env>-icm-web-wa.icm-<cstmr-id>-<env>.svc.cluster.local:8080" |
 | config.allowedHosts | string | `nil` | Comma-separated ALLOWED_HOSTS for the SSR app. Optional; leave unset to skip the ALLOWED_HOSTS env var. e.g. "shop.example.com,*.example.com" |
 | hybrid.enabled | bool | `false` | Enable the PWA Hybrid Approach deployment. |
-| hybrid.icmInternalURL | string | `nil` | Internal Kubernetes URL of the ICM Web Adapter. Optional; only needed when ICM runs in the same namespace. e.g. https://kubernetes-icm-web-wa:8443 |
 | hybrid.pwaExternalPort | int | `nil` | External PWA port forwarded to Responsive Starter Store requests. Optional; defaults to the standard port when unset. e.g. 443 |
 | imagePullSecrets | list | `[]` | Image pull secrets applied to both tiers' pods. |
 | serviceAccount.create | bool | `true` | Create a ServiceAccount for the workloads. |
@@ -188,8 +187,6 @@ The Hybrid Approach lets pages be served by either the PWA or ICM. For details, 
 ```yaml
 hybrid:
   enabled: true
-  # ICM Web Adapter service internal Kubernetes URL
-  icmInternalURL: https://kubernetes-icm-web-wa:8443
   # PWA external port forwarded to the Responsive Starter Store requests
   pwaExternalPort: 443
 ```
