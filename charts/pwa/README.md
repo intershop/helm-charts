@@ -141,7 +141,7 @@ Also changes to the `README.md.gotmpl` require a manual regeneration. `README.md
 | proxy.cacheIgnoreParams | string | `""` | Query parameters nginx ignores when caching (YAML string). |
 | proxy.reset | object | see [values.yaml](./values.yaml) | Post-upgrade job that restarts the proxy to purge cached SSR pages. |
 | proxy.podSecurityContext | object | see [values.yaml](./values.yaml) | Pod security context for the proxy (master runs as root). |
-| proxy.securityContext | object | see [values.yaml](./values.yaml) | Container security context for the proxy (adds CHOWN/SETGID/SETUID). |
+| proxy.securityContext | object | see [values.yaml](./values.yaml) | Container security context for the proxy (adds CHOWN/SETGID/SETUID/DAC_OVERRIDE). |
 | proxy.resources | object | see [values.yaml](./values.yaml) | Resource requests/limits for the proxy container. |
 | proxy.livenessProbe | object | see [values.yaml](./values.yaml) | Liveness probe for the proxy container (TCP check on the http port). |
 | proxy.readinessProbe | object | see [values.yaml](./values.yaml) | Readiness probe for the proxy container (TCP check on the http port). |

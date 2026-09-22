@@ -45,6 +45,9 @@ tests:
       - contains:
           path: spec.template.spec.containers[0].securityContext.capabilities.add
           content: SETUID
+      - contains:
+          path: spec.template.spec.containers[0].securityContext.capabilities.add
+          content: DAC_OVERRIDE
 
   - it: service account disables API token automount by default
     template: templates/serviceaccount.yaml

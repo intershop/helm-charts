@@ -285,8 +285,9 @@ proxy:
       type: RuntimeDefault
 
   # Additional capabilities are required for nginx startup: the master renders its config
-  # and drops workers to an unprivileged user.
-  # -- Container security context for the proxy (adds CHOWN/SETGID/SETUID).
+  # and drops workers to an unprivileged user. DAC_OVERRIDE lets the root-run cache_clearer.sh
+  # delete the SSR cache files under /tmp/cache that the unprivileged nginx workers created.
+  # -- Container security context for the proxy (adds CHOWN/SETGID/SETUID/DAC_OVERRIDE).
   # @default -- see [values.yaml](./values.yaml)
   securityContext:
     capabilities:
@@ -294,6 +295,7 @@ proxy:
         - CHOWN
         - SETGID
         - SETUID
+        - DAC_OVERRIDE
 
   # -- Resource requests/limits for the proxy container.
   # @default -- see [values.yaml](./values.yaml)
