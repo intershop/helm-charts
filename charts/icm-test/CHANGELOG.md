@@ -1,4 +1,15 @@
 
+<a name="icm-test-2.1.2"></a>
+# [icm-test-2.1.2](https://github.com/intershop/helm-charts/releases/tag/icm-test-2.1.2) (2026-09-22)
+
+Compare with previous release: [icm-test-2.1.1...icm-test-2.1.2](https://github.com/intershop/helm-charts/compare/icm-test-2.1.1...icm-test-2.1.2)
+
+## Bug Fixes
+
+* **icm:** manual configuration needed here ([#1355](https://github.com/intershop/helm-charts/issues/1355))
+
+
+
 <a name="icm-test-2.1.1"></a>
 # [icm-test-2.1.1](https://github.com/intershop/helm-charts/releases/tag/icm-test-2.1.1) (2026-09-15)
 
