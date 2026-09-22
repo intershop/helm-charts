@@ -30,11 +30,11 @@ tests:
             name: SSR_HYBRID_BACKEND
             value: https://icm.example.com
 
-  - it: overrides the hybrid backend with hybrid.icmInternalURL
+  - it: overrides the hybrid backend with config.icmBaseUrlSsr
     template: templates/app-deployment.yaml
     set:
       hybrid.enabled: true
-      hybrid.icmInternalURL: https://internal-wa:8443
+      config.icmBaseUrlSsr: https://internal-wa:8443
     asserts:
       - contains:
           path: spec.template.spec.containers[0].env

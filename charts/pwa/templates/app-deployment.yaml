@@ -77,8 +77,9 @@ spec:
             {{- if .Values.hybrid.enabled }}
             - name: SSR_HYBRID
               value: "true"
+            # Backward compatibility: PWA 13.0.0 and above use ICM_BASE_URL_SSR for the hybrid backend URL directly if set.
             - name: SSR_HYBRID_BACKEND
-              value: "{{ default .Values.config.icmBaseUrl .Values.hybrid.icmInternalURL }}"
+              value: "{{ default .Values.config.icmBaseUrl .Values.config.icmBaseUrlSsr }}"
             {{- end }}
             {{- if include "pwa.appMetricsEnabled" . }}
             - name: PROMETHEUS

@@ -90,7 +90,7 @@
         "icmBaseUrlSsr": {
           "type": ["string", "null"],
           "title": "Internal ICM base URL",
-          "description": "Internal ICM base URL used by server-side rendering.",
+          "description": "Internal ICM base URL used by server-side rendering when running in the same Kubernetes cluster.",
           "minLength": 1
         },
         "allowedHosts": {
@@ -112,12 +112,6 @@
           "type": "boolean",
           "title": "Enable or disable the hybrid approach",
           "default": false
-        },
-        "icmInternalURL": {
-          "type": ["string", "null"],
-          "title": "Internal ICM Web Adapter URL",
-          "description": "Internal Kubernetes URL of the ICM Web Adapter. Required only when ICM runs in the same namespace.",
-          "minLength": 1
         },
         "pwaExternalPort": {
           "type": ["integer", "null"],
