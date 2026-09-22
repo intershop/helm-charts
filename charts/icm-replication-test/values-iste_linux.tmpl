@@ -322,6 +322,9 @@ icm-live:
           timeout-client: "360s"
           timeout-server: "360s"
           syslog-endpoint: "stdout"
+          global-config-snippet: |
+            nbthread 2
+            tune.memory.hot-size 8m
         resources:
           requests:
             cpu: 100m
