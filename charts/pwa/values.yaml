@@ -15,21 +15,17 @@ config:
   # -- Base URL of the Intershop Commerce Management (ICM) backend.
   # Required; intentionally empty so installs must set a real backend and fail fast rather than defaulting to a dev URL.
   icmBaseUrl: ''
-  # -- (string) Internal ICM base URL used by SSR. Optional; leave unset to skip the ICM_BASE_URL_SSR env var.
+  # -- (string) Internal Kubernetes URL of the ICM Web Adapter used by SSR or Hybrid Approach. Optional; leave unset to skip the ICM_BASE_URL_SSR env var.
   # e.g. "http://icm-<cstmr-id>-<env>-icm-web-wa.icm-<cstmr-id>-<env>.svc.cluster.local:8080"
   icmBaseUrlSsr:
   # -- (string) Comma-separated ALLOWED_HOSTS for the SSR app. Optional; leave unset to skip the ALLOWED_HOSTS env var.
   # e.g. "shop.example.com,*.example.com"
   allowedHosts:
 
-# PWA Hybrid Approach: pages produced by PWA or ICM. Specify the icm-web-wa service internal
-# URL for Kubernetes deployments; traffic cannot be routed through the ICM Ingress controller.
+# PWA Hybrid Approach: storefront pages served by PWA or ICM.
 hybrid:
   # -- Enable the PWA Hybrid Approach deployment.
   enabled: false
-  # -- (string) Internal Kubernetes URL of the ICM Web Adapter. Optional; only needed when ICM runs in the same namespace.
-  # e.g. https://kubernetes-icm-web-wa:8443
-  icmInternalURL:
   # -- (int) External PWA port forwarded to Responsive Starter Store requests. Optional; defaults to the standard port when unset.
   # e.g. 443
   pwaExternalPort:
