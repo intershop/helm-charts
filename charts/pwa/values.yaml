@@ -376,7 +376,7 @@ ingress:
   # -- Enable creation of Ingress resources.
   enabled: false
   # -- IngressClass name for all instances.
-  className: nginx
+  className: ingress-haproxy
 ## example for a configured Ingress instance
 #   instances:
 #     ingress:

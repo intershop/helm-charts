@@ -236,7 +236,7 @@
         "className": {
           "type": "string",
           "title": "Ingress class name",
-          "default": "nginx",
+          "default": "ingress-haproxy",
           "minLength": 1
         },
         "instances": {
