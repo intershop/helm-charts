@@ -125,7 +125,7 @@ To implement it in your project, follow the example below:
 ```yaml
 ingress:
   enabled: true
-  className: nginx
+  className: ingress-haproxy
   instances:
     # This Ingress has IP whitelisting, so it is hidden from the world, except for IPs xxx.xxx.xxx.xxx and yyy.yyy.yyy.yyy
     ingress-testing:

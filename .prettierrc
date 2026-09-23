@@ -16,6 +16,12 @@
         "parser": "markdown",
         "proseWrap": "preserve"
       }
+    },
+    {
+      "files": "*.yaml.template",
+      "options": {
+        "parser": "yaml"
+      }
     }
   ]
 }
