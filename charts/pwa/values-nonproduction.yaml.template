@@ -14,15 +14,15 @@
 
 config:
   # Point at a reachable ICM backend for local testing.
-  icmBaseUrl: "https://develop.icm.intershop.de"
-  allowedHosts: "pwa.localdev"
+  icmBaseUrl: 'https://develop.icm.intershop.de'
+  allowedHosts: 'pwa.localdev'
 
 # --------------------------------------------------
 
 app:
   image:
     repository: intershophub/intershop-pwa-ssr
-    tag: "latest"
+    tag: 'latest'
 
   # Single replica is enough on a local single-node cluster.
   replicaCount: 1
@@ -38,11 +38,11 @@ app:
   # Reduced footprint so the pod schedules on constrained local clusters.
   resources:
     requests:
-      cpu: "50m"
-      memory: "300Mi"
+      cpu: '50m'
+      memory: '300Mi'
     limits:
-      cpu: "500m"
-      memory: "900Mi"
+      cpu: '500m'
+      memory: '900Mi'
 
   # A single-node cluster cannot satisfy pod anti-affinity across nodes.
   podAntiAffinity:
@@ -53,7 +53,7 @@ app:
 proxy:
   image:
     repository: intershophub/intershop-pwa-nginx
-    tag: "latest"
+    tag: 'latest'
 
   replicaCount: 1
 
@@ -85,11 +85,11 @@ proxy:
   # Reduced footprint so the pod schedules on constrained local clusters.
   resources:
     requests:
-      cpu: "25m"
-      memory: "128Mi"
+      cpu: '25m'
+      memory: '128Mi'
     limits:
-      cpu: "250m"
-      memory: "300Mi"
+      cpu: '250m'
+      memory: '300Mi'
 
   # A single-node cluster cannot satisfy pod anti-affinity across nodes.
   podAntiAffinity:
@@ -99,7 +99,7 @@ proxy:
 
 ingress:
   enabled: true
-  className: nginx
+  className: ingress-haproxy
   instances:
     ingress:
       hosts:

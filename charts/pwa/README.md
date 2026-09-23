@@ -155,7 +155,7 @@ Also changes to the `README.md.gotmpl` require a manual regeneration. `README.md
 | proxy.deploymentAnnotations | object | `{}` | Extra annotations for the proxy Deployment. |
 | proxy.deploymentLabels | object | `{}` | Extra labels for the proxy Deployment. |
 | ingress.enabled | bool | `false` | Enable creation of Ingress resources. |
-| ingress.className | string | `"nginx"` | IngressClass name for all instances. |
+| ingress.className | string | `"ingress-haproxy"` | IngressClass name for all instances. |
 | monitoring.enabled | bool | `false` | Deploy the in-cluster Prometheus + Grafana stack (development/testing only). |
 | monitoring.prometheus | object | see [values.yaml](./values.yaml) | Prometheus image and optional host for the monitoring stack. |
 | monitoring.grafana | object | see [values.yaml](./values.yaml) | Grafana image, optional host, and optional dev admin password. |
@@ -199,7 +199,7 @@ To implement it in your project, follow the example below:
 ```yaml
 ingress:
   enabled: true
-  className: nginx
+  className: ingress-haproxy
   instances:
     # This Ingress has IP whitelisting, so it is hidden from the world, except for IPs xxx.xxx.xxx.xxx and yyy.yyy.yyy.yyy
     ingress-testing:
