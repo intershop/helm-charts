@@ -1,4 +1,15 @@
 
+<a name="icm-replication-test-2.1.4"></a>
+# [icm-replication-test-2.1.4](https://github.com/intershop/helm-charts/releases/tag/icm-replication-test-2.1.4) (2026-09-24)
+
+Compare with previous release: [icm-replication-test-2.1.3...icm-replication-test-2.1.4](https://github.com/intershop/helm-charts/compare/icm-replication-test-2.1.3...icm-replication-test-2.1.4)
+
+## Bug Fixes
+
+* **icm:** increase haproxy memory quotas and limits for tests ([#1355](https://github.com/intershop/helm-charts/issues/1355))
+
+
+
 <a name="icm-replication-test-2.1.3"></a>
 # [icm-replication-test-2.1.3](https://github.com/intershop/helm-charts/releases/tag/icm-replication-test-2.1.3) (2026-09-22)
 
