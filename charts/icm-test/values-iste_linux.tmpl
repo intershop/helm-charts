@@ -177,14 +177,16 @@ icm:
         syslog-endpoint: "stdout"
         global-config-snippet: |
           nbthread 2
-          tune.memory.hot-size 8m
+          tune.memory.hot-size 0     # return memory to the OS faster (instead of holding 8m)
+          hard-stop-after 360s       # let old worker finish in-flight requests (matches 360s client/server timeouts) before forced stop
+          maxconn 2000               # smaller buffer pool upper limit (default is significantly higher)
       resources:
         requests:
           cpu: 100m
-          memory: 90Mi
+          memory: 256Mi
         limits:
           cpu: 200m
-          memory: 300Mi
+          memory: 384Mi
 
     defaultBackend:
       enabled: false
