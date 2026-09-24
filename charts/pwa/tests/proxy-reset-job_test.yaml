@@ -55,6 +55,40 @@ tests:
           path: subjects[0].name
           value: pwa-proxy-reset
 
+  # All resources run as a post-upgrade hook; the RBAC (weight -5) must be
+  # created before the Job (weight 0) or the Job is denied at apply time.
+  - it: RBAC is a post-upgrade hook ordered before the Job
+    asserts:
+      - equal:
+          path: metadata.annotations["helm.sh/hook"]
+          value: post-upgrade
+        documentIndex: 0
+      - equal:
+          path: metadata.annotations["helm.sh/hook-weight"]
+          value: '-5'
+        documentIndex: 0
+      - equal:
+          path: metadata.annotations["helm.sh/hook-weight"]
+          value: '-5'
+        documentIndex: 1
+      - equal:
+          path: metadata.annotations["helm.sh/hook-weight"]
+          value: '-5'
+        documentIndex: 2
+
+  - it: the Job is a post-upgrade hook weighted after the RBAC
+    documentIndex: 3
+    asserts:
+      - equal:
+          path: metadata.annotations["helm.sh/hook"]
+          value: post-upgrade
+      - equal:
+          path: metadata.annotations["helm.sh/hook-weight"]
+          value: '0'
+      - equal:
+          path: metadata.annotations["helm.sh/hook-delete-policy"]
+          value: before-hook-creation,hook-succeeded
+
   - it: renders nothing when the reset hook is disabled
     set:
       proxy.reset.enabled: false
