@@ -1,0 +1,193 @@
+suite: ingress instances
+templates:
+  - templates/ingress.yaml
+release:
+  name: pwa
+set:
+  config.icmBaseUrl: https://icm.example.com
+tests:
+  - it: renders nothing when ingress is disabled (default)
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: renders one Ingress per configured instance
+    set:
+      ingress.enabled: true
+      ingress.instances:
+        primary:
+          hosts:
+            - host: pwa.example.local
+        secondary:
+          hosts:
+            - host: shop.example.local
+    asserts:
+      - hasDocuments:
+          count: 2
+
+  - it: names the Ingress <proxy-component>-<instance> and labels it as the proxy tier
+    documentIndex: 0
+    set:
+      ingress.enabled: true
+      ingress.instances:
+        primary:
+          hosts:
+            - host: pwa.example.local
+    asserts:
+      - isKind:
+          of: Ingress
+      - equal:
+          path: metadata.name
+          value: pwa-proxy-primary
+      - equal:
+          path: metadata.labels["app.kubernetes.io/name"]
+          value: pwa
+      - equal:
+          path: metadata.labels["app.kubernetes.io/component"]
+          value: proxy
+
+  - it: uses the configured ingress class name
+    documentIndex: 0
+    set:
+      ingress.enabled: true
+      ingress.className: ingress-nginx
+      ingress.instances:
+        primary:
+          hosts:
+            - host: pwa.example.local
+    asserts:
+      - equal:
+          path: spec.ingressClassName
+          value: ingress-nginx
+
+  - it: routes each host to the proxy service on the configured port
+    documentIndex: 0
+    set:
+      ingress.enabled: true
+      proxy.service.port: 8080
+      ingress.instances:
+        primary:
+          hosts:
+            - host: pwa.example.local
+            - host: shop.example.local
+    asserts:
+      - equal:
+          path: spec.rules[0].host
+          value: pwa.example.local
+      - equal:
+          path: spec.rules[0].http.paths[0].path
+          value: /
+      - equal:
+          path: spec.rules[0].http.paths[0].pathType
+          value: ImplementationSpecific
+      - equal:
+          path: spec.rules[0].http.paths[0].backend.service.name
+          value: pwa-proxy
+      - equal:
+          path: spec.rules[0].http.paths[0].backend.service.port.number
+          value: 8080
+      - equal:
+          path: spec.rules[1].host
+          value: shop.example.local
+
+  - it: renders annotations only when the instance defines them
+    documentIndex: 0
+    set:
+      ingress.enabled: true
+      ingress.instances:
+        primary:
+          annotations:
+            kubernetes.io/tls-acme: 'false'
+          hosts:
+            - host: pwa.example.local
+    asserts:
+      - equal:
+          path: metadata.annotations["kubernetes.io/tls-acme"]
+          value: 'false'
+
+  - it: omits annotations when the instance defines none
+    documentIndex: 0
+    set:
+      ingress.enabled: true
+      ingress.instances:
+        primary:
+          hosts:
+            - host: pwa.example.local
+    asserts:
+      - notExists:
+          path: metadata.annotations
+
+  - it: omits the tls block when no secret is configured
+    documentIndex: 0
+    set:
+      ingress.enabled: true
+      ingress.instances:
+        primary:
+          hosts:
+            - host: pwa.example.local
+    asserts:
+      - notExists:
+          path: spec.tls
+
+  - it: covers every non-overridden host with the instance-level tls secret
+    documentIndex: 0
+    set:
+      ingress.enabled: true
+      ingress.instances:
+        primary:
+          tlsSecretName: tls-star-pwa
+          hosts:
+            - host: pwa.example.local
+            - host: shop.example.local
+    asserts:
+      - equal:
+          path: spec.tls[0].secretName
+          value: tls-star-pwa
+      - equal:
+          path: spec.tls[0].hosts
+          value:
+            - pwa.example.local
+            - shop.example.local
+
+  - it: groups hosts under a per-host tls secret override
+    documentIndex: 0
+    set:
+      ingress.enabled: true
+      ingress.instances:
+        primary:
+          tlsSecretName: tls-star-pwa
+          hosts:
+            - host: pwa.example.local
+            - host: secure.example.local
+              tlsSecretName: tls-secure
+    asserts:
+      - contains:
+          path: spec.tls
+          content:
+            secretName: tls-star-pwa
+            hosts:
+              - pwa.example.local
+      - contains:
+          path: spec.tls
+          content:
+            secretName: tls-secure
+            hosts:
+              - secure.example.local
+
+  - it: drops the instance-level secret when every host overrides it
+    documentIndex: 0
+    set:
+      ingress.enabled: true
+      ingress.instances:
+        primary:
+          tlsSecretName: tls-star-pwa
+          hosts:
+            - host: secure.example.local
+              tlsSecretName: tls-secure
+    asserts:
+      - lengthEqual:
+          path: spec.tls
+          count: 1
+      - equal:
+          path: spec.tls[0].secretName
+          value: tls-secure

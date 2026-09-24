@@ -1,29 +1,29 @@
 {{- if .Values.ingress.enabled -}}
 {{ range $name, $value := .Values.ingress.instances }}
 {{ with $value }}
-{{/* create a map tlsSecret <- hosts */}}
+{{- /* create a map tlsSecret <- hosts */ -}}
 {{- $tlsDict := dict -}}
 {{- $rootSecret := .tlsSecretName -}}
 {{- if $rootSecret -}}
-  {{/* add empty list for root secret hosts */}}
+  {{- /* add empty list for root secret hosts */ -}}
   {{- $tlsDict = dict $rootSecret list -}}
-{{- end }}
-{{- range .hosts }}
-  {{- if .tlsSecretName }}
-    {{/* host has an override, add it to the (new) list for this secret */}}
-    {{- if not (hasKey $tlsDict .tlsSecretName) }}
+{{- end -}}
+{{- range .hosts -}}
+  {{- if .tlsSecretName -}}
+    {{- /* host has an override, add it to the (new) list for this secret */ -}}
+    {{- if not (hasKey $tlsDict .tlsSecretName) -}}
       {{- $tlsDict = set $tlsDict .tlsSecretName (list .host) -}}
-    {{- else  }}
+    {{- else -}}
       {{- $tlsDict = set $tlsDict .tlsSecretName (append (get $tlsDict .tlsSecretName) .host ) -}}
-    {{- end }}
-  {{- else if $rootSecret }}
-    {{/* host does not have override, add to root secret list */}}
+    {{- end -}}
+  {{- else if $rootSecret -}}
+    {{- /* host does not have override, add to root secret list */ -}}
     {{- $tlsDict = set $tlsDict $rootSecret (append (get $tlsDict $rootSecret) .host ) -}}
-  {{- end }}
-{{- end }}
+  {{- end -}}
+{{- end -}}
 {{- if $rootSecret -}}
   {{- if not (get $tlsDict $rootSecret) -}}
-    {{/* unset root secret list if empty */}}
+    {{- /* unset root secret list if empty */ -}}
     {{- $tlsDict = unset $tlsDict $rootSecret -}}
   {{- end -}}
 {{- end -}}
