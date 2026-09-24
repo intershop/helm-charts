@@ -182,7 +182,7 @@ icm-test:
           syslog-endpoint: "stdout"
           global-config-snippet: |
             nbthread 2
-            tune.memory.hot-size 0     # return memory to the OS faster (instead of holding 8m)
+            tune.memory.hot-size 1m    # keep hot memory cache small to return memory to the OS faster (must be strictly positive, 0 is rejected)
             hard-stop-after 360s       # let old worker finish in-flight requests (matches 360s client/server timeouts) before forced stop
             maxconn 2000               # smaller buffer pool upper limit (default is significantly higher)
         resources:
