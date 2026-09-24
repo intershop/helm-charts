@@ -4,6 +4,10 @@
 
 Compare with previous release: [pwa-main-0.13.0...pwa-1.0.0](https://github.com/intershop/helm-charts/compare/pwa-main-0.13.0...pwa-1.0.0)
 
+## Notes
+
+**BREAKING:** 1.0.0 is a major restructure — almost every value has moved or been renamed. Read the [Migration to 1.0.0](https://github.com/intershop/helm-charts/blob/pwa-1.0.0/charts/pwa/docs/migrate-to-1.0.0.md) guide before upgrading.
+
 ## Features
 
 * introduce PWA Helm Chart 1.0.0
@@ -14,11 +18,11 @@ Compare with previous release: [pwa-main-0.13.0...pwa-1.0.0](https://github.com/
 
 Compare with previous release: [pwa-main-0.12.0...pwa-main-0.13.0](https://github.com/intershop/helm-charts/compare/pwa-main-0.12.0...pwa-main-0.13.0)
 
-### Features
+## Features
 
 * **pwa:** add pod anti affinity
 
-### Documentation
+## Documentation
 
 * documentation clarification in regards to "Cache reset enabled by default" ([#1264](https://github.com/intershop/helm-charts/issues/1264))
 
@@ -28,11 +32,11 @@ Compare with previous release: [pwa-main-0.12.0...pwa-main-0.13.0](https://githu
 
 Compare with previous release: [pwa-main-0.11.0...pwa-main-0.12.0](https://github.com/intershop/helm-charts/compare/pwa-main-0.11.0...pwa-main-0.12.0)
 
-### Bug Fixes
+## Bug Fixes
 
 * cleanup/improve cache reset feature ([#1184](https://github.com/intershop/helm-charts/issues/1184))
 
-### Documentation
+## Documentation
 
 * documentation improvements in PWA Helm Charts ([#1183](https://github.com/intershop/helm-charts/issues/1183))
 
