@@ -4,7 +4,7 @@ description: Intershop Commerce Management - ICM Job Server Test Chart
 name: icm-job-test
 version: 2.1.3
 annotations:
-  requestedMemoryQuota: 8000Mi
+  requestedMemoryQuota: 8100Mi
   requestedCpuQuotaInMinutes: "2200"
 dependencies:
   - name: icm-test
