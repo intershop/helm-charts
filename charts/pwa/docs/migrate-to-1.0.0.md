@@ -42,7 +42,7 @@ git clone https://github.com/intershop/helm-charts.git
 cd helm-charts
 ```
 
-Then install the requirements (Python 3.8+):
+Then install the requirements (Python 3.14+):
 
 ```bash
 python -m pip install ruamel.yaml   # required
@@ -176,6 +176,7 @@ These change how a **default** install behaves, even if you do not touch the val
 - **Image tags** default to `release-<chart appVersion>` (was `latest`) and **pull policy** defaults to `IfNotPresent` (was `Always`) — for reproducible deployments.
 - **Replica counts** default to `2` per tier (was `1`) and **resource requests/limits** are now set — for a production baseline.
 - **`updateStrategy`** is now per tier (`app.updateStrategy` / `proxy.updateStrategy`), still defaulting to `RollingUpdate`.
+- **Ingress class** — the default `ingress.className` changed from `nginx` to `ingress-haproxy`. Ingress is still disabled by default (`ingress.enabled: false`), so this only affects you if you enable it and relied on the default. To keep the previous behavior, set `ingress.className: nginx` explicitly.
 
 ## Resource name & label changes (breaking for selectors)
 
