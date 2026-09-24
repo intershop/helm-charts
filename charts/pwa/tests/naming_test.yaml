@@ -1,0 +1,90 @@
+suite: resource naming and ServiceAccount
+release:
+  name: pwa
+set:
+  config.icmBaseUrl: https://icm.example.com
+tests:
+  - it: default resource name is <release>-<chart>-<component>
+    template: templates/app-service.yaml
+    documentIndex: 0
+    asserts:
+      - equal:
+          path: metadata.name
+          value: pwa-app
+
+  - it: nameOverride is folded into the resource name
+    template: templates/app-service.yaml
+    documentIndex: 0
+    set:
+      nameOverride: foo
+    asserts:
+      - equal:
+          path: metadata.name
+          value: pwa-foo-app
+
+  - it: fullnameOverride replaces the release+chart prefix
+    template: templates/app-service.yaml
+    documentIndex: 0
+    set:
+      fullnameOverride: bar
+    asserts:
+      - equal:
+          path: metadata.name
+          value: bar-app
+
+  - it: proxy resource name follows the same scheme
+    template: templates/proxy-service.yaml
+    documentIndex: 0
+    set:
+      fullnameOverride: bar
+    asserts:
+      - equal:
+          path: metadata.name
+          value: bar-proxy
+
+  # --- ServiceAccount ---------------------------------------------------------
+  - it: creates a ServiceAccount by default and both tiers reference it
+    templates:
+      - templates/serviceaccount.yaml
+      - templates/app-deployment.yaml
+      - templates/proxy-deployment.yaml
+    asserts:
+      - hasDocuments:
+          count: 1
+        template: templates/serviceaccount.yaml
+      - equal:
+          path: metadata.name
+          value: pwa
+        template: templates/serviceaccount.yaml
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: pwa
+        template: templates/app-deployment.yaml
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: pwa
+        template: templates/proxy-deployment.yaml
+
+  - it: uses a custom ServiceAccount name when provided
+    template: templates/app-deployment.yaml
+    set:
+      serviceAccount.name: my-sa
+    asserts:
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: my-sa
+
+  - it: falls back to the default ServiceAccount when create=false
+    templates:
+      - templates/serviceaccount.yaml
+      - templates/app-deployment.yaml
+    set:
+      serviceAccount.create: false
+    asserts:
+      - hasDocuments:
+          count: 0
+        template: templates/serviceaccount.yaml
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: default
+        template: templates/app-deployment.yaml

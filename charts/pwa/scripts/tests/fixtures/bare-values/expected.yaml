@@ -1,0 +1,27 @@
+# Expected 1.0.0 layout for bare-values/input.yaml.
+config:
+  icmBaseUrl: https://icm.example.com
+app:
+  replicaCount: 3
+  image:
+    repository: intershophub/intershop-pwa-ssr
+    tag: '1.2.3'
+  service:
+    port: 4200
+  resources:
+    requests:
+      cpu: 200m
+  env:
+    - name: LOGLEVEL
+      value: info
+proxy:
+  replicaCount: 2
+  multiChannel: |
+    .+:
+      - baseHref: /b2c
+        channel: inSPIRED-inTRONICS-Site
+  env:
+    - name: CACHE
+      value: 'on'
+  reset:
+    enabled: true

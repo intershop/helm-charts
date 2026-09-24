@@ -1,0 +1,97 @@
+suite: proxy reset post-upgrade hook
+templates:
+  - templates/proxy-reset-job.yaml
+release:
+  name: pwa
+set:
+  config.icmBaseUrl: https://icm.example.com
+tests:
+  # The Role grants patch on exactly one Deployment by name; if that name ever
+  # drifts from the proxy Deployment name, the post-upgrade hook is denied RBAC
+  # only during a real `helm upgrade` in a live cluster. Pin them together here.
+  - it: Role scopes resourceNames to the proxy Deployment name
+    documentIndex: 1
+    asserts:
+      - isKind:
+          of: Role
+      - equal:
+          path: rules[0].apiGroups[0]
+          value: apps
+      - equal:
+          path: rules[0].resources[0]
+          value: deployments
+      - equal:
+          path: rules[0].resourceNames[0]
+          value: pwa-proxy
+      - contains:
+          path: rules[0].verbs
+          content: patch
+
+  - it: Job restarts exactly the Deployment the Role authorizes
+    documentIndex: 3
+    asserts:
+      - isKind:
+          of: Job
+      - equal:
+          path: spec.template.spec.containers[0].command[2]
+          value: kubectl rollout restart deployment/pwa-proxy
+
+  - it: Job runs under the reset ServiceAccount
+    documentIndex: 3
+    asserts:
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: pwa-proxy-reset
+
+  - it: RoleBinding wires the reset ServiceAccount to the reset Role
+    documentIndex: 2
+    asserts:
+      - isKind:
+          of: RoleBinding
+      - equal:
+          path: roleRef.name
+          value: pwa-proxy-reset
+      - equal:
+          path: subjects[0].name
+          value: pwa-proxy-reset
+
+  # All resources run as a post-upgrade hook; the RBAC (weight -5) must be
+  # created before the Job (weight 0) or the Job is denied at apply time.
+  - it: RBAC is a post-upgrade hook ordered before the Job
+    asserts:
+      - equal:
+          path: metadata.annotations["helm.sh/hook"]
+          value: post-upgrade
+        documentIndex: 0
+      - equal:
+          path: metadata.annotations["helm.sh/hook-weight"]
+          value: '-5'
+        documentIndex: 0
+      - equal:
+          path: metadata.annotations["helm.sh/hook-weight"]
+          value: '-5'
+        documentIndex: 1
+      - equal:
+          path: metadata.annotations["helm.sh/hook-weight"]
+          value: '-5'
+        documentIndex: 2
+
+  - it: the Job is a post-upgrade hook weighted after the RBAC
+    documentIndex: 3
+    asserts:
+      - equal:
+          path: metadata.annotations["helm.sh/hook"]
+          value: post-upgrade
+      - equal:
+          path: metadata.annotations["helm.sh/hook-weight"]
+          value: '0'
+      - equal:
+          path: metadata.annotations["helm.sh/hook-delete-policy"]
+          value: before-hook-creation,hook-succeeded
+
+  - it: renders nothing when the reset hook is disabled
+    set:
+      proxy.reset.enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0

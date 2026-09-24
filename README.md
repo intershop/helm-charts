@@ -8,14 +8,14 @@ Charts are published to the Helm repository at **https://intershop.github.io/hel
 
 ## Available charts
 
-| Chart      | Description                                                                                                 |
-| ---------- | ----------------------------------------------------------------------------------------------------------- |
-| `icm`      | Intershop Commerce Management — umbrella chart bundling the app server, web adapter and supporting services |
-| `icm-as`   | ICM application server                                                                                      |
-| `icm-web`  | Web Adapter and Web Adapter Agent                                                                           |
-| `icm-job`  | ICM job controller / operator                                                                               |
-| `iom`      | Intershop Order Management                                                                                  |
-| `pwa-main` | Intershop Progressive Web App                                                                               |
+| Chart     | Description                                                                                                 |
+| --------- | ----------------------------------------------------------------------------------------------------------- |
+| `icm`     | Intershop Commerce Management — umbrella chart bundling the app server, web adapter and supporting services |
+| `icm-as`  | ICM application server                                                                                      |
+| `icm-web` | Web Adapter and Web Adapter Agent                                                                           |
+| `icm-job` | ICM job controller / operator                                                                               |
+| `iom`     | Intershop Order Management                                                                                  |
+| `pwa`     | Intershop Progressive Web App                                                                               |
 
 > The `*-test` charts (`icm-test`, `icm-job-test`, `icm-replication-test`) support automated
 > testing and are not intended for production use.
