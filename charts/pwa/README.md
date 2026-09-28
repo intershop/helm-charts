@@ -21,7 +21,9 @@ $ helm install my-release intershop/pwa
 
 ### 1.0.0
 
-First major release — the chart has been **renamed from `pwa-main` to `pwa`** and restructured into explicit **`app`** (Angular SSR) and **`proxy`** (nginx) tiers. Read the [Migration to 1.0.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-1.0.0.md) guide before upgrading.
+First major release — the chart has been **renamed from `pwa-main` to `pwa`** and restructured into explicit **`app`** (Angular SSR) and **`proxy`** (nginx) tiers.
+See [Why Upgrade to PWA Helm Chart 1.0.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/why-upgrade-to-1.0.0.md) for the benefits of the new chart version.
+Read the [Migration to 1.0.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-1.0.0.md) guide before upgrading.
 
 **Breaking**
 
