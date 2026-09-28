@@ -1,0 +1,59 @@
+# Flux HelmRelease on pwa-main 0.7.0: flat ingress (default-enabled), ingresssplit, hybrid.backend.
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: live
+spec:
+  chart:
+    spec:
+      chart: pwa-main
+      version: 0.7.0
+  targetNamespace: shop
+  values:
+    replicaCount: 2
+    upstream:
+      icmBaseURL: https://icm.example.com
+    hybrid:
+      enabled: true
+      backend:
+        port: 8443
+    cache:
+      replicaCount: 1
+    ingress:
+      className: ${ingress_class}
+      annotations:
+        kubernetes.io/tls-acme: 'false'
+      hosts:
+        - host: pwa.example.com
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+        - host: shop.example.org
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+        - host: www.example.com
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+      tls:
+        - secretName: tls-star-example-com
+          hosts:
+            - pwa.example.com
+            - www.example.com
+        - secretName: tls-shop-example-org
+          hosts:
+            - shop.example.org
+    ingresssplit:
+      enabled: true
+      annotations:
+        configuration-snippet: |-
+          satisfy any;
+          deny all;
+      hosts:
+        - host: pwa-test.example.com
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+      tls:
+        - secretName: tls-star-example-com
