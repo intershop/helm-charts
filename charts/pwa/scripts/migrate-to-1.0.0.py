@@ -11,7 +11,7 @@ A bare 0.x values file is migrated too, but only when passed **explicitly as an 
 directory batch scans (``-r``) process HelmReleases only, so mixed trees stay safe. Any other
 document is left untouched. Comments/formatting are preserved via ruamel.yaml round-tripping.
 
-The 0.x -> 1.0.0 mapping mirrors charts/pwa/docs/migrate-to-1.0.0.md:
+Supported sources are pwa-main 0.7.0 and later. The mapping mirrors charts/pwa/docs/migrate-to-1.0.0.md:
   * top-level SSR keys        -> app.<key>
   * environment               -> app.env
   * cache.*                   -> proxy.*   (cache.extraEnvVars -> proxy.env)
@@ -19,6 +19,11 @@ The 0.x -> 1.0.0 mapping mirrors charts/pwa/docs/migrate-to-1.0.0.md:
   * top-level allowedHosts    -> config.allowedHosts
   * ICM_BASE_URL_SSR/ALLOWED_HOSTS env entries -> config.icmBaseUrlSsr/allowedHosts
   * upstream.cdnPrefixURL, cache.prefetch, cache.init, calculated -> removed
+  Older (pre-0.13.0) layouts:
+  * <=0.7 ingress (annotations/hosts/paths/tls) + ingresssplit -> ingress.instances.{ingress,ingresssplit}
+  * <=0.9 hybrid.backend, 0.10+ hybrid.icmInternalURL           -> config.icmBaseUrlSsr (when hybrid enabled)
+  * 0.11 cache.reset.image "repo:tag" string                    -> proxy.reset.image.{repository,tag}
+  * cache.init.enabled: false                                   -> proxy.reset.enabled: false
 
 Directory mode also folds standalone ``HorizontalPodAutoscaler`` manifests into the matching
 HelmRelease's ``spec.values.<tier>.autoscaling`` (tier from the HPA's scaleTargetRef name:
@@ -74,11 +79,17 @@ SSR_KEYS = [
     "deploymentAnnotations", "deploymentLabels", "autoscaling",
 ]
 CACHE_RENAME = {"extraEnvVars": "env"}          # cache.<old> -> proxy.<new>
-CACHE_REMOVE = {"prefetch", "init"}             # dropped in 1.0.0
+# dropped in 1.0.0; cache.enabled was already ignored since 0.7.0 (the proxy is always deployed)
+CACHE_REMOVE = {"enabled", "prefetch", "init", "nameOverride", "fullnameOverride"}
 REMOVED_TOP = ["calculated"]                    # top-level keys dropped in 1.0.0
 ENV_TO_CONFIG = {"ICM_BASE_URL_SSR": "icmBaseUrlSsr", "ALLOWED_HOSTS": "allowedHosts"}
 # 0.x top-level keys that are still valid at the top level in 1.0.0.
 KEEP_TOP = {"nameOverride", "fullnameOverride", "hybrid", "imagePullSecrets", "ingress", "config", "app", "proxy"}
+MIN_SOURCE_VERSION = (0, 7, 0)
+# <=0.7.x flat ingress layout (replaced by ingress.instances in 0.8.0).
+LEGACY_INGRESS_KEYS = ("annotations", "hosts", "tls")
+# 0.x default ingress.className; 1.0.0 changed the default to ingress-haproxy.
+LEGACY_INGRESS_CLASS = "nginx"
 
 
 class Report:
@@ -131,8 +142,208 @@ def _ensure(store: dict, key: str) -> CommentedMap:
     return node
 
 
-def migrate_values(values: CommentedMap, report: Report, lift_env: bool = True) -> bool:
-    """Transform a 0.x values mapping in place. Returns True if anything changed."""
+def _version_tuple(ver):
+    m = re.match(r"\s*v?(\d+)\.(\d+)\.(\d+)", str(ver or ""))
+    return tuple(int(x) for x in m.groups()) if m else None
+
+
+def _truthy(value) -> bool:
+    # Unresolved Flux substitutions (e.g. "${ingress_enabled}") count as set.
+    return value not in (False, None, "", "false", "False")
+
+
+def _is_legacy_ingress(node) -> bool:
+    return isinstance(node, dict) and "instances" not in node and any(k in node for k in LEGACY_INGRESS_KEYS)
+
+
+def _legacy_ingress_instance(src: dict, label: str, name: str, report: Report) -> CommentedMap:
+    """Pop the <=0.7 annotations/hosts/tls of `src` and return them as a 1.0.0 ingress instance.
+
+    The TLS list becomes one instance-level tlsSecretName (the secret covering most hosts, or a
+    host-less entry) plus per-host tlsSecretName overrides; per-host paths are dropped because
+    0.8.0+ always routes `/` (ImplementationSpecific).
+    """
+    dst = f"ingress.instances.{name}"
+    inst = CommentedMap()
+    annotations = src.pop("annotations", None)
+    hosts = src.pop("hosts", None) or []
+    tls = src.pop("tls", None) or []
+    host_names = [h.get("host") for h in hosts if isinstance(h, dict)]
+
+    secret_of: dict = {}
+    wildcard = None
+    for entry in tls:
+        secret = entry.get("secretName") if isinstance(entry, dict) else None
+        if not secret:
+            report.warn(f"{label}.tls entry without secretName dropped")
+            continue
+        tls_hosts = entry.get("hosts") or []
+        if not tls_hosts:
+            wildcard = wildcard or secret
+        for host in tls_hosts:
+            if host not in host_names:
+                report.warn(f"{label}.tls host '{host}' has no matching {label}.hosts entry; dropped")
+            elif secret_of.setdefault(host, secret) != secret:
+                report.warn(f"{label}.tls host '{host}' is listed for several secrets; kept '{secret_of[host]}'")
+    used = list(secret_of.values())
+    root = wildcard or (max(dict.fromkeys(used), key=used.count) if used else None)
+
+    dropped_paths = False
+    for entry in hosts:
+        if not isinstance(entry, dict):
+            continue
+        host = entry.get("host")
+        paths = entry.pop("paths", None)
+        if paths is not None:
+            dropped_paths = True
+            if len(paths) > 1 or any(
+                not isinstance(p, dict) or p.get("path", "/") != "/"
+                or p.get("pathType", "ImplementationSpecific") != "ImplementationSpecific" for p in paths
+            ):
+                report.warn(f"{label} host '{host}': custom paths dropped -- 1.0.0 always routes '/' (ImplementationSpecific)")
+        secret = secret_of.get(host)
+        if secret and secret != root:
+            entry["tlsSecretName"] = secret
+        elif secret is None and root and not wildcard:
+            report.warn(f"{label} host '{host}' had no TLS in 0.x; 1.0.0 serves it with tlsSecretName '{root}'")
+        for extra in [k for k in entry if k not in ("host", "tlsSecretName")]:
+            report.warn(f"{label} host '{host}': key '{extra}' has no 1.0.0 mapping; left unchanged -- review manually")
+
+    if annotations:
+        inst["annotations"] = annotations
+        report.map(f"{label}.annotations", f"{dst}.annotations")
+    if root:
+        inst["tlsSecretName"] = root
+    if tls:
+        report.map(f"{label}.tls", f"{dst}.tlsSecretName (+ per-host tlsSecretName)")
+    if hosts:
+        inst["hosts"] = hosts
+        report.map(f"{label}.hosts", f"{dst}.hosts")
+    if dropped_paths:
+        report.remove(f"{label}.hosts[].paths")
+    return inst
+
+
+def _migrate_ingress(values: dict, report: Report, fragment: bool) -> None:
+    """Convert the <=0.7 `ingress`/`ingresssplit` layout to `ingress.instances` and pin the 0.x
+    default className. `fragment` (chart-less patch) skips defaults the base release decides."""
+    ing = values.get("ingress")
+    has_split = "ingresssplit" in values
+    split = values.pop("ingresssplit") if has_split else None
+    legacy = _is_legacy_ingress(ing)
+
+    if legacy or has_split:
+        if not isinstance(ing, dict):
+            ing = CommentedMap()
+            values["ingress"] = ing
+        instances = ing.get("instances") if isinstance(ing.get("instances"), dict) else CommentedMap()
+        primary_on = _truthy(ing.get("enabled", legacy))   # 0.7.x default: enabled
+        split_on = isinstance(split, dict) and _truthy(split.get("enabled", False))
+
+        if legacy:
+            if fragment or primary_on or not split_on:
+                instances["ingress"] = _legacy_ingress_instance(ing, "ingress", "ingress", report)
+            else:
+                for key in LEGACY_INGRESS_KEYS:
+                    ing.pop(key, None)
+                report.remove("ingress.annotations/hosts/tls (ingress disabled)")
+                report.warn("ingress was disabled but ingresssplit enabled; 1.0.0 has one ingress.enabled "
+                            "switch for all instances, so only the ingresssplit instance is kept")
+        if isinstance(split, dict) and (fragment or split_on):
+            instances["ingresssplit"] = _legacy_ingress_instance(split, "ingresssplit", "ingresssplit", report)
+            split_class = split.get("className")
+            if split_class is not None:
+                if "className" not in ing:
+                    ing["className"] = split_class
+                    report.map("ingresssplit.className", "ingress.className")
+                elif ing["className"] != split_class:
+                    report.warn(f"ingresssplit.className '{split_class}' differs from ingress.className "
+                                f"'{ing['className']}'; 1.0.0 uses one className for all instances")
+            for extra in [k for k in split if k not in ("enabled", "className")]:
+                report.warn(f"ingresssplit.{extra} has no 1.0.0 mapping; dropped")
+        elif has_split:
+            report.remove("ingresssplit (disabled)" if isinstance(split, dict) else "ingresssplit")
+
+        if not fragment:
+            enabled = primary_on or split_on
+            if "enabled" not in ing:
+                ing.insert(0, "enabled", enabled)
+                src = "ingress.enabled (unset; 0.7.x default true)" if legacy else "ingress.enabled (unset)"
+                report.map(src, f"ingress.enabled: {str(enabled).lower()}")
+            elif _truthy(ing["enabled"]) != enabled:
+                ing["enabled"] = enabled
+                report.map("ingress.enabled", f"ingress.enabled: {str(enabled).lower()}")
+        if instances and "instances" not in ing:
+            ing["instances"] = instances
+        for extra in [k for k in ing if k not in ("enabled", "className", "instances")]:
+            report.warn(f"ingress.{extra} has no 1.0.0 mapping; left unchanged -- review manually")
+        if instances:
+            report.note("Ingress objects are recreated under new names (<release>-pwa-proxy-<instance>)")
+
+    if not fragment and isinstance(ing, dict) and _truthy(ing.get("enabled")) and "className" not in ing:
+        ing.insert(list(ing).index("enabled") + 1, "className", LEGACY_INGRESS_CLASS)
+        report.map(f"ingress.className (unset; 0.x default {LEGACY_INGRESS_CLASS})",
+                   f"ingress.className: {LEGACY_INGRESS_CLASS}")
+
+
+def _legacy_hybrid_backend_url(backend, release: str) -> str:
+    """SSR_HYBRID_BACKEND as rendered by the <=0.9 `pwa-main.hybridname` helper."""
+    backend = backend if isinstance(backend, dict) else {}
+    service = backend.get("service") or "icm-web"
+    base = release if service in release else f"{release}-{service}"
+    return f"https://{base[:63].rstrip('-')}-wa:{backend.get('port') or 443}"
+
+
+def _migrate_hybrid(values: dict, config: CommentedMap, report: Report, release, source_version) -> None:
+    """Map the 0.x hybrid backend URL (SSR_HYBRID_BACKEND) to config.icmBaseUrlSsr."""
+    hybrid = values.get("hybrid")
+    if not isinstance(hybrid, dict):
+        return
+    enabled = _truthy(hybrid.get("enabled"))
+    url = src = None
+    if "icmInternalURL" in hybrid:
+        internal = hybrid.pop("icmInternalURL")
+        if enabled and internal:
+            url, src = internal, "hybrid.icmInternalURL"
+        else:
+            report.remove("hybrid.icmInternalURL")
+    # <=0.9.x always derived the backend from the release name (hybrid.backend defaulted to {}).
+    pre_010 = source_version is not None and source_version < (0, 10, 0)
+    if "backend" in hybrid or (enabled and pre_010 and url is None):
+        backend = hybrid.pop("backend", None)
+        if enabled and url is None:
+            if release:
+                url, src = _legacy_hybrid_backend_url(backend, release), "hybrid.backend"
+            else:
+                report.warn("hybrid.backend: release name unknown -- set config.icmBaseUrlSsr to "
+                            "https://<release>-<backend.service|icm-web>-wa:<backend.port|443> manually")
+        if backend is not None and src != "hybrid.backend":
+            report.remove("hybrid.backend")
+    if url is None:
+        return
+    if config.get("icmBaseUrlSsr") not in (None, "") and config["icmBaseUrlSsr"] != url:
+        report.warn(f"{src} ('{url}') differs from config.icmBaseUrlSsr; kept config.icmBaseUrlSsr")
+        return
+    config["icmBaseUrlSsr"] = url
+    report.map(src, "config.icmBaseUrlSsr")
+    report.warn("config.icmBaseUrlSsr (hybrid backend) also sets ICM_BASE_URL_SSR on app and proxy; "
+                "0.x used it only for SSR_HYBRID_BACKEND -- verify")
+
+
+def _split_image_ref(ref: str):
+    name, sep, tag = ref.rpartition(":")
+    if sep and "/" not in tag and "@" not in ref:
+        return name, tag
+    return ref, None
+
+
+def migrate_values(values: CommentedMap, report: Report, lift_env: bool = True, release=None,
+                   source_version=None, fragment: bool = False) -> bool:
+    """Transform a 0.x values mapping in place. Returns True if anything changed.
+
+    `release` (Helm release name) and `source_version` (0.x chart version tuple) are only needed
+    for the <=0.9 hybrid backend; `fragment` marks a chart-less patch (no default injection).
+    """
     if not isinstance(values, dict):
         return False
 
@@ -175,9 +386,13 @@ def migrate_values(values: CommentedMap, report: Report, lift_env: bool = True) 
     # cache.* -> proxy.*
     if "cache" in values:
         cache = values.pop("cache")
+        init_off = (isinstance(cache, dict) and isinstance(cache.get("init"), dict)
+                    and cache["init"].get("enabled") is False)
         if isinstance(cache, dict):
             for ck in list(cache.keys()):
                 if ck in CACHE_REMOVE:
+                    if ck == "enabled" and not _truthy(cache[ck]):
+                        report.warn("cache.enabled: false was ignored since 0.7.0; the proxy tier is always deployed")
                     cache.pop(ck)
                     report.remove(f"cache.{ck}")
                 elif ck in CACHE_RENAME:
@@ -188,6 +403,18 @@ def migrate_values(values: CommentedMap, report: Report, lift_env: bool = True) 
                     proxy[ck] = cache.pop(ck)
                     report.map(f"cache.{ck}", f"proxy.{ck}")
         report.map("cache", "proxy")
+        # 0.12.0 replaced the init container with the reset job; keep an opted-out cache flush off.
+        if init_off and not (isinstance(proxy.get("reset"), dict) and "enabled" in proxy["reset"]):
+            _ensure(proxy, "reset")["enabled"] = False
+            report.map("cache.init.enabled: false", "proxy.reset.enabled: false")
+        reset = proxy.get("reset")
+        if isinstance(reset, dict) and isinstance(reset.get("image"), str):
+            repository, tag = _split_image_ref(reset["image"])
+            image = CommentedMap(repository=repository)
+            if tag:
+                image["tag"] = tag
+            reset["image"] = image
+            report.map("cache.reset.image (0.11 'repo:tag' string)", "proxy.reset.image.repository/tag")
 
     # removed top-level keys
     for key in REMOVED_TOP:
@@ -208,6 +435,9 @@ def migrate_values(values: CommentedMap, report: Report, lift_env: bool = True) 
         if len(env) == 0:
             app.pop("env")
 
+    _migrate_hybrid(values, config, report, release, source_version)
+    _migrate_ingress(values, report, fragment)
+
     # insert the new tiers at the front (config, app, proxy), preserving other keys/comments
     for key, node in (("proxy", proxy), ("app", app), ("config", config)):
         if node:
@@ -226,7 +456,7 @@ def migrate_values(values: CommentedMap, report: Report, lift_env: bool = True) 
 
 def _looks_like_0x_values(doc) -> bool:
     """Heuristic: a bare (non-HelmRelease) mapping that still uses the 0.x PWA layout."""
-    markers = {"upstream", "cache", "environment", *SSR_KEYS}
+    markers = {"upstream", "cache", "environment", "ingresssplit", *SSR_KEYS}
     return isinstance(doc, dict) and any(k in doc for k in markers) and "proxy" not in doc
 
 
@@ -239,7 +469,19 @@ def _is_0x_pwa_patch(values) -> bool:
     """
     if not isinstance(values, dict) or "proxy" in values:
         return False
-    return isinstance(values.get("cache"), dict) or isinstance(values.get("upstream"), dict)
+    return any(isinstance(values.get(k), dict) for k in ("cache", "upstream", "ingresssplit"))
+
+
+def _flux_release_name(doc: dict, spec: dict):
+    """Helm release name of a Flux HelmRelease: spec.releaseName or [<targetNamespace>-]<name>."""
+    if spec.get("releaseName"):
+        return str(spec["releaseName"])
+    meta = doc.get("metadata")
+    name = meta.get("name") if isinstance(meta, dict) else None
+    if not name:
+        return None
+    target_ns = spec.get("targetNamespace")
+    return f"{target_ns}-{name}" if target_ns else str(name)
 
 
 def migrate_doc(doc, args, report: Report, allow_bare: bool = False) -> bool:
@@ -268,13 +510,17 @@ def migrate_doc(doc, args, report: Report, allow_bare: bool = False) -> bool:
         chartspec["chart"] = NEW_CHART_NAME
         report.map(f"chart: {MIGRATABLE_CHART}", f"chart: {NEW_CHART_NAME}")
         ver = str(chartspec.get("version", ""))
+        source_version = _version_tuple(ver)
+        if source_version is not None and source_version < MIN_SOURCE_VERSION:
+            report.warn(f"source chart version {ver} is older than 0.7.0 and not supported -- review the result manually")
         if ver.startswith("0."):
             chartspec["version"] = args.target_version
             report.map(f"version: {ver}", f"version: {args.target_version}")
         if "valuesFrom" in spec:
             report.warn("spec.valuesFrom present -- external values are NOT migrated by this tool")
         if isinstance(values, dict):
-            migrate_values(values, report, lift_env=not args.no_lift_env)
+            migrate_values(values, report, lift_env=not args.no_lift_env,
+                           release=_flux_release_name(doc, spec), source_version=source_version)
             report.targets.append(values)
         return report.changed
 
@@ -283,7 +529,7 @@ def migrate_doc(doc, args, report: Report, allow_bare: bool = False) -> bool:
     # migrate them in place. It is a fragment (not independently schema-valid), so it is left
     # out of the --validate / --add-schema targets.
     if name is None and _is_0x_pwa_patch(values):
-        migrate_values(values, report, lift_env=not args.no_lift_env)
+        migrate_values(values, report, lift_env=not args.no_lift_env, fragment=True)
         report.note("chart-less HelmRelease patch: migrated spec.values only (fragment)")
         return report.changed
 
@@ -317,6 +563,25 @@ def _starts_with_doc_marker(text: str) -> bool:
     return False
 
 
+def _with_pre_doc_comments(original: str, dumped: str) -> str:
+    """Re-prepend comment lines that preceded the first `---` (ruamel drops them on round-trip)."""
+    head: list[str] = []
+    for line in original.splitlines():
+        stripped = line.strip()
+        if stripped == "---":
+            break
+        if stripped and not stripped.startswith("#"):
+            return dumped
+        head.append(line)
+    else:
+        return dumped
+    while head and not head[-1].strip():
+        head.pop()
+    if not head or dumped.startswith(head[0]):
+        return dumped
+    return "\n".join(head) + "\n" + dumped
+
+
 def _chart_dir_default() -> Path:
     # scripts/ lives inside the chart, so the chart dir is its parent.
     return Path(__file__).resolve().parents[1]
@@ -331,7 +596,7 @@ def _with_schema_modeline(text: str, target_version: str, is_helmrelease: bool) 
     schema = "values-flux.schema.json" if is_helmrelease else "values.schema.json"
     url = f"{SCHEMA_BASE}/pwa-{target_version}/charts/pwa/{schema}"
     modeline = f"# yaml-language-server: $schema={url}"
-    body = [ln for ln in text.split("\n") if not re.match(r"\s*#\s*yaml-language-server\s*:", ln)]
+    body = [ln for ln in text.split("\n") if not re.match(r"\s*#+\s*yaml-language-server\s*:", ln)]
     return modeline + "\n" + "\n".join(body)
 
 
@@ -558,7 +823,7 @@ def fold_hpas_in_directory(directory: Path, args, report: Report) -> int:
 
     for path, pdocs in write_docs.items():
         yaml.explicit_start = _starts_with_doc_marker(originals.get(path, "")) if len(pdocs) <= 1 else True
-        text = _dump_all(yaml, pdocs)
+        text = _with_pre_doc_comments(originals.get(path, ""), _dump_all(yaml, pdocs))
         if args.backup:
             path.with_suffix(path.suffix + ".bak").write_text(originals[path], encoding="utf-8")
         path.write_text(text, encoding="utf-8")
@@ -607,7 +872,7 @@ def process_file(path: Path, args, explicit: bool = False) -> bool:
             else:
                 print(f"  validation OK ({label}) -- renders against {args.chart_dir}")
 
-    new_text = _dump_all(yaml, docs)
+    new_text = _with_pre_doc_comments(original, _dump_all(yaml, docs))
     if args.add_schema and report.targets:
         is_hr = any(isinstance(d, dict) and d.get("kind") == "HelmRelease" for d in docs)
         new_text = _with_schema_modeline(new_text, args.target_version, is_hr)

@@ -83,7 +83,7 @@ Adjust the path to wherever you saved the script (e.g., `python charts/pwa/scrip
   Other charts, other kinds, and bare _values_ files are left untouched, so mixed folder trees are safe.
   A bare _values_ file is migrated **only** when you name it directly on the command line.
 - **Kustomize patches are handled.**
-  A chart-less `HelmRelease` document (a strategic-merge patch that only carries `spec.values`, e.g., a _version-\*.yaml_ overlay) is migrated too, but **only when its values contain the PWA-specific `cache` or `upstream` block**.
+  A chart-less `HelmRelease` document (a strategic-merge patch that only carries `spec.values`, e.g., a _version-\*.yaml_ overlay) is migrated too, but **only when its values contain the PWA-specific `cache`, `upstream`, or `ingresssplit` block**.
   Patches for other charts (which also use generic keys such as `image`) are never touched.
   Its values are rewritten (`image` to `app.image`, `cache.image` to `proxy.image`, etc.) without a chart/version increment.
   Such fragments are skipped by `--validate`/`--add-schema` since a partial _values_ file is not independently schema-valid.
@@ -119,6 +119,25 @@ Run `MIGRATE --help` for the full list of options.
 | `upstream.cdnPrefixURL`                                                                                                                                                                                                                                                         | **Removed**                                                                                  |
 | `cache.prefetch`                                                                                                                                                                                                                                                                | **Removed**                                                                                  |
 | `calculated`                                                                                                                                                                                                                                                                    | **Removed** (replaced by chart helpers)                                                      |
+
+## Migrating from 0.7.0 to 0.12.x
+
+The script supports every `pwa-main` version from **0.7.0** onwards and also converts the layouts that were changed between 0.7.0 and 0.13.0, so older deployments can be migrated in one step.
+In addition to the mapping above, it handles the following:
+
+| 0.x (version)                                                                         | 1.0.0                                                                                                                                                            |
+| ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Flat `ingress` (`annotations`, `hosts[].paths`, `tls`) and `ingresssplit` (≤ 0.7.x)   | `ingress.instances.ingress` / `ingress.instances.ingresssplit` (see [Migration to 0.8.0](migrate-to-0.8.0.md)); `paths` are dropped because `/` is always routed |
+| `ingress.tls[].secretName` + `hosts` (≤ 0.7.x)                                        | Instance `tlsSecretName` (the secret covering most hosts) plus per-host `tlsSecretName` overrides                                                                |
+| `ingress.enabled` unset (≤ 0.7.x default `true`)                                      | `ingress.enabled: true` set explicitly                                                                                                                           |
+| `ingress.enabled: true` without `className` (0.x default `nginx`)                     | `ingress.className: nginx` set explicitly (the 1.0.0 default is `ingress-haproxy`)                                                                               |
+| `hybrid.backend.service`/`port` (≤ 0.9.x), `hybrid.icmInternalURL` (0.10.0 to 0.13.0) | `config.icmBaseUrlSsr`, only when `hybrid.enabled`; for `hybrid.backend` the URL is derived from the Flux release name as the 0.x chart did                      |
+| `cache.reset.image: <repository>:<tag>` (0.11.0)                                      | `proxy.reset.image.repository` / `proxy.reset.image.tag`                                                                                                         |
+| `cache.init.enabled: false` (0.9.3 to 0.11.x)                                         | `proxy.reset.enabled: false` (see [Migration to 0.12.0](migrate-to-0.12.0.md))                                                                                   |
+| `cache.nameOverride` / `cache.fullnameOverride`                                       | **Removed**                                                                                                                                                      |
+| `cache.enabled` (ignored since 0.7.0, the proxy is always deployed)                   | **Removed**                                                                                                                                                      |
+
+The script warns about everything it cannot convert one-to-one, for example custom ingress paths, differing `ingress`/`ingresssplit` class names, or hosts without TLS when other hosts of the same instance use TLS.
 
 ## `config.icmBaseUrl` Now Required
 

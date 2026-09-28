@@ -163,6 +163,179 @@ def test_non_pwa_helmrelease_is_untouched():
     assert _plain(doc) == before
 
 
+# --- older 0.x layouts (0.7.0 .. 0.12.x) ------------------------------------
+
+def _values(text: str):
+    return _yaml().load(text)
+
+
+def test_flux_helmrelease_0_7_migration():
+    doc = _load(FIXTURES / "flux-helmrelease-0.7" / "input.yaml")
+    expected = _plain(_load(FIXTURES / "flux-helmrelease-0.7" / "expected.yaml"))
+
+    changed = migrate.migrate_doc(doc, _args(), migrate.Report("flux-0.7"))
+
+    assert changed is True
+    assert _plain(doc) == expected
+
+
+def test_flux_helmrelease_0_7_is_idempotent():
+    doc = _load(FIXTURES / "flux-helmrelease-0.7" / "input.yaml")
+    migrate.migrate_doc(doc, _args(), migrate.Report("first"))
+    values = doc["spec"]["values"]
+
+    second = migrate.Report("second")
+    changed_again = migrate.migrate_values(values, second)
+
+    assert changed_again is False
+    assert second.warnings == []
+
+
+def test_legacy_ingress_disabled_split_enabled_keeps_only_split():
+    values = _values("""
+ingress:
+  enabled: false
+  hosts: [{host: a.example.com}]
+ingresssplit:
+  enabled: true
+  className: nginx
+  hosts: [{host: b.example.com}]
+""")
+    report = migrate.Report("split-only")
+
+    migrate.migrate_values(values, report)
+
+    ingress = _plain(values)["ingress"]
+    assert ingress["enabled"] is True
+    assert ingress["className"] == "nginx"
+    assert list(ingress["instances"]) == ["ingresssplit"]
+    assert any("only the ingresssplit instance" in w for w in report.warnings)
+
+
+def test_disabled_ingresssplit_is_dropped():
+    values = _values("""
+ingress:
+  hosts: [{host: a.example.com}]
+ingresssplit:
+  enabled: false
+  hosts: [{host: b.example.com}]
+""")
+    report = migrate.Report("split-off")
+
+    migrate.migrate_values(values, report)
+
+    plain = _plain(values)
+    assert "ingresssplit" not in plain
+    assert list(plain["ingress"]["instances"]) == ["ingress"]
+    assert "ingresssplit (disabled)" in report.removed
+
+
+def test_legacy_ingress_custom_path_warns():
+    values = _values("""
+ingress:
+  enabled: true
+  hosts:
+    - host: a.example.com
+      paths: [{path: /shop, pathType: Prefix}]
+""")
+    report = migrate.Report("paths")
+
+    migrate.migrate_values(values, report)
+
+    assert _plain(values)["ingress"]["instances"]["ingress"]["hosts"] == [{"host": "a.example.com"}]
+    assert any("custom paths dropped" in w for w in report.warnings)
+
+
+def test_enabled_ingress_without_class_pins_legacy_default():
+    # 0.x defaulted ingress.className to nginx; 1.0.0 defaults to ingress-haproxy.
+    values = _values("ingress:\n  enabled: true\n  instances:\n    ingress:\n      hosts: [{host: a.example.com}]\n")
+
+    migrate.migrate_values(values, migrate.Report("class"))
+
+    assert list(_plain(values)["ingress"])[:2] == ["enabled", "className"]
+    assert values["ingress"]["className"] == "nginx"
+
+
+def test_legacy_ingress_in_patch_fragment_injects_no_defaults():
+    doc = _values("""
+kind: HelmRelease
+spec:
+  values:
+    cache:
+      replicaCount: 1
+    ingress:
+      hosts: [{host: a.example.com, paths: [{path: /}]}]
+""")
+
+    migrate.migrate_doc(doc, _args(), migrate.Report("fragment"))
+
+    assert _plain(doc)["spec"]["values"]["ingress"] == {
+        "instances": {"ingress": {"hosts": [{"host": "a.example.com"}]}}
+    }
+
+
+def test_hybrid_icm_internal_url_maps_to_config():
+    values = _values("hybrid:\n  enabled: true\n  icmInternalURL: https://icm-web-wa:8443\n  pwaExternalPort: 443\n")
+
+    migrate.migrate_values(values, migrate.Report("hybrid"))
+
+    plain = _plain(values)
+    assert plain["config"]["icmBaseUrlSsr"] == "https://icm-web-wa:8443"
+    assert plain["hybrid"] == {"enabled": True, "pwaExternalPort": 443}
+
+
+def test_disabled_hybrid_drops_backend_settings():
+    values = _values("hybrid:\n  enabled: false\n  backend: {}\n  icmInternalURL: https://x\n")
+    report = migrate.Report("hybrid-off")
+
+    migrate.migrate_values(values, report)
+
+    assert _plain(values)["hybrid"] == {"enabled": False}
+    assert {"hybrid.backend", "hybrid.icmInternalURL"} <= set(report.removed)
+    assert "config" not in _plain(values)
+
+
+def test_reset_image_string_is_split():
+    # 0.11.0 squashed the reset image into one string.
+    values = _values("cache:\n  reset:\n    enabled: true\n    image: registry.example.com:5000/utils/kubectl:1.2.3\n")
+
+    migrate.migrate_values(values, migrate.Report("reset"))
+
+    assert _plain(values)["proxy"]["reset"]["image"] == {
+        "repository": "registry.example.com:5000/utils/kubectl", "tag": "1.2.3",
+    }
+
+
+def test_disabled_cache_init_disables_reset():
+    values = _values("cache:\n  init:\n    enabled: false\n")
+
+    migrate.migrate_values(values, migrate.Report("init"))
+
+    assert _plain(values)["proxy"] == {"reset": {"enabled": False}}
+
+
+def test_obsolete_cache_enabled_is_dropped():
+    # cache.enabled was removed in 0.7.0; proxy.enabled is rejected by the 1.0.0 schema.
+    values = _values("cache:\n  enabled: true\n  replicaCount: 1\n")
+    report = migrate.Report("cache-enabled")
+
+    migrate.migrate_values(values, report)
+
+    assert _plain(values)["proxy"] == {"replicaCount": 1}
+    assert "cache.enabled" in report.removed
+    assert report.warnings == []
+
+
+def test_source_older_than_0_7_warns():
+    doc = _load(FIXTURES / "flux-helmrelease" / "input.yaml")
+    doc["spec"]["chart"]["spec"]["version"] = "0.6.0"
+    report = migrate.Report("old")
+
+    migrate.migrate_doc(doc, _args(), report)
+
+    assert any("older than 0.7.0" in w for w in report.warnings)
+
+
 # --- folder-mode HPA folding ------------------------------------------------
 
 def _copy_hpa_folder(tmp_path):
@@ -240,6 +413,20 @@ def test_hpa_folding_preserves_metric_comment(tmp_path):
 
     text = (dst / "release-live.yaml").read_text(encoding="utf-8")
     assert "targetCPUUtilizationPercentage: 1500 # limits=3000m" in text
+
+
+def test_hpa_folding_keeps_schema_modeline_before_doc_marker(tmp_path):
+    # ruamel drops comments before `---`; the HPA rewrite must keep a leading $schema modeline.
+    dst = _copy_hpa_folder(tmp_path)
+    live = dst / "release-live.yaml"
+    modeline = "# yaml-language-server: $schema=https://example.com/values-flux.schema.json"
+    live.write_text(f"{modeline}\n---\n" + live.read_text(encoding="utf-8"), encoding="utf-8")
+
+    migrate.main(["-r", "--write", str(dst)])
+
+    text = live.read_text(encoding="utf-8")
+    assert text.startswith(modeline + "\n---\n")
+    assert "autoscaling" in text
 
 
 def test_hpa_folding_is_idempotent(tmp_path):
