@@ -12,39 +12,43 @@ $ helm install my-release intershop/pwa
 
 ## Compatibility
 
-| Requirement | Supported  | Additional information                                                                                                                                                                                                                                                                                                                               |
-| ----------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Kubernetes  | `>= 1.23`  | The chart uses the `autoscaling/v2` HorizontalPodAutoscaler API, which is GA from Kubernetes 1.23. The range is enforced via the `kubeVersion` field in `Chart.yaml`, so `helm install`/`upgrade` fails fast on older clusters. All other resources use stable APIs (`apps/v1`, `networking.k8s.io/v1`, `batch/v1`, `rbac.authorization.k8s.io/v1`). |
-| Helm CLI    | `>= 4.0.0` | The chart and its CI pipeline target Helm 4. CI validates the chart against the current stable Helm 4 release on every change.                                                                                                                                                                                                                       |
+| Requirement | Supported  | Additional information                                                                                                                                                                                                                                                                                                                                 |
+| ----------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Kubernetes  | `>= 1.23`  | The chart uses the `autoscaling/v2` HorizontalPodAutoscaler API, which is GA from Kubernetes 1.23. The range is enforced via the `kubeVersion` field in _Chart.yaml_, so `helm install`/`upgrade` fails fast with older clusters. All other resources use stable APIs (`apps/v1`, `networking.k8s.io/v1`, `batch/v1`, `rbac.authorization.k8s.io/v1`). |
+| Helm CLI    | `>= 4.0.0` | The chart and its CI pipeline target Helm 4. CI validates the chart against the current stable Helm 4 release on every change.                                                                                                                                                                                                                         |
 
 ## Release Versions
 
 ### 1.0.0
 
-First major release — the chart is **renamed `pwa-main` → `pwa`** and restructured into explicit **`app`** (Angular SSR) and **`proxy`** (nginx) tiers. Read the [Migration to 1.0.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-1.0.0.md) guide before upgrading.
+First major release — the chart has been **renamed from `pwa-main` to `pwa`** and restructured into explicit **`app`** (Angular SSR) and **`proxy`** (nginx) tiers. Read the [Migration to 1.0.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-1.0.0.md) guide before upgrading.
 
 **Breaking**
 
-- **Chart renamed `pwa-main` → `pwa`.** Update your Helm reference (`intershop/pwa-main` → `intershop/pwa`) and, for Flux, `spec.chart.spec.chart: pwa-main` → `pwa`. Release tags change from `pwa-main-X.Y.Z` to `pwa-X.Y.Z`.
-- Values restructured: top-level SSR config → `app.*`; `cache.*` → `proxy.*`.
-- `upstream.icmBaseURL` → `config.icmBaseUrl` — now **required** (no dev default; install fails fast if unset).
-- Resource names `*-pwa-main` / `*-pwa-cache` → `*-pwa-app` / `*-pwa-proxy` — update anything that selects them by name (dashboards, `NetworkPolicy`, scripts).
+- **Chart renamed from `pwa-main` to `pwa`.**
+  Update your Helm reference (`intershop/pwa-main` to `intershop/pwa`) and, for Flux, `spec.chart.spec.chart: pwa-main` to `pwa`.
+  Release tags change from `pwa-main-X.Y.Z` to `pwa-X.Y.Z`.
+- Values restructured: Top-level SSR config to `app.*`; `cache.*` to `proxy.*`
+- `upstream.icmBaseURL` changed to `config.icmBaseUrl`.
+  Now **required** (no dev default; install fails fast if unset).
+- Resource names `*-pwa-main` / `*-pwa-cache` changed to `*-pwa-app` / `*-pwa-proxy`.
+  Update anything that selects them by name (dashboards, `NetworkPolicy`, scripts).
 
 **Removed**
 
-- Shared Redis cache integration for the nginx tier (the Redis flush job and `REDIS_URI` configuration).
-- `upstream.cdnPrefixURL`, the prefetch job (`cache.prefetch`), and the internal `calculated` section.
+- Shared Redis cache integration for the nginx tier (the Redis flush job and `REDIS_URI` configuration)
+- `upstream.cdnPrefixURL`, the prefetch job (`cache.prefetch`), and the internal `calculated` section
 
 **Added**
 
-- Configurable per-tier `updateStrategy`, a `helm test` connection hook, and helm-unittest suites.
+- Configurable per-tier `updateStrategy`, a `helm test` connection hook, and helm-unittest suites
 
 **Changed**
 
-- Secure-by-default: non-root, dropped Linux capabilities, no service-account token automount.
-- Production defaults: 2 replicas per tier, resource requests/limits, liveness/readiness/startup probes.
-- Image tags default to `release-<chart appVersion>` (was `latest`); pull policy `IfNotPresent` (was `Always`).
-- Requires **Helm 4** and **Kubernetes 1.23+**.
+- Secure-by-default: Non-root, dropped Linux capabilities, no service-account token automount
+- Production defaults: Two replicas per tier, resource requests/limits, liveness/readiness/startup probes
+- Image tags default to `release-<chart appVersion>` (was `latest`); pull policy `IfNotPresent` (was `Always`)
+- Requires **Helm 4** and **Kubernetes 1.23+**
 
 ---
 
@@ -58,31 +62,36 @@ In addition, the version changes and necessary migration information are provide
 
 | Chart  | PWA    | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                 | Migration Information                                                                                                                                                                                                                                                                       |
 | ------ | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0.13.0 | 1.0.0  | <ul><li>Introduced pod anti-affinity configuration (enabled by default with soft rules)</li></ul>                                                                                                                                                                                                                                                                                                                                       | See [Migration to 0.13.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.13.0.md) if you have custom `podAntiAffinity` rules in your `affinity` configuration                                                                                              |
-| 0.12.0 | 1.0.0  | <ul><li>Cache Reset enabled by default</li><li>Changed structure of cache reset image configuration</li><li>Removed cache init container</li></ul>                                                                                                                                                                                                                                                                                      | See [Migration to 0.12.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.12.0.md)                                                                                                                                                                          |
+| 0.13.0 | 1.0.0  | <ul><li>Introduced Pod anti-affinity configuration (enabled by default with soft rules)</li></ul>                                                                                                                                                                                                                                                                                                                                       | See [Migration to 0.13.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.13.0.md) if you have custom `podAntiAffinity` rules in your `affinity` configuration                                                                                              |
+| 0.12.0 | 1.0.0  | <ul><li>Cache reset enabled by default</li><li>Changed structure of cache reset image configuration</li><li>Removed cache init container</li></ul>                                                                                                                                                                                                                                                                                      | See [Migration to 0.12.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.12.0.md)                                                                                                                                                                          |
 | 0.11.0 | 1.0.0  | <ul><li>Added option to enable/disable cache init container</li><li>Introduced cache container reset after deployment via hook job</li><li>Provided option to change the `redis-cli` image for the cache flush job</li><li>Introduced options for explicit deployment labels and deployment annotations</li></ul>                                                                                                                       |                                                                                                                                                                                                                                                                                             |
-| 0.10.0 | 1.0.0  | <ul><li>Changed Hybrid Approach handling and configuration options</li><li>Remove dependency to ICM deployment charts</li></ul>                                                                                                                                                                                                                                                                                                         | Removed unused deployment handling introduced with version 0.4.0, new configuration options require PWA 9.1.0                                                                                                                                                                               |
+| 0.10.0 | 1.0.0  | <ul><li>Changed Hybrid Approach handling and configuration options</li><li>Remove dependency to ICM deployment charts</li></ul>                                                                                                                                                                                                                                                                                                         | Removed unused deployment handling introduced with version 0.4.0; new configuration options require PWA 9.1.0                                                                                                                                                                               |
 | 0.9.3  | 1.0.0  | <ul><li>Fixed `cache.additionalHeaders` functionality introduced with version 0.8.0</li></ul>                                                                                                                                                                                                                                                                                                                                           |                                                                                                                                                                                                                                                                                             |
 | 0.9.2  | 1.0.0  | <ul><li>Fixed options to configure `successfulJobsHistoryLimit` and `failedJobsHistoryLimit` for the prefetch job</li></ul>                                                                                                                                                                                                                                                                                                             |                                                                                                                                                                                                                                                                                             |
 | 0.9.1  | 1.0.0  | <ul><li>Init container image needs to be configurable</li></ul>                                                                                                                                                                                                                                                                                                                                                                         |                                                                                                                                                                                                                                                                                             |
 | 0.9.0  | 1.0.0  | <ul><li>Options to configure `successfulJobsHistoryLimit` and `failedJobsHistoryLimit` for the prefetch job</li><li>Made prefetch job `args` and `image` configurable</li><li>Provided validation support for Flux configurations</li></ul>                                                                                                                                                                                             |                                                                                                                                                                                                                                                                                             |
 | 0.8.0  | 1.0.0  | <ul><li>New format of declaring (multiple) Ingresses (Split Ingress)</li><li>Shared Redis cache for the nginx containers (requires PWA 5.0.0)</li><li>Additional result headers configuration (requires PWA 5.0.0)</li><li>Monitoring support with Prometheus and Grafana (for development and testing)</li><li>Delay nginx until PWA SSR is listening</li><li>Configurable update strategy</li><li>Less verbose prefetch job</li></ul> | See [Migration to 0.8.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.8.0.md) regarding the new format of configuring Ingress and the dropped support of older Kubernetes clusters<br/>Configurable `updateStrategy` stays at `RollingUpdate` by default |
-| 0.7.0  | 1.0.0  | <ul><li>Re-enabled support for `multi-channel.yaml` and `caching-ignore-params.yaml` source code fallbacks</li><li>Added additional Ingress for domain whitelisting</li><li>Added labels on deployment and Pod levels</li></ul>                                                                                                                                                                                                         | Removed deprecated configuration options:<ul><li>`upstream.icm`</li><li>`cache.enabled` - was not optional</li><li>`cache.channels`</li></ul>See [Migration to 0.7.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.7.0.md)                               |
+| 0.7.0  | 1.0.0  | <ul><li>Re-enabled support for _multi-channel.yaml_ and _caching-ignore-params.yaml_ source code fallbacks</li><li>Added additional Ingress for domain whitelisting</li><li>Added labels on deployment and Pod levels</li></ul>                                                                                                                                                                                                         | Removed deprecated configuration options:<ul><li>`upstream.icm`</li><li>`cache.enabled` - was not optional</li><li>`cache.channels`</li></ul>See [Migration to 0.7.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.7.0.md)                               |
 | 0.6.0  | 1.0.0  | Support for Prometheus metrics                                                                                                                                                                                                                                                                                                                                                                                                          |                                                                                                                                                                                                                                                                                             |
 | 0.5.0  | 1.0.0  | Added prefetch job that can heat up caches                                                                                                                                                                                                                                                                                                                                                                                              |                                                                                                                                                                                                                                                                                             |
 | 0.4.0  | 1.0.0  | Support for PWA Hybrid Approach deployment (with ICM 11)                                                                                                                                                                                                                                                                                                                                                                                | Requires PWA 3.2.0 for Hybrid Approach support                                                                                                                                                                                                                                              |
 | 0.3.0  | 1.0.0  | Use of new Ingress controller definition                                                                                                                                                                                                                                                                                                                                                                                                | See [Migration to 0.3.0](https://github.com/intershop/helm-charts/blob/main/charts/pwa/docs/migrate-to-0.3.0.md)                                                                                                                                                                            |
-| 0.2.4  | 0.25.0 | Support for `multiChannel`, `cacheIgnoreParams`, and `extraEnvVars` for nginx/cache deployment                                                                                                                                                                                                                                                                                                                                          | Missing support for `multi-channel.yaml` and `caching-ignore-params.yaml` source code fallbacks                                                                                                                                                                                             |
+| 0.2.4  | 0.25.0 | Support for `multiChannel`, `cacheIgnoreParams`, and `extraEnvVars` for nginx/cache deployment                                                                                                                                                                                                                                                                                                                                          | Missing support for _multi-channel.yaml_ and _caching-ignore-params.yaml_ source code fallbacks                                                                                                                                                                                             |
 | 0.2.3  | 0.25.0 | Legacy Helm Chart 0.2.3 as initial version                                                                                                                                                                                                                                                                                                                                                                                              |                                                                                                                                                                                                                                                                                             |
 
 </details>
 
 ## Parameters
 
-The table below is generated from [`values.yaml`](./values.yaml) with [helm-docs](https://github.com/norwoodj/helm-docs); every configurable value is listed with its type, default, and description. Values shown as `see values.yaml` are objects documented inline in that file. The only value you must set is `config.icmBaseUrl` (the ICM backend URL) — everything else ships with a production-ready default.
+The table below is generated from [_values.yaml_](./values.yaml) with [helm-docs](https://github.com/norwoodj/helm-docs).
+Every configurable value is listed with its type, default, and description.
+Values shown as `see values.yaml` are objects documented inline in that file.
+The only value you must set is `config.icmBaseUrl` (the ICM backend URL).
+Everything else ships with a production-ready default.
 
-To regenerate the table run `helm-docs --chart-search-root=charts/pwa --sort-values-order=file` after changes to the `values.yaml`.
-Also changes to the `README.md.gotmpl` require a manual regeneration. `README.md` is no longer directly edited.
+To regenerate the table, run `helm-docs --chart-search-root=charts/pwa --sort-values-order=file` after changing the _values.yaml_.
+Changes to the _README.md.gotmpl_ also require a manual regeneration.
+_README.md_ is no longer edited directly.
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
@@ -165,16 +174,16 @@ Also changes to the `README.md.gotmpl` require a manual regeneration. `README.md
 
 ## Validation
 
-The Intershop PWA Helm Chart provides a `values.schema.json` for validation support of the according `values.yaml` configurations.
+The Intershop PWA Helm chart provides a _values.schema.json_ for validation support of the corresponding _values.yaml_ configurations.
 
-For Visual Studio Code, install the plugin `redhat.vscode-yaml` to make use of the already configured validation link in the [`values.yaml`](./values.yaml).
+For Visual Studio Code, install the plugin `redhat.vscode-yaml` to make use of the already configured validation link in the [_values.yaml_](./values.yaml).
 
 ```yaml
 # yaml-language-server: $schema=./values.schema.json
 ```
 
-For the more common Intershop PWA deployments via Flux, the repository also provides validation support for such scenarios through the `values-flux.schema.json`.
-Reference this file in the PWA Flux deployment configuration files with a reference to the fitting version in the following way:
+For the more common Intershop PWA deployments via Flux, the repository also provides validation support for such scenarios through the _values-flux.schema.json_.
+Reference this file in the PWA Flux deployment configuration files with a reference to the appropriate version as follows:
 
 ```yaml
 # yaml-language-server: $schema=https://raw.githubusercontent.com/intershop/helm-charts/pwa-1.0.0/charts/pwa/values-flux.schema.json
@@ -182,7 +191,7 @@ Reference this file in the PWA Flux deployment configuration files with a refere
 
 ## Hybrid Approach
 
-The Hybrid Approach lets pages be served by either the PWA or ICM. For details, see the official Intershop PWA [Hybrid Approach](https://github.com/intershop/intershop-pwa/blob/develop/docs/concepts/hybrid-approach.md) documentation.
+The Hybrid Approach allows pages to be served by either the PWA or ICM. For details, see the official Intershop PWA [Hybrid Approach](https://github.com/intershop/intershop-pwa/blob/develop/docs/concepts/hybrid-approach.md) documentation.
 
 ```yaml
 hybrid:
@@ -191,9 +200,10 @@ hybrid:
   pwaExternalPort: 443
 ```
 
-## Multiple Ingress
+## Multiple Ingresses
 
-Sometimes customers only want to go live with a subset of their domains, but want to keep the rest hidden behind IP whitelisting. Therefore, a second instance object can be added to the Ingress config to address this use case.
+Sometimes customers want to go live with only a subset of their domains and want to keep the rest hidden behind IP whitelisting.
+A second instance object can be added to the Ingress config to address this use case.
 To implement it in your project, follow the example below:
 
 ```yaml
@@ -228,9 +238,9 @@ ingress:
 
 ## Pod Anti-Affinity
 
-The PWA Helm chart supports pod anti-affinity rules to distribute pods across different nodes in your Kubernetes cluster. This helps improve availability and resilience by ensuring pods are spread across the infrastructure.
+The PWA Helm chart supports Pod anti-affinity rules to distribute Pods across different nodes in your Kubernetes cluster. This helps improve availability and resilience by ensuring that Pods are spread across the infrastructure.
 
-Pod anti-affinity can be configured for both the app (SSR) pods and the proxy (nginx) pods.
+Pod anti-affinity can be configured for both the app (SSR) Pods and the proxy (nginx) Pods.
 
 ```yaml
 app:
@@ -246,16 +256,19 @@ proxy:
 
 | Property   | Description                                                                                                                                                                                                                                                                        | Default |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| `enabled`  | Enable or disable pod anti-affinity rules                                                                                                                                                                                                                                          | `true`  |
-| `required` | Use hard anti-affinity rule (`true`) or soft anti-affinity rule (`false`)<br>`true`: requiredDuringSchedulingIgnoredDuringExecution - pod may stay Pending if no suitable node is available<br>`false`: preferredDuringSchedulingIgnoredDuringExecution - best-effort distribution | `false` |
+| `enabled`  | Enable or disable Pod anti-affinity rules                                                                                                                                                                                                                                          | `true`  |
+| `required` | Use hard anti-affinity rule (`true`) or soft anti-affinity rule (`false`)<br>`true`: requiredDuringSchedulingIgnoredDuringExecution - Pod may stay Pending if no suitable node is available<br>`false`: preferredDuringSchedulingIgnoredDuringExecution - best-effort distribution | `false` |
 
-When `enabled` is set to `true` and `required` is `false` (default), Kubernetes will prefer to schedule pods on different nodes but will allow them on the same node if necessary. This provides a good balance between high availability and scheduling flexibility.
+When `enabled` is set to `true` and `required` is `false` (default), Kubernetes prefers to schedule Pods on different nodes but allow them on the same node if necessary.
+This provides a good balance between high availability and scheduling flexibility.
 
-When `required` is set to `true`, Kubernetes will enforce that pods must be scheduled on different nodes. This provides stronger guarantees but may result in pods remaining in a Pending state if insufficient nodes are available.
+When `required` is set to `true`, Kubernetes enforces that Pods must be scheduled on different nodes.
+This provides stronger guarantees but may result in Pods remaining in a pending state if insufficient nodes are available.
 
 ## Autoscaling (HPA)
 
-Each tier can be scaled independently by a [HorizontalPodAutoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) (`autoscaling/v2`) via `app.autoscaling` and `proxy.autoscaling`. The simple case uses CPU and (optionally) memory target shortcuts:
+Each tier can be scaled independently by a [HorizontalPodAutoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) (`autoscaling/v2`) via `app.autoscaling` and `proxy.autoscaling`.
+The simple case uses CPU and (optionally) memory target shortcuts:
 
 ```yaml
 app:
@@ -268,11 +281,14 @@ app:
 ```
 
 > [!IMPORTANT]
-> The target percentage is relative to the container's **resource requests**, not its limits. Because the requests are deliberately small, healthy targets are often **far above 100** (e.g. `100m` request with a `1500` target ≈ `1500m`). This is expected, not a typo.
+> The target percentage is relative to the container's **resource requests**, not its limits.
+> Because the requests are deliberately small, healthy targets are often far above 100 (e.g., `100m` request with a `1500` target ≈ `1500m`).
+> This is expected; it is not a typo.
 
-When autoscaling is enabled the Deployment omits `spec.replicas`, so `replicaCount` is ignored and Helm does not fight the autoscaler on upgrades.
+When autoscaling is enabled, the deployment omits `spec.replicas`, so `replicaCount` is ignored and Helm does not interfere with the autoscaler during upgrades.
 
-For finer control, provide scale-up/down `behavior` and/or a raw `metrics` list. When `metrics` is non-empty it **replaces** the CPU/memory shortcuts above:
+For finer control, provide scale-up/down `behavior` and/or a raw `metrics` list.
+When `metrics` is non-empty, it **replaces** the CPU/memory shortcuts above:
 
 ```yaml
 proxy:
@@ -296,7 +312,7 @@ Both `metrics` and `behavior` are passed through verbatim, so any `autoscaling/v
 
 ## Pod Labels
 
-To introduce specific labels for the Pods needed for monitoring, change your values file or HelmRelease to the following:
+To introduce specific labels for the Pods needed for monitoring, change your _values_ file or HelmRelease as follows:
 
 ```yaml
 # Labels for app (SSR) Pods and deployment
@@ -313,15 +329,15 @@ proxy:
     customer-id: cstmr #Customer Initials
 ```
 
-## nginx (proxy) Cache Reset
+## Nginx (Proxy) Cache Reset
 
 The cache reset job is a Helm post-upgrade hook that automatically restarts the proxy (nginx) deployment after a Helm upgrade.
 This ensures that any cached content is cleared, preventing stale data from being served after PWA SSR container updates.
 
 > [!NOTE]
-> The cache reset job replaces the cache init container functionality that was removed with PWA Helm Chart 0.12.0 since it did not work as intended in `RollingUpdate` and multi Pod deployments.
+> The cache reset job replaces the cache init container functionality that was removed in PWA Helm chart 0.12.0 because it did not work as intended in `RollingUpdate` and multi Pod deployments.
 > When `cache.init.enabled` was `true`, the init container waited for the PWA SSR service to be ready before starting the nginx/cache service.
-> However, this only worked as intended with the `Recreate` update strategy where no previous SSR Pods could render results that would be cached by new nginx Pods.
+> However, this worked as intended only with the `Recreate` update strategy, where no previous SSR Pods could render results that would be cached by new nginx Pods.
 > The reset job circumvents this problem by performing a `kubectl rollout restart` on the proxy deployment after all app (SSR) Pods are started successfully and the old Pods are deleted.
 
 The job is executed only when `proxy.reset.enabled` is set to `true`.
@@ -363,15 +379,19 @@ When enabled, each container exposes Prometheus metrics on port 9113.
 
 ## Monitoring
 
-For development and testing purposes only the PWA Helm chart supports monitoring via Prometheus and Grafana. To enable it, add the following configuration to your values file:
+For development and testing purposes only, the PWA Helm chart supports monitoring via Prometheus and Grafana.
+To enable it, add the following configuration to your _values_ file:
 
 ```yaml
 monitoring:
   enabled: true
 ```
 
-This will deploy a Prometheus instance and a Grafana instance. Both are configured to scrape the metrics of the PWA containers. The Grafana instance is preconfigured with a dashboard for the PWA metrics.
-Both services can be exposed via Ingress. To expose them, add the following configuration to your _values_ file:
+This will deploy a Prometheus instance and a Grafana instance.
+Both are configured to scrape the metrics of the PWA containers.
+The Grafana instance is preconfigured with a dashboard for the PWA metrics.
+Both services can be exposed via Ingress.
+To expose them, add the following configuration to your _values_ file:
 
 ```yaml
 monitoring:
@@ -384,9 +404,10 @@ monitoring:
     annotations: ...
 ```
 
-The Grafana access password can be configured via the `monitoring.grafana.password` value. If not set, the Grafana default password will be used.
+The Grafana access password can be configured via the `monitoring.grafana.password` value.
+If not set, the Grafana default password is used.
 
-## Deployment via Flux
+## Deployment Via Flux
 
 ```yaml
 # PWA HelmRelease
@@ -422,12 +443,15 @@ spec:
 
 ## Non-Production Deployment
 
-The default [`values.yaml`](./values.yaml) is production-oriented and secure by default. Those defaults (multiple replicas, higher resource requests, pod anti-affinity across nodes) are not always practical on local, single-node Kubernetes setups such as [kind](https://kind.sigs.k8s.io), [minikube](https://minikube.sigs.k8s.io), [k3d](https://k3d.io), or Docker Desktop.
+The default [_values.yaml_](./values.yaml) is production-oriented and secure by default.
+These defaults (multiple replicas, higher resource requests, Pod anti-affinity across nodes) are not always practical on local, single-node Kubernetes setups such as [kind](https://kind.sigs.k8s.io), [minikube](https://minikube.sigs.k8s.io), [k3d](https://k3d.io), or Docker Desktop.
 
-For these non-production scenarios, the chart ships a dedicated, minimal template: [`values-nonproduction.yaml.template`](./values-nonproduction.yaml.template). It overrides only what is necessary to lower the operational barrier (single replicas, reduced resource requests/limits, and disabled pod anti-affinity so pods can schedule on a single node).
+For these non-production scenarios, the chart ships a dedicated minimal template: [_values-nonproduction.yaml.template_](./values-nonproduction.yaml.template).
+It overrides only what is necessary to lower the operational barrier (single replica, reduced resource requests/limits, and disabled Pod anti-affinity so that Pods can schedule on a single node).
 
 > [!WARNING]
-> The non-production template is intended for validating and running the chart locally. Do not use it for production deployments.
+> The non-production template is intended for validating and running the chart locally.
+> Never use it for production deployments.
 
 To install the chart with the non-production template:
 
@@ -439,7 +463,7 @@ You can layer your own overrides on top by passing an additional `-f my-values.y
 
 ## Development
 
-Build and install the current source code version of the Helm chart from the local development folder `charts/pwa` with the given values file `deployment.values.yaml`:
+Build and install the current source code version of the Helm chart from the local development folder `charts/pwa` with the given _values_ file _deployment.values.yaml_:
 
 ```bash
 $ helm dependency build charts/pwa
