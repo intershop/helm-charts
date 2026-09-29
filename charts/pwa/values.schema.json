@@ -151,7 +151,7 @@
         "automount": {
           "type": "boolean",
           "title": "Auto-mount the service account API token into pods",
-          "default": false
+          "default": true
         },
         "name": {
           "type": "string"

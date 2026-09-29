@@ -35,12 +35,10 @@ imagePullSecrets: []
 # - name: regcred
 
 serviceAccount:
-  # -- Create a ServiceAccount for the workloads.
+  # -- Create a ServiceAccount, Role, and RoleBinding. Limit access to `get` on the PWA app Endpoints resource.
   create: true
-  # -- Auto-mount the API token into pods. Disabled by default; the default cache-clearer
-  # reaches SSR via UPSTREAM_PWA (Service DNS), not the k8s API. Enable (plus endpoints RBAC)
-  # only for per-Pod SSR cache purging via the Endpoints API.
-  automount: false
+  # -- Mount the Kubernetes API token in Pods. The proxy cache clearer uses it to read the app Endpoints resource.
+  automount: true
   # -- Name of the ServiceAccount to use. Generated if empty and create=true.
   name: ''
   # -- Annotations to add to the ServiceAccount.
