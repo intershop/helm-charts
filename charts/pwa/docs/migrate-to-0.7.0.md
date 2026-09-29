@@ -57,8 +57,8 @@ Old:
 ```yaml
 cache:
   channels:
-    CACHE: "off"
-    DEBUG: "off"
+    CACHE: 'off'
+    DEBUG: 'off'
     OVERRIDE_IDENTITY_PROVIDERS: ...
     MULTI_CHANNEL: ...
 ```
@@ -69,9 +69,9 @@ New:
 cache:
   extraEnvVars:
     - name: CACHE
-      value: "off"
+      value: 'off'
     - name: DEBUG
-      value: "off"
+      value: 'off'
     - name: OVERRIDE_IDENTITY_PROVIDERS
       value: ...
     - name: MULTI_CHANNEL

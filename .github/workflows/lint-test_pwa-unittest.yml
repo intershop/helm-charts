@@ -1,0 +1,40 @@
+name: 'Unit test pwa chart'
+on:
+  pull_request:
+    paths:
+      - 'charts/pwa/**'
+
+jobs:
+  lint-test-pwa-unittest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Base
+        uses: ./.github/template/base
+      - name: Unit test
+        uses: ./.github/template/unittest
+        with:
+          chartTestingFile: ct_pwa.yaml
+          chartName: pwa
+
+  # Proves the README's documented minimum (Helm >= 4.0.0) is real: the
+  # values.schema.json draft-2020-12 `unevaluatedProperties: false` typo guard
+  # must fire on the oldest supported Helm 4 (Helm 3.x silently ignores it).
+  verify-minimum-helm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+      - name: Install minimum supported Helm
+        uses: azure/setup-helm@v5.0.1
+        with:
+          version: v4.0.0
+      - name: Install Helm Unittest
+        shell: bash
+        run: helm plugin install https://github.com/helm-unittest/helm-unittest.git --version=v1.1.2 --verify=false
+      - name: Run schema typo-guard tests on minimum Helm
+        shell: bash
+        run: helm unittest -f 'tests/fail-fast_test.yaml' charts/pwa

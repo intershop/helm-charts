@@ -1,0 +1,78 @@
+{{- if .Values.proxy.reset.enabled -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-reset
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "pwa.componentLabels" (dict "root" . "component" "proxy") | nindent 4 }}
+  annotations:
+    "helm.sh/hook": post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "helm.sh/hook-weight": "-5"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-reset
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "pwa.componentLabels" (dict "root" . "component" "proxy") | nindent 4 }}
+  annotations:
+    "helm.sh/hook": post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "helm.sh/hook-weight": "-5"
+rules:
+  - apiGroups: [apps]
+    resources: [deployments]
+    resourceNames: [{{ include "pwa.componentName" (dict "root" . "component" "proxy") }}]
+    verbs: [get, patch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-reset
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "pwa.componentLabels" (dict "root" . "component" "proxy") | nindent 4 }}
+  annotations:
+    "helm.sh/hook": post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "helm.sh/hook-weight": "-5"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-reset
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-reset
+    namespace: {{ .Release.Namespace }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-reset-job
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "pwa.componentLabels" (dict "root" . "component" "proxy") | nindent 4 }}
+  annotations:
+    "helm.sh/hook": post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "helm.sh/hook-weight": "0"
+spec:
+  completions: 1
+  parallelism: 1
+  backoffLimit: 1
+  template:
+    spec:
+      restartPolicy: Never
+      serviceAccountName: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-reset
+      containers:
+        - name: kubectl
+          image: {{ .Values.proxy.reset.image.repository}}:{{.Values.proxy.reset.image.tag}}
+          imagePullPolicy: {{ .Values.proxy.reset.image.pullPolicy }}
+          command:
+            - bash
+            - -c
+            - kubectl rollout restart deployment/{{ include "pwa.componentName" (dict "root" . "component" "proxy") }}
+{{- end -}}

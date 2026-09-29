@@ -1,0 +1,14 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: demo-icm
+  namespace: demo
+spec:
+  chart:
+    spec:
+      chart: icm-as
+      version: 3.0.0
+  # Same release name as the pwa HelmRelease -> must NOT receive the pwa HPA config.
+  releaseName: demo
+  values:
+    replicaCount: 1

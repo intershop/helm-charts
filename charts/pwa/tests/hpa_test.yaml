@@ -1,0 +1,134 @@
+suite: horizontal pod autoscaling
+release:
+  name: pwa
+set:
+  config.icmBaseUrl: https://icm.example.com
+tests:
+  - it: renders no HPA while autoscaling is disabled (default)
+    templates:
+      - templates/app-hpa.yaml
+      - templates/proxy-hpa.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+        template: templates/app-hpa.yaml
+      - hasDocuments:
+          count: 0
+        template: templates/proxy-hpa.yaml
+
+  # The classic Helm/HPA regression: the Deployment must NOT set spec.replicas
+  # when autoscaling is on, or Helm fights the autoscaler on every upgrade.
+  - it: app Deployment omits spec.replicas when autoscaling is enabled
+    template: templates/app-deployment.yaml
+    set:
+      app.autoscaling.enabled: true
+    asserts:
+      - notExists:
+          path: spec.replicas
+
+  - it: proxy Deployment omits spec.replicas when autoscaling is enabled
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.autoscaling.enabled: true
+    asserts:
+      - notExists:
+          path: spec.replicas
+
+  - it: app Deployment keeps spec.replicas when autoscaling is disabled
+    template: templates/app-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 2
+
+  # --- default CPU shortcut ---------------------------------------------------
+  - it: renders a CPU-utilization HPA targeting the app Deployment
+    template: templates/app-hpa.yaml
+    set:
+      app.autoscaling.enabled: true
+    asserts:
+      - isKind:
+          of: HorizontalPodAutoscaler
+      - equal:
+          path: spec.scaleTargetRef.name
+          value: pwa-app
+      - equal:
+          path: spec.minReplicas
+          value: 2
+      - equal:
+          path: spec.maxReplicas
+          value: 10
+      - equal:
+          path: spec.metrics[0].resource.name
+          value: cpu
+      - equal:
+          path: spec.metrics[0].resource.target.averageUtilization
+          value: 75
+      - notExists:
+          path: spec.behavior
+
+  # --- memory shortcut (opt-in) ----------------------------------------------
+  - it: adds a memory metric when targetMemoryUtilizationPercentage is set
+    template: templates/app-hpa.yaml
+    set:
+      app.autoscaling.enabled: true
+      app.autoscaling.targetMemoryUtilizationPercentage: 80
+    asserts:
+      - equal:
+          path: spec.metrics[0].resource.name
+          value: cpu
+      - equal:
+          path: spec.metrics[1].resource.name
+          value: memory
+      - equal:
+          path: spec.metrics[1].resource.target.averageUtilization
+          value: 80
+
+  # Utilization is a percentage of requests (not limits), so > 100 is valid.
+  - it: accepts CPU utilization targets above 100 percent
+    template: templates/app-hpa.yaml
+    set:
+      app.autoscaling.enabled: true
+      app.autoscaling.targetCPUUtilizationPercentage: 4000
+    asserts:
+      - equal:
+          path: spec.metrics[0].resource.target.averageUtilization
+          value: 4000
+
+  # --- advanced: raw metrics + behavior passthrough ---------------------------
+  - it: a raw metrics list replaces the CPU/memory shortcuts
+    template: templates/proxy-hpa.yaml
+    set:
+      proxy.autoscaling.enabled: true
+      proxy.autoscaling.targetCPUUtilizationPercentage: 75
+      proxy.autoscaling.metrics:
+        - type: Resource
+          resource:
+            name: memory
+            target:
+              type: Utilization
+              averageUtilization: 60
+    asserts:
+      - lengthEqual:
+          path: spec.metrics
+          count: 1
+      - equal:
+          path: spec.metrics[0].resource.name
+          value: memory
+
+  - it: renders scale-up/down behavior when provided
+    template: templates/app-hpa.yaml
+    set:
+      app.autoscaling.enabled: true
+      app.autoscaling.behavior:
+        scaleUp:
+          stabilizationWindowSeconds: 60
+        scaleDown:
+          stabilizationWindowSeconds: 900
+    asserts:
+      - equal:
+          path: spec.behavior.scaleUp.stabilizationWindowSeconds
+          value: 60
+      - equal:
+          path: spec.behavior.scaleDown.stabilizationWindowSeconds
+          value: 900

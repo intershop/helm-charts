@@ -1,0 +1,22 @@
+name: 'Migration script test pwa chart'
+on:
+  pull_request:
+    paths:
+      - 'charts/pwa/scripts/**'
+
+jobs:
+  test-pwa-migration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v7.0.0
+        with:
+          python-version: '3.14'
+      - name: Install test dependencies
+        run: python -m pip install -r charts/pwa/scripts/tests/requirements.txt
+      - name: Run migration script tests
+        run: python -m pytest charts/pwa/scripts/tests -q

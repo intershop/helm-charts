@@ -1,0 +1,14 @@
+# Expected: values-only migration (image -> app.image, cache.image -> proxy.image),
+# chart/version untouched because there is no chart to bump.
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pwa-version-overlay
+spec:
+  values:
+    app:
+      image:
+        tag: '2.0.0'
+    proxy:
+      image:
+        tag: '2.0.0'

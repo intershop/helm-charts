@@ -1,0 +1,21 @@
+suite: proxy writable cache volume
+templates:
+  - templates/proxy-deployment.yaml
+release:
+  name: pwa
+set:
+  config.icmBaseUrl: https://icm.example.com
+tests:
+  - it: mounts a writable emptyDir at the nginx cache path
+    template: templates/proxy-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: cache
+            mountPath: /tmp/cache
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: cache
+            emptyDir: {}

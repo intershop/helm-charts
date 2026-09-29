@@ -1,0 +1,47 @@
+suite: monitoring stack (dev-only, gated)
+release:
+  name: pwa
+set:
+  config.icmBaseUrl: https://icm.example.com
+tests:
+  - it: renders nothing when monitoring is disabled (default)
+    templates:
+      - templates/monitoring/grafana.yaml
+      - templates/monitoring/prometheus.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+        template: templates/monitoring/grafana.yaml
+      - hasDocuments:
+          count: 0
+        template: templates/monitoring/prometheus.yaml
+
+  - it: deploys grafana with component labels when enabled
+    template: templates/monitoring/grafana.yaml
+    documentIndex: 0
+    set:
+      monitoring.enabled: true
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.labels["app.kubernetes.io/name"]
+          value: pwa
+      - equal:
+          path: metadata.labels["app.kubernetes.io/component"]
+          value: grafana
+
+  - it: deploys prometheus with component labels when enabled
+    template: templates/monitoring/prometheus.yaml
+    documentIndex: 0
+    set:
+      monitoring.enabled: true
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.labels["app.kubernetes.io/name"]
+          value: pwa
+      - equal:
+          path: metadata.labels["app.kubernetes.io/component"]
+          value: prometheus
