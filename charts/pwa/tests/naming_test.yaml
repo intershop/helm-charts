@@ -44,13 +44,14 @@ tests:
 
   # --- ServiceAccount ---------------------------------------------------------
   - it: creates a ServiceAccount by default and both tiers reference it
+    documentIndex: 0
     templates:
       - templates/serviceaccount.yaml
       - templates/app-deployment.yaml
       - templates/proxy-deployment.yaml
     asserts:
       - hasDocuments:
-          count: 1
+          count: 3
         template: templates/serviceaccount.yaml
       - equal:
           path: metadata.name

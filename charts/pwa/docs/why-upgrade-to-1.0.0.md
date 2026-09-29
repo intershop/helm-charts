@@ -30,7 +30,6 @@ A production system can no longer end up connected to a development backend by a
 - The app container runs as the unprivileged user `65534`.
 - The nginx master process of the proxy still runs as root, but it only restores the capabilities that nginx needs (`CHOWN`, `SETGID`, `SETUID`, `DAC_OVERRIDE`).
   The nginx worker processes run as an unprivileged user.
-- The service account token is no longer mounted into the Pods (`serviceAccount.automount: false`).
 
 **Benefits:** You have a smaller attack surface and fewer findings in security reviews and policy checks.
 

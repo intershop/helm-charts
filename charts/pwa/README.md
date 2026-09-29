@@ -105,8 +105,8 @@ _README.md_ is no longer edited directly.
 | hybrid.enabled | bool | `false` | Enable the PWA Hybrid Approach deployment. |
 | hybrid.pwaExternalPort | int | `nil` | External PWA port forwarded to Responsive Starter Store requests. Optional; defaults to the standard port when unset. e.g. 443 |
 | imagePullSecrets | list | `[]` | Image pull secrets applied to both tiers' pods. |
-| serviceAccount.create | bool | `true` | Create a ServiceAccount for the workloads. |
-| serviceAccount.automount | bool | `false` | Auto-mount the API token into pods. Disabled by default; the default cache-clearer reaches SSR via UPSTREAM_PWA (Service DNS), not the k8s API. Enable (plus endpoints RBAC) only for per-Pod SSR cache purging via the Endpoints API. |
+| serviceAccount.create | bool | `true` | Create a ServiceAccount, Role, and RoleBinding. Limit access to `get` on the PWA app Endpoints resource. |
+| serviceAccount.automount | bool | `true` | Mount the Kubernetes API token in Pods. The proxy cache clearer uses it to read the app Endpoints resource. |
 | serviceAccount.name | string | `""` | Name of the ServiceAccount to use. Generated if empty and create=true. |
 | serviceAccount.annotations | object | `{}` | Annotations to add to the ServiceAccount. |
 | securityContext | object | see [values.yaml](./values.yaml) | Container security context shared by both tiers (secure baseline: drop all caps, no privilege escalation). |

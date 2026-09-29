@@ -217,8 +217,11 @@ proxy:
 These changes affect how a **default** install behaves, even if you do not change the values:
 
 - **Secure-by-default**:
-  Pods now run non-root, drop all Linux capabilities, and do not auto-mount the API token (`serviceAccount.automount: false`).
-  If you relied on root or the token, opt back in explicitly.
+  The SSR application and nginx workers run as non-root users. Containers drop capabilities they do not need. The proxy receives only the capabilities it requires.
+  The proxy cache clearer reads the PWA app Endpoints resource. The chart grants `get` access through a namespaced `Role` and `RoleBinding`.
+  The workload `ServiceAccount` mounts a token for this request.
+  Set `serviceAccount.name` to use a named `ServiceAccount`. Set `serviceAccount.create: false` to use an externally managed account.
+  Create the required `Role` and `RoleBinding` for externally managed accounts. Set `serviceAccount.automount: false` to disable token mounting.
 - **Probes**:
   The `app` tier now ships liveness/readiness/startup probes based on the SSR image's PM2 scripts.
   The `proxy` tier uses TCP-socket probes.

@@ -49,9 +49,50 @@ tests:
           path: spec.template.spec.containers[0].securityContext.capabilities.add
           content: DAC_OVERRIDE
 
-  - it: service account disables API token automount by default
+  - it: service account enables API token automount by default
     template: templates/serviceaccount.yaml
+    documentIndex: 0
     asserts:
       - equal:
           path: automountServiceAccountToken
-          value: false
+          value: true
+
+  - it: service account RBAC can only get the app Endpoints resource
+    template: templates/serviceaccount.yaml
+    documentIndex: 1
+    asserts:
+      - isKind:
+          of: Role
+      - equal:
+          path: rules[0].apiGroups
+          value: ['']
+      - equal:
+          path: rules[0].resources
+          value: ['endpoints']
+      - equal:
+          path: rules[0].resourceNames
+          value: ['pwa-app']
+      - equal:
+          path: rules[0].verbs
+          value: ['get']
+
+  - it: role binding targets the workload service account
+    template: templates/serviceaccount.yaml
+    documentIndex: 2
+    asserts:
+      - isKind:
+          of: RoleBinding
+      - equal:
+          path: roleRef.name
+          value: pwa-endpoints-reader
+      - equal:
+          path: subjects[0].name
+          value: pwa
+
+  - it: does not create account or RBAC when serviceAccount.create is false
+    template: templates/serviceaccount.yaml
+    set:
+      serviceAccount.create: false
+    asserts:
+      - hasDocuments:
+          count: 0
