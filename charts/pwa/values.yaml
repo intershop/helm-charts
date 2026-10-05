@@ -99,6 +99,8 @@ app:
   metrics:
     # -- Expose Prometheus metrics of the SSR container.
     enabled: false
+    # -- SSR metrics detail level. DETAILED adds request-path and REST-client metrics with higher cardinality.
+    detailLevel: DEFAULT
 
   # -- Pod security context for the app (runs as unprivileged user 65534).
   # @default -- see [values.yaml](./values.yaml)
