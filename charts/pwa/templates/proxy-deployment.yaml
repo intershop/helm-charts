@@ -1,3 +1,9 @@
+{{- $managed := dict "LOGLEVEL" "use `proxy.logging.level`" "LOGFORMAT" "use `proxy.logging.format`" }}
+{{- range $e := .Values.proxy.env }}
+{{- with get $managed $e.name }}
+{{- fail (printf "values: `%s` must not be set in `proxy.env`; %s." $e.name .) }}
+{{- end }}
+{{- end }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:

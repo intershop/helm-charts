@@ -141,6 +141,52 @@ def test_removed_keys_are_dropped_and_reported():
     assert "calculated" not in _plain(values)
 
 
+def test_chart_managed_env_is_lifted_per_tier():
+    values = _yaml().load(
+        "environment:\n"
+        "  - {name: LOGLEVEL, value: DEBUG}\n"
+        "  - {name: LOGFORMAT, value: text}\n"
+        "  - {name: METRICS_DETAIL_LEVEL, value: detailed}\n"
+        "  - {name: PORT, value: '4200'}\n"
+        "  - {name: THEME, value: b2c}\n"
+        "cache:\n"
+        "  extraEnvVars:\n"
+        "    - {name: LOGLEVEL, value: warn}\n"
+        "    - {name: LOGFORMAT, value: json}\n"
+    )
+    report = migrate.Report("managed-env")
+
+    migrate.migrate_values(values, report)
+
+    plain = _plain(values)
+    assert plain["app"]["logging"] == {"level": "debug", "format": "text"}
+    assert plain["app"]["metrics"] == {"detailLevel": "DETAILED"}
+    assert plain["app"]["env"] == [{"name": "THEME", "value": "b2c"}]
+    assert plain["proxy"]["logging"] == {"level": "warn", "format": "json"}
+    assert "env" not in plain["proxy"]
+    assert "app.env[PORT]" in report.removed
+    assert not report.warnings
+
+
+def test_unmappable_managed_env_warns_and_is_kept():
+    values = _yaml().load(
+        "environment:\n"
+        "  - {name: PORT, value: '8080'}\n"
+        "cache:\n"
+        "  extraEnvVars:\n"
+        "    - {name: LOGLEVEL, value: debug}\n"
+    )
+    report = migrate.Report("unmappable")
+
+    migrate.migrate_values(values, report)
+
+    plain = _plain(values)
+    assert "app" not in plain
+    assert plain["proxy"]["env"] == [{"name": "LOGLEVEL", "value": "debug"}]
+    assert any("PORT" in w and "4200" in w for w in report.warnings)
+    assert any("proxy.env[LOGLEVEL]" in w for w in report.warnings)
+
+
 def test_unknown_top_level_key_warns_and_is_kept():
     values = _load(FIXTURES / "flux-helmrelease" / "input.yaml")["spec"]["values"]
     values["totallyCustom"] = {"keep": True}
