@@ -84,6 +84,8 @@ spec:
             {{- if include "pwa.appMetricsEnabled" . }}
             - name: PROMETHEUS
               value: "true"
+            - name: METRICS_DETAIL_LEVEL
+              value: {{ .Values.app.metrics.detailLevel | quote }}
             {{- end }}
             {{- with .Values.app.env }}
             {{- toYaml . | nindent 12 }}

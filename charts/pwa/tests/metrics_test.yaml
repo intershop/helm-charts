@@ -16,8 +16,12 @@ tests:
             name: metrics
             containerPort: 9113
             protocol: TCP
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: METRICS_DETAIL_LEVEL
 
-  - it: app exposes a metrics port when enabled
+  - it: app exposes metrics and uses the default detail level when enabled
     template: templates/app-deployment.yaml
     set:
       app.metrics.enabled: true
@@ -28,6 +32,28 @@ tests:
             name: metrics
             containerPort: 9113
             protocol: TCP
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: PROMETHEUS
+            value: 'true'
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: METRICS_DETAIL_LEVEL
+            value: DEFAULT
+
+  - it: app supports detailed Prometheus metrics when enabled
+    template: templates/app-deployment.yaml
+    set:
+      app.metrics.enabled: true
+      app.metrics.detailLevel: DETAILED
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: METRICS_DETAIL_LEVEL
+            value: DETAILED
 
   - it: renders a headless metrics Service only when enabled
     template: templates/app-service.yaml

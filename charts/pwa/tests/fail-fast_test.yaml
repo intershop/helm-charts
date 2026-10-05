@@ -24,6 +24,13 @@ tests:
     asserts:
       - failedTemplate: {}
 
+  - it: rejects an unsupported SSR metrics detail level
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      app.metrics.detailLevel: VERBOSE
+    asserts:
+      - failedTemplate: {}
+
   - it: rejects an unknown key under the proxy tier (schema typo guard)
     set:
       config.icmBaseUrl: https://icm.example.com

@@ -121,6 +121,7 @@ _README.md_ is no longer edited directly.
 | app.service.port | int | `4200` | Service port that the proxy talks to. |
 | app.env | list | `[]` | Extra environment variables for the SSR container. |
 | app.metrics.enabled | bool | `false` | Expose Prometheus metrics of the SSR container. |
+| app.metrics.detailLevel | string | `"DEFAULT"` | SSR metrics detail level. DETAILED adds request-path and REST-client metrics with higher cardinality. |
 | app.podSecurityContext | object | see [values.yaml](./values.yaml) | Pod security context for the app (runs as unprivileged user 65534). |
 | app.securityContext | object | `{}` | Container security context for the app, deep-merged onto the shared `securityContext` baseline (per-key overrides win). |
 | app.resources | object | see [values.yaml](./values.yaml) | Resource requests/limits for the SSR container. |

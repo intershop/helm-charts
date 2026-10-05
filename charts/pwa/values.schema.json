@@ -578,6 +578,13 @@
               "type": "boolean",
               "title": "Create Prometheus metrics exporter",
               "default": false
+            },
+            "detailLevel": {
+              "type": "string",
+              "title": "SSR Prometheus metrics detail level",
+              "description": "DETAILED adds request-path and REST-client metrics with higher cardinality.",
+              "enum": ["DEFAULT", "DETAILED"],
+              "default": "DEFAULT"
             }
           }
         },
