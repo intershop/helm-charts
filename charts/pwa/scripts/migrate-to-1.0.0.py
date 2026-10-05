@@ -18,6 +18,8 @@ Supported sources are pwa-main 0.7.0 and later. The mapping mirrors charts/pwa/d
   * upstream.icmBaseURL       -> config.icmBaseUrl (required)
   * top-level allowedHosts    -> config.allowedHosts
   * ICM_BASE_URL_SSR/ALLOWED_HOSTS env entries -> config.icmBaseUrlSsr/allowedHosts
+  * LOGLEVEL/LOGFORMAT env entries -> app.logging.* / proxy.logging.* (always lifted)
+  * METRICS_DETAIL_LEVEL env entry -> app.metrics.detailLevel; PORT env entry -> removed (fixed 4200)
   * upstream.cdnPrefixURL, cache.prefetch, cache.init, calculated -> removed
   Older (pre-0.13.0) layouts:
   * <=0.7 ingress (annotations/hosts/paths/tls) + ingresssplit -> ingress.instances.{ingress,ingresssplit}
@@ -83,6 +85,20 @@ CACHE_RENAME = {"extraEnvVars": "env"}          # cache.<old> -> proxy.<new>
 CACHE_REMOVE = {"enabled", "prefetch", "init", "nameOverride", "fullnameOverride"}
 REMOVED_TOP = ["calculated"]                    # top-level keys dropped in 1.0.0
 ENV_TO_CONFIG = {"ICM_BASE_URL_SSR": "icmBaseUrlSsr", "ALLOWED_HOSTS": "allowedHosts"}
+LOG_FORMATS = ("json", "text")
+# Env vars the 1.0.0 chart renders itself (an env entry would duplicate them); per tier: var -> (section, key, allowed).
+MANAGED_ENV = {
+    "app": {
+        "LOGLEVEL": ("logging", "level", ("trace", "debug", "info", "warn", "error", "fatal")),
+        "LOGFORMAT": ("logging", "format", LOG_FORMATS),
+        "METRICS_DETAIL_LEVEL": ("metrics", "detailLevel", ("DEFAULT", "DETAILED")),
+    },
+    "proxy": {
+        "LOGLEVEL": ("logging", "level", ("error", "warn", "info")),
+        "LOGFORMAT": ("logging", "format", LOG_FORMATS),
+    },
+}
+APP_PORT = "4200"
 # 0.x top-level keys that are still valid at the top level in 1.0.0.
 KEEP_TOP = {"nameOverride", "fullnameOverride", "hybrid", "imagePullSecrets", "ingress", "config", "app", "proxy"}
 MIN_SOURCE_VERSION = (0, 7, 0)
@@ -337,6 +353,38 @@ def _split_image_ref(ref: str):
     return ref, None
 
 
+def _lift_managed_env(node: CommentedMap, tier: str, report: Report) -> None:
+    """Move env entries the 1.0.0 chart renders itself into their typed values (or drop PORT)."""
+    env = node.get("env")
+    if not isinstance(env, list):
+        return
+    for i in range(len(env) - 1, -1, -1):
+        item = env[i]
+        if not isinstance(item, dict):
+            continue
+        var = item.get("name")
+        if tier == "app" and var == "PORT":
+            if str(item.get("value")) != APP_PORT:
+                report.warn(f"app.env[PORT]={item.get('value')!r} dropped -- the SSR port is fixed to {APP_PORT} in 1.0.0")
+            report.remove("app.env[PORT]")
+            del env[i]
+            continue
+        if var not in MANAGED_ENV[tier]:
+            continue
+        section, key, allowed = MANAGED_ENV[tier][var]
+        raw = item.get("value")
+        value = next((a for a in allowed if raw is not None and a.lower() == str(raw).strip().lower()), None)
+        if value is None:
+            report.warn(f"{tier}.env[{var}]={raw!r} cannot be mapped (allowed: {', '.join(allowed)}); "
+                        f"left in {tier}.env, which 1.0.0 rejects -- set {tier}.{section}.{key} manually")
+            continue
+        _ensure(node, section)[key] = value
+        report.map(f"{tier}.env[{var}]", f"{tier}.{section}.{key}")
+        del env[i]
+    if len(env) == 0:
+        node.pop("env")
+
+
 def migrate_values(values: CommentedMap, report: Report, lift_env: bool = True, release=None,
                    source_version=None, fragment: bool = False) -> bool:
     """Transform a 0.x values mapping in place. Returns True if anything changed.
@@ -434,6 +482,9 @@ def migrate_values(values: CommentedMap, report: Report, lift_env: bool = True, 
                 del env[i]
         if len(env) == 0:
             app.pop("env")
+
+    _lift_managed_env(app, "app", report)
+    _lift_managed_env(proxy, "proxy", report)
 
     _migrate_hybrid(values, config, report, release, source_version)
     _migrate_ingress(values, report, fragment)

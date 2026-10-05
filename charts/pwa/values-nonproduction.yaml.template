@@ -27,11 +27,11 @@ app:
   # Single replica is enough on a local single-node cluster.
   replicaCount: 1
 
+  # logging:
+  #   level: info
+  #   format: text
+
   # env:
-  #   - name: LOGLEVEL
-  #     value: "info"
-  #   - name: LOGFORMAT
-  #     value: "text"
   #   - name: "CONCURRENCY_SSR"
   #     value: "1"
 
@@ -57,13 +57,13 @@ proxy:
 
   replicaCount: 1
 
+  # logging:
+  #   level: info
+  #   format: text
+
   # env:
   #   - name: CACHE
   #     value: "off"
-  #   - name: LOGLEVEL
-  #     value: "info"
-  #   - name: LOGFORMAT
-  #     value: "text"
 
   # multiChannel: |
   #   .+:

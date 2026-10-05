@@ -1,6 +1,7 @@
 suite: fail-fast on invalid configuration
 templates:
   - templates/app-deployment.yaml
+  - templates/proxy-deployment.yaml
 release:
   name: pwa
 tests:
@@ -67,6 +68,7 @@ tests:
       - failedTemplate: {}
 
   - it: rejects PORT in app.env
+    template: templates/app-deployment.yaml
     set:
       config.icmBaseUrl: https://icm.example.com
       app.env:
@@ -75,3 +77,25 @@ tests:
     asserts:
       - failedTemplate:
           errorPattern: '`PORT` must not be set in `app.env`'
+
+  - it: rejects chart-managed LOGLEVEL in app.env
+    template: templates/app-deployment.yaml
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      app.env:
+        - name: LOGLEVEL
+          value: info
+    asserts:
+      - failedTemplate:
+          errorPattern: 'use `app.logging.level`'
+
+  - it: rejects chart-managed LOGFORMAT in proxy.env
+    template: templates/proxy-deployment.yaml
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      proxy.env:
+        - name: LOGFORMAT
+          value: text
+    asserts:
+      - failedTemplate:
+          errorPattern: 'use `proxy.logging.format`'

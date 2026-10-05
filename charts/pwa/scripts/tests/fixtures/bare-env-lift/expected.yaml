@@ -4,6 +4,5 @@ config:
   icmBaseUrlSsr: http://icm-web-wa:8080
   allowedHosts: shop.example.com,*.example.com
 app:
-  env:
-    - name: LOGLEVEL
-      value: info
+  logging:
+    level: info

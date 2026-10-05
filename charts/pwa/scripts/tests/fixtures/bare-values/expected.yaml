@@ -11,9 +11,8 @@ app:
   resources:
     requests:
       cpu: 200m
-  env:
-    - name: LOGLEVEL
-      value: info
+  logging:
+    level: info
 proxy:
   replicaCount: 2
   multiChannel: |

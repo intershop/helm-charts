@@ -121,13 +121,19 @@ Run `MIGRATE --help` for the full list of options.
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | `replicaCount`, `image`, `service`, `resources`, `nodeSelector`, `tolerations`, `affinity`, `podAntiAffinity`, `podAnnotations`, `deploymentAnnotations`, `podLabels`, `deploymentLabels`, `metrics`, `livenessProbe`, `readinessProbe`, `updateStrategy` (all top-level = SSR) | The same keys under **`app.*`**                                                              |
 | `environment`                                                                                                                                                                                                                                                                   | `app.env`                                                                                    |
+| `environment` entries `LOGLEVEL` / `LOGFORMAT` / `METRICS_DETAIL_LEVEL`                                                                                                                                                                                                         | `app.logging.level` / `app.logging.format` / `app.metrics.detailLevel`                       |
+| `environment` entry `PORT`                                                                                                                                                                                                                                                      | **Removed** (the SSR port is fixed to `4200`)                                                |
 | `cache.*` (nginx)                                                                                                                                                                                                                                                               | `proxy.*`                                                                                    |
 | `cache.extraEnvVars`                                                                                                                                                                                                                                                            | `proxy.env`                                                                                  |
+| `cache.extraEnvVars` entries `LOGLEVEL` / `LOGFORMAT`                                                                                                                                                                                                                           | `proxy.logging.level` / `proxy.logging.format`                                               |
 | `cache.cacheIgnoreParams` / `cache.multiChannel` / `cache.additionalHeaders` / `cache.reset`                                                                                                                                                                                    | `proxy.cacheIgnoreParams` / `proxy.multiChannel` / `proxy.additionalHeaders` / `proxy.reset` |
 | `upstream.icmBaseURL`                                                                                                                                                                                                                                                           | `config.icmBaseUrl` (**now required — see below**)                                           |
 | `upstream.cdnPrefixURL`                                                                                                                                                                                                                                                         | **Removed**                                                                                  |
 | `cache.prefetch`                                                                                                                                                                                                                                                                | **Removed**                                                                                  |
 | `calculated`                                                                                                                                                                                                                                                                    | **Removed** (replaced by chart helpers)                                                      |
+
+The chart renders `PORT`, `LOGLEVEL`, `LOGFORMAT`, and `METRICS_DETAIL_LEVEL` itself, so setting them in `app.env` or `proxy.env` fails with a pointer to the value to use instead.
+The script lifts these entries automatically (also with `--no-lift-env`) and warns about values it cannot map, such as an nginx `LOGLEVEL` other than `error`, `warn`, or `info`.
 
 ## Migrating from 0.7.0 to 0.12.x
 
@@ -198,9 +204,8 @@ app:
   replicaCount: 2
   image:
     repository: intershophub/intershop-pwa-ssr
-  env:
-    - name: LOGLEVEL
-      value: info
+  logging:
+    level: info
 
 proxy:
   replicaCount: 2

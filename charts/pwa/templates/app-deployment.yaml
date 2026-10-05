@@ -1,6 +1,7 @@
-{{- range .Values.app.env }}
-{{- if eq .name "PORT" }}
-{{- fail "values: `PORT` must not be set in `app.env`; the chart fixes the SSR port to 4200 so the container port and Service target stay in sync." }}
+{{- $managed := dict "PORT" "the SSR port is fixed to 4200" "LOGLEVEL" "use `app.logging.level`" "LOGFORMAT" "use `app.logging.format`" "METRICS_DETAIL_LEVEL" "use `app.metrics.detailLevel`" }}
+{{- range $e := .Values.app.env }}
+{{- with get $managed $e.name }}
+{{- fail (printf "values: `%s` must not be set in `app.env`; %s." $e.name .) }}
 {{- end }}
 {{- end }}
 apiVersion: apps/v1
