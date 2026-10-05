@@ -61,6 +61,15 @@ It handles two kinds of input:
 By default, it runs as a **dry-run** and only reports what it would change.
 Nothing is written until you pass `--write` (or `--output-suffix`).
 
+> [!TIP]
+> The command to automatically migrate and validate a given `environments` repository (GitOps tree) is:
+>
+> ```
+> python charts/pwa/scripts/migrate-to-1.0.0.py <path-to>/environments/ -r --write --validate --add-schema
+> ```
+>
+> After the migration it is advisable to read trough the log to verify everything worked as expected or if there are errors for erroneous configurations.
+
 ### Common Commands
 
 In the examples below, `MIGRATE` stands for `python migrate-to-1.0.0.py`.
