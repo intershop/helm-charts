@@ -23,12 +23,12 @@ metadata:
     {{- include "pwa.componentLabels" (dict "root" . "component" "proxy") | nindent 4 }}
   annotations:
     prometheus.io/scrape: 'true'
-    prometheus.io/port: {{ .Values.proxy.ports.metrics | quote }}
+    prometheus.io/port: '9113'
 spec:
   clusterIP: None
   ports:
     - name: metrics
-      port: {{ .Values.proxy.ports.metrics }}
+      port: 9113
       targetPort: metrics
       protocol: TCP
   selector:

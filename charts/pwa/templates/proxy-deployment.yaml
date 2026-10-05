@@ -51,12 +51,13 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           ports:
+            # Fixed by the image (nginx "listen 80", exporter on 9113).
             - name: http
-              containerPort: {{ .Values.proxy.ports.http }}
+              containerPort: 80
               protocol: TCP
             {{- if include "pwa.proxyMetricsEnabled" . }}
             - name: metrics
-              containerPort: {{ .Values.proxy.ports.metrics }}
+              containerPort: 9113
               protocol: TCP
             {{- end }}
           env:

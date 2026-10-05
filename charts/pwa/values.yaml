@@ -75,20 +75,13 @@ app:
   # -- Deployment update strategy: RollingUpdate or Recreate.
   updateStrategy: RollingUpdate
 
-  # Ports exposed by the SSR container.
-  ports:
-    # -- HTTP port the SSR server listens on.
-    http: 4200
-    # -- Prometheus metrics port.
-    metrics: 9113
-
   service:
     # -- Kubernetes Service type for the SSR service.
     type: ClusterIP
-    # -- Service port that the proxy talks to.
+    # -- Service port that the proxy talks to (the SSR process always listens on container port 4200).
     port: 4200
 
-  # ICM_BASE_URL, ICM_BASE_URL_SSR, ALLOWED_HOSTS are injected from .config automatically.
+  # PORT (fixed, must not be overridden), ICM_BASE_URL, ICM_BASE_URL_SSR, ALLOWED_HOSTS are injected automatically.
   # -- Extra environment variables for the SSR container.
   env: []
   # - name: LOGLEVEL
@@ -103,7 +96,7 @@ app:
     format: json
 
   metrics:
-    # -- Expose Prometheus metrics of the SSR container.
+    # -- Expose Prometheus metrics of the SSR container (fixed port 9113).
     enabled: false
     # -- SSR metrics detail level. DETAILED adds request-path and REST-client metrics with higher cardinality.
     detailLevel: DEFAULT
@@ -221,16 +214,10 @@ proxy:
   # -- Deployment update strategy: RollingUpdate or Recreate.
   updateStrategy: RollingUpdate
 
-  ports:
-    # -- HTTP port nginx listens on.
-    http: 80
-    # -- Prometheus metrics port.
-    metrics: 9113
-
   service:
     # -- Kubernetes Service type for the public proxy service.
     type: ClusterIP
-    # -- Public service port.
+    # -- Public service port (nginx itself always listens on container port 80).
     port: 80
 
   # UPSTREAM_PWA, ICM_BASE_URL, ICM_BASE_URL_SSR are injected
@@ -250,7 +237,7 @@ proxy:
 
   # Expose Prometheus metrics of nginx container
   metrics:
-    # -- Expose Prometheus metrics of the proxy (nginx) container.
+    # -- Expose Prometheus metrics of the proxy (nginx) container (fixed port 9113).
     enabled: false
 
   # Multi-Channel/-Site configuration object

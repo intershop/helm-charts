@@ -115,14 +115,12 @@ _README.md_ is no longer edited directly.
 | app.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy. |
 | app.replicaCount | int | `2` | Number of app replicas (ignored when autoscaling.enabled=true). |
 | app.updateStrategy | string | `"RollingUpdate"` | Deployment update strategy: RollingUpdate or Recreate. |
-| app.ports.http | int | `4200` | HTTP port the SSR server listens on. |
-| app.ports.metrics | int | `9113` | Prometheus metrics port. |
 | app.service.type | string | `"ClusterIP"` | Kubernetes Service type for the SSR service. |
-| app.service.port | int | `4200` | Service port that the proxy talks to. |
+| app.service.port | int | `4200` | Service port that the proxy talks to (the SSR process always listens on container port 4200). |
 | app.env | list | `[]` | Extra environment variables for the SSR container. |
 | app.logging.level | string | `"error"` | SSR log verbosity. |
 | app.logging.format | string | `"json"` | SSR log output format. |
-| app.metrics.enabled | bool | `false` | Expose Prometheus metrics of the SSR container. |
+| app.metrics.enabled | bool | `false` | Expose Prometheus metrics of the SSR container (fixed port 9113). |
 | app.metrics.detailLevel | string | `"DEFAULT"` | SSR metrics detail level. DETAILED adds request-path and REST-client metrics with higher cardinality. |
 | app.podSecurityContext | object | see [values.yaml](./values.yaml) | Pod security context for the app (runs as unprivileged user 65534). |
 | app.securityContext | object | `{}` | Container security context for the app, deep-merged onto the shared `securityContext` baseline (per-key overrides win). |
@@ -144,14 +142,12 @@ _README.md_ is no longer edited directly.
 | proxy.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy. |
 | proxy.replicaCount | int | `2` | Number of proxy replicas (ignored when autoscaling.enabled=true). |
 | proxy.updateStrategy | string | `"RollingUpdate"` | Deployment update strategy: RollingUpdate or Recreate. |
-| proxy.ports.http | int | `80` | HTTP port nginx listens on. |
-| proxy.ports.metrics | int | `9113` | Prometheus metrics port. |
 | proxy.service.type | string | `"ClusterIP"` | Kubernetes Service type for the public proxy service. |
-| proxy.service.port | int | `80` | Public service port. |
+| proxy.service.port | int | `80` | Public service port (nginx itself always listens on container port 80). |
 | proxy.env | list | `[]` | Extra environment variables for the proxy container. |
 | proxy.logging.level | string | `"error"` | NGINX request log threshold (`error` logs 5xx, `warn` logs 4xx+5xx, `info` logs all requests). |
 | proxy.logging.format | string | `"json"` | NGINX log output format. |
-| proxy.metrics.enabled | bool | `false` | Expose Prometheus metrics of the proxy (nginx) container. |
+| proxy.metrics.enabled | bool | `false` | Expose Prometheus metrics of the proxy (nginx) container (fixed port 9113). |
 | proxy.multiChannel | string | `""` | Multi-channel/-site routing configuration (YAML string). |
 | proxy.additionalHeaders | string | `""` | Additional response headers configuration (YAML string). |
 | proxy.cacheIgnoreParams | string | `""` | Query parameters nginx ignores when caching (YAML string). |

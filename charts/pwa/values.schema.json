@@ -563,23 +563,6 @@
           "title": "Deployment update strategy",
           "enum": ["RollingUpdate", "Recreate"]
         },
-        "ports": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["http", "metrics"],
-          "properties": {
-            "http": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 65535
-            },
-            "metrics": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 65535
-            }
-          }
-        },
         "service": {
           "type": "object",
           "additionalProperties": false,
