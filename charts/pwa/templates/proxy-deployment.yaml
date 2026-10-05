@@ -92,6 +92,10 @@ spec:
             - name: ADDITIONAL_HEADERS_SOURCE
               value: "/config/additional-headers.yaml"
             {{- end }}
+            - name: LOGLEVEL
+              value: {{ .Values.proxy.logging.level | quote }}
+            - name: LOGFORMAT
+              value: {{ .Values.proxy.logging.format | quote }}
             {{- with .Values.proxy.env }}
             {{- toYaml . | nindent 12 }}
             {{- end }}

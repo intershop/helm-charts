@@ -1,0 +1,70 @@
+suite: logging configuration
+templates:
+  - templates/app-deployment.yaml
+  - templates/proxy-deployment.yaml
+release:
+  name: pwa
+set:
+  config.icmBaseUrl: https://icm.example.com
+tests:
+  - it: configures the SSR logging defaults
+    template: templates/app-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: LOGLEVEL
+            value: error
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: LOGFORMAT
+            value: json
+
+  - it: allows configuring SSR log verbosity and format
+    template: templates/app-deployment.yaml
+    set:
+      app.logging.level: debug
+      app.logging.format: text
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: LOGLEVEL
+            value: debug
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: LOGFORMAT
+            value: text
+
+  - it: configures the NGINX logging defaults
+    template: templates/proxy-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: LOGLEVEL
+            value: error
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: LOGFORMAT
+            value: json
+
+  - it: allows configuring NGINX log threshold and format
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.logging.level: info
+      proxy.logging.format: text
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: LOGLEVEL
+            value: info
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: LOGFORMAT
+            value: text

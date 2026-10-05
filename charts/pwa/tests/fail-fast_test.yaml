@@ -31,6 +31,20 @@ tests:
     asserts:
       - failedTemplate: {}
 
+  - it: rejects an unsupported SSR log level
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      app.logging.level: verbose
+    asserts:
+      - failedTemplate: {}
+
+  - it: rejects an unsupported NGINX log level
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      proxy.logging.level: debug
+    asserts:
+      - failedTemplate: {}
+
   - it: rejects an unknown key under the proxy tier (schema typo guard)
     set:
       config.icmBaseUrl: https://icm.example.com

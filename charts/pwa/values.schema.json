@@ -167,6 +167,24 @@
     "app": {
       "allOf": [{ "$ref": "#/$defs/deploymentConfig" }],
       "properties": {
+        "logging": {
+          "type": "object",
+          "title": "SSR logging configuration",
+          "additionalProperties": false,
+          "required": ["level", "format"],
+          "properties": {
+            "level": {
+              "type": "string",
+              "title": "SSR log level",
+              "enum": ["trace", "debug", "info", "warn", "error", "fatal"]
+            },
+            "format": {
+              "type": "string",
+              "title": "SSR log output format",
+              "enum": ["json", "text"]
+            }
+          }
+        },
         "environment": {
           "$comment": "REMOVED in 1.0.0 (use app.env). Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
         }
@@ -215,6 +233,25 @@
         }
       ],
       "properties": {
+        "logging": {
+          "type": "object",
+          "title": "NGINX logging configuration",
+          "additionalProperties": false,
+          "required": ["level", "format"],
+          "properties": {
+            "level": {
+              "type": "string",
+              "title": "NGINX request log threshold",
+              "description": "error logs 5xx, warn logs 4xx and 5xx, and info logs all requests.",
+              "enum": ["error", "warn", "info"]
+            },
+            "format": {
+              "type": "string",
+              "title": "NGINX log output format",
+              "enum": ["json", "text"]
+            }
+          }
+        },
         "extraEnvVars": {
           "$comment": "REMOVED in 1.0.0 (renamed to proxy.env). Re-admitted only so templates/deprecations.yaml can emit a targeted migration error."
         }
