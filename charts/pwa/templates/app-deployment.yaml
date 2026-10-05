@@ -1,3 +1,8 @@
+{{- range .Values.app.env }}
+{{- if eq .name "PORT" }}
+{{- fail "values: `PORT` must not be set in `app.env`; the chart fixes the SSR port to 4200 so the container port and Service target stay in sync." }}
+{{- end }}
+{{- end }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -52,11 +57,11 @@ spec:
           {{- end }}
           ports:
             - name: http
-              containerPort: {{ .Values.app.ports.http }}
+              containerPort: 4200
               protocol: TCP
             {{- if include "pwa.appMetricsEnabled" . }}
             - name: metrics
-              containerPort: {{ .Values.app.ports.metrics }}
+              containerPort: 9113
               protocol: TCP
             {{- end }}
           env:
@@ -64,6 +69,8 @@ spec:
             # changes are picked up. Also lets you trace a running pod to its Helm revision.
             - name: HELM_RELEASE_REVISION
               value: "{{ .Release.Revision }}"
+            - name: PORT
+              value: "4200"
             - name: ICM_BASE_URL
               value: {{ .Values.config.icmBaseUrl | quote }}
             {{- if .Values.config.icmBaseUrlSsr }}

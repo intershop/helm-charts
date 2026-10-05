@@ -27,6 +27,21 @@ tests:
             name: UPSTREAM_PWA
             value: http://pwa-foo-app:9999
 
+  - it: app listens on the fixed PORT 4200
+    template: templates/app-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: PORT
+            value: '4200'
+      - contains:
+          path: spec.template.spec.containers[0].ports
+          content:
+            name: http
+            containerPort: 4200
+            protocol: TCP
+
   # ICM_BASE_URL is injected into both tiers from .config.
   - it: injects ICM_BASE_URL into both tiers
     templates:
