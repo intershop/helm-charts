@@ -96,6 +96,12 @@ app:
   # - name: LOGFORMAT
   #   value: "text"
 
+  logging:
+    # -- SSR log verbosity.
+    level: error
+    # -- SSR log output format.
+    format: json
+
   metrics:
     # -- Expose Prometheus metrics of the SSR container.
     enabled: false
@@ -235,6 +241,12 @@ proxy:
   #   value: "info"
   # - name: LOGFORMAT
   #   value: "text"
+
+  logging:
+    # -- NGINX request log threshold (`error` logs 5xx, `warn` logs 4xx+5xx, `info` logs all requests).
+    level: error
+    # -- NGINX log output format.
+    format: json
 
   # Expose Prometheus metrics of nginx container
   metrics:

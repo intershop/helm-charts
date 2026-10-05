@@ -87,6 +87,10 @@ spec:
             - name: METRICS_DETAIL_LEVEL
               value: {{ .Values.app.metrics.detailLevel | quote }}
             {{- end }}
+            - name: LOGLEVEL
+              value: {{ .Values.app.logging.level | quote }}
+            - name: LOGFORMAT
+              value: {{ .Values.app.logging.format | quote }}
             {{- with .Values.app.env }}
             {{- toYaml . | nindent 12 }}
             {{- end }}

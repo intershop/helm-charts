@@ -120,6 +120,8 @@ _README.md_ is no longer edited directly.
 | app.service.type | string | `"ClusterIP"` | Kubernetes Service type for the SSR service. |
 | app.service.port | int | `4200` | Service port that the proxy talks to. |
 | app.env | list | `[]` | Extra environment variables for the SSR container. |
+| app.logging.level | string | `"error"` | SSR log verbosity. |
+| app.logging.format | string | `"json"` | SSR log output format. |
 | app.metrics.enabled | bool | `false` | Expose Prometheus metrics of the SSR container. |
 | app.metrics.detailLevel | string | `"DEFAULT"` | SSR metrics detail level. DETAILED adds request-path and REST-client metrics with higher cardinality. |
 | app.podSecurityContext | object | see [values.yaml](./values.yaml) | Pod security context for the app (runs as unprivileged user 65534). |
@@ -147,6 +149,8 @@ _README.md_ is no longer edited directly.
 | proxy.service.type | string | `"ClusterIP"` | Kubernetes Service type for the public proxy service. |
 | proxy.service.port | int | `80` | Public service port. |
 | proxy.env | list | `[]` | Extra environment variables for the proxy container. |
+| proxy.logging.level | string | `"error"` | NGINX request log threshold (`error` logs 5xx, `warn` logs 4xx+5xx, `info` logs all requests). |
+| proxy.logging.format | string | `"json"` | NGINX log output format. |
 | proxy.metrics.enabled | bool | `false` | Expose Prometheus metrics of the proxy (nginx) container. |
 | proxy.multiChannel | string | `""` | Multi-channel/-site routing configuration (YAML string). |
 | proxy.additionalHeaders | string | `""` | Additional response headers configuration (YAML string). |
