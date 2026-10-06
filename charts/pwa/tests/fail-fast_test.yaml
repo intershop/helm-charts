@@ -99,3 +99,71 @@ tests:
     asserts:
       - failedTemplate:
           errorPattern: 'use `proxy.logging.format`'
+
+  - it: rejects ICM_BASE_URL in app.env
+    template: templates/app-deployment.yaml
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      app.env:
+        - name: ICM_BASE_URL
+          value: https://other.example.com
+    asserts:
+      - failedTemplate:
+          errorPattern: 'use `config.icmBaseUrl`'
+
+  - it: rejects ICM_BASE_URL_SSR in app.env when config.icmBaseUrlSsr is set
+    template: templates/app-deployment.yaml
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      config.icmBaseUrlSsr: http://icm-web-wa:8080
+      app.env:
+        - name: ICM_BASE_URL_SSR
+          value: http://other-wa:8080
+    asserts:
+      - failedTemplate:
+          errorPattern: '`ICM_BASE_URL_SSR` must not be set in `app.env`'
+
+  - it: allows ICM_BASE_URL_SSR in app.env when config.icmBaseUrlSsr is unset
+    template: templates/app-deployment.yaml
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      app.env:
+        - name: ICM_BASE_URL_SSR
+          value: http://icm-web-wa:8080
+    asserts:
+      - notFailedTemplate: {}
+
+  - it: rejects UPSTREAM_PWA in proxy.env
+    template: templates/proxy-deployment.yaml
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      proxy.env:
+        - name: UPSTREAM_PWA
+          value: http://elsewhere:4200
+    asserts:
+      - failedTemplate:
+          errorPattern: '`UPSTREAM_PWA` must not be set in `proxy.env`'
+
+  - it: rejects MULTI_CHANNEL_SOURCE in proxy.env only when proxy.multiChannel is set
+    template: templates/proxy-deployment.yaml
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      proxy.multiChannel: |
+        .+:
+          - baseHref: /
+      proxy.env:
+        - name: MULTI_CHANNEL_SOURCE
+          value: /other.yaml
+    asserts:
+      - failedTemplate:
+          errorPattern: 'it is set by `proxy.multiChannel`'
+
+  - it: allows PROMETHEUS in proxy.env when proxy metrics are disabled
+    template: templates/proxy-deployment.yaml
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      proxy.env:
+        - name: PROMETHEUS
+          value: 'off'
+    asserts:
+      - notFailedTemplate: {}

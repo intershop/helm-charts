@@ -132,7 +132,7 @@ Run `MIGRATE --help` for the full list of options.
 | `cache.prefetch`                                                                                                                                                                                                                                                                | **Removed**                                                                                  |
 | `calculated`                                                                                                                                                                                                                                                                    | **Removed** (replaced by chart helpers)                                                      |
 
-The chart renders `PORT`, `LOGLEVEL`, `LOGFORMAT`, and `METRICS_DETAIL_LEVEL` itself, so setting them in `app.env` or `proxy.env` fails with a pointer to the value to use instead.
+The chart rejects variables it sets or fixes itself in `app.env` or `proxy.env` with a pointer to the value to use instead: always `PORT` (fixed to the image default `4200`), `ICM_BASE_URL`, `LOGLEVEL`, `LOGFORMAT`, `METRICS_DETAIL_LEVEL` (app), and `UPSTREAM_PWA` (proxy); conditionally `ICM_BASE_URL_SSR`, `ALLOWED_HOSTS`, `SSR_HYBRID*`, `HYBRID_FORWARDED_PORT`, `PROMETHEUS`, and the `*_SOURCE` variables when the matching value is set.
 The script lifts these entries automatically (also with `--no-lift-env`) and warns about values it cannot map, such as an nginx `LOGLEVEL` other than `error`, `warn`, or `info`.
 
 ## Migrating from 0.7.0 to 0.12.x
