@@ -5,6 +5,12 @@ metadata:
   name: {{ include "icm-web.fullname" . }}-cluster-logs-pvc
   labels:
     {{- include "icm-web.labels" . | nindent 4 }}
+  {{- if not .Values.persistence.logs.cluster.removePvcOnUninstall }}
+  annotations:
+    # this annotation guarantees, that pvc is not deleted
+    # by running helm delete
+    "helm.sh/resource-policy": keep
+  {{- end }}
 spec:
   accessModes:
     - ReadWriteMany

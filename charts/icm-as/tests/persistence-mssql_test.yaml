@@ -5,6 +5,8 @@ templates:
   - templates/local-mssql-db-backup-pvc.yaml
   - templates/local-mssql-db-data-pv.yaml
   - templates/local-mssql-db-data-pvc.yaml
+  - templates/cluster-mssql-db-backup-pvc.yaml
+  - templates/cluster-mssql-db-data-pvc.yaml
 tests:
   - it: type=local in mssql-deployment
     release:
@@ -198,6 +200,86 @@ tests:
             name: data-volume
             persistentVolumeClaim:
               claimName: "icm-as-cluster-mssql-db-data-pvc"
+
+  - it: removePvcOnUninstall=false keeps resource-policy in cluster-mssql-db-data-pvc
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      mssql.enabled: true
+      mssql.persistence.data.type: cluster
+      mssql.persistence.data.cluster.removePvcOnUninstall: false
+    template: templates/cluster-mssql-db-data-pvc.yaml
+    asserts:
+      - isKind:
+          of: PersistentVolumeClaim
+      #metadata.annotations
+      - equal:
+          path: metadata.annotations
+          value:
+            helm.sh/resource-policy: keep
+
+  - it: removePvcOnUninstall=true omits resource-policy in cluster-mssql-db-data-pvc
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      mssql.enabled: true
+      mssql.persistence.data.type: cluster
+      mssql.persistence.data.cluster.removePvcOnUninstall: true
+    template: templates/cluster-mssql-db-data-pvc.yaml
+    asserts:
+      - isKind:
+          of: PersistentVolumeClaim
+      #metadata.annotations
+      - notExists:
+          path: metadata.annotations
+
+  - it: removePvcOnUninstall=false keeps resource-policy in cluster-mssql-db-backup-pvc
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      mssql.enabled: true
+      mssql.persistence.backup.type: cluster
+      mssql.persistence.backup.cluster.removePvcOnUninstall: false
+    template: templates/cluster-mssql-db-backup-pvc.yaml
+    asserts:
+      - isKind:
+          of: PersistentVolumeClaim
+      #metadata.annotations
+      - equal:
+          path: metadata.annotations
+          value:
+            helm.sh/resource-policy: keep
+
+  - it: removePvcOnUninstall=true omits resource-policy in cluster-mssql-db-backup-pvc
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      mssql.enabled: true
+      mssql.persistence.backup.type: cluster
+      mssql.persistence.backup.cluster.removePvcOnUninstall: true
+    template: templates/cluster-mssql-db-backup-pvc.yaml
+    asserts:
+      - isKind:
+          of: PersistentVolumeClaim
+      #metadata.annotations
+      - notExists:
+          path: metadata.annotations
 
 
   - it: type=azurefiles in mssql-deployment

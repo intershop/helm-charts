@@ -295,6 +295,8 @@ persistence:
       # storage class of the persistent volume to be used
       storageClass: <storage class>
     cluster:
+      # if true the pvc is deleted together with the release
+      removePvcOnUninstall: false
       storageClass:
         create: false
         # if create == false an exiting class could be set
@@ -328,6 +330,8 @@ persistence:
       # storage class of the persistent volume to be used
       storageClass: <storage class>
     cluster:
+      # if true the pvc is deleted together with the release
+      removePvcOnUninstall: false
       storageClass:
         create: false
         # if create == false an exiting class could be set
@@ -356,6 +360,8 @@ persistence:
     type: emptyDir
     existingClaim: <claim name>
     cluster:
+      # if true the pvc is deleted together with the release
+      removePvcOnUninstall: false
       storageClass:
         create: false
         # if create == false an exiting class could be set
@@ -421,6 +427,8 @@ mssql:
       type: local
       existingClaim: <claim name>
       cluster:
+        # if true the pvc is deleted together with the release
+        removePvcOnUninstall: false
         storageClass:
           create: false
           # if create == false an exiting class could be set
@@ -446,6 +454,8 @@ mssql:
       type: local
       existingClaim: <claim name>
       cluster:
+        # if true the pvc is deleted together with the release
+        removePvcOnUninstall: false
         storageClass:
           create: false
           # if create == false an exiting class could be set

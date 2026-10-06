@@ -72,12 +72,14 @@ icm-test:
           size: 2Gi
           type: cluster
           cluster:
+            removePvcOnUninstall: true
             storageClass:
               existingClass: azurefile
         jgroups:
           size: 1Gi
           type: cluster
           cluster:
+            removePvcOnUninstall: true
             storageClass:
               create: false
               existingClass: azurefile

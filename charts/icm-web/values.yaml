@@ -170,6 +170,8 @@ persistence:
     type: emptyDir
     existingClaim: claimName
     cluster:
+      # if true the pvc is deleted together with the release
+      removePvcOnUninstall: false
       storageClass:
         create: true
         # if create == false an exiting class could be set
@@ -198,6 +200,8 @@ persistence:
     type: emptyDir
     existingClaim: claimName
     cluster:
+      # if true the pvc is deleted together with the release
+      removePvcOnUninstall: false
       storageClass:
         create: true
         # if create == false an exiting class could be set
