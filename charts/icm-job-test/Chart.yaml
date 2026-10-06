@@ -5,7 +5,7 @@ name: icm-job-test
 version: 2.1.4
 annotations:
   requestedMemoryQuota: 8100Mi
-  requestedCpuQuotaInMinutes: "2200"
+  requestedCpuQuotaInMinutes: "3200"
 dependencies:
   - name: icm-test
     version: 2.1.3
