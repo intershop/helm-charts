@@ -77,7 +77,7 @@ The `Cluster` type often is referenced as *dynamic* provisioning, because the st
 ====
 [TIP]
 ====
-When configuring `removePvcOnUninstall=true` to have the persistence volume claims kept with  on `helm uninstall` allows to use the same persistence volume claims on a new `helm install` - so the application get access to the data it earlier stored onto the related persistent volumes.
+Setting `removePvcOnUninstall=false` keeps the persistent volume claims after `helm uninstall`, allowing a later `helm install` with the same release name to reuse them and access previously stored data.
 ====
 
 [#_storageClassType]
