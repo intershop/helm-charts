@@ -67,6 +67,7 @@ icm:
         size: 2Gi
         type: cluster
         cluster:
+          removePvcOnUninstall: true
           storageClass:
             existingClass: azurefile
       encryption:
