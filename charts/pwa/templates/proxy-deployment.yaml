@@ -1,4 +1,10 @@
-{{- $managed := dict "LOGLEVEL" "use `proxy.logging.level`" "LOGFORMAT" "use `proxy.logging.format`" }}
+{{- $managed := dict "HELM_RELEASE_REVISION" "the chart sets it" "UPSTREAM_PWA" "the chart points it at the app Service" "ICM_BASE_URL" "use `config.icmBaseUrl`" "LOGLEVEL" "use `proxy.logging.level`" "LOGFORMAT" "use `proxy.logging.format`" }}
+{{- if .Values.config.icmBaseUrlSsr }}{{ $_ := set $managed "ICM_BASE_URL_SSR" "it is set from `config.icmBaseUrlSsr`" }}{{ end }}
+{{- if and .Values.hybrid.enabled .Values.hybrid.pwaExternalPort }}{{ $_ := set $managed "HYBRID_FORWARDED_PORT" "it is set from `hybrid.pwaExternalPort`" }}{{ end }}
+{{- if include "pwa.proxyMetricsEnabled" . }}{{ $_ := set $managed "PROMETHEUS" "it is set by `proxy.metrics.enabled`/`monitoring.enabled`" }}{{ end }}
+{{- if .Values.proxy.multiChannel }}{{ $_ := set $managed "MULTI_CHANNEL_SOURCE" "it is set by `proxy.multiChannel`" }}{{ end }}
+{{- if .Values.proxy.cacheIgnoreParams }}{{ $_ := set $managed "CACHING_IGNORE_PARAMS_SOURCE" "it is set by `proxy.cacheIgnoreParams`" }}{{ end }}
+{{- if .Values.proxy.additionalHeaders }}{{ $_ := set $managed "ADDITIONAL_HEADERS_SOURCE" "it is set by `proxy.additionalHeaders`" }}{{ end }}
 {{- range $e := .Values.proxy.env }}
 {{- with get $managed $e.name }}
 {{- fail (printf "values: `%s` must not be set in `proxy.env`; %s." $e.name .) }}

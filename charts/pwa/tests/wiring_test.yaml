@@ -27,14 +27,14 @@ tests:
             name: UPSTREAM_PWA
             value: http://pwa-foo-app:9999
 
-  - it: app listens on the fixed PORT 4200
+  - it: app relies on the image default port 4200 without setting PORT
     template: templates/app-deployment.yaml
     asserts:
-      - contains:
+      - notContains:
           path: spec.template.spec.containers[0].env
           content:
             name: PORT
-            value: '4200'
+          any: true
       - contains:
           path: spec.template.spec.containers[0].ports
           content:

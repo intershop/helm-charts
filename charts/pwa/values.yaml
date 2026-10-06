@@ -81,8 +81,8 @@ app:
     # -- Service port that the proxy talks to (the SSR process always listens on container port 4200).
     port: 4200
 
-  # PORT (fixed), LOGLEVEL/LOGFORMAT (see logging), METRICS_DETAIL_LEVEL (see metrics),
-  # ICM_BASE_URL, ICM_BASE_URL_SSR, ALLOWED_HOSTS are injected automatically and must not be set here.
+  # PORT (fixed to the image default) and variables the chart sets itself (ICM_BASE_URL, LOGLEVEL/LOGFORMAT,
+  # METRICS_DETAIL_LEVEL, and those derived from config/hybrid/metrics) are rejected here; use the matching value instead.
   # -- Extra environment variables for the SSR container.
   env: []
   # - name: CACHE_ICM_CALLS
@@ -219,8 +219,8 @@ proxy:
     # -- Public service port (nginx itself always listens on container port 80).
     port: 80
 
-  # UPSTREAM_PWA, ICM_BASE_URL, ICM_BASE_URL_SSR and LOGLEVEL/LOGFORMAT (see logging) are injected
-  # automatically and must not be set here. Add multi-channel / identity-provider config here.
+  # Variables the chart sets itself (UPSTREAM_PWA, ICM_BASE_URL, LOGLEVEL/LOGFORMAT, and those derived
+  # from config/hybrid/metrics/multiChannel/...) are rejected here. Add identity-provider config etc. here.
   # -- Extra environment variables for the proxy container.
   env: []
   # - name: CACHE
