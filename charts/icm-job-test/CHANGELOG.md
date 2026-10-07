@@ -1,4 +1,15 @@
 
+<a name="icm-job-test-2.1.5"></a>
+# [icm-job-test-2.1.5](https://github.com/intershop/helm-charts/releases/tag/icm-job-test-2.1.5) (2026-10-07)
+
+Compare with previous release: [icm-job-test-2.1.4...icm-job-test-2.1.5](https://github.com/intershop/helm-charts/compare/icm-job-test-2.1.4...icm-job-test-2.1.5)
+
+## Bug Fixes
+
+* **icm:** increase requested CPU quota for job tests ([#1382](https://github.com/intershop/helm-charts/issues/1382))
+
+
+
 <a name="icm-job-test-2.1.4"></a>
 # [icm-job-test-2.1.4](https://github.com/intershop/helm-charts/releases/tag/icm-job-test-2.1.4) (2026-09-24)
 
