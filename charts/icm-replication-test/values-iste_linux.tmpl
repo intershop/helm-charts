@@ -22,6 +22,14 @@ icm-edit:
             databaseUser: "${DATABASE_USER_LIVE}"
       image:
         repository: "${ICM_TEST_IMAGE}"
+      # low cpu request (avg usage ~0.1), keep limit for JVM start-up burst
+      resources:
+        requests:
+          cpu: 400m
+          memory: 4Gi
+        limits:
+          cpu: 1
+          memory: 4Gi
       customCommand:
       - "/bin/sh"
       - "-c"
@@ -167,6 +175,14 @@ icm-live:
             databaseUser: "${DATABASE_USER_LIVE}"
       image:
         repository: "${ICM_TEST_IMAGE}"
+      # low cpu request (avg usage ~0.1), keep limit for JVM start-up burst
+      resources:
+        requests:
+          cpu: 400m
+          memory: 4Gi
+        limits:
+          cpu: 1
+          memory: 4Gi
       customCommand:
       - "/bin/sh"
       - "-c"
