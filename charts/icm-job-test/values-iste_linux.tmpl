@@ -13,8 +13,25 @@ icm-test:
         "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
       image:
         repository: "${ICM_TEST_IMAGE}"
+      # appserver mostly waits for job pods: low cpu request, keep limit for JVM start-up burst
+      resources:
+        requests:
+          cpu: 300m
+          memory: 4Gi
+        limits:
+          cpu: 1
+          memory: 4Gi
       job:
         enabled: true
+        # job pods inherit the appserver resources (deep merge), so cpu has to be set explicitly
+        # job pods are cpu-throttled at 1 core, memory peak is ~1.7 GB
+        resources:
+          requests:
+            cpu: 1
+            memory: 3Gi
+          limits:
+            cpu: 1
+            memory: 3Gi
       customCommand:
         - "/bin/sh"
         - "-c"
