@@ -145,7 +145,7 @@ _README.md_ is no longer edited directly.
 | proxy.service.type | string | `"ClusterIP"` | Kubernetes Service type for the public proxy service. |
 | proxy.service.port | int | `80` | Public service port (nginx itself always listens on container port 80). |
 | proxy.env | list | `[]` | Extra environment variables for the proxy container. |
-| proxy.logging.level | string | `"error"` | NGINX request log threshold (`error` logs 5xx, `warn` logs 4xx+5xx, `info` logs all requests). |
+| proxy.logging.level | string | `"info"` | NGINX request log threshold (`error` logs 5xx, `warn` logs 4xx+5xx, `info` logs all requests). |
 | proxy.logging.format | string | `"json"` | NGINX log output format. |
 | proxy.metrics.enabled | bool | `false` | Expose Prometheus metrics of the proxy (nginx) container (fixed port 9113). |
 | proxy.multiChannel | string | `""` | Multi-channel/-site routing configuration (YAML string). |

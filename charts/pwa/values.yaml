@@ -162,7 +162,7 @@ app:
     maxReplicas: 10
     # CPU/memory target is a percentage of the container's requests (not limits),
     # so with small requests these values can far exceed 100. Set to null to drop the metric.
-    targetCPUUtilizationPercentage: 75
+    targetCPUUtilizationPercentage: 750 # limits=1000m, requests=100m --> 100m x750% = 750m ~~ 75% of limits
     targetMemoryUtilizationPercentage:
     # Advanced: when non-empty, `metrics` replaces the CPU/memory shortcuts above with a raw
     # autoscaling/v2 metrics list; `behavior` sets scale-up/down policies. See [values.yaml](./values.yaml).
@@ -228,7 +228,7 @@ proxy:
 
   logging:
     # -- NGINX request log threshold (`error` logs 5xx, `warn` logs 4xx+5xx, `info` logs all requests).
-    level: error
+    level: info
     # -- NGINX log output format.
     format: json
 
@@ -332,7 +332,7 @@ proxy:
     maxReplicas: 6
     # CPU/memory target is a percentage of the container's requests (not limits),
     # so with small requests these values can far exceed 100. Set to null to drop the metric.
-    targetCPUUtilizationPercentage: 75
+    targetCPUUtilizationPercentage: 1500 # limits=1000m, requests=50m --> 50m x1500% = 750m ~~ 75% of limits
     targetMemoryUtilizationPercentage:
     # Advanced: when non-empty, `metrics` replaces the CPU/memory shortcuts above with a raw
     # autoscaling/v2 metrics list; `behavior` sets scale-up/down policies. See [values.yaml](./values.yaml).
@@ -373,14 +373,20 @@ ingress:
   enabled: false
   # -- IngressClass name for all instances.
   className: ingress-haproxy
-## example for a configured Ingress instance
+## example for configured Ingress instances (any number of named instances is supported)
 #   instances:
-#     ingress:
+#     ingress-pre-golive:
 #       annotations:
 #         kubernetes.io/tls-acme: "false"
-#       tlsSecretName: tls-star-pwa-intershop-de
+#       tlsSecretName: tls-star-example-local
 #       hosts:
 #         - host: pwa.example.local
+#     ingress:
+#       tlsSecretName: tls-star-example-local
+#       hosts:
+#         - host: shop.example.local
+#         - host: shop-b2b.example.local
+#           tlsSecretName: tls-shop-b2b-example-local
 
 ## ===========================================================================
 ## Monitoring — with Prometheus and Grafana (for development and testing)

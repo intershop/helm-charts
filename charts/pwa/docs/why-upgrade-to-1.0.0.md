@@ -19,6 +19,7 @@ For the upgrade steps, see the [Migration to 1.0.0](migrate-to-1.0.0.md) guide.
 | Probes                  | None                                                           | Liveness, readiness, and startup probes for the app (PM2 process health); TCP probes for the proxy |
 | Image tag / pull policy | `latest` / `Always`                                            | `release-<chart appVersion>` / `IfNotPresent`                                                      |
 | ICM base URL            | Defaults to a development backend (_develop.icm.intershop.de_) | Required; the installation fails with a clear message if it is not set                             |
+| Proxy access logs       | 5xx responses only (image default `error`)                     | All requests (`proxy.logging.level: info`)                                                         |
 
 **Benefits:** The default installation is production-ready without additional tuning.
 Deployments are reproducible because image tags are pinned to the chart's `appVersion` instead of `latest`.

@@ -63,9 +63,24 @@ tests:
           value: cpu
       - equal:
           path: spec.metrics[0].resource.target.averageUtilization
-          value: 75
+          value: 750
       - notExists:
           path: spec.behavior
+
+  - it: renders a CPU-utilization HPA targeting the proxy Deployment
+    template: templates/proxy-hpa.yaml
+    set:
+      proxy.autoscaling.enabled: true
+    asserts:
+      - equal:
+          path: spec.scaleTargetRef.name
+          value: pwa-proxy
+      - equal:
+          path: spec.metrics[0].resource.name
+          value: cpu
+      - equal:
+          path: spec.metrics[0].resource.target.averageUtilization
+          value: 1500
 
   # --- memory shortcut (opt-in) ----------------------------------------------
   - it: adds a memory metric when targetMemoryUtilizationPercentage is set
