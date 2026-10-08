@@ -243,6 +243,9 @@ These changes affect how a **default** install behaves, even if you do not chang
 - **Image tags** default to `release-<chart appVersion>` (was `latest`), and **pull policy** defaults to `IfNotPresent` (was `Always`) for reproducible deployments.
 - **Replica counts** default to `2` per tier (was `1`), and **resource requests/limits** are now set for a production baseline.
 - **`updateStrategy`** is now configured per tier (`app.updateStrategy` / `proxy.updateStrategy`) and still defaults to `RollingUpdate`.
+- **Proxy access logs**:
+  `proxy.logging.level` defaults to `info`, so nginx logs all requests (the 0.x image default `error` logged 5xx responses only).
+  To keep the previous behavior, set `proxy.logging.level: error` explicitly.
 - **Ingress class**:
   The default `ingress.className` has changed from `nginx` to `ingress-haproxy`.
   Ingress is still disabled by default (`ingress.enabled: false`), so this affects you only if you enable it and relied on the default.

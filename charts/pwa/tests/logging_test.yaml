@@ -45,7 +45,7 @@ tests:
           path: spec.template.spec.containers[0].env
           content:
             name: LOGLEVEL
-            value: error
+            value: info
       - contains:
           path: spec.template.spec.containers[0].env
           content:
@@ -55,14 +55,14 @@ tests:
   - it: allows configuring NGINX log threshold and format
     template: templates/proxy-deployment.yaml
     set:
-      proxy.logging.level: info
+      proxy.logging.level: warn
       proxy.logging.format: text
     asserts:
       - contains:
           path: spec.template.spec.containers[0].env
           content:
             name: LOGLEVEL
-            value: info
+            value: warn
       - contains:
           path: spec.template.spec.containers[0].env
           content:
