@@ -1,9 +1,5 @@
 {{- define "pwa-prometheus.fullname" -}}
-{{- printf "%s-%s" (include  "pwa-main.fullname" . ) "prometheus" -}}
-{{- end -}}
-
-{{- define "pwa-prometheus.name" -}}
-{{- printf "%s-%s" (include  "pwa-main.name" . ) "prometheus" -}}
+{{- printf "%s-%s" (include  "pwa.fullname" . ) "prometheus" -}}
 {{- end -}}
 
 {{- define "pwa-prometheus.config" -}}
@@ -15,11 +11,7 @@
 {{- end -}}
 
 {{- define "pwa-grafana.fullname" -}}
-{{- printf "%s-%s" (include  "pwa-main.fullname" . ) "grafana" -}}
-{{- end -}}
-
-{{- define "pwa-grafana.name" -}}
-{{- printf "%s-%s" (include  "pwa-main.name" . ) "grafana" -}}
+{{- printf "%s-%s" (include  "pwa.fullname" . ) "grafana" -}}
 {{- end -}}
 
 {{- define "pwa-grafana.config" -}}

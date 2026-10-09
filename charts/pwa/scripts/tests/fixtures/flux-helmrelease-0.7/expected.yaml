@@ -1,0 +1,41 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: live
+spec:
+  chart:
+    spec:
+      chart: pwa
+      version: 1.0.0
+  targetNamespace: shop
+  values:
+    config:
+      icmBaseUrl: https://icm.example.com
+      icmBaseUrlSsr: https://shop-live-icm-web-wa:8443
+    app:
+      replicaCount: 2
+    proxy:
+      replicaCount: 1
+    hybrid:
+      enabled: true
+    ingress:
+      enabled: true
+      className: ${ingress_class}
+      instances:
+        ingress:
+          annotations:
+            kubernetes.io/tls-acme: 'false'
+          tlsSecretName: tls-star-example-com
+          hosts:
+            - host: pwa.example.com
+            - host: shop.example.org
+              tlsSecretName: tls-shop-example-org
+            - host: www.example.com
+        ingresssplit:
+          annotations:
+            configuration-snippet: |-
+              satisfy any;
+              deny all;
+          tlsSecretName: tls-star-example-com
+          hosts:
+            - host: pwa-test.example.com

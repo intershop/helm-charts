@@ -1,0 +1,26 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-gomplate-datasources
+  labels:
+    {{- include "pwa.componentLabels" (dict "root" . "component" "proxy") | nindent 4 }}
+data:
+  multi-channel.yaml: |-
+    {{- if .Values.proxy.multiChannel }}
+    {{- .Values.proxy.multiChannel | nindent 4 }}
+    {{- else }}
+    .+:
+      channel: default
+    {{- end }}
+  caching-ignore-params.yaml: |-
+    {{- if .Values.proxy.cacheIgnoreParams }}
+    {{- .Values.proxy.cacheIgnoreParams | nindent 4 }}
+    {{- else }}
+    params: []
+    {{- end }}
+  additional-headers.yaml: |-
+    {{- if .Values.proxy.additionalHeaders }}
+    {{- .Values.proxy.additionalHeaders | nindent 4 }}
+    {{- else }}
+    headers: []
+    {{- end }}

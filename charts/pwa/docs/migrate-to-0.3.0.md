@@ -19,7 +19,7 @@ ingress:
   enabled: true
   annotations:
     kubernetes.io/ingress.class: nginx
-  paths: ["/"]
+  paths: ['/']
   hosts:
     - pwa.example.local
 ```

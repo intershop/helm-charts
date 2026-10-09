@@ -1,0 +1,169 @@
+suite: fail-fast on invalid configuration
+templates:
+  - templates/app-deployment.yaml
+  - templates/proxy-deployment.yaml
+release:
+  name: pwa
+tests:
+  - it: rendering fails when the required config.icmBaseUrl is empty
+    set:
+      config.icmBaseUrl: ''
+    asserts:
+      - failedTemplate: {}
+
+  - it: rejects unknown security-context fields (schema typo guard)
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      app.securityContext.readOnlyRootFileSystem: true
+    asserts:
+      - failedTemplate: {}
+
+  - it: rejects an unknown key under the app tier (schema typo guard)
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      app.replicaCont: 1
+    asserts:
+      - failedTemplate: {}
+
+  - it: rejects an unsupported SSR metrics detail level
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      app.metrics.detailLevel: VERBOSE
+    asserts:
+      - failedTemplate: {}
+
+  - it: rejects an unsupported SSR log level
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      app.logging.level: verbose
+    asserts:
+      - failedTemplate: {}
+
+  - it: rejects an unsupported NGINX log level
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      proxy.logging.level: debug
+    asserts:
+      - failedTemplate: {}
+
+  - it: rejects an unknown key under the proxy tier (schema typo guard)
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      proxy.badKey: true
+    asserts:
+      - failedTemplate: {}
+
+  - it: rejects proxy ports (fixed by the nginx image)
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      proxy.ports.http: 8080
+    asserts:
+      - failedTemplate: {}
+
+  - it: rejects app ports (SSR port is fixed to 4200)
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      app.ports.http: 8080
+    asserts:
+      - failedTemplate: {}
+
+  - it: rejects PORT in app.env
+    template: templates/app-deployment.yaml
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      app.env:
+        - name: PORT
+          value: '8080'
+    asserts:
+      - failedTemplate:
+          errorPattern: '`PORT` must not be set in `app.env`'
+
+  - it: rejects chart-managed LOGLEVEL in app.env
+    template: templates/app-deployment.yaml
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      app.env:
+        - name: LOGLEVEL
+          value: info
+    asserts:
+      - failedTemplate:
+          errorPattern: 'use `app.logging.level`'
+
+  - it: rejects chart-managed LOGFORMAT in proxy.env
+    template: templates/proxy-deployment.yaml
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      proxy.env:
+        - name: LOGFORMAT
+          value: text
+    asserts:
+      - failedTemplate:
+          errorPattern: 'use `proxy.logging.format`'
+
+  - it: rejects ICM_BASE_URL in app.env
+    template: templates/app-deployment.yaml
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      app.env:
+        - name: ICM_BASE_URL
+          value: https://other.example.com
+    asserts:
+      - failedTemplate:
+          errorPattern: 'use `config.icmBaseUrl`'
+
+  - it: rejects ICM_BASE_URL_SSR in app.env when config.icmBaseUrlSsr is set
+    template: templates/app-deployment.yaml
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      config.icmBaseUrlSsr: http://icm-web-wa:8080
+      app.env:
+        - name: ICM_BASE_URL_SSR
+          value: http://other-wa:8080
+    asserts:
+      - failedTemplate:
+          errorPattern: '`ICM_BASE_URL_SSR` must not be set in `app.env`'
+
+  - it: allows ICM_BASE_URL_SSR in app.env when config.icmBaseUrlSsr is unset
+    template: templates/app-deployment.yaml
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      app.env:
+        - name: ICM_BASE_URL_SSR
+          value: http://icm-web-wa:8080
+    asserts:
+      - notFailedTemplate: {}
+
+  - it: rejects UPSTREAM_PWA in proxy.env
+    template: templates/proxy-deployment.yaml
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      proxy.env:
+        - name: UPSTREAM_PWA
+          value: http://elsewhere:4200
+    asserts:
+      - failedTemplate:
+          errorPattern: '`UPSTREAM_PWA` must not be set in `proxy.env`'
+
+  - it: rejects MULTI_CHANNEL_SOURCE in proxy.env only when proxy.multiChannel is set
+    template: templates/proxy-deployment.yaml
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      proxy.multiChannel: |
+        .+:
+          - baseHref: /
+      proxy.env:
+        - name: MULTI_CHANNEL_SOURCE
+          value: /other.yaml
+    asserts:
+      - failedTemplate:
+          errorPattern: 'it is set by `proxy.multiChannel`'
+
+  - it: allows PROMETHEUS in proxy.env when proxy metrics are disabled
+    template: templates/proxy-deployment.yaml
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      proxy.env:
+        - name: PROMETHEUS
+          value: 'off'
+    asserts:
+      - notFailedTemplate: {}

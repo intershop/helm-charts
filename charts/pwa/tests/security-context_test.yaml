@@ -1,0 +1,98 @@
+suite: security contexts are hardened by default
+templates:
+  - templates/app-deployment.yaml
+  - templates/proxy-deployment.yaml
+  - templates/serviceaccount.yaml
+release:
+  name: pwa
+set:
+  config.icmBaseUrl: https://icm.example.com
+tests:
+  - it: app pod runs as non-root 65534 with the runtime-default seccomp profile
+    template: templates/app-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.securityContext.runAsNonRoot
+          value: true
+      - equal:
+          path: spec.template.spec.securityContext.runAsUser
+          value: 65534
+      - equal:
+          path: spec.template.spec.securityContext.seccompProfile.type
+          value: RuntimeDefault
+
+  - it: app container drops all capabilities and forbids privilege escalation
+    template: templates/app-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation
+          value: false
+      - contains:
+          path: spec.template.spec.containers[0].securityContext.capabilities.drop
+          content: ALL
+
+  - it: proxy master stays root but keeps only the capabilities nginx needs
+    template: templates/proxy-deployment.yaml
+    asserts:
+      - isNull:
+          path: spec.template.spec.securityContext.runAsNonRoot
+      - contains:
+          path: spec.template.spec.containers[0].securityContext.capabilities.drop
+          content: ALL
+      - contains:
+          path: spec.template.spec.containers[0].securityContext.capabilities.add
+          content: CHOWN
+      - contains:
+          path: spec.template.spec.containers[0].securityContext.capabilities.add
+          content: SETUID
+      - contains:
+          path: spec.template.spec.containers[0].securityContext.capabilities.add
+          content: DAC_OVERRIDE
+
+  - it: service account enables API token automount by default
+    template: templates/serviceaccount.yaml
+    documentIndex: 0
+    asserts:
+      - equal:
+          path: automountServiceAccountToken
+          value: true
+
+  - it: service account RBAC can only get the app Endpoints resource
+    template: templates/serviceaccount.yaml
+    documentIndex: 1
+    asserts:
+      - isKind:
+          of: Role
+      - equal:
+          path: rules[0].apiGroups
+          value: ['']
+      - equal:
+          path: rules[0].resources
+          value: ['endpoints']
+      - equal:
+          path: rules[0].resourceNames
+          value: ['pwa-app']
+      - equal:
+          path: rules[0].verbs
+          value: ['get']
+
+  - it: role binding targets the workload service account
+    template: templates/serviceaccount.yaml
+    documentIndex: 2
+    asserts:
+      - isKind:
+          of: RoleBinding
+      - equal:
+          path: roleRef.name
+          value: pwa-endpoints-reader
+      - equal:
+          path: subjects[0].name
+          value: pwa
+
+  - it: does not create account or RBAC when serviceAccount.create is false
+    template: templates/serviceaccount.yaml
+    set:
+      serviceAccount.create: false
+    asserts:
+      - hasDocuments:
+          count: 0

@@ -6,3 +6,5 @@ charts:
   - charts/pwa
 check-version-increment: false
 validate-maintainers: false
+# ct only auto-discovers lintconf.yaml; use the Prettier-aligned repo config instead.
+lint-conf: .yamllint.yaml
