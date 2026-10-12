@@ -1,5 +1,5 @@
-{{- if .Values.serviceAccount.create -}}
-kind: ClusterRole
+{{- if eq (include "icm-as.jgroups.discovery" .) "kube_ping" }}
+kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: jgroups-kubeping-pod-reader
