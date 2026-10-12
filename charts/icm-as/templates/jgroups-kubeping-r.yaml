@@ -2,7 +2,7 @@
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: jgroups-kubeping-pod-reader
+  name: {{ template "icm-as.fullname" . }}-jgroups-role
   labels:
     {{- include "icm-as.labels" . | nindent 4 }}
 rules:
