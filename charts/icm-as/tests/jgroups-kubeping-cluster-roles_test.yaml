@@ -1,7 +1,7 @@
 suite: tests correctness of cluster role bindings for jgroups KUBE_PING discovery
 templates:
-  - templates/jgroups-kubeping-cr.yaml
-  - templates/jgroups-kubeping-crb.yaml
+  - templates/jgroups-kubeping-r.yaml
+  - templates/jgroups-kubeping-rb.yaml
 tests:
   - it: no roles or role-bindings if KUBE_PING is not used
     release:
@@ -21,12 +21,12 @@ tests:
       version: 0.8.15
     values:
       - ../values.yaml
-    template: "templates/jgroups-kubeping-cr.yaml"
+    template: "templates/jgroups-kubeping-r.yaml"
     set:
-      serviceAccount.create: true
+      jgroups.discovery: "kube_ping"
     asserts:
       - isKind:
-          of: ClusterRole
+          of: Role
 
   - it: role-binding jgroups KUBE_PING
     release:
@@ -35,12 +35,12 @@ tests:
       version: 0.8.15
     values:
       - ../values.yaml
-    template: "templates/jgroups-kubeping-crb.yaml"
+    template: "templates/jgroups-kubeping-rb.yaml"
     set:
       jgroups.discovery: "kube_ping"
     asserts:
       - isKind:
-          of: ClusterRoleBinding
+          of: RoleBinding
       - contains:
           path: subjects
           content:
