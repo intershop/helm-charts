@@ -100,7 +100,7 @@ Measure _memory at idle_ and _memory per busy worker_ under realistic load (for 
 == Troubleshooting
 
 `AH10159: server is within MinSpareThreads of MaxRequestWorkers, consider raising the MaxRequestWorkers setting`::
-Fewer than `MinSpareThreads` idle threads are left because the number of busy threads is close to `MaxRequestWorkers`. Additional requests are queued and may time out. Before raising `MaxRequestWorkers`:
+Fewer than `MinSpareThreads` idle threads are left because the number of busy threads is close to `MaxRequestWorkers`. Requests can still use the remaining idle threads; additional requests may be queued and time out if those threads are exhausted. Before raising `MaxRequestWorkers`:
 . Check whether the load is expected or caused by slow backends (`icm-as` response times), since long-running requests keep workers busy.
 . Consider scaling out the `icm-web` pods first.
 . If `MaxRequestWorkers` is raised, raise `ServerLimit` (see above) and the memory of the `icm-web-wa` container accordingly, then validate with a load test.
