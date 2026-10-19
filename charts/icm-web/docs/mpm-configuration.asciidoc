@@ -1,0 +1,112 @@
+= Configuring the Apache HTTPD MPM of the Web Adapter
+
+:icons: font
+
+_@Target Audience: DevOps, Ops_
+
+[CAUTION]
+====
+*Do not change these settings unless you know exactly what you are doing.*
+
+The defaults are suitable for most installations. Wrong MPM values can make the Web Adapter (`icm-web-wa`) unavailable, either because it refuses requests (values too low) or because the container is killed with `OOMKilled` (values too high for the configured memory limit). Any change must be validated with a load test on a non-production environment before it is rolled out to production.
+====
+
+== Description
+
+The Apache HTTPD inside the `icm-web-wa` container uses a https://httpd.apache.org/docs/current/mpm.html[Multi-Processing Module (MPM)] to handle requests. The MPM decides how many processes and threads are started and therefore how many requests can be served simultaneously.
+
+Which MPM is active depends on the HTTP/2 setting of the chart (`webadapter.disableHTTP2`):
+
+[cols="1,1,2",options="header"]
+|===
+|`webadapter.disableHTTP2` |Active MPM |Remark
+|`false` (default)|`event`|HTTP/2 is enabled. This is the default and the recommended setup.
+|`true`|`prefork`|HTTP/1 only. One process per connection, considerably higher memory consumption per request.
+|===
+
+The values are read from environment variables when the container starts (Web Adapter image version 2.5.0 or newer). The environment variables follow the pattern `ICM_WA_MPM_<MODULE>_<DIRECTIVE>` and are set using the link:values-yaml/environment.asciidoc[`environment`] section of the `values.yaml`. Only the variables of the active MPM have an effect.
+
+== Environment Variables
+
+The default values are defined in the Web Adapter image and are intentionally not listed here. They can be found in `staticfiles/docker/confd-config/templates/httpd-mpm.conf.tmpl` of the `icm-wa` project repository.
+
+=== MPM `event` (default, HTTP/2 enabled)
+
+[cols="1,1",options="header"]
+|===
+|Environment Variable |Apache Directive
+|`ICM_WA_MPM_EVENT_STARTSERVERS`|https://httpd.apache.org/docs/current/mod/mpm_common.html#startservers[`StartServers`]
+|`ICM_WA_MPM_EVENT_MINSPARETHREADS`|https://httpd.apache.org/docs/current/mod/mpm_common.html#minsparethreads[`MinSpareThreads`]
+|`ICM_WA_MPM_EVENT_MAXSPARETHREADS`|https://httpd.apache.org/docs/current/mod/mpm_common.html#maxsparethreads[`MaxSpareThreads`]
+|`ICM_WA_MPM_EVENT_THREADSPERCHILD`|https://httpd.apache.org/docs/current/mod/mpm_common.html#threadsperchild[`ThreadsPerChild`]
+|`ICM_WA_MPM_EVENT_MAXREQUESTWORKERS`|https://httpd.apache.org/docs/current/mod/mpm_common.html#maxrequestworkers[`MaxRequestWorkers`]
+|`ICM_WA_MPM_EVENT_MAXCONNECTIONSPERCHILD`|https://httpd.apache.org/docs/current/mod/mpm_common.html#maxconnectionsperchild[`MaxConnectionsPerChild`]
+|`ICM_WA_MPM_EVENT_SERVERLIMIT`|https://httpd.apache.org/docs/current/mod/mpm_common.html#serverlimit[`ServerLimit`]
+|`ICM_WA_MPM_EVENT_MAXMEMFREE`|https://httpd.apache.org/docs/current/mod/mpm_common.html#maxmemfree[`MaxMemFree`] (KB)
+|===
+
+=== MPM `prefork` (HTTP/2 disabled)
+
+[cols="1,1",options="header"]
+|===
+|Environment Variable |Apache Directive
+|`ICM_WA_MPM_PREFORK_STARTSERVERS`|https://httpd.apache.org/docs/current/mod/mpm_common.html#startservers[`StartServers`]
+|`ICM_WA_MPM_PREFORK_MINSPARESERVERS`|https://httpd.apache.org/docs/current/mod/prefork.html#minspareservers[`MinSpareServers`]
+|`ICM_WA_MPM_PREFORK_MAXSPARESERVERS`|https://httpd.apache.org/docs/current/mod/prefork.html#maxspareservers[`MaxSpareServers`]
+|`ICM_WA_MPM_PREFORK_MAXREQUESTWORKERS`|https://httpd.apache.org/docs/current/mod/mpm_common.html#maxrequestworkers[`MaxRequestWorkers`]
+|`ICM_WA_MPM_PREFORK_MAXCONNECTIONSPERCHILD`|https://httpd.apache.org/docs/current/mod/mpm_common.html#maxconnectionsperchild[`MaxConnectionsPerChild`]
+|`ICM_WA_MPM_PREFORK_SERVERLIMIT`|https://httpd.apache.org/docs/current/mod/mpm_common.html#serverlimit[`ServerLimit`]
+|`ICM_WA_MPM_PREFORK_MAXMEMFREE`|https://httpd.apache.org/docs/current/mod/mpm_common.html#maxmemfree[`MaxMemFree`] (KB)
+|===
+
+== Example
+
+.Raise the number of simultaneous requests of the `event` MPM to 800
+[source,yaml]
+----
+environment:
+  ICM_WA_MPM_EVENT_SERVERLIMIT: "32"         # <1>
+  ICM_WA_MPM_EVENT_THREADSPERCHILD: "25"
+  ICM_WA_MPM_EVENT_MAXREQUESTWORKERS: "800"  # <2>
+
+resources:
+  webadapter:                                # <3>
+    requests:
+      memory: ...
+    limits:
+      memory: ...
+----
+<1> `MaxRequestWorkers` is capped at `ServerLimit` × `ThreadsPerChild`. Raising `MaxRequestWorkers` above this cap has no effect (Apache lowers it at startup and logs a warning).
+<2> Must be a multiple of `ThreadsPerChild`; otherwise Apache rounds it down to the nearest multiple.
+<3> More workers need more memory. Re-evaluate the link:values-yaml/resources.asciidoc[`resources`] of the `icm-web-wa` container together with the MPM values, see <<_sizing>>.
+
+[#_sizing]
+== Sizing Guidelines
+
+The official Apache documentation is the primary source for choosing values: https://httpd.apache.org/docs/current/mod/event.html[MPM `event`], https://httpd.apache.org/docs/current/mod/prefork.html[MPM `prefork`] and https://httpd.apache.org/docs/current/mod/mpm_common.html[common MPM directives]. Keep the following rules in mind:
+
+* `MaxRequestWorkers` is the maximum number of requests that are served *simultaneously*. Every busy worker consumes memory. All workers of one pod share the memory limit of the `icm-web-wa` container.
+* For the `event` MPM, `MaxRequestWorkers` ≤ `ServerLimit` × `ThreadsPerChild`. Change these values together.
+* `MaxSpareThreads` must be at least `MinSpareThreads` + `ThreadsPerChild`; Apache adjusts it otherwise.
+* Derive the upper bound for `MaxRequestWorkers` from *measured* memory, not from estimates:
++
+----
+MaxRequestWorkers ≤ (memory limit of icm-web-wa − memory at idle) / memory per busy worker
+----
++
+Measure _memory at idle_ and _memory per busy worker_ under realistic load (for example with `kubectl top pod --containers` or the container memory metrics in New Relic) while the number of busy workers is known. Keep a safety margin; do *not* multiply the result by an "overhead factor", as this increases the risk of `OOMKilled` instead of reducing it.
+* Consider adding pods (horizontal scaling) as it multiplies the total capacity without increasing the risk of a single pod running out of memory. Prefer it over very large `MaxRequestWorkers` values in one pod.
+
+== Troubleshooting
+
+`AH10159: server is within MinSpareThreads of MaxRequestWorkers, consider raising the MaxRequestWorkers setting`::
+Fewer than `MinSpareThreads` idle threads are left because the number of busy threads is close to `MaxRequestWorkers`. Additional requests are queued and may time out. Before raising `MaxRequestWorkers`:
+. Check whether the load is expected or caused by slow backends (`icm-as` response times), since long-running requests keep workers busy.
+. Consider scaling out the `icm-web` pods first.
+. If `MaxRequestWorkers` is raised, raise `ServerLimit` (see above) and the memory of the `icm-web-wa` container accordingly, then validate with a load test.
+
+`server reached MaxRequestWorkers setting, consider raising the MaxRequestWorkers setting`::
+The limit was actually reached and requests were queued. Handle it like `AH10159`.
+
+`OOMKilled` after raising the values::
+The memory limit is too low for the configured number of workers. Lower `MaxRequestWorkers` or increase the memory limit, see <<_sizing>>.
