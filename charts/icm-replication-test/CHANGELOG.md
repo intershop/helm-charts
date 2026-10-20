@@ -1,4 +1,19 @@
 
+<a name="icm-replication-test-2.2.0"></a>
+# [icm-replication-test-2.2.0](https://github.com/intershop/helm-charts/releases/tag/icm-replication-test-2.2.0) (2026-10-20)
+
+Compare with previous release: [icm-replication-test-2.1.4...icm-replication-test-2.2.0](https://github.com/intershop/helm-charts/compare/icm-replication-test-2.1.4...icm-replication-test-2.2.0)
+
+## Features
+
+* **icm:** support to keep persistent volume claims on helm uninstall ([#1379](https://github.com/intershop/helm-charts/issues/1379))
+
+## Bug Fixes
+
+* **icm:** update resource requests and limits for icm tests ([#1382](https://github.com/intershop/helm-charts/issues/1382))
+
+
+
 <a name="icm-replication-test-2.1.4"></a>
 # [icm-replication-test-2.1.4](https://github.com/intershop/helm-charts/releases/tag/icm-replication-test-2.1.4) (2026-09-24)
 

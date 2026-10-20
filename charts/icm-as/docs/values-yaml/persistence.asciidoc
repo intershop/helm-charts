@@ -6,7 +6,7 @@
 :optional: image:../images/optional.webp[]
 :conditional: image:../images/conditional.webp[]
 
-_@Target Audience Developer, Test_
+_@Target Audience Developer, Test, OPS_
 
 == Description
 
@@ -68,11 +68,16 @@ Uses an existing storage class and lets the cluster decide how to actually store
 |===
 |Attribute |Description |Type |Mandatory |Default Value
 |storageClass|Configures the storage class to be used|<<_storageClassType,StorageClass>>|{mandatory}|_<<_storageClassDefault,++<++see storageClass default++>++>>_
+|removePvcOnUninstall|If `true`, the related persistent volume claim is remove when the `helm uninstall` command is executed. Otherwise it is kept.|boolean|{optional}|`false`
 |===
 
 [TIP]
 ====
 The `Cluster` type often is referenced as *dynamic* provisioning, because the storage class is used to dynamically provision a persistent volume (PV) on demand.
+====
+[TIP]
+====
+Setting `removePvcOnUninstall=false` keeps the persistent volume claims after `helm uninstall`, allowing a later `helm install` with the same release name to reuse them and access previously stored data.
 ====
 
 [#_storageClassType]
@@ -288,6 +293,14 @@ jgroups:
   type: emptyDir
 ----
 
+[#_removePvcOnUninstallDefault]
+.Default `removePvcOnUninstall` of type `Cluster`
+[source,yaml]
+----
+cluster:
+  removePvcOnUninstall: false
+----
+
 [#_storageClassDefault]
 .Default `storageClass` of type `Cluster`
 [source,yaml]
@@ -312,8 +325,3 @@ customdata:
   existingClaim: icm-as-cluster-customData-pvc
   mountPoint: /data
 ----
-
-[NOTE]
-====
-_@Target Audience: Developer, Test_
-====
