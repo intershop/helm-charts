@@ -140,6 +140,44 @@ tests:
           path: spec.storageClassName
           value: "custom-storage-class-name"
 
+  - it: removePvcOnUninstall=false keeps resource-policy in cluster-sites-pvc
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.sites.type: cluster
+      persistence.sites.cluster.removePvcOnUninstall: false
+    template: templates/cluster-sites-pvc.yaml
+    asserts:
+      - isKind:
+          of: PersistentVolumeClaim
+      #metadata.annotations
+      - equal:
+          path: metadata.annotations
+          value:
+            helm.sh/resource-policy: keep
+
+  - it: removePvcOnUninstall=true omits resource-policy in cluster-sites-pvc
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      persistence.sites.type: cluster
+      persistence.sites.cluster.removePvcOnUninstall: true
+    template: templates/cluster-sites-pvc.yaml
+    asserts:
+      - isKind:
+          of: PersistentVolumeClaim
+      #metadata.annotations
+      - notExists:
+          path: metadata.annotations
+
   - it: type=create cluster-sites-sc
     release:
       name: icm-as
