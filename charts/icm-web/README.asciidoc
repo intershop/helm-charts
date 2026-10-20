@@ -54,3 +54,4 @@ helm install my-release intershop/icm-web --values=values.yaml --namespace icm-w
 == Detailed Documentation
 
 * link:docs/values-yaml/[values.yaml] documentation
+* link:docs/mpm-configuration.asciidoc[Apache HTTPD MPM configuration] (DevOps, Ops only)
