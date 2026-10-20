@@ -85,6 +85,7 @@ icm-edit:
           size: 1Gi
           type: cluster
           cluster:
+            removePvcOnUninstall: true
             storageClass:
               existingClass: azurefile
         encryption:
@@ -237,6 +238,7 @@ icm-live:
           size: 1Gi
           type: cluster
           cluster:
+            removePvcOnUninstall: true
             storageClass:
               existingClass: azurefile
         encryption:
