@@ -1,14 +1,7 @@
 
-<a name="icm-web-1.1.0"></a>
-## [icm-web-1.1.0](https://github.com/intershop/helm-charts/compare/icm-web-1.0.0...icm-web-1.1.0)
+Compare with previous release: [icm-web-1.1.0...icm-web-1.2.0](https://github.com/intershop/helm-charts/compare/icm-web-1.1.0...icm-web-1.2.0)
 
-> 2026-09-09
+## Features
 
-### Documentation
-
-* **ICM:** fix documentation for configMapMounts in icm-web chart ([#1294](https://github.com/intershop/helm-charts/issues/1294))
-
-### Features
-
-* **icm:** support config of urlmapping prefix ([#1296](https://github.com/intershop/helm-charts/issues/1296))
+* **icm:** support to keep persistent volume claims on helm uninstall ([#1379](https://github.com/intershop/helm-charts/issues/1379))
 
