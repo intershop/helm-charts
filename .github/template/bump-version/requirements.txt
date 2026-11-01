@@ -1,1 +1,1 @@
-bump-my-version==1.5.1
+bump-my-version==1.6.7
