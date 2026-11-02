@@ -14,7 +14,7 @@ major version, once the 0.x -> 1.0.0 migration window has closed.
 {{- fail (printf "values: `cache.*` was renamed to `proxy.*` in chart 1.0.0. Move your nginx configuration under `proxy:`. See %s." $guide) -}}
 {{- end -}}
 {{- if hasKey .Values "upstream" -}}
-{{- fail (printf "values: `upstream.*` was replaced by `config.*` in chart 1.0.0 (`upstream.icmBaseURL` -> `config.icmBaseUrl`, now required; `upstream.cdnPrefixURL` was removed). See %s." $guide) -}}
+{{- fail (printf "values: `upstream.*` was replaced by `config.*` in chart 1.0.0 (`upstream.icmBaseURL` -> `config.icmBaseUrl`; `upstream.cdnPrefixURL` was removed). See %s." $guide) -}}
 {{- end -}}
 {{- if hasKey .Values "calculated" -}}
 {{- fail (printf "values: the internal `calculated` section was removed in chart 1.0.0; delete it from your values. See %s." $guide) -}}

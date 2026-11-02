@@ -32,7 +32,7 @@ Read the [Migration to 1.0.0](https://github.com/intershop/helm-charts/blob/main
   Release tags change from `pwa-main-X.Y.Z` to `pwa-X.Y.Z`.
 - Values restructured: Top-level SSR config to `app.*`; `cache.*` to `proxy.*`
 - `upstream.icmBaseURL` changed to `config.icmBaseUrl`.
-  Now **required** (no dev default; install fails fast if unset).
+  Keeps the development default; override it with your own ICM backend.
 - Resource names `*-pwa-main` / `*-pwa-cache` changed to `*-pwa-app` / `*-pwa-proxy`.
   Update anything that selects them by name (dashboards, `NetworkPolicy`, scripts).
 
@@ -88,8 +88,7 @@ In addition, the version changes and necessary migration information are provide
 The table below is generated from [_values.yaml_](./values.yaml) with [helm-docs](https://github.com/norwoodj/helm-docs).
 Every configurable value is listed with its type, default, and description.
 Values shown as `see values.yaml` are objects documented inline in that file.
-The only value you must set is `config.icmBaseUrl` (the ICM backend URL).
-Everything else ships with a production-ready default.
+Every value ships with a production-ready default; override `config.icmBaseUrl` with your own ICM backend for real deployments.
 
 To regenerate the table, run `helm-docs --chart-search-root=charts/pwa --sort-values-order=file` after changing the _values.yaml_.
 Changes to the _README.md.gotmpl_ also require a manual regeneration.

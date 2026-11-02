@@ -32,7 +32,7 @@ Read the [Migration to 1.0.0](https://github.com/intershop/helm-charts/blob/main
   Release tags change from `pwa-main-X.Y.Z` to `pwa-X.Y.Z`.
 - Values restructured: Top-level SSR config to `app.*`; `cache.*` to `proxy.*`
 - `upstream.icmBaseURL` changed to `config.icmBaseUrl`.
-  Now **required** (no dev default; install fails fast if unset).
+  Keeps the development default; override it with your own ICM backend.
 - Resource names `*-pwa-main` / `*-pwa-cache` changed to `*-pwa-app` / `*-pwa-proxy`.
   Update anything that selects them by name (dashboards, `NetworkPolicy`, scripts).
 
@@ -88,8 +88,7 @@ In addition, the version changes and necessary migration information are provide
 The table below is generated from [_values.yaml_](./values.yaml) with [helm-docs](https://github.com/norwoodj/helm-docs).
 Every configurable value is listed with its type, default, and description.
 Values shown as `see values.yaml` are objects documented inline in that file.
-The only value you must set is `config.icmBaseUrl` (the ICM backend URL).
-Everything else ships with a production-ready default.
+Every value ships with a production-ready default; override `config.icmBaseUrl` with your own ICM backend for real deployments.
 
 To regenerate the table, run `helm-docs --chart-search-root=charts/pwa --sort-values-order=file` after changing the _values.yaml_.
 Changes to the _README.md.gotmpl_ also require a manual regeneration.
@@ -99,7 +98,7 @@ _README.md_ is no longer edited directly.
 |-----|------|---------|-------------|
 | nameOverride | string | `""` | Override the chart name used in resource names. |
 | fullnameOverride | string | `""` | Override the fully qualified release name. |
-| config.icmBaseUrl | string | `""` | Base URL of the Intershop Commerce Management (ICM) backend. Required; intentionally empty so installs must set a real backend and fail fast rather than defaulting to a dev URL. |
+| config.icmBaseUrl | string | `"https://develop.icm.intershop.de"` | Base URL of the Intershop Commerce Management (ICM) backend. Defaults to the public development backend; override with your own ICM for any real deployment. |
 | config.icmBaseUrlSsr | string | `nil` | Internal Kubernetes URL of the ICM Web Adapter used by SSR or Hybrid Approach. Optional; leave unset to skip the ICM_BASE_URL_SSR env var. e.g. "http://icm-<cstmr-id>-<env>-icm-web-wa.icm-<cstmr-id>-<env>.svc.cluster.local:8080" |
 | config.allowedHosts | string | `nil` | Comma-separated ALLOWED_HOSTS for the SSR app. Optional; leave unset to skip the ALLOWED_HOSTS env var. e.g. "shop.example.com,*.example.com" |
 | hybrid.enabled | bool | `false` | Enable the PWA Hybrid Approach deployment. |

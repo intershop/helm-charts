@@ -15,7 +15,7 @@ Supported sources are pwa-main 0.7.0 and later. The mapping mirrors charts/pwa/d
   * top-level SSR keys        -> app.<key>
   * environment               -> app.env
   * cache.*                   -> proxy.*   (cache.extraEnvVars -> proxy.env)
-  * upstream.icmBaseURL       -> config.icmBaseUrl (required)
+  * upstream.icmBaseURL       -> config.icmBaseUrl
   * top-level allowedHosts    -> config.allowedHosts
   * ICM_BASE_URL_SSR/ALLOWED_HOSTS env entries -> config.icmBaseUrlSsr/allowedHosts
   * LOGLEVEL/LOGFORMAT env entries -> app.logging.* / proxy.logging.* (always lifted)

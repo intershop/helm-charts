@@ -13,8 +13,8 @@ fullnameOverride: ''
 # General or shared values used by both tiers.
 config:
   # -- Base URL of the Intershop Commerce Management (ICM) backend.
-  # Required; intentionally empty so installs must set a real backend and fail fast rather than defaulting to a dev URL.
-  icmBaseUrl: ''
+  # Defaults to the public development backend; override with your own ICM for any real deployment.
+  icmBaseUrl: 'https://develop.icm.intershop.de'
   # -- (string) Internal Kubernetes URL of the ICM Web Adapter used by SSR or Hybrid Approach. Optional; leave unset to skip the ICM_BASE_URL_SSR env var.
   # e.g. "http://icm-<cstmr-id>-<env>-icm-web-wa.icm-<cstmr-id>-<env>.svc.cluster.local:8080"
   icmBaseUrlSsr:

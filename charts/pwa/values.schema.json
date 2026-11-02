@@ -79,13 +79,11 @@
       "type": "object",
       "title": "Shared PWA configuration",
       "additionalProperties": false,
-      "required": ["icmBaseUrl"],
       "properties": {
         "icmBaseUrl": {
           "type": "string",
           "title": "ICM base URL",
-          "description": "Base URL of the Intershop Commerce Management backend.",
-          "minLength": 1
+          "description": "Base URL of the Intershop Commerce Management backend. Defaults to the development backend; override for real deployments."
         },
         "icmBaseUrlSsr": {
           "type": ["string", "null"],

@@ -12,18 +12,17 @@ For the upgrade steps, see the [Migration to 1.0.0](migrate-to-1.0.0.md) guide.
 
 ## Production-Ready Defaults
 
-|                         | 0.x                                                            | 1.0.0                                                                                              |
-| ----------------------- | -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| Replicas                | 1                                                              | 2 per tier (app and proxy)                                                                         |
-| Resources               | `{}` (no requests or limits)                                   | Requests and limits set                                                                            |
-| Probes                  | None                                                           | Liveness, readiness, and startup probes for the app (PM2 process health); TCP probes for the proxy |
-| Image tag / pull policy | `latest` / `Always`                                            | `release-<chart appVersion>` / `IfNotPresent`                                                      |
-| ICM base URL            | Defaults to a development backend (_develop.icm.intershop.de_) | Required; the installation fails with a clear message if it is not set                             |
-| Proxy access logs       | 5xx responses only (image default `error`)                     | All requests (`proxy.logging.level: info`)                                                         |
+|                         | 0.x                                                           | 1.0.0                                                                                              |
+| ----------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Replicas                | 1                                                             | 2 per tier (app and proxy)                                                                         |
+| Resources               | `{}` (no requests or limits)                                  | Requests and limits set                                                                            |
+| Probes                  | None                                                          | Liveness, readiness, and startup probes for the app (PM2 process health); TCP probes for the proxy |
+| Image tag / pull policy | `latest` / `Always`                                           | `release-<chart appVersion>` / `IfNotPresent`                                                      |
+| ICM base URL            | `upstream.icmBaseURL`, defaults to _develop.icm.intershop.de_ | `config.icmBaseUrl`, same development default                                                      |
+| Proxy access logs       | 5xx responses only (image default `error`)                    | All requests (`proxy.logging.level: info`)                                                         |
 
 **Benefits:** The default installation is production-ready without additional tuning.
 Deployments are reproducible because image tags are pinned to the chart's `appVersion` instead of `latest`.
-A production system can no longer end up connected to a development backend by accident.
 
 ## Secure by Default
 
@@ -40,7 +39,6 @@ A production system can no longer end up connected to a development backend by a
   In 0.x, the SSR configuration was at the top level and the nginx configuration was under `cache`.
 - Resource names match the tiers: `<release>-pwa-app` and `<release>-pwa-proxy`.
 - Both tiers use the same keys, for example, `app.env` and `proxy.env` (previously `environment` and `cache.extraEnvVars`).
-- The only value you must set is `config.icmBaseUrl`.
 - The [parameter reference](../README.md#parameters) is generated from _values.yaml_ and always matches the chart version.
 
 **Benefits:** Values files are easier to read, review, and maintain.

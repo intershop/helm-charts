@@ -5,12 +5,6 @@ templates:
 release:
   name: pwa
 tests:
-  - it: rendering fails when the required config.icmBaseUrl is empty
-    set:
-      config.icmBaseUrl: ''
-    asserts:
-      - failedTemplate: {}
-
   - it: rejects unknown security-context fields (schema typo guard)
     set:
       config.icmBaseUrl: https://icm.example.com

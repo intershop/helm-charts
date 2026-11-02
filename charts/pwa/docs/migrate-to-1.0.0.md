@@ -127,7 +127,7 @@ Run `MIGRATE --help` for the full list of options.
 | `cache.extraEnvVars`                                                                                                                                                                                                                                                            | `proxy.env`                                                                                  |
 | `cache.extraEnvVars` entries `LOGLEVEL` / `LOGFORMAT`                                                                                                                                                                                                                           | `proxy.logging.level` / `proxy.logging.format`                                               |
 | `cache.cacheIgnoreParams` / `cache.multiChannel` / `cache.additionalHeaders` / `cache.reset`                                                                                                                                                                                    | `proxy.cacheIgnoreParams` / `proxy.multiChannel` / `proxy.additionalHeaders` / `proxy.reset` |
-| `upstream.icmBaseURL`                                                                                                                                                                                                                                                           | `config.icmBaseUrl` (**now required — see below**)                                           |
+| `upstream.icmBaseURL`                                                                                                                                                                                                                                                           | `config.icmBaseUrl` (dev default kept — see below)                                           |
 | `upstream.cdnPrefixURL`                                                                                                                                                                                                                                                         | **Removed**                                                                                  |
 | `cache.prefetch`                                                                                                                                                                                                                                                                | **Removed**                                                                                  |
 | `calculated`                                                                                                                                                                                                                                                                    | **Removed** (replaced by chart helpers)                                                      |
@@ -154,11 +154,10 @@ In addition to the mapping above, it handles the following:
 
 The script warns about everything it cannot convert one-to-one, for example custom ingress paths, differing `ingress`/`ingresssplit` class names, or hosts without TLS when other hosts of the same instance use TLS.
 
-## `config.icmBaseUrl` Now Required
+## `config.icmBaseUrl`
 
-`upstream.icmBaseURL` shipped a development default (`https://develop.icm.intershop.de`).
-This default is gone.
-The value moved to `config.icmBaseUrl` and has no default, so an install now fails fast if it is unset instead of silently pointing at a dev backend.
+`upstream.icmBaseURL` was renamed to `config.icmBaseUrl`.
+It keeps the same development default (`https://develop.icm.intershop.de`), so override it with your own ICM backend for any real deployment.
 
 Before:
 
