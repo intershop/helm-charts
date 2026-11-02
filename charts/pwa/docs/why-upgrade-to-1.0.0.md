@@ -98,7 +98,7 @@ Plan the upgrade with the following points in mind:
   Update your Helm or Flux chart reference.
 - Almost all values have moved or been renamed.
 - `config.icmBaseUrl` is required.
-- Resource names change from `*-pwa-main` / `*-pwa-cache` to `*-pwa-app` / `*-pwa-proxy`.
+- Resource names change from `*-pwa-main` / `*-pwa-main-cache` to `*-pwa-app` / `*-pwa-proxy`.
   Update dashboards, `NetworkPolicy` and `ServiceMonitor` resources, and scripts that select these resources by name.
 - The default `ingress.className` is now `ingress-haproxy` instead of `nginx`.
   If you enable ingress and rely on the old default, set `ingress.className: nginx` explicitly.

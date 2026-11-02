@@ -89,7 +89,7 @@ After upgrading to 0.13.0, you can verify the applied affinity rules by checking
 
 ```bash
 kubectl get deployment <release-name>-pwa-main -o yaml | grep -A 20 affinity
-kubectl get deployment <release-name>-pwa-cache -o yaml | grep -A 20 affinity
+kubectl get deployment <release-name>-pwa-main-cache -o yaml | grep -A 20 affinity
 ```
 
 Ensure the `podAntiAffinity` section matches your expectations and does not contain duplicate or conflicting rules.

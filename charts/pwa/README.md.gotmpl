@@ -33,7 +33,7 @@ Read the [Migration to 1.0.0](https://github.com/intershop/helm-charts/blob/main
 - Values restructured: Top-level SSR config to `app.*`; `cache.*` to `proxy.*`
 - `upstream.icmBaseURL` changed to `config.icmBaseUrl`.
   Keeps the development default; override it with your own ICM backend.
-- Resource names `*-pwa-main` / `*-pwa-cache` changed to `*-pwa-app` / `*-pwa-proxy`.
+- Resource names `*-pwa-main` / `*-pwa-main-cache` changed to `*-pwa-app` / `*-pwa-proxy`.
   Update anything that selects them by name (dashboards, `NetworkPolicy`, scripts).
 
 **Removed**

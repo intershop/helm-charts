@@ -7,7 +7,7 @@
 The two tiers are now first-class, explicitly-named sections:
 
 - The **SSR application** (previously configured at the **top level**, resources named `*-pwa-main`) is now under **`app`** (resources named `*-pwa-app`).
-- The **nginx reverse proxy** (previously under **`cache`**, resources named `*-pwa-cache`) is now under **`proxy`** (resources named `*-pwa-proxy`).
+- The **nginx reverse proxy** (previously under **`cache`**, resources named `*-pwa-main-cache`) is now under **`proxy`** (resources named `*-pwa-proxy`).
 
 > [!IMPORTANT]
 > **The chart itself has been renamed from `pwa-main` to `pwa`.**
@@ -274,10 +274,10 @@ These changes affect how a **default** install behaves, even if you do not chang
 
 Deployment/service names have changed with the tier renaming:
 
-| 0.13.0                | 1.0.0                 |
-| --------------------- | --------------------- |
-| `<release>-pwa-main`  | `<release>-pwa-app`   |
-| `<release>-pwa-cache` | `<release>-pwa-proxy` |
+| 0.13.0                     | 1.0.0                 |
+| -------------------------- | --------------------- |
+| `<release>-pwa-main`       | `<release>-pwa-app`   |
+| `<release>-pwa-main-cache` | `<release>-pwa-proxy` |
 
 > [!IMPORTANT]
 > Anything that selects these resources **by name** (monitoring dashboards, `NetworkPolicy`, `ServiceMonitor`, external scripts) must be updated.
