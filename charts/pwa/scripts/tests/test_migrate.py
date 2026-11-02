@@ -55,8 +55,10 @@ def _plain(node):
     return node
 
 
-def _args(no_lift_env: bool = False, target_version: str = "1.0.0") -> argparse.Namespace:
-    return argparse.Namespace(no_lift_env=no_lift_env, target_version=target_version)
+def _args(no_lift_env: bool = False, target_version: str = "1.0.0",
+          reset_image_vars: bool = True) -> argparse.Namespace:
+    return argparse.Namespace(no_lift_env=no_lift_env, target_version=target_version,
+                              reset_image_vars=reset_image_vars)
 
 
 # --- bare values files -------------------------------------------------------
@@ -358,6 +360,63 @@ def test_disabled_cache_init_disables_reset():
     migrate.migrate_values(values, migrate.Report("init"))
 
     assert _plain(values)["proxy"] == {"reset": {"enabled": False}}
+
+
+_RESET_VARS_IMAGE = {
+    "repository": "${pwa_proxy_reset_image_repo}",
+    "tag": "${pwa_proxy_reset_image_tag}",
+    "pullPolicy": "IfNotPresent",
+}
+
+
+def _flux_doc(values_yaml: str):
+    text = ("kind: HelmRelease\nmetadata:\n  name: pwa\nspec:\n  chart:\n    spec:\n"
+            "      chart: pwa-main\n      version: 0.13.0\n  values:\n")
+    return _values(text + "".join(f"    {line}\n" for line in values_yaml.splitlines()))
+
+
+def test_flux_reset_image_vars_replace_existing_image():
+    doc = _flux_doc("cache:\n  reset:\n    image:\n      repository: ishcp.azurecr.io/ishops/cronjob-utils\n"
+                    "      tag: '1'\n      pullPolicy: Always\n")
+
+    migrate.migrate_doc(doc, _args(), migrate.Report("reset-vars"))
+
+    assert _plain(doc)["spec"]["values"]["proxy"]["reset"] == {
+        "enabled": True, "image": {**_RESET_VARS_IMAGE, "pullPolicy": "Always"},
+    }
+
+
+def test_flux_reset_image_vars_added_when_missing():
+    doc = _flux_doc("replicaCount: 2\n")
+
+    migrate.migrate_doc(doc, _args(), migrate.Report("reset-vars-add"))
+
+    assert _plain(doc)["spec"]["values"]["proxy"]["reset"] == {"enabled": True, "image": _RESET_VARS_IMAGE}
+
+
+def test_flux_reset_image_vars_can_be_disabled():
+    doc = _flux_doc("replicaCount: 2\n")
+
+    migrate.migrate_doc(doc, _args(reset_image_vars=False), migrate.Report("reset-vars-off"))
+
+    assert "proxy" not in _plain(doc)["spec"]["values"]
+
+
+def test_reset_image_vars_not_applied_to_patch_fragment():
+    doc = _values("kind: HelmRelease\nspec:\n  values:\n    cache:\n      replicaCount: 1\n")
+
+    migrate.migrate_doc(doc, _args(), migrate.Report("fragment-reset"))
+
+    assert _plain(doc)["spec"]["values"]["proxy"] == {"replicaCount": 1}
+
+
+def test_cli_no_reset_image_vars_flag(tmp_path):
+    src = tmp_path / "release.yaml"
+    shutil.copy(FIXTURES / "flux-helmrelease" / "input.yaml", src)
+
+    migrate.main(["--write", "--no-reset-image-vars", str(src)])
+
+    assert _plain(_load(src))["spec"]["values"]["proxy"]["reset"] == {"enabled": False}
 
 
 def test_obsolete_cache_enabled_is_dropped():

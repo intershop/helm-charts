@@ -75,15 +75,16 @@ Nothing is written until you pass `--write` (or `--output-suffix`).
 In the examples below, `MIGRATE` stands for `python migrate-to-1.0.0.py`.
 Adjust the path to wherever you saved the script (e.g., `python charts/pwa/scripts/migrate-to-1.0.0.py` from a repo clone).
 
-| Goal                             | Command                                     |
-| -------------------------------- | ------------------------------------------- |
-| Preview one file (report only)   | `MIGRATE release.yaml`                      |
-| Preview with a unified diff      | `MIGRATE release.yaml --show-diff`          |
-| Migrate in place (keep a backup) | `MIGRATE release.yaml --write --backup`     |
-| Migrate to a new file            | `MIGRATE release.yaml -o .1.0.0.yaml`       |
-| Migrate a whole GitOps tree      | `MIGRATE path/to/flux-repo -r --write`      |
-| Also schema-check each result    | `MIGRATE release.yaml --write --validate`   |
-| Add an IDE `$schema` reference   | `MIGRATE release.yaml --write --add-schema` |
+| Goal                             | Command                                      |
+| -------------------------------- | -------------------------------------------- |
+| Preview one file (report only)   | `MIGRATE release.yaml`                       |
+| Preview with a unified diff      | `MIGRATE release.yaml --show-diff`           |
+| Migrate in place (keep a backup) | `MIGRATE release.yaml --write --backup`      |
+| Migrate to a new file            | `MIGRATE release.yaml -o .1.0.0.yaml`        |
+| Migrate a whole GitOps tree      | `MIGRATE path/to/flux-repo -r --write`       |
+| Also schema-check each result    | `MIGRATE release.yaml --write --validate`    |
+| Add an IDE `$schema` reference   | `MIGRATE release.yaml --write --add-schema`  |
+| Keep the reset job image as is   | `MIGRATE release.yaml --no-reset-image-vars` |
 
 ### Good to Know
 
@@ -104,6 +105,22 @@ Adjust the path to wherever you saved the script (e.g., `python charts/pwa/scrip
   Applied only with `--write`.
 - **Idempotent.**
   Re-running does nothing to already-migrated files (their chart is now `pwa`).
+- **Proxy reset job image as Flux variables.**
+  Every migrated `pwa-main` `HelmRelease` gets `proxy.reset.image` set to Flux post-build substitution variables (added, or replacing an existing repository/tag):
+
+  ```yaml
+  reset:
+    enabled: true
+    image:
+      repository: ${pwa_proxy_reset_image_repo}
+      tag: ${pwa_proxy_reset_image_tag}
+      pullPolicy: IfNotPresent
+  ```
+
+  An explicit `enabled: false` and an existing `pullPolicy` are kept.
+  Make sure both variables are provided via `spec.postBuild.substitute`/`substituteFrom` of the Flux `Kustomization`.
+  Bare _values_ files and chart-less patches are not changed.
+  Pass `--no-reset-image-vars` to skip this step.
 - **`--validate`** renders each migrated result against the chart (`helm template`) so that any remaining issue (including a pre-existing typo) surfaces immediately.
   It needs a local copy of the chart: from a repo clone, the default works; if you downloaded only the script, point it at a chart with `--chart-dir` (e.g., `helm pull intershop/pwa --untar` first).
 - **`--add-schema`** prepends a `# yaml-language-server: $schema=…` line so that editors with the YAML extension validate the file live as you edit. HelmRelease files get the Flux schema, bare values files the values schema, pinned to `--target-version`.

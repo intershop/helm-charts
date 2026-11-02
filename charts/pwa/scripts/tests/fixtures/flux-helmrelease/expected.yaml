@@ -16,3 +16,7 @@ spec:
     proxy:
       reset:
         enabled: false
+        image:
+          repository: ${pwa_proxy_reset_image_repo}
+          tag: ${pwa_proxy_reset_image_tag}
+          pullPolicy: IfNotPresent

@@ -27,6 +27,11 @@ Supported sources are pwa-main 0.7.0 and later. The mapping mirrors charts/pwa/d
   * 0.11 cache.reset.image "repo:tag" string                    -> proxy.reset.image.{repository,tag}
   * cache.init.enabled: false                                   -> proxy.reset.enabled: false
 
+Migrated ``pwa-main`` Flux HelmReleases additionally get ``proxy.reset.image`` set to the Flux
+substitution variables ``${pwa_proxy_reset_image_repo}``/``${pwa_proxy_reset_image_tag}``
+(pullPolicy IfNotPresent; reset.enabled: true unless explicitly set). Disable with
+--no-reset-image-vars. Bare values files and chart-less patches are never changed this way.
+
 Directory mode also folds standalone ``HorizontalPodAutoscaler`` manifests into the matching
 HelmRelease's ``spec.values.<tier>.autoscaling`` (tier from the HPA's scaleTargetRef name:
 ``*-pwa-main``/``*-pwa-app`` -> app, ``*-pwa-main-cache``/``*-pwa-proxy`` -> proxy) and removes
@@ -46,6 +51,8 @@ Options:
       --glob PATTERN     File pattern when scanning directories (default *.y*ml).
       --target-version V Chart version to set (default 1.0.0).
       --no-lift-env      Keep ICM_BASE_URL_SSR/ALLOWED_HOSTS in app.env (don't lift to config).
+      --no-reset-image-vars
+                         Don't set proxy.reset.image to the Flux substitution variables.
       --show-diff        Print a unified diff of the changes.
 """
 from __future__ import annotations
@@ -106,6 +113,12 @@ MIN_SOURCE_VERSION = (0, 7, 0)
 LEGACY_INGRESS_KEYS = ("annotations", "hosts", "tls")
 # 0.x default ingress.className; 1.0.0 changed the default to ingress-haproxy.
 LEGACY_INGRESS_CLASS = "nginx"
+# Flux post-build substitution variables for the proxy reset job image (see --no-reset-image-vars).
+RESET_IMAGE_VARS = {
+    "repository": "${pwa_proxy_reset_image_repo}",
+    "tag": "${pwa_proxy_reset_image_tag}",
+}
+RESET_IMAGE_PULL_POLICY = "IfNotPresent"
 
 
 class Report:
@@ -535,6 +548,29 @@ def _flux_release_name(doc: dict, spec: dict):
     return f"{target_ns}-{name}" if target_ns else str(name)
 
 
+def _set_reset_image_vars(values: CommentedMap, report: Report) -> None:
+    """Point proxy.reset.image at Flux substitution variables (keeps an explicit reset opt-out)."""
+    reset = _ensure(_ensure(values, "proxy"), "reset")
+    if "enabled" not in reset:
+        reset.insert(0, "enabled", True)
+        report.map("proxy.reset.enabled (unset)", "proxy.reset.enabled: true")
+    image = reset.get("image")
+    if not isinstance(image, CommentedMap):
+        image = CommentedMap()
+        reset["image"] = image
+    for key, var in RESET_IMAGE_VARS.items():
+        if image.get(key) != var:
+            old = image.get(key)
+            image[key] = var
+            report.map(f"proxy.reset.image.{key}" + (f" ({old})" if old is not None else ""),
+                       f"proxy.reset.image.{key}: {var}")
+    if "pullPolicy" not in image:
+        image["pullPolicy"] = RESET_IMAGE_PULL_POLICY
+        report.map("proxy.reset.image.pullPolicy (unset)", f"proxy.reset.image.pullPolicy: {RESET_IMAGE_PULL_POLICY}")
+    if reset.get("enabled") is False:
+        report.note("proxy.reset.enabled is false -- reset image variables set but the job stays disabled")
+
+
 def migrate_doc(doc, args, report: Report, allow_bare: bool = False) -> bool:
     # Flux HelmReleases are migrated only when their chart is `pwa-main`. Bare values files
     # (no `kind: HelmRelease`) are migrated only when passed explicitly as an input file
@@ -569,9 +605,14 @@ def migrate_doc(doc, args, report: Report, allow_bare: bool = False) -> bool:
             report.map(f"version: {ver}", f"version: {args.target_version}")
         if "valuesFrom" in spec:
             report.warn("spec.valuesFrom present -- external values are NOT migrated by this tool")
+        if values is None and getattr(args, "reset_image_vars", True):
+            values = CommentedMap()
+            spec["values"] = values
         if isinstance(values, dict):
             migrate_values(values, report, lift_env=not args.no_lift_env,
                            release=_flux_release_name(doc, spec), source_version=source_version)
+            if getattr(args, "reset_image_vars", True):
+                _set_reset_image_vars(values, report)
             report.targets.append(values)
         return report.changed
 
@@ -972,6 +1013,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--glob", default="*.y*ml", help="file pattern for directories (default *.y*ml)")
     ap.add_argument("--target-version", default=DEFAULT_TARGET_VERSION, help="chart version to set")
     ap.add_argument("--no-lift-env", action="store_true", help="keep ICM_BASE_URL_SSR/ALLOWED_HOSTS in app.env")
+    ap.add_argument("--no-reset-image-vars", dest="reset_image_vars", action="store_false",
+                    help="don't set proxy.reset.image to ${pwa_proxy_reset_image_repo}/${pwa_proxy_reset_image_tag} "
+                         "in migrated Flux HelmReleases")
     ap.add_argument("--show-diff", action="store_true", help="print a unified diff of changes")
     ap.add_argument("-v", "--verbose", action="store_true", help="also report files that were skipped/unchanged")
     ap.add_argument("--validate", action="store_true",

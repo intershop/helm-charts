@@ -16,6 +16,12 @@ spec:
       replicaCount: 2
     proxy:
       replicaCount: 1
+      reset:
+        enabled: true
+        image:
+          repository: ${pwa_proxy_reset_image_repo}
+          tag: ${pwa_proxy_reset_image_tag}
+          pullPolicy: IfNotPresent
     hybrid:
       enabled: true
     ingress:
