@@ -268,8 +268,8 @@ proxy:
   reset:
     enabled: true
     image:
-      repository: ishcp.azurecr.io/ishops/cronjob-utils
-      tag: '1'
+      repository: bitnami/kubectl
+      tag: latest
       pullPolicy: IfNotPresent
 
   # The upstream OpenResty image starts its master process as root to bind the privileged

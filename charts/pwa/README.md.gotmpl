@@ -271,22 +271,23 @@ This ensures that any cached content is cleared, preventing stale data from bein
 The job is executed only when `proxy.reset.enabled` is set to `true`.
 It creates the necessary RBAC resources (ServiceAccount, Role, and RoleBinding) with permissions to restart the specific proxy deployment.
 
-Example configuration with public `kubectl` image (internally we use a different default):
+By default, the job uses the public `bitnami/kubectl` image.
+Example configuration with an Intershop internal utilities image containing `kubectl`:
 
 ```yaml
 proxy:
   reset:
     enabled: true
     image:
-      repository: bitnami/kubectl
-      tag: latest
-      pullPolicy: Always
+      repository: ishcp.azurecr.io/ishops/cronjob-utils
+      tag: '1'
+      pullPolicy: IfNotPresent
 ```
 
-| Property  | Description                                                         | Default                                                                                                                 |
-| --------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `enabled` | Enable or disable the cache reset job after upgrade                 | `true`                                                                                                                  |
-| `image`   | Docker image containing `kubectl` for executing the restart command | `repository: ishcp.azurecr.io/ishops/cronjob-utils`<br>&nbsp;&nbsp;`tag: "1"`<br>&nbsp;&nbsp;`pullPolicy: IfNotPresent` |
+| Property  | Description                                                         | Default                                                                                              |
+| --------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `enabled` | Enable or disable the cache reset job after upgrade                 | `true`                                                                                               |
+| `image`   | Docker image containing `kubectl` for executing the restart command | `repository: bitnami/kubectl`<br>&nbsp;&nbsp;`tag: latest`<br>&nbsp;&nbsp;`pullPolicy: IfNotPresent` |
 
 When enabled, the job runs automatically after each `helm upgrade` operation, ensuring the cache is fresh and consistent with the latest PWA SSR container deployment.
 

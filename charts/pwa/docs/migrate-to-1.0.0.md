@@ -241,6 +241,9 @@ These changes affect how a **default** install behaves, even if you do not chang
   The `proxy` tier uses TCP-socket probes.
   Previously both were empty.
 - **Image tags** default to `release-<chart appVersion>` (was `latest`), and **pull policy** defaults to `IfNotPresent` (was `Always`) for reproducible deployments.
+- **Proxy reset job image**:
+  `proxy.reset.image` defaults to the public `bitnami/kubectl:latest` image (was `ishcp.azurecr.io/ishops/cronjob-utils:1`), so the job no longer requires access to the Intershop registry.
+  To keep the previous image, set `proxy.reset.image.repository` and `proxy.reset.image.tag` explicitly.
 - **Replica counts** default to `2` per tier (was `1`), and **resource requests/limits** are now set for a production baseline.
 - **`updateStrategy`** is now configured per tier (`app.updateStrategy` / `proxy.updateStrategy`) and still defaults to `RollingUpdate`.
 - **Proxy access logs**:
