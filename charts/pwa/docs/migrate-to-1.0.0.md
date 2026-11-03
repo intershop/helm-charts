@@ -92,19 +92,23 @@ Adjust the path to wherever you saved the script (e.g., `python charts/pwa/scrip
   When pointed at a directory (`-r`), the tool migrates **only** `HelmRelease` documents whose chart is `pwa-main`.
   Other charts, other kinds, and bare _values_ files are left untouched, so mixed folder trees are safe.
   A bare _values_ file is migrated **only** when you name it directly on the command line.
+
 - **Kustomize patches are handled.**
   A chart-less `HelmRelease` document (a strategic-merge patch that only carries `spec.values`, e.g., a _version-\*.yaml_ overlay) is migrated too, but **only when its values contain the PWA-specific `cache`, `upstream`, or `ingresssplit` block**.
   Patches for other charts (which also use generic keys such as `image`) are never touched.
   Its values are rewritten (`image` to `app.image`, `cache.image` to `proxy.image`, etc.) without a chart/version increment.
   Such fragments are skipped by `--validate`/`--add-schema` since a partial _values_ file is not independently schema-valid.
+
 - **Standalone HPAs are folded in (directory mode).**
   When scanning a directory, any standalone `HorizontalPodAutoscaler` manifest is merged into the matching `HelmRelease` as `spec.values.<tier>.autoscaling`, and the now-redundant manifest (plus its `kustomization.yaml` entry) is removed.
   The tier comes from the HPA's `scaleTargetRef` name (`*-pwa-main`/`*-pwa-app` to `app`, `*-pwa-main-cache`/`*-pwa-proxy` to `proxy`) and the release from the name prefix.
   Standard CPU/memory utilization metrics become the `targetCPUUtilizationPercentage`/`targetMemoryUtilizationPercentage` shortcuts.
   Any other metric kind and `behavior` are carried over verbatim.
   Applied only with `--write`.
+
 - **Idempotent.**
   Re-running does nothing to already-migrated files (their chart is now `pwa`).
+
 - **Proxy reset job image as Flux variables.**
   Every migrated `pwa-main` `HelmRelease` gets `proxy.reset.image` set to Flux post-build substitution variables (added, or replacing an existing repository/tag):
 
@@ -121,10 +125,13 @@ Adjust the path to wherever you saved the script (e.g., `python charts/pwa/scrip
   Make sure both variables are provided via `spec.postBuild.substitute`/`substituteFrom` of the Flux `Kustomization`.
   Bare _values_ files and chart-less patches are not changed.
   Pass `--no-reset-image-vars` to skip this step.
+
 - **`--validate`** renders each migrated result against the chart (`helm template`) so that any remaining issue (including a pre-existing typo) surfaces immediately.
   It needs a local copy of the chart: from a repo clone, the default works; if you downloaded only the script, point it at a chart with `--chart-dir` (e.g., `helm pull intershop/pwa --untar` first).
+
 - **`--add-schema`** prepends a `# yaml-language-server: $schema=…` line so that editors with the YAML extension validate the file live as you edit. HelmRelease files get the Flux schema, bare values files the values schema, pinned to `--target-version`.
   Any existing modeline is replaced.
+
 - **Not handled:**
   `spec.valuesFrom` (values stored in an external ConfigMap/Secret) cannot be rewritten by a file tool.
   The run warns if it is present.
