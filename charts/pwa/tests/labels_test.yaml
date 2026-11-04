@@ -48,7 +48,7 @@ tests:
     asserts:
       - equal:
           path: metadata.labels["app.kubernetes.io/version"]
-          value: release-12.1.0
+          value: release-13.0.0
 
   - it: app version label follows an overridden app.image.tag
     template: templates/app-deployment.yaml
