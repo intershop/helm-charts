@@ -68,7 +68,7 @@ Nothing is written until you pass `--write` (or `--output-suffix`).
 > python charts/pwa/scripts/migrate-to-1.0.0.py <path-to>/environments/ -r --write --validate --add-schema
 > ```
 >
-> After the migration it is advisable to read trough the log to verify everything worked as expected or if there are errors for erroneous configurations.
+> After the migration it is advisable to read through the log to verify everything worked as expected or if there are errors for erroneous configurations.
 
 ### Common Commands
 
@@ -158,6 +158,8 @@ Run `MIGRATE --help` for the full list of options.
 
 The chart rejects variables it sets or fixes itself in `app.env` or `proxy.env` with a pointer to the value to use instead: always `PORT` (fixed to the image default `4200`), `ICM_BASE_URL`, `LOGLEVEL`, `LOGFORMAT`, `METRICS_DETAIL_LEVEL` (app), and `UPSTREAM_PWA` (proxy); conditionally `ICM_BASE_URL_SSR`, `ALLOWED_HOSTS`, `SSR_HYBRID*`, `HYBRID_FORWARDED_PORT`, `PROMETHEUS`, and the `*_SOURCE` variables when the matching value is set.
 The script lifts these entries automatically (also with `--no-lift-env`) and warns about values it cannot map, such as an nginx `LOGLEVEL` other than `error`, `warn`, or `info`.
+It also drops `ICM_BASE_URL_SSR` entries in `app.env` or `proxy.env` (for example from `cache.extraEnvVars`), and `ALLOWED_HOSTS` entries in `app.env`, when they equal the resulting `config.icmBaseUrlSsr` or `config.allowedHosts` value. If the value differs, the script keeps the entry and prints a warning.
+The 1.0.0 schema requires every `env[].value` to be a string. Helm reads unquoted `on`, `off`, `yes`, `no`, `true`, `false` and numbers as non-strings, so the script warns about such values. Quote them, for example `value: "on"`.
 
 ## Migrating from 0.7.0 to 0.12.x
 

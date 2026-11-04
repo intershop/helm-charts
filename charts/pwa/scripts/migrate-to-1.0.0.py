@@ -18,6 +18,7 @@ Supported sources are pwa-main 0.7.0 and later. The mapping mirrors charts/pwa/d
   * upstream.icmBaseURL       -> config.icmBaseUrl
   * top-level allowedHosts    -> config.allowedHosts
   * ICM_BASE_URL_SSR/ALLOWED_HOSTS env entries -> config.icmBaseUrlSsr/allowedHosts
+    (app.env/proxy.env entries equal to the resulting config.* value are dropped, as the chart sets them)
   * LOGLEVEL/LOGFORMAT env entries -> app.logging.* / proxy.logging.* (always lifted)
   * METRICS_DETAIL_LEVEL env entry -> app.metrics.detailLevel; PORT env entry -> removed (fixed 4200)
   * upstream.cdnPrefixURL, cache.prefetch, cache.init, calculated -> removed
@@ -71,6 +72,7 @@ from pathlib import Path
 try:
     from ruamel.yaml import YAML
     from ruamel.yaml.comments import CommentedMap, CommentedSeq
+    from ruamel.yaml.scalarstring import ScalarString
 except ImportError:  # pragma: no cover
     sys.exit("This tool requires ruamel.yaml. Install it with:\n  python -m pip install ruamel.yaml")
 
@@ -105,7 +107,15 @@ MANAGED_ENV = {
         "LOGFORMAT": ("logging", "format", LOG_FORMATS),
     },
 }
+# Env vars the 1.0.0 chart renders from config.* (and rejects in <tier>.env) once that config key is set.
+CONFIG_MANAGED_ENV = {
+    "app": {"ICM_BASE_URL_SSR": "icmBaseUrlSsr", "ALLOWED_HOSTS": "allowedHosts"},
+    "proxy": {"ICM_BASE_URL_SSR": "icmBaseUrlSsr"},
+}
 APP_PORT = "4200"
+# Plain scalars Helm/Flux (YAML 1.1) read as booleans, although ruamel (YAML 1.2) keeps them as strings.
+YAML11_BOOLS = {"y", "yes", "n", "no", "on", "off", "true", "false"}
+ENV_VALUE_ERROR_RE = re.compile(r"at '/(app|proxy)/env/(\d+)/value'")
 # 0.x top-level keys that are still valid at the top level in 1.0.0.
 KEEP_TOP = {"nameOverride", "fullnameOverride", "hybrid", "imagePullSecrets", "ingress", "config", "app", "proxy"}
 MIN_SOURCE_VERSION = (0, 7, 0)
@@ -398,6 +408,80 @@ def _lift_managed_env(node: CommentedMap, tier: str, report: Report) -> None:
         node.pop("env")
 
 
+def _non_string_env_value(value):
+    """Return how Helm would type an unquoted non-string env value, or None if it renders as a string."""
+    if isinstance(value, bool):
+        return "boolean"
+    if isinstance(value, (int, float)):
+        return "number"
+    if value is None:
+        return "null"
+    if isinstance(value, str) and not isinstance(value, ScalarString) and value.lower() in YAML11_BOOLS:
+        return "boolean"
+    return None
+
+
+def _check_env_value_types(values, report: Report) -> None:
+    """Warn about env values the 1.0.0 schema rejects because Helm does not read them as strings."""
+    for tier in ("app", "proxy"):
+        node = values.get(tier)
+        env = node.get("env") if isinstance(node, dict) else None
+        if not isinstance(env, list):
+            continue
+        for item in env:
+            if not isinstance(item, dict) or "value" not in item:
+                continue
+            kind = _non_string_env_value(item["value"])
+            if kind:
+                shown = "" if item["value"] is None else str(item["value"])
+                report.warn(f"{tier}.env[{item.get('name')}] value {shown!r} is unquoted and Helm reads it as a "
+                            f"{kind}; the 1.0.0 schema requires a string -- quote it: value: \"{shown}\"")
+
+
+def _explain_validation_errors(errors: list[str], values) -> list[str]:
+    """Name the env entry behind schema paths like /proxy/env/2/value and fold follow-on noise."""
+    fold = any("'allOf' failed" in ln for ln in errors)
+    out, hidden = [], 0
+    for line in errors:
+        if fold and line.rstrip().endswith("false schema"):
+            hidden += 1
+            continue
+        m = ENV_VALUE_ERROR_RE.search(line)
+        if m:
+            node = values.get(m.group(1)) if isinstance(values, dict) else None
+            env = node.get("env") if isinstance(node, dict) else None
+            idx = int(m.group(2))
+            if isinstance(env, list) and idx < len(env) and isinstance(env[idx], dict):
+                line += f"   <- {m.group(1)}.env[{env[idx].get('name')}]: quote the value"
+        out.append(line)
+    if hidden:
+        out.append(f"({hidden} follow-on 'false schema' errors of the 'allOf' failure hidden; fix the errors above first)")
+    return out
+
+
+def _drop_config_managed_env(node: CommentedMap, tier: str, config: CommentedMap, report: Report) -> None:
+    """Drop <tier>.env entries that duplicate a config.* value the 1.0.0 chart already injects."""
+    env = node.get("env")
+    if not isinstance(env, list):
+        return
+    for i in range(len(env) - 1, -1, -1):
+        item = env[i]
+        if not isinstance(item, dict):
+            continue
+        var = item.get("name")
+        key = CONFIG_MANAGED_ENV[tier].get(var)
+        if key is None or config.get(key) in (None, ""):
+            continue
+        if "value" in item and str(item["value"]).strip() == str(config[key]).strip():
+            report.map(f"{tier}.env[{var}]", f"config.{key} (duplicate, removed)")
+            del env[i]
+        else:
+            report.warn(f"{tier}.env[{var}] differs from config.{key}; left in {tier}.env, which 1.0.0 "
+                        f"rejects while config.{key} is set -- reconcile manually")
+    if len(env) == 0:
+        node.pop("env")
+
+
 def migrate_values(values: CommentedMap, report: Report, lift_env: bool = True, release=None,
                    source_version=None, fragment: bool = False) -> bool:
     """Transform a 0.x values mapping in place. Returns True if anything changed.
@@ -509,6 +593,14 @@ def migrate_values(values: CommentedMap, report: Report, lift_env: bool = True, 
                 values[key].update(node)
             else:
                 values.insert(0, key, node)
+
+    merged_config = values.get("config")
+    if isinstance(merged_config, dict):
+        for tier in ("app", "proxy"):
+            if isinstance(values.get(tier), dict):
+                _drop_config_managed_env(values[tier], tier, merged_config, report)
+
+    _check_env_value_types(values, report)
 
     # flag any leftover unknown top-level keys
     for key in list(values.keys()):
@@ -959,7 +1051,7 @@ def process_file(path: Path, args, explicit: bool = False) -> bool:
             errors = _validate_values(vals, args.chart_dir, yaml)
             if errors:
                 print(f"  VALIDATION FAILED ({label}) against {args.chart_dir}:")
-                for line in errors[:25]:
+                for line in _explain_validation_errors(errors, vals)[:25]:
                     print(f"    {line}")
             else:
                 print(f"  validation OK ({label}) -- renders against {args.chart_dir}")

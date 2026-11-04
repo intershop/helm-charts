@@ -189,6 +189,95 @@ def test_unmappable_managed_env_warns_and_is_kept():
     assert any("proxy.env[LOGLEVEL]" in w for w in report.warnings)
 
 
+def test_proxy_env_duplicating_lifted_icm_base_url_ssr_is_dropped():
+    values = _yaml().load(
+        "environment:\n"
+        "  - {name: ICM_BASE_URL_SSR, value: '${pwa_icm_base_url_internal}'}\n"
+        "cache:\n"
+        "  extraEnvVars:\n"
+        "    - {name: ICM_BASE_URL_SSR, value: '${pwa_icm_base_url_internal}'}\n"
+        "    - {name: OTHER, value: keep}\n"
+    )
+    report = migrate.Report("proxy-ssr-dup")
+
+    migrate.migrate_values(values, report)
+
+    plain = _plain(values)
+    assert plain["config"]["icmBaseUrlSsr"] == "${pwa_icm_base_url_internal}"
+    assert plain["proxy"]["env"] == [{"name": "OTHER", "value": "keep"}]
+    assert ("proxy.env[ICM_BASE_URL_SSR]", "config.icmBaseUrlSsr (duplicate, removed)") in report.maps
+    assert not report.warnings
+
+
+def test_proxy_env_conflicting_with_icm_base_url_ssr_warns_and_is_kept():
+    values = _yaml().load(
+        "icmBaseUrlSsr: http://a\n"
+        "cache:\n"
+        "  extraEnvVars:\n"
+        "    - {name: ICM_BASE_URL_SSR, value: http://b}\n"
+    )
+    report = migrate.Report("proxy-ssr-conflict")
+
+    migrate.migrate_values(values, report)
+
+    plain = _plain(values)
+    assert plain["proxy"]["env"] == [{"name": "ICM_BASE_URL_SSR", "value": "http://b"}]
+    assert any("proxy.env[ICM_BASE_URL_SSR]" in w for w in report.warnings)
+
+
+def test_already_migrated_proxy_env_duplicate_is_dropped_on_rerun():
+    values = _yaml().load(
+        "config: {icmBaseUrlSsr: http://a}\n"
+        "proxy:\n"
+        "  env:\n"
+        "    - {name: ICM_BASE_URL_SSR, value: http://a}\n"
+    )
+
+    assert migrate.migrate_values(values, migrate.Report("rerun")) is True
+    assert "env" not in _plain(values)["proxy"]
+
+
+def test_unquoted_non_string_env_values_warn():
+    values = _yaml().load(
+        "environment:\n"
+        "  - {name: RESTART, value: 1}\n"
+        "cache:\n"
+        "  extraEnvVars:\n"
+        "    - {name: CACHE, value: \"on\"}\n"
+        "    - {name: CACHE_CLEARER, value: on}\n"
+        "    - {name: FLAG, value: true}\n"
+    )
+    report = migrate.Report("env-types")
+
+    migrate.migrate_values(values, report)
+
+    warned = " ".join(report.warnings)
+    assert "app.env[RESTART]" in warned and "number" in warned
+    assert "proxy.env[CACHE_CLEARER] value 'on'" in warned
+    assert "proxy.env[FLAG]" in warned
+    assert "proxy.env[CACHE]" not in warned
+
+
+def test_validation_errors_name_the_env_entry():
+    values = _yaml().load(
+        "proxy:\n"
+        "  env:\n"
+        "    - {name: CACHE, value: \"on\"}\n"
+        "    - {name: CACHE_CLEARER, value: on}\n"
+    )
+    errors = [
+        "- at '/proxy': 'allOf' failed",
+        "  - at '/proxy/env/1/value': got boolean, want string",
+        "- at '/proxy/metrics': false schema",
+    ]
+
+    out = migrate._explain_validation_errors(errors, values)
+
+    assert "proxy.env[CACHE_CLEARER]" in out[1]
+    assert not any(ln.endswith("false schema") for ln in out)
+    assert "1 follow-on" in out[-1]
+
+
 def test_unknown_top_level_key_warns_and_is_kept():
     values = _load(FIXTURES / "flux-helmrelease" / "input.yaml")["spec"]["values"]
     values["totallyCustom"] = {"keep": True}
