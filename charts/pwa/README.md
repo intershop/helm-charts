@@ -130,7 +130,7 @@ _README.md_ is no longer edited directly.
 | app.autoscaling | object | see [values.yaml](./values.yaml) | HorizontalPodAutoscaler for the SSR tier. |
 | app.nodeSelector | object | `{}` | Node selector for SSR pods. |
 | app.tolerations | list | `[]` | Tolerations for SSR pods. |
-| app.affinity | object | `{}` | Node/pod affinity for SSR pods (merged with podAntiAffinity). |
+| app.affinity | object | `{}` | Node/pod affinity for SSR pods (merged with podAntiAffinity). Must not contain `podAntiAffinity` while `app.podAntiAffinity.enabled` is true. |
 | app.podAntiAffinity | object | see [values.yaml](./values.yaml) | Pod anti-affinity to spread SSR replicas across nodes. |
 | app.podAnnotations | object | `{}` | Extra annotations for SSR pods. |
 | app.podLabels | object | `{}` | Extra labels for SSR pods. |
@@ -159,7 +159,7 @@ _README.md_ is no longer edited directly.
 | proxy.autoscaling | object | see [values.yaml](./values.yaml) | HorizontalPodAutoscaler for the proxy tier. |
 | proxy.nodeSelector | object | `{}` | Node selector for proxy pods. |
 | proxy.tolerations | list | `[]` | Tolerations for proxy pods. |
-| proxy.affinity | object | `{}` | Node/pod affinity for proxy pods (merged with podAntiAffinity). |
+| proxy.affinity | object | `{}` | Node/pod affinity for proxy pods (merged with podAntiAffinity). Must not contain `podAntiAffinity` while `proxy.podAntiAffinity.enabled` is true. |
 | proxy.podAntiAffinity | object | see [values.yaml](./values.yaml) | Pod anti-affinity to spread proxy replicas across nodes. |
 | proxy.podAnnotations | object | `{}` | Extra annotations for proxy pods. |
 | proxy.podLabels | object | `{}` | Extra labels for proxy pods. |
@@ -266,6 +266,9 @@ This provides a good balance between high availability and scheduling flexibilit
 
 When `required` is set to `true`, Kubernetes enforces that Pods must be scheduled on different nodes.
 This provides stronger guarantees but may result in Pods remaining in a pending state if insufficient nodes are available.
+
+The built-in rule is merged with the tier's custom `affinity` (e.g. `nodeAffinity`, `podAffinity`).
+To use your own anti-affinity rules instead, set `podAntiAffinity.enabled: false` and define them under `affinity.podAntiAffinity`; setting both fails the render.
 
 ## Autoscaling (HPA)
 

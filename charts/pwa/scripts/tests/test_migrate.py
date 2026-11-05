@@ -258,6 +258,54 @@ def test_unquoted_non_string_env_values_warn():
     assert "proxy.env[CACHE]" not in warned
 
 
+@pytest.mark.parametrize("text, tier", [
+    # 0.x top-level keys move to app.*; cache.* moves to proxy.*.
+    ("affinity:\n  podAntiAffinity:\n    preferredDuringSchedulingIgnoredDuringExecution: []\n", "app"),
+    ("cache:\n  affinity:\n    podAntiAffinity:\n      preferredDuringSchedulingIgnoredDuringExecution: []\n", "proxy"),
+])
+def test_custom_pod_anti_affinity_with_built_in_rule_warns(text, tier):
+    values = _yaml().load(text)
+    report = migrate.Report("anti-affinity")
+
+    migrate.migrate_values(values, report)
+
+    plain = _plain(values)
+    assert "podAntiAffinity" in plain[tier]["affinity"]
+    assert "podAntiAffinity" not in plain[tier]
+    assert any(f"{tier}.affinity.podAntiAffinity conflicts" in w and f"{tier}.podAntiAffinity.enabled: false" in w
+               for w in report.warnings)
+
+
+def test_custom_pod_anti_affinity_with_built_in_rule_disabled_does_not_warn():
+    values = _yaml().load(
+        "podAntiAffinity:\n"
+        "  enabled: false\n"
+        "affinity:\n"
+        "  podAntiAffinity:\n"
+        "    requiredDuringSchedulingIgnoredDuringExecution:\n"
+        "      - topologyKey: topology.kubernetes.io/zone\n"
+    )
+    report = migrate.Report("anti-affinity-off")
+
+    migrate.migrate_values(values, report)
+
+    assert not any("podAntiAffinity" in w for w in report.warnings)
+
+
+def test_custom_node_affinity_does_not_warn():
+    values = _yaml().load(
+        "affinity:\n"
+        "  nodeAffinity:\n"
+        "    requiredDuringSchedulingIgnoredDuringExecution:\n"
+        "      nodeSelectorTerms: []\n"
+    )
+    report = migrate.Report("node-affinity")
+
+    migrate.migrate_values(values, report)
+
+    assert not any("affinity" in w for w in report.warnings)
+
+
 def test_validation_errors_name_the_env_entry():
     values = _yaml().load(
         "proxy:\n"

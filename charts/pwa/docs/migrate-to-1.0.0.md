@@ -278,6 +278,13 @@ These changes affect how a **default** install behaves, even if you do not chang
   The default `ingress.className` has changed from `nginx` to `ingress-haproxy`.
   Ingress is still disabled by default (`ingress.enabled: false`), so this affects you only if you enable it and relied on the default.
   To keep the previous behavior, set `ingress.className: nginx` explicitly.
+- **Custom pod anti-affinity**:
+  A custom `<tier>.affinity.podAntiAffinity` (`affinity.podAntiAffinity` or `cache.affinity.podAntiAffinity` in 0.x) can no longer be combined with the built-in `<tier>.podAntiAffinity`, which is enabled by default.
+  In 0.13.x, the chart rendered both, and the chart's rule silently replaced yours. 1.0.0 fails the render with an error instead.
+  To keep your custom rules, set `<tier>.podAntiAffinity.enabled: false`.
+  To use the chart's rule, remove `<tier>.affinity.podAntiAffinity` and configure `<tier>.podAntiAffinity.required`.
+  Other affinity types such as `nodeAffinity` are still merged with the built-in rule.
+  The migration script warns about this combination but does not change it.
 
 ## Resource Name and Label Changes (Breaking for Selectors)
 

@@ -192,6 +192,9 @@ This provides a good balance between high availability and scheduling flexibilit
 When `required` is set to `true`, Kubernetes enforces that Pods must be scheduled on different nodes.
 This provides stronger guarantees but may result in Pods remaining in a pending state if insufficient nodes are available.
 
+The built-in rule is merged with the tier's custom `affinity` (e.g. `nodeAffinity`, `podAffinity`).
+To use your own anti-affinity rules instead, set `podAntiAffinity.enabled: false` and define them under `affinity.podAntiAffinity`; setting both fails the render.
+
 ## Autoscaling (HPA)
 
 Each tier can be scaled independently by a [HorizontalPodAutoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) (`autoscaling/v2`) via `app.autoscaling` and `proxy.autoscaling`.

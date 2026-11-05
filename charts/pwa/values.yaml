@@ -173,7 +173,7 @@ app:
   nodeSelector: {}
   # -- Tolerations for SSR pods.
   tolerations: []
-  # -- Node/pod affinity for SSR pods (merged with podAntiAffinity).
+  # -- Node/pod affinity for SSR pods (merged with podAntiAffinity). Must not contain `podAntiAffinity` while `app.podAntiAffinity.enabled` is true.
   affinity: {}
 
   # -- Pod anti-affinity to spread SSR replicas across nodes.
@@ -343,7 +343,7 @@ proxy:
   nodeSelector: {}
   # -- Tolerations for proxy pods.
   tolerations: []
-  # -- Node/pod affinity for proxy pods (merged with podAntiAffinity).
+  # -- Node/pod affinity for proxy pods (merged with podAntiAffinity). Must not contain `podAntiAffinity` while `proxy.podAntiAffinity.enabled` is true.
   affinity: {}
 
   # -- Pod anti-affinity to spread proxy replicas across nodes.

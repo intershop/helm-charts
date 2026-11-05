@@ -75,11 +75,16 @@ Whether Prometheus metrics should be exposed by the proxy.
 
 {{/*
 Pod anti-affinity for a component (spreads Pods across nodes).
+Rendered next to the tier's custom `affinity`, so a custom `affinity.podAntiAffinity`
+would produce a duplicate key; that combination fails instead.
 Usage: {{ include "pwa.podAntiAffinity" (dict "root" . "component" "app") }}
 */}}
 {{- define "pwa.podAntiAffinity" -}}
 {{- $cfg := index .root.Values .component -}}
 {{- if $cfg.podAntiAffinity.enabled -}}
+{{- if and (kindIs "map" $cfg.affinity) (hasKey $cfg.affinity "podAntiAffinity") -}}
+{{- fail (printf "values: `%[1]s.affinity.podAntiAffinity` conflicts with the chart's built-in anti-affinity (`%[1]s.podAntiAffinity.enabled: true`). Either set `%[1]s.podAntiAffinity.enabled: false` to keep your custom rules, or remove `%[1]s.affinity.podAntiAffinity` and use `%[1]s.podAntiAffinity.required`." .component) -}}
+{{- end -}}
 podAntiAffinity:
   {{- if $cfg.podAntiAffinity.required }}
   requiredDuringSchedulingIgnoredDuringExecution:

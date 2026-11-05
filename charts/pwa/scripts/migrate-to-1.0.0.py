@@ -22,6 +22,7 @@ Supported sources are pwa-main 0.7.0 and later. The mapping mirrors charts/pwa/d
   * LOGLEVEL/LOGFORMAT env entries -> app.logging.* / proxy.logging.* (always lifted)
   * METRICS_DETAIL_LEVEL env entry -> app.metrics.detailLevel; PORT env entry -> removed (fixed 4200)
   * upstream.cdnPrefixURL, cache.prefetch, cache.init, calculated -> removed
+  * <tier>.affinity.podAntiAffinity with the built-in podAntiAffinity still enabled -> warning only
   Older (pre-0.13.0) layouts:
   * <=0.7 ingress (annotations/hosts/paths/tls) + ingresssplit -> ingress.instances.{ingress,ingresssplit}
   * <=0.9 hybrid.backend, 0.10+ hybrid.icmInternalURL           -> config.icmBaseUrlSsr (when hybrid enabled)
@@ -438,6 +439,28 @@ def _check_env_value_types(values, report: Report) -> None:
                             f"{kind}; the 1.0.0 schema requires a string -- quote it: value: \"{shown}\"")
 
 
+def _check_affinity_conflicts(values, report: Report) -> None:
+    """Warn when a tier keeps custom affinity.podAntiAffinity while the built-in rule stays on.
+
+    0.13.x silently replaced such custom rules with the chart's own; 1.0.0 fails the render instead.
+    Not auto-fixed: either choice changes how Pods are scheduled.
+    """
+    for tier in ("app", "proxy"):
+        node = values.get(tier)
+        if not isinstance(node, dict):
+            continue
+        affinity = node.get("affinity")
+        if not (isinstance(affinity, dict) and "podAntiAffinity" in affinity):
+            continue
+        built_in = node.get("podAntiAffinity")
+        if isinstance(built_in, dict) and "enabled" in built_in and not _truthy(built_in["enabled"]):
+            continue
+        report.warn(f"{tier}.affinity.podAntiAffinity conflicts with the built-in {tier}.podAntiAffinity "
+                    f"(enabled by default) and 1.0.0 fails to render -- set {tier}.podAntiAffinity.enabled: false "
+                    f"to keep your rules, or remove {tier}.affinity.podAntiAffinity (0.13.x silently used the "
+                    f"chart's rule instead of yours)")
+
+
 def _explain_validation_errors(errors: list[str], values) -> list[str]:
     """Name the env entry behind schema paths like /proxy/env/2/value and fold follow-on noise."""
     fold = any("'allOf' failed" in ln for ln in errors)
@@ -601,6 +624,7 @@ def migrate_values(values: CommentedMap, report: Report, lift_env: bool = True, 
                 _drop_config_managed_env(values[tier], tier, merged_config, report)
 
     _check_env_value_types(values, report)
+    _check_affinity_conflicts(values, report)
 
     # flag any leftover unknown top-level keys
     for key in list(values.keys()):
