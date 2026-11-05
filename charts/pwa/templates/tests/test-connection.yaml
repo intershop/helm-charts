@@ -3,7 +3,9 @@ kind: Pod
 metadata:
   name: {{ include "pwa.suffixedName" (dict "root" . "suffix" "proxy-test-connection") }}
   labels:
-    {{- include "pwa.componentLabels" (dict "root" . "component" "proxy") | nindent 4 }}
+    # Own component: proxy selector labels would let the proxy Service route traffic here and
+    # let a required proxy anti-affinity keep this Pod from scheduling.
+    {{- include "pwa.componentLabels" (dict "root" . "component" "test") | nindent 4 }}
   annotations:
     "helm.sh/hook": test
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded

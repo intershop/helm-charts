@@ -305,3 +305,29 @@ tests:
       - equal:
           path: spec.selector.matchLabels["app.kubernetes.io/component"]
           value: prometheus
+
+  # --- helm test hook ------------------------------------------------------------
+  # With the proxy's selector labels, the proxy Service would route traffic to the test Pod and a
+  # required proxy anti-affinity could keep it from scheduling.
+  - it: helm test Pod carries the label set under its own test component, not the proxy's
+    template: templates/tests/test-connection.yaml
+    asserts:
+      - equal:
+          path: metadata.labels["app.kubernetes.io/component"]
+          value: test
+      - equal:
+          path: metadata.labels["app.kubernetes.io/name"]
+          value: pwa
+      - equal:
+          path: metadata.labels["app.kubernetes.io/instance"]
+          value: pwa
+      - equal:
+          path: metadata.labels["app.kubernetes.io/part-of"]
+          value: pwa
+      - equal:
+          path: metadata.labels["app.kubernetes.io/managed-by"]
+          value: Helm
+      - isNotEmpty:
+          path: metadata.labels["helm.sh/chart"]
+      - notExists:
+          path: metadata.labels["app.kubernetes.io/version"]
