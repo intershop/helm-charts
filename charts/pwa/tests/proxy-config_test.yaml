@@ -16,7 +16,7 @@ tests:
       - isNotEmpty:
           path: data["additional-headers.yaml"]
 
-  - it: ConfigMap carries custom multiChannel / cacheIgnoreParams content
+  - it: ConfigMap carries custom multiChannel / cacheIgnoreParams / additionalHeaders content
     template: templates/proxy-configmap.yaml
     set:
       proxy.multiChannel: |
@@ -26,6 +26,9 @@ tests:
       proxy.cacheIgnoreParams: |
         params:
           - utm_source
+      proxy.additionalHeaders: |
+        headers:
+          - X-Frame-Options: SAMEORIGIN
     asserts:
       - equal:
           path: data["multi-channel.yaml"]
@@ -38,6 +41,11 @@ tests:
           value: |-
             params:
               - utm_source
+      - equal:
+          path: data["additional-headers.yaml"]
+          value: |-
+            headers:
+              - X-Frame-Options: SAMEORIGIN
 
   - it: the Deployment mounts all three ConfigMap keys
     template: templates/proxy-deployment.yaml

@@ -37,3 +37,55 @@ tests:
           value: http
       - isNull:
           path: spec.template.spec.containers[0].startupProbe
+
+  - it: an app probe can be disabled with null while the others stay
+    template: templates/app-deployment.yaml
+    set:
+      app.startupProbe: null
+    asserts:
+      - notExists:
+          path: spec.template.spec.containers[0].startupProbe
+      - exists:
+          path: spec.template.spec.containers[0].livenessProbe
+      - exists:
+          path: spec.template.spec.containers[0].readinessProbe
+
+  - it: overriding one app probe field keeps the default handler
+    template: templates/app-deployment.yaml
+    set:
+      app.livenessProbe.periodSeconds: 60
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.periodSeconds
+          value: 60
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.exec.command
+          value:
+            - node
+            - /dist/livenessprobe.js
+
+  - it: proxy probes can be disabled with null
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.livenessProbe: null
+      proxy.readinessProbe: null
+    asserts:
+      - notExists:
+          path: spec.template.spec.containers[0].livenessProbe
+      - notExists:
+          path: spec.template.spec.containers[0].readinessProbe
+
+  - it: proxy renders a startup probe when one is configured
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.startupProbe:
+        tcpSocket:
+          port: http
+        failureThreshold: 30
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].startupProbe
+          value:
+            tcpSocket:
+              port: http
+            failureThreshold: 30

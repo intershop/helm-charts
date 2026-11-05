@@ -2,6 +2,8 @@ suite: prometheus metrics are opt-in
 templates:
   - templates/app-deployment.yaml
   - templates/app-service.yaml
+  - templates/proxy-deployment.yaml
+  - templates/proxy-service.yaml
 release:
   name: pwa
 set:
@@ -20,6 +22,7 @@ tests:
           path: spec.template.spec.containers[0].env
           content:
             name: METRICS_DETAIL_LEVEL
+          any: true
 
   - it: app exposes metrics and uses the default detail level when enabled
     template: templates/app-deployment.yaml
@@ -66,3 +69,169 @@ tests:
       - equal:
           path: spec.clusterIP
           value: None
+
+  - it: app renders no metrics Service by default
+    template: templates/app-service.yaml
+    asserts:
+      - hasDocuments:
+          count: 1
+
+  # The Prometheus SRV discovery (_metrics._tcp.<name>) depends on this name and port name.
+  - it: app metrics Service is named <app>-metrics and exposes a port named metrics on the app Pods
+    template: templates/app-service.yaml
+    set:
+      app.metrics.enabled: true
+    documentIndex: 1
+    asserts:
+      - equal:
+          path: metadata.name
+          value: pwa-app-metrics
+      - equal:
+          path: metadata.annotations
+          value:
+            prometheus.io/scrape: 'true'
+            prometheus.io/port: '9113'
+      - equal:
+          path: spec.ports
+          value:
+            - name: metrics
+              port: 9113
+              targetPort: metrics
+              protocol: TCP
+      - equal:
+          path: spec.selector
+          value:
+            app.kubernetes.io/name: pwa
+            app.kubernetes.io/instance: pwa
+            app.kubernetes.io/component: app
+
+  - it: proxy exposes no metrics port and no metrics Service by default
+    templates:
+      - templates/proxy-deployment.yaml
+      - templates/proxy-service.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].ports
+          content:
+            name: metrics
+            containerPort: 9113
+            protocol: TCP
+        template: templates/proxy-deployment.yaml
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: PROMETHEUS
+            value: 'true'
+        template: templates/proxy-deployment.yaml
+      - hasDocuments:
+          count: 1
+        template: templates/proxy-service.yaml
+
+  - it: proxy exposes metrics when enabled, without the SSR-only detail level
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.metrics.enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].ports
+          content:
+            name: metrics
+            containerPort: 9113
+            protocol: TCP
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: PROMETHEUS
+            value: 'true'
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: METRICS_DETAIL_LEVEL
+          any: true
+
+  - it: proxy metrics Service is a headless <proxy>-metrics Service on the proxy Pods
+    template: templates/proxy-service.yaml
+    set:
+      proxy.metrics.enabled: true
+    documentIndex: 1
+    asserts:
+      - isKind:
+          of: Service
+      - equal:
+          path: metadata.name
+          value: pwa-proxy-metrics
+      - equal:
+          path: spec.clusterIP
+          value: None
+      - equal:
+          path: metadata.annotations
+          value:
+            prometheus.io/scrape: 'true'
+            prometheus.io/port: '9113'
+      - equal:
+          path: spec.ports
+          value:
+            - name: metrics
+              port: 9113
+              targetPort: metrics
+              protocol: TCP
+      - equal:
+          path: spec.selector
+          value:
+            app.kubernetes.io/name: pwa
+            app.kubernetes.io/instance: pwa
+            app.kubernetes.io/component: proxy
+
+  - it: tier metrics switches are independent (app on, proxy stays off)
+    templates:
+      - templates/app-deployment.yaml
+      - templates/proxy-deployment.yaml
+      - templates/proxy-service.yaml
+    set:
+      app.metrics.enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: PROMETHEUS
+            value: 'true'
+        template: templates/app-deployment.yaml
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: PROMETHEUS
+            value: 'true'
+        template: templates/proxy-deployment.yaml
+      - hasDocuments:
+          count: 1
+        template: templates/proxy-service.yaml
+
+  - it: monitoring.enabled turns on metrics for both tiers without the per-tier switches
+    templates:
+      - templates/app-deployment.yaml
+      - templates/app-service.yaml
+      - templates/proxy-deployment.yaml
+      - templates/proxy-service.yaml
+    set:
+      monitoring.enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].ports
+          content:
+            name: metrics
+            containerPort: 9113
+            protocol: TCP
+        template: templates/app-deployment.yaml
+      - contains:
+          path: spec.template.spec.containers[0].ports
+          content:
+            name: metrics
+            containerPort: 9113
+            protocol: TCP
+        template: templates/proxy-deployment.yaml
+      - hasDocuments:
+          count: 2
+        template: templates/app-service.yaml
+      - hasDocuments:
+          count: 2
+        template: templates/proxy-service.yaml

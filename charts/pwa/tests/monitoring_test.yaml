@@ -45,3 +45,18 @@ tests:
       - equal:
           path: metadata.labels["app.kubernetes.io/component"]
           value: prometheus
+
+  # SRV records only resolve if the Service name and its port name ("metrics") match.
+  - it: prometheus scrapes both tiers via the SRV records of their metrics Services
+    template: templates/monitoring/prometheus.yaml
+    release:
+      namespace: shop
+    documentSelector:
+      path: kind
+      value: ConfigMap
+    set:
+      monitoring.enabled: true
+    asserts:
+      - matchRegex:
+          path: data["prometheus.yml"]
+          pattern: "job_name: 'pwa-proxy'[\\s\\S]*- _metrics\\._tcp\\.pwa-proxy-metrics\\.shop\\.svc\\.cluster\\.local\\s+- job_name: 'pwa-app'[\\s\\S]*- _metrics\\._tcp\\.pwa-app-metrics\\.shop\\.svc\\.cluster\\.local"
