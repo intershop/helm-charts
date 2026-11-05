@@ -7,11 +7,21 @@ helpers here rather than in _helpers.tpl.
 */}}
 
 {{/*
+"<release-fullname>-<suffix>", with the fullname shortened so the whole name fits in 63
+characters (DNS-1035 label) and the suffix is never cut off. Names that already fit are unchanged.
+Usage: {{ include "pwa.suffixedName" (dict "root" . "suffix" "proxy-reset") }}
+*/}}
+{{- define "pwa.suffixedName" -}}
+{{- $max := sub 62 (len .suffix) | int -}}
+{{- printf "%s-%s" (include "pwa.fullname" .root | trunc $max | trimSuffix "-") .suffix -}}
+{{- end -}}
+
+{{/*
 Component fullname: "<release-fullname>-<component>".
 Usage: {{ include "pwa.componentName" (dict "root" . "component" "app") }}
 */}}
 {{- define "pwa.componentName" -}}
-{{- printf "%s-%s" (include "pwa.fullname" .root) .component | trunc 63 | trimSuffix "-" }}
+{{- include "pwa.suffixedName" (dict "root" .root "suffix" .component) }}
 {{- end }}
 
 {{/*
@@ -30,7 +40,7 @@ app.kubernetes.io/version: {{ . | quote }}
 
 {{/*
 Version label value for a tier (app/proxy): the deployed image tag, else the default
-release-<appVersion>. Guarded to a valid label value (<=63 chars, no trailing -._).
+release-<appVersion>. Guarded to a valid label value (<=63 chars, starts and ends alphanumeric).
 Components without an image config (e.g. the dev-only monitoring stack) get no version label.
 */}}
 {{- define "pwa.componentVersion" -}}
@@ -40,7 +50,8 @@ Components without an image config (e.g. the dev-only monitoring stack) get no v
 {{- if kindIs "map" $cfg.image -}}
 {{- $tag = $cfg.image.tag -}}
 {{- end -}}
-{{- $tag | default (printf "release-%s" .root.Chart.AppVersion) | trunc 63 | trimSuffix "-" | trimSuffix "." | trimSuffix "_" -}}
+{{- $version := $tag | default (printf "release-%s" .root.Chart.AppVersion) | trunc 63 -}}
+{{- regexReplaceAll "^[^A-Za-z0-9]+|[^A-Za-z0-9]+$" $version "" -}}
 {{- end -}}
 {{- end -}}
 
@@ -66,11 +77,11 @@ Whether Prometheus metrics should be exposed by the proxy.
 {{- end }}
 
 {{- define "pwa.appMetricsFullname" -}}
-{{- printf "%s-%s" (include "pwa.componentName" (dict "root" . "component" "app")) "metrics" -}}
+{{- include "pwa.suffixedName" (dict "root" . "suffix" "app-metrics") -}}
 {{- end -}}
 
 {{- define "pwa.proxyMetricsFullname" -}}
-{{- printf "%s-%s" (include "pwa.componentName" (dict "root" . "component" "proxy")) "metrics" -}}
+{{- include "pwa.suffixedName" (dict "root" . "suffix" "proxy-metrics") -}}
 {{- end -}}
 
 {{/*

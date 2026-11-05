@@ -295,6 +295,8 @@ Deployment/service names have changed with the tier renaming:
 | `<release>-pwa-main`       | `<release>-pwa-app`   |
 | `<release>-pwa-main-cache` | `<release>-pwa-proxy` |
 
+All names stay within the 63-character Kubernetes limit: for long release names or `fullnameOverride` values, the `<release>-pwa` part is shortened so that the suffix (`-app`, `-proxy`, `-app-metrics`, `-proxy-reset-job`, …) is always kept in full.
+
 > [!IMPORTANT]
 > Anything that selects these resources **by name** (monitoring dashboards, `NetworkPolicy`, `ServiceMonitor`, external scripts) must be updated.
 

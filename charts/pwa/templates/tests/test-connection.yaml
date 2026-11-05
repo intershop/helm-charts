@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-test-connection"
+  name: {{ include "pwa.suffixedName" (dict "root" . "suffix" "proxy-test-connection") }}
   labels:
     {{- include "pwa.componentLabels" (dict "root" . "component" "proxy") | nindent 4 }}
   annotations:

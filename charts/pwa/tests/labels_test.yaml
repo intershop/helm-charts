@@ -59,6 +59,34 @@ tests:
           path: metadata.labels["app.kubernetes.io/version"]
           value: analysts_11_1_0_1
 
+  # Label values must be <=63 chars and start/end alphanumeric; the image keeps the full tag.
+  - it: version label cuts long tags to 63 chars without leaving a trailing separator
+    template: templates/app-deployment.yaml
+    set:
+      app.image.tag: v1111111111111111111111111111111111111111111111111111111111111-.xyz
+    asserts:
+      - equal:
+          path: metadata.labels["app.kubernetes.io/version"]
+          value: v1111111111111111111111111111111111111111111111111111111111111
+      - equal:
+          path: spec.template.metadata.labels["app.kubernetes.io/version"]
+          value: v1111111111111111111111111111111111111111111111111111111111111
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: intershophub/intershop-pwa-ssr:v1111111111111111111111111111111111111111111111111111111111111-.xyz
+
+  - it: version label strips leading and trailing separators from the tag
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.image.tag: _1.0-.
+    asserts:
+      - equal:
+          path: metadata.labels["app.kubernetes.io/version"]
+          value: '1.0'
+      - equal:
+          path: spec.template.metadata.labels["app.kubernetes.io/version"]
+          value: '1.0'
+
   - it: proxy version label is independent of the app tier
     template: templates/proxy-deployment.yaml
     set:

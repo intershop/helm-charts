@@ -140,7 +140,7 @@ spec:
           emptyDir: {}
         - name: proxy-config-map
           configMap:
-            name: {{ include "pwa.componentName" (dict "root" . "component" "proxy") }}-gomplate-datasources
+            name: {{ include "pwa.suffixedName" (dict "root" . "suffix" "proxy-gomplate-datasources") }}
             items:
               - key: multi-channel.yaml
                 path: multi-channel.yaml
