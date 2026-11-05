@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - 'charts/pwa/**'
+      - '.github/workflows/lint-test_pwa-docs.yml'
 
 env:
   HELM_DOCS_VERSION: '1.14.2'

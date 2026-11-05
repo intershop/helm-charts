@@ -3,6 +3,11 @@ on:
   pull_request:
     paths:
       - 'charts/pwa/**'
+      - '.github/workflows/lint-test_pwa-unittest.yml'
+      - '.github/template/base/**'
+      - '.github/template/unittest/**'
+      - 'ct_pwa.yaml'
+      - '.yamllint.yaml'
 
 jobs:
   lint-test-pwa-unittest:

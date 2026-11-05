@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - 'charts/pwa/scripts/**'
+      - '.github/workflows/lint-test_pwa-migration.yml'
 
 jobs:
   test-pwa-migration:
