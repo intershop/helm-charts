@@ -28,7 +28,10 @@ major version, once the 0.x -> 1.0.0 migration window has closed.
 {{- if hasKey .Values.proxy "extraEnvVars" -}}
 {{- fail (printf "values: `proxy.extraEnvVars` was renamed to `proxy.env` in chart 1.0.0. See %s." $guide) -}}
 {{- end -}}
-{{- range $key := (list "affinity" "deploymentAnnotations" "deploymentLabels" "image" "livenessProbe" "metrics" "nodeSelector" "podAnnotations" "podAntiAffinity" "podLabels" "readinessProbe" "replicaCount" "resources" "service" "tolerations" "updateStrategy") -}}
+{{- if hasKey .Values "updateStrategy" -}}
+{{- fail (printf "values: top-level `updateStrategy` (applied to both tiers in 0.x) was replaced by `app.updateStrategy` and `proxy.updateStrategy` in chart 1.0.0; both default to RollingUpdate. See %s." $guide) -}}
+{{- end -}}
+{{- range $key := (list "affinity" "deploymentAnnotations" "deploymentLabels" "image" "livenessProbe" "metrics" "nodeSelector" "podAnnotations" "podAntiAffinity" "podLabels" "readinessProbe" "replicaCount" "resources" "service" "tolerations") -}}
 {{- if hasKey $.Values $key -}}
 {{- fail (printf "values: top-level `%s` (SSR configuration) moved under `app.%s` in chart 1.0.0 (the proxy tier has its own `proxy.%s`). See %s." $key $key $key $guide) -}}
 {{- end -}}

@@ -43,6 +43,14 @@ tests:
     asserts:
       - failedTemplate: {}
 
+  - it: points a top-level `updateStrategy` to both tier keys
+    set:
+      config.icmBaseUrl: https://icm.example.com
+      updateStrategy: Recreate
+    asserts:
+      - failedTemplate:
+          errorMessage: 'values: top-level `updateStrategy` (applied to both tiers in 0.x) was replaced by `app.updateStrategy` and `proxy.updateStrategy` in chart 1.0.0; both default to RollingUpdate. See the migration guide at charts/pwa/docs/migrate-to-1.0.0.md.'
+
   - it: fails when `app.environment` is used instead of `app.env`
     set:
       config.icmBaseUrl: https://icm.example.com

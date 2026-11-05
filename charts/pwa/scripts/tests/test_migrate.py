@@ -170,6 +170,47 @@ def test_chart_managed_env_is_lifted_per_tier():
     assert not report.warnings
 
 
+def test_default_update_strategy_is_dropped():
+    values = _yaml().load("updateStrategy: RollingUpdate\nreplicaCount: 2\n")
+    report = migrate.Report("rolling-update")
+
+    migrate.migrate_values(values, report)
+
+    plain = _plain(values)
+    assert plain == {"app": {"replicaCount": 2}}
+    assert "updateStrategy" in report.removed
+    assert "1.0.0 default" in report.render()
+    assert not report.warnings
+
+
+def test_recreate_update_strategy_is_copied_to_both_tiers_with_a_warning():
+    values = _yaml().load("updateStrategy: Recreate\ncache:\n  replicaCount: 2\n")
+    report = migrate.Report("recreate")
+
+    migrate.migrate_values(values, report)
+
+    plain = _plain(values)
+    assert plain["app"] == {"updateStrategy": "Recreate"}
+    assert plain["proxy"] == {"replicaCount": 2, "updateStrategy": "Recreate"}
+    assert ("updateStrategy", "proxy.updateStrategy") in report.maps
+    assert any("updateStrategy: Recreate was copied to app.updateStrategy and proxy.updateStrategy" in w
+               and "RollingUpdate is recommended" in w for w in report.warnings)
+
+
+def test_recreate_update_strategy_keeps_a_proxy_strategy_from_cache():
+    values = _yaml().load("updateStrategy: Recreate\ncache:\n  updateStrategy: RollingUpdate\n")
+    report = migrate.Report("recreate-cache-own")
+
+    migrate.migrate_values(values, report)
+
+    plain = _plain(values)
+    assert plain["app"] == {"updateStrategy": "Recreate"}
+    assert plain["proxy"] == {"updateStrategy": "RollingUpdate"}
+    assert any("proxy already sets its own updateStrategy" in w for w in report.warnings)
+    assert any("was copied to app.updateStrategy (0.x" in w for w in report.warnings)
+    assert not any("proxy.updateStrategy (0.x" in w for w in report.warnings)
+
+
 def test_unmappable_managed_env_warns_and_is_kept():
     values = _yaml().load(
         "environment:\n"

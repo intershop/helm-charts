@@ -13,6 +13,7 @@ document is left untouched. Comments/formatting are preserved via ruamel.yaml ro
 
 Supported sources are pwa-main 0.7.0 and later. The mapping mirrors charts/pwa/docs/migrate-to-1.0.0.md:
   * top-level SSR keys        -> app.<key>
+    (updateStrategy: RollingUpdate is dropped as the 1.0.0 default; other values -> app and proxy, with a warning)
   * environment               -> app.env
   * cache.*                   -> proxy.*   (cache.extraEnvVars -> proxy.env)
   * upstream.icmBaseURL       -> config.icmBaseUrl
@@ -139,6 +140,7 @@ class Report:
         self.label = label
         self.maps: list[tuple[str, str]] = []
         self.removed: list[str] = []
+        self.removed_reasons: dict[str, str] = {}
         self.warnings: list[str] = []
         self.info: list[str] = []
         self.targets: list = []   # migrated values maps, for optional --validate
@@ -146,8 +148,9 @@ class Report:
     def map(self, src: str, dst: str) -> None:
         self.maps.append((src, dst))
 
-    def remove(self, key: str) -> None:
+    def remove(self, key: str, reason: str = "no 1.0.0 equivalent") -> None:
         self.removed.append(key)
+        self.removed_reasons[key] = reason
 
     def warn(self, msg: str) -> None:
         self.warnings.append(msg)
@@ -166,7 +169,7 @@ class Report:
         for src, dst in self.maps:
             lines.append(f"  moved    {src}  ->  {dst}")
         for key in self.removed:
-            lines.append(f"  removed  {key}  (no 1.0.0 equivalent)")
+            lines.append(f"  removed  {key}  ({self.removed_reasons.get(key, 'no 1.0.0 equivalent')})")
         for msg in self.warnings:
             lines.append(f"  WARNING  {msg}")
         for msg in self.info:
@@ -545,6 +548,17 @@ def migrate_values(values: CommentedMap, report: Report, lift_env: bool = True, 
         app["env"] = values.pop("environment")
         report.map("environment", "app.env")
 
+    # 0.x top-level updateStrategy drove BOTH Deployments; 1.0.0 defaults both tiers to RollingUpdate.
+    # Non-default values go to both tiers to keep the 0.x behavior (proxy: unless cache.* sets its own).
+    shared_strategy = None
+    if "updateStrategy" in values:
+        strategy = values.pop("updateStrategy")
+        if strategy == "RollingUpdate":
+            report.remove("updateStrategy", "RollingUpdate is the 1.0.0 default for app and proxy")
+        else:
+            shared_strategy = strategy
+            app["updateStrategy"] = strategy
+
     # top-level SSR keys -> app.<key>
     for key in SSR_KEYS:
         if key in values:
@@ -583,6 +597,21 @@ def migrate_values(values: CommentedMap, report: Report, lift_env: bool = True, 
                 image["tag"] = tag
             reset["image"] = image
             report.map("cache.reset.image (0.11 'repo:tag' string)", "proxy.reset.image.repository/tag")
+
+    if shared_strategy is not None:
+        report.map("updateStrategy", "app.updateStrategy")
+        targets = "app.updateStrategy"
+        existing_proxy = values.get("proxy")
+        if "updateStrategy" in proxy or (isinstance(existing_proxy, dict) and "updateStrategy" in existing_proxy):
+            report.warn("updateStrategy: proxy already sets its own updateStrategy; kept it instead of the "
+                        f"top-level {shared_strategy}")
+        else:
+            proxy["updateStrategy"] = shared_strategy
+            report.map("updateStrategy", "proxy.updateStrategy")
+            targets += " and proxy.updateStrategy"
+        report.warn(f"updateStrategy: {shared_strategy} was copied to {targets} (0.x applied it to both tiers). "
+                    f"RollingUpdate is recommended: with {shared_strategy}, every upgrade takes the tier down, "
+                    f"and the proxy reset job restarts the proxy once more")
 
     # removed top-level keys
     for key in REMOVED_TOP:
