@@ -1,0 +1,171 @@
+suite: pod anti-affinity
+templates:
+  - templates/app-deployment.yaml
+  - templates/proxy-deployment.yaml
+release:
+  name: pwa
+set:
+  config.icmBaseUrl: https://icm.example.com
+tests:
+  - it: defaults to a preferred (soft) anti-affinity rule that selects the tier's Pods
+    template: templates/app-deployment.yaml
+    asserts:
+      - isNotEmpty:
+          path: spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution
+      - isNull:
+          path: spec.template.spec.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution
+      - equal:
+          path: spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchLabels
+          value:
+            app.kubernetes.io/name: pwa
+            app.kubernetes.io/instance: pwa
+            app.kubernetes.io/component: app
+
+  - it: switches to a required (hard) rule that selects the tier's Pods when required=true
+    template: templates/app-deployment.yaml
+    set:
+      app.podAntiAffinity.required: true
+    asserts:
+      - isNotEmpty:
+          path: spec.template.spec.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution
+      - isNull:
+          path: spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution
+      - equal:
+          path: spec.template.spec.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchLabels
+          value:
+            app.kubernetes.io/name: pwa
+            app.kubernetes.io/instance: pwa
+            app.kubernetes.io/component: app
+
+  - it: keeps custom podLabels out of the anti-affinity selector
+    template: templates/app-deployment.yaml
+    set:
+      app.podLabels:
+        team: web
+    asserts:
+      - equal:
+          path: spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchLabels
+          value:
+            app.kubernetes.io/name: pwa
+            app.kubernetes.io/instance: pwa
+            app.kubernetes.io/component: app
+
+  - it: omits affinity entirely when disabled
+    template: templates/app-deployment.yaml
+    set:
+      app.podAntiAffinity.enabled: false
+    asserts:
+      - isNull:
+          path: spec.template.spec.affinity
+
+  - it: merges custom affinity rules with the built-in anti-affinity
+    template: templates/app-deployment.yaml
+    set:
+      app.affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: pool
+                    operator: In
+                    values: [pwa]
+    asserts:
+      - equal:
+          path: spec.template.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key
+          value: pool
+      - isNotEmpty:
+          path: spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution
+
+  - it: fails when app.affinity.podAntiAffinity clashes with the built-in anti-affinity
+    template: templates/app-deployment.yaml
+    set:
+      app.affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution: []
+    asserts:
+      - failedTemplate:
+          errorPattern: "`app.affinity.podAntiAffinity` conflicts with the chart's built-in anti-affinity"
+
+  - it: keeps custom app.affinity.podAntiAffinity verbatim when the built-in rule is disabled
+    template: templates/app-deployment.yaml
+    set:
+      app.podAntiAffinity.enabled: false
+      app.affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: topology.kubernetes.io/zone
+              labelSelector:
+                matchLabels:
+                  team: web
+    asserts:
+      - equal:
+          path: spec.template.spec.affinity
+          value:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - topologyKey: topology.kubernetes.io/zone
+                  labelSelector:
+                    matchLabels:
+                      team: web
+
+  - it: proxy defaults to a preferred (soft) anti-affinity rule that selects the proxy Pods
+    template: templates/proxy-deployment.yaml
+    asserts:
+      - isNull:
+          path: spec.template.spec.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution
+      - equal:
+          path: spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].podAffinityTerm.labelSelector.matchLabels
+          value:
+            app.kubernetes.io/name: pwa
+            app.kubernetes.io/instance: pwa
+            app.kubernetes.io/component: proxy
+
+  - it: proxy switches to a required (hard) rule when required=true
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.podAntiAffinity.required: true
+    asserts:
+      - isNull:
+          path: spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution
+      - equal:
+          path: spec.template.spec.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchLabels
+          value:
+            app.kubernetes.io/name: pwa
+            app.kubernetes.io/instance: pwa
+            app.kubernetes.io/component: proxy
+
+  - it: proxy omits affinity entirely when disabled
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.podAntiAffinity.enabled: false
+    asserts:
+      - isNull:
+          path: spec.template.spec.affinity
+
+  - it: fails when proxy.affinity.podAntiAffinity clashes with the built-in anti-affinity
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution: []
+    asserts:
+      - failedTemplate:
+          errorPattern: "`proxy.affinity.podAntiAffinity` conflicts with the chart's built-in anti-affinity"
+
+  - it: keeps custom proxy.affinity.podAntiAffinity verbatim when the built-in rule is disabled
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.podAntiAffinity.enabled: false
+      proxy.affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 50
+              podAffinityTerm:
+                topologyKey: topology.kubernetes.io/zone
+                labelSelector:
+                  matchLabels:
+                    team: web
+    asserts:
+      - equal:
+          path: spec.template.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution[0].weight
+          value: 50

@@ -1,0 +1,17 @@
+# Flux HelmRelease referencing the 0.x pwa-main chart.
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pwa
+spec:
+  chart:
+    spec:
+      chart: pwa-main
+      version: 0.13.0
+  values:
+    replicaCount: 2
+    upstream:
+      icmBaseURL: https://icm.example.com
+    cache:
+      reset:
+        enabled: false
