@@ -1,0 +1,31 @@
+# 0.x bare PWA values file (SSR at top level, nginx under `cache`).
+replicaCount: 3
+image:
+  repository: intershophub/intershop-pwa-ssr
+  tag: '1.2.3'
+service:
+  port: 4200
+resources:
+  requests:
+    cpu: 200m
+environment:
+  - name: LOGLEVEL
+    value: info
+upstream:
+  icmBaseURL: https://icm.example.com
+  cdnPrefixURL: https://cdn.example.com
+cache:
+  replicaCount: 2
+  multiChannel: |
+    .+:
+      - baseHref: /b2c
+        channel: inSPIRED-inTRONICS-Site
+  extraEnvVars:
+    - name: CACHE
+      value: 'on'
+  prefetch:
+    enabled: true
+  reset:
+    enabled: true
+calculated:
+  something: true

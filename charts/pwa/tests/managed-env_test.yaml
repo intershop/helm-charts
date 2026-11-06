@@ -1,0 +1,273 @@
+suite: chart-managed env vars are rejected in app.env / proxy.env
+# Complements fail-fast_test.yaml, which covers PORT, LOGLEVEL, ICM_BASE_URL, ICM_BASE_URL_SSR (app),
+# LOGFORMAT, UPSTREAM_PWA, MULTI_CHANNEL_SOURCE (proxy) and PROMETHEUS (proxy, metrics off).
+templates:
+  - templates/app-deployment.yaml
+  - templates/proxy-deployment.yaml
+release:
+  name: pwa
+set:
+  config.icmBaseUrl: https://icm.example.com
+tests:
+  # --- app: always managed ---------------------------------------------------
+  - it: rejects HELM_RELEASE_REVISION in app.env
+    template: templates/app-deployment.yaml
+    set:
+      app.env:
+        - name: HELM_RELEASE_REVISION
+          value: '1'
+    asserts:
+      - failedTemplate:
+          errorPattern: '`HELM_RELEASE_REVISION` must not be set in `app.env`; the chart sets it'
+
+  - it: rejects LOGFORMAT in app.env
+    template: templates/app-deployment.yaml
+    set:
+      app.env:
+        - name: LOGFORMAT
+          value: text
+    asserts:
+      - failedTemplate:
+          errorPattern: '`LOGFORMAT` must not be set in `app.env`; use `app.logging.format`'
+
+  - it: rejects METRICS_DETAIL_LEVEL in app.env
+    template: templates/app-deployment.yaml
+    set:
+      app.env:
+        - name: METRICS_DETAIL_LEVEL
+          value: DETAILED
+    asserts:
+      - failedTemplate:
+          errorPattern: '`METRICS_DETAIL_LEVEL` must not be set in `app.env`; use `app.metrics.detailLevel`'
+
+  # --- app: managed only while the feature is on ----------------------------
+  - it: rejects ALLOWED_HOSTS in app.env when config.allowedHosts is set
+    template: templates/app-deployment.yaml
+    set:
+      config.allowedHosts: shop.example.com
+      app.env:
+        - name: ALLOWED_HOSTS
+          value: other.example.com
+    asserts:
+      - failedTemplate:
+          errorPattern: '`ALLOWED_HOSTS` must not be set in `app.env`; it is set from `config.allowedHosts`'
+
+  - it: rejects SSR_HYBRID_BACKEND in app.env when hybrid is enabled
+    template: templates/app-deployment.yaml
+    set:
+      hybrid.enabled: true
+      app.env:
+        - name: SSR_HYBRID_BACKEND
+          value: https://other.example.com
+    asserts:
+      - failedTemplate:
+          errorPattern: '`SSR_HYBRID_BACKEND` must not be set in `app.env`; it is set by `hybrid.enabled`'
+
+  - it: rejects SSR_HYBRID in app.env when hybrid is enabled
+    template: templates/app-deployment.yaml
+    set:
+      hybrid.enabled: true
+      app.env:
+        - name: SSR_HYBRID
+          value: 'true'
+    asserts:
+      - failedTemplate:
+          errorPattern: '`SSR_HYBRID` must not be set in `app.env`; it is set by `hybrid.enabled`'
+
+  - it: rejects PROMETHEUS in app.env when app metrics are enabled
+    template: templates/app-deployment.yaml
+    set:
+      app.metrics.enabled: true
+      app.env:
+        - name: PROMETHEUS
+          value: 'true'
+    asserts:
+      - failedTemplate:
+          errorPattern: '`PROMETHEUS` must not be set in `app.env`'
+
+  - it: allows the conditional app vars while their features are off
+    template: templates/app-deployment.yaml
+    set:
+      app.env:
+        - name: ALLOWED_HOSTS
+          value: shop.example.com
+        - name: SSR_HYBRID
+          value: 'true'
+        - name: SSR_HYBRID_BACKEND
+          value: https://icm.example.com
+        - name: PROMETHEUS
+          value: 'true'
+    asserts:
+      - notFailedTemplate: {}
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SSR_HYBRID
+            value: 'true'
+
+  # --- proxy: always managed -------------------------------------------------
+  - it: rejects HELM_RELEASE_REVISION in proxy.env
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.env:
+        - name: HELM_RELEASE_REVISION
+          value: '1'
+    asserts:
+      - failedTemplate:
+          errorPattern: '`HELM_RELEASE_REVISION` must not be set in `proxy.env`; the chart sets it'
+
+  - it: rejects ICM_BASE_URL in proxy.env
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.env:
+        - name: ICM_BASE_URL
+          value: https://other.example.com
+    asserts:
+      - failedTemplate:
+          errorPattern: '`ICM_BASE_URL` must not be set in `proxy.env`; use `config.icmBaseUrl`'
+
+  - it: rejects LOGLEVEL in proxy.env
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.env:
+        - name: LOGLEVEL
+          value: warn
+    asserts:
+      - failedTemplate:
+          errorPattern: '`LOGLEVEL` must not be set in `proxy.env`; use `proxy.logging.level`'
+
+  # --- proxy: managed only while the feature is on --------------------------
+  - it: rejects ICM_BASE_URL_SSR in proxy.env when config.icmBaseUrlSsr is set
+    template: templates/proxy-deployment.yaml
+    set:
+      config.icmBaseUrlSsr: http://icm-web-wa:8080
+      proxy.env:
+        - name: ICM_BASE_URL_SSR
+          value: http://other-wa:8080
+    asserts:
+      - failedTemplate:
+          errorPattern: '`ICM_BASE_URL_SSR` must not be set in `proxy.env`; it is set from `config.icmBaseUrlSsr`'
+
+  - it: rejects HYBRID_FORWARDED_PORT in proxy.env when hybrid.pwaExternalPort is set
+    template: templates/proxy-deployment.yaml
+    set:
+      hybrid.enabled: true
+      hybrid.pwaExternalPort: 443
+      proxy.env:
+        - name: HYBRID_FORWARDED_PORT
+          value: '8443'
+    asserts:
+      - failedTemplate:
+          errorPattern: '`HYBRID_FORWARDED_PORT` must not be set in `proxy.env`; it is set from `hybrid.pwaExternalPort`'
+
+  - it: rejects PROMETHEUS in proxy.env when proxy metrics are enabled
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.metrics.enabled: true
+      proxy.env:
+        - name: PROMETHEUS
+          value: 'true'
+    asserts:
+      - failedTemplate:
+          errorPattern: '`PROMETHEUS` must not be set in `proxy.env`'
+
+  - it: rejects CACHING_IGNORE_PARAMS_SOURCE in proxy.env when proxy.cacheIgnoreParams is set
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.cacheIgnoreParams: |
+        params:
+          - utm_source
+      proxy.env:
+        - name: CACHING_IGNORE_PARAMS_SOURCE
+          value: /config/other.yaml
+    asserts:
+      - failedTemplate:
+          errorPattern: '`CACHING_IGNORE_PARAMS_SOURCE` must not be set in `proxy.env`; it is set by `proxy.cacheIgnoreParams`'
+
+  - it: rejects ADDITIONAL_HEADERS_SOURCE in proxy.env when proxy.additionalHeaders is set
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.additionalHeaders: |
+        headers:
+          - X-Frame-Options: SAMEORIGIN
+      proxy.env:
+        - name: ADDITIONAL_HEADERS_SOURCE
+          value: /config/other.yaml
+    asserts:
+      - failedTemplate:
+          errorPattern: '`ADDITIONAL_HEADERS_SOURCE` must not be set in `proxy.env`; it is set by `proxy.additionalHeaders`'
+
+  - it: allows the conditional proxy vars while their features are off
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.env:
+        - name: ICM_BASE_URL_SSR
+          value: http://icm-web-wa:8080
+        - name: HYBRID_FORWARDED_PORT
+          value: '443'
+        - name: CACHING_IGNORE_PARAMS_SOURCE
+          value: /config/custom-ignore.yaml
+        - name: ADDITIONAL_HEADERS_SOURCE
+          value: /config/custom-headers.yaml
+    asserts:
+      - notFailedTemplate: {}
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ADDITIONAL_HEADERS_SOURCE
+            value: /config/custom-headers.yaml
+
+  # --- user env entries are passed through -----------------------------------
+  # Order matters: a user entry can only reference a chart var via $(VAR) if it comes later.
+  # Default chart-managed app env: HELM_RELEASE_REVISION, ICM_BASE_URL, LOGLEVEL, LOGFORMAT.
+  - it: appends user app.env entries after the chart-managed ones
+    template: templates/app-deployment.yaml
+    set:
+      app.env:
+        - name: THEME
+          value: b2b
+        - name: SECRET_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: pwa-secrets
+              key: token
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers[0].env
+          count: 6
+      - equal:
+          path: spec.template.spec.containers[0].env[3].name
+          value: LOGFORMAT
+      - equal:
+          path: spec.template.spec.containers[0].env[4]
+          value:
+            name: THEME
+            value: b2b
+      - equal:
+          path: spec.template.spec.containers[0].env[5]
+          value:
+            name: SECRET_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: pwa-secrets
+                key: token
+
+  # Default chart-managed proxy env: HELM_RELEASE_REVISION, UPSTREAM_PWA, ICM_BASE_URL, LOGLEVEL, LOGFORMAT.
+  - it: appends user proxy.env entries after the chart-managed ones
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.env:
+        - name: CACHE_DURATION
+          value: 10m
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers[0].env
+          count: 6
+      - equal:
+          path: spec.template.spec.containers[0].env[4].name
+          value: LOGFORMAT
+      - equal:
+          path: spec.template.spec.containers[0].env[5]
+          value:
+            name: CACHE_DURATION
+            value: 10m

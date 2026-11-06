@@ -1,0 +1,69 @@
+suite: container images
+templates:
+  - templates/app-deployment.yaml
+  - templates/proxy-deployment.yaml
+release:
+  name: pwa
+chart:
+  appVersion: 9.8.7
+set:
+  config.icmBaseUrl: https://icm.example.com
+tests:
+  - it: app defaults to the SSR image tagged release-<appVersion>
+    template: templates/app-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: intershophub/intershop-pwa-ssr:release-9.8.7
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: IfNotPresent
+
+  - it: proxy defaults to the nginx image tagged release-<appVersion>
+    template: templates/proxy-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: intershophub/intershop-pwa-nginx:release-9.8.7
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: IfNotPresent
+
+  - it: app uses an overridden repository, tag and pull policy
+    template: templates/app-deployment.yaml
+    set:
+      app.image:
+        repository: registry.example.com/shop/pwa-ssr
+        tag: '1.2.3'
+        pullPolicy: Always
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: registry.example.com/shop/pwa-ssr:1.2.3
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: Always
+
+  - it: proxy uses an overridden repository, tag and pull policy
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.image:
+        repository: registry.example.com/shop/pwa-nginx
+        tag: '4.5.6'
+        pullPolicy: Always
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: registry.example.com/shop/pwa-nginx:4.5.6
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: Always
+
+  - it: overriding one tier's image leaves the other tier on the default
+    template: templates/proxy-deployment.yaml
+    set:
+      app.image.tag: '1.2.3'
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: intershophub/intershop-pwa-nginx:release-9.8.7
