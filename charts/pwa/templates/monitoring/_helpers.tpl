@@ -1,31 +1,23 @@
 {{- define "pwa-prometheus.fullname" -}}
-{{- printf "%s-%s" (include  "pwa-main.fullname" . ) "prometheus" -}}
-{{- end -}}
-
-{{- define "pwa-prometheus.name" -}}
-{{- printf "%s-%s" (include  "pwa-main.name" . ) "prometheus" -}}
+{{- include "pwa.suffixedName" (dict "root" . "suffix" "prometheus") -}}
 {{- end -}}
 
 {{- define "pwa-prometheus.config" -}}
-{{- printf "%s-%s" (include  "pwa-prometheus.fullname" . ) "config" -}}
+{{- include "pwa.suffixedName" (dict "root" . "suffix" "prometheus-config") -}}
 {{- end -}}
 
 {{- define "pwa-prometheus.data" -}}
-{{- printf "%s-%s" (include  "pwa-prometheus.fullname" . ) "data" -}}
+{{- include "pwa.suffixedName" (dict "root" . "suffix" "prometheus-data") -}}
 {{- end -}}
 
 {{- define "pwa-grafana.fullname" -}}
-{{- printf "%s-%s" (include  "pwa-main.fullname" . ) "grafana" -}}
-{{- end -}}
-
-{{- define "pwa-grafana.name" -}}
-{{- printf "%s-%s" (include  "pwa-main.name" . ) "grafana" -}}
+{{- include "pwa.suffixedName" (dict "root" . "suffix" "grafana") -}}
 {{- end -}}
 
 {{- define "pwa-grafana.config" -}}
-{{- printf "%s-%s" (include  "pwa-grafana.fullname" . ) "config" -}}
+{{- include "pwa.suffixedName" (dict "root" . "suffix" "grafana-config") -}}
 {{- end -}}
 
 {{- define "pwa-grafana.data" -}}
-{{- printf "%s-%s" (include  "pwa-grafana.fullname" . ) "data" -}}
+{{- include "pwa.suffixedName" (dict "root" . "suffix" "grafana-data") -}}
 {{- end -}}

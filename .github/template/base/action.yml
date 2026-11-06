@@ -11,12 +11,12 @@ runs:
     # Python is required because `ct lint` runs Yamale (https://github.com/23andMe/Yamale) and
     # yamllint (https://github.com/adrienverge/yamllint) which require Python
     - name: Set up Python
-      uses: actions/setup-python@v7.0.0
+      uses: actions/setup-python@v7.1.0
       with:
         python-version: '3.14'
 
     - name: Set up chart-testing
-      uses: helm/chart-testing-action@v2.8.0
+      uses: helm/chart-testing-action@v2.9.0
       with:
         version: 3.14.0
 

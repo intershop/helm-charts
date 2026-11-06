@@ -1,0 +1,12 @@
+{{- if eq (include "icm-as.jgroups.discovery" .) "kube_ping" }}
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ template "icm-as.fullname" . }}-jgroups-role
+  labels:
+    {{- include "icm-as.labels" . | nindent 4 }}
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list"]
+{{ end }}
