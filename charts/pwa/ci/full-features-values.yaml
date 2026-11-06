@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=../values.schema.json
+# chart-testing (ct) install scenario: the features the other scenarios leave off — Hybrid Approach,
+# an Ingress instance, HPAs on both tiers, the default soft pod anti-affinity (kind.yaml provides
+# two worker nodes), and the proxy reset hook. The reset Job is a post-upgrade hook, so it only
+# runs when `ct install --upgrade` upgrades from the target branch (skipped across major versions).
+# kind has no ingress controller or metrics-server; the Ingress and HPA objects are still validated
+# and created by the API server.
+config:
+  icmBaseUrl: 'https://develop.icm.intershop.de'
+  icmBaseUrlSsr: 'https://develop.icm.intershop.de'
+  allowedHosts: 'pwa.localdev'
+
+hybrid:
+  enabled: true
+  pwaExternalPort: 443
+
+app:
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 3
+
+proxy:
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 3
+
+ingress:
+  enabled: true
+  instances:
+    ingress:
+      hosts:
+        - host: pwa.localdev

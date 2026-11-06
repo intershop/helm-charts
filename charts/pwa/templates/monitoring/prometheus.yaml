@@ -4,23 +4,18 @@ kind: Deployment
 metadata:
   name: {{ include "pwa-prometheus.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "pwa-prometheus.name" . }}
-    helm.sh/chart: {{ include "pwa-main.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "pwa.componentLabels" (dict "root" . "component" "prometheus") | nindent 4 }}
 spec:
   strategy:
     type: "Recreate"
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "pwa-prometheus.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- include "pwa.selectorLabels" (dict "root" . "component" "prometheus") | nindent 6 }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "pwa-prometheus.name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- include "pwa.selectorLabels" (dict "root" . "component" "prometheus") | nindent 8 }}
     spec:
       containers:
         - args:
@@ -29,9 +24,12 @@ spec:
             - --web.console.libraries=/etc/prometheus/console_libraries
             - --web.console.templates=/etc/prometheus/consoles
             - --web.enable-lifecycle
-          image: prom/prometheus:latest
+          image: "{{ .Values.monitoring.prometheus.image.repository }}:{{ .Values.monitoring.prometheus.image.tag }}"
+          imagePullPolicy: {{ .Values.monitoring.prometheus.image.pullPolicy }}
           name: {{ .Chart.Name }}
           ports:
+            # Dev-only: hostPort exposes Prometheus on the node without an Ingress; it also caps
+            # this Deployment to one pod per node. Never enable monitoring on a shared cluster.
             - containerPort: 9090
               hostPort: 9090
               protocol: TCP
@@ -59,18 +57,14 @@ kind: Service
 metadata:
   name: {{ include "pwa-prometheus.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "pwa-prometheus.name" . }}
-    helm.sh/chart: {{ include "pwa-main.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "pwa.componentLabels" (dict "root" . "component" "prometheus") | nindent 4 }}
 spec:
   ports:
     - name: prometheus
       port: 9090
       targetPort: 9090
   selector:
-    app.kubernetes.io/name: {{ include "pwa-prometheus.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- include "pwa.selectorLabels" (dict "root" . "component" "prometheus") | nindent 4 }}
 
 ---
 {{ if ((.Values.monitoring).prometheus).host }}
@@ -79,10 +73,7 @@ kind: Ingress
 metadata:
   name: {{ include "pwa-prometheus.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "pwa-prometheus.name" . }}
-    helm.sh/chart: {{ include "pwa-main.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "pwa.componentLabels" (dict "root" . "component" "prometheus") | nindent 4 }}
   {{- with ((.Values.monitoring).prometheus).annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -108,12 +99,11 @@ kind: ConfigMap
 metadata:
   name: {{ include "pwa-prometheus.config" . }}
   labels:
-    app.kubernetes.io/name: {{ include "pwa-prometheus.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- include "pwa.componentLabels" (dict "root" . "component" "prometheus") | nindent 4 }}
 data:
   prometheus.yml: |
     scrape_configs:
-      - job_name: 'pwa-nginx'
+      - job_name: 'pwa-proxy'
         scrape_interval: 5s
         metrics_path: /metrics
         relabel_configs: &relabel
@@ -125,14 +115,14 @@ data:
             target_label: instance
         dns_sd_configs:
           - names:
-              - _metrics._tcp.{{ include "pwa-cache-metrics.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
-      - job_name: 'pwa-ssr'
+              - _metrics._tcp.{{ include "pwa.proxyMetricsFullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+      - job_name: 'pwa-app'
         scrape_interval: 5s
         metrics_path: /metrics
         relabel_configs: *relabel
         dns_sd_configs:
           - names:
-              - _metrics._tcp.{{ include "pwa-main-metrics.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+              - _metrics._tcp.{{ include "pwa.appMetricsFullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
 ---
 apiVersion: v1
@@ -140,8 +130,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ include "pwa-prometheus.data" . }}
   labels:
-    app.kubernetes.io/name: {{ include "pwa-prometheus.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- include "pwa.componentLabels" (dict "root" . "component" "prometheus") | nindent 4 }}
 spec:
   accessModes:
     - ReadWriteOnce
