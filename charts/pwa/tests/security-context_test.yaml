@@ -1,0 +1,201 @@
+suite: security contexts are hardened by default
+templates:
+  - templates/app-deployment.yaml
+  - templates/proxy-deployment.yaml
+  - templates/serviceaccount.yaml
+release:
+  name: pwa
+set:
+  config.icmBaseUrl: https://icm.example.com
+tests:
+  - it: app pod runs as non-root 65534 with the runtime-default seccomp profile
+    template: templates/app-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.securityContext.runAsNonRoot
+          value: true
+      - equal:
+          path: spec.template.spec.securityContext.runAsUser
+          value: 65534
+      - equal:
+          path: spec.template.spec.securityContext.seccompProfile.type
+          value: RuntimeDefault
+
+  - it: app container drops all capabilities and forbids privilege escalation
+    template: templates/app-deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation
+          value: false
+      - contains:
+          path: spec.template.spec.containers[0].securityContext.capabilities.drop
+          content: ALL
+
+  - it: proxy master stays root but keeps only the capabilities nginx needs
+    template: templates/proxy-deployment.yaml
+    asserts:
+      - isNull:
+          path: spec.template.spec.securityContext.runAsNonRoot
+      - contains:
+          path: spec.template.spec.containers[0].securityContext.capabilities.drop
+          content: ALL
+      - contains:
+          path: spec.template.spec.containers[0].securityContext.capabilities.add
+          content: CHOWN
+      - contains:
+          path: spec.template.spec.containers[0].securityContext.capabilities.add
+          content: SETUID
+      - contains:
+          path: spec.template.spec.containers[0].securityContext.capabilities.add
+          content: DAC_OVERRIDE
+
+  - it: app securityContext overrides are deep-merged onto the shared baseline
+    template: templates/app-deployment.yaml
+    set:
+      app.securityContext:
+        readOnlyRootFilesystem: true
+        runAsUser: 1000
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].securityContext
+          value:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsUser: 1000
+            capabilities:
+              drop:
+                - ALL
+
+  - it: a tier override can switch a baseline true back to false
+    template: templates/app-deployment.yaml
+    set:
+      securityContext.readOnlyRootFilesystem: true
+      app.securityContext.readOnlyRootFilesystem: false
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.readOnlyRootFilesystem
+          value: false
+
+  - it: the shared securityContext baseline applies to both tiers
+    templates:
+      - templates/app-deployment.yaml
+      - templates/proxy-deployment.yaml
+    set:
+      securityContext.readOnlyRootFilesystem: true
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.readOnlyRootFilesystem
+          value: true
+        template: templates/app-deployment.yaml
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.readOnlyRootFilesystem
+          value: true
+        template: templates/proxy-deployment.yaml
+
+  # Per-tier overrides must stay isolated from the shared baseline and the other tier.
+  - it: an app securityContext override does not leak into the proxy
+    templates:
+      - templates/app-deployment.yaml
+      - templates/proxy-deployment.yaml
+    set:
+      app.securityContext:
+        runAsUser: 1000
+        readOnlyRootFilesystem: true
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsUser
+          value: 1000
+        template: templates/app-deployment.yaml
+      - notExists:
+          path: spec.template.spec.containers[0].securityContext.runAsUser
+        template: templates/proxy-deployment.yaml
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.readOnlyRootFilesystem
+          value: false
+        template: templates/proxy-deployment.yaml
+
+  - it: custom proxy capabilities replace the default add list but keep drop ALL
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.securityContext.capabilities.add:
+        - NET_BIND_SERVICE
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.capabilities
+          value:
+            drop:
+              - ALL
+            add:
+              - NET_BIND_SERVICE
+
+  - it: service account enables API token automount by default
+    template: templates/serviceaccount.yaml
+    documentIndex: 0
+    asserts:
+      - equal:
+          path: automountServiceAccountToken
+          value: true
+      - notExists:
+          path: metadata.annotations
+
+  - it: service account can disable API token automount
+    template: templates/serviceaccount.yaml
+    documentIndex: 0
+    set:
+      serviceAccount.automount: false
+    asserts:
+      - equal:
+          path: automountServiceAccountToken
+          value: false
+
+  - it: service account carries custom annotations (e.g. workload identity)
+    template: templates/serviceaccount.yaml
+    documentIndex: 0
+    set:
+      serviceAccount.annotations:
+        azure.workload.identity/client-id: 00000000-0000-0000-0000-000000000000
+    asserts:
+      - equal:
+          path: metadata.annotations
+          value:
+            azure.workload.identity/client-id: 00000000-0000-0000-0000-000000000000
+
+  - it: service account RBAC can only get the app Endpoints resource
+    template: templates/serviceaccount.yaml
+    documentIndex: 1
+    asserts:
+      - isKind:
+          of: Role
+      - equal:
+          path: rules[0].apiGroups
+          value: ['']
+      - equal:
+          path: rules[0].resources
+          value: ['endpoints']
+      - equal:
+          path: rules[0].resourceNames
+          value: ['pwa-app']
+      - equal:
+          path: rules[0].verbs
+          value: ['get']
+
+  - it: role binding targets the workload service account
+    template: templates/serviceaccount.yaml
+    documentIndex: 2
+    asserts:
+      - isKind:
+          of: RoleBinding
+      - equal:
+          path: roleRef.name
+          value: pwa-endpoints-reader
+      - equal:
+          path: subjects[0].name
+          value: pwa
+
+  - it: does not create account or RBAC when serviceAccount.create is false
+    template: templates/serviceaccount.yaml
+    set:
+      serviceAccount.create: false
+    asserts:
+      - hasDocuments:
+          count: 0
