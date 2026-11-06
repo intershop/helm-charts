@@ -143,9 +143,11 @@ jobs:
             tag=${chart}-${version}
 
             # generate ONLY the new version's section
+            # (-main)? also matches the legacy pwa-main-<semver> tags; inert for the normal prepend
+            # (previous tag stays the latest <chart>-<semver>), but keeps the 0.x history on a full regen
             ./git-chglog/git-chglog \
               --path ./charts/${chart} \
-              --tag-filter-pattern "^${chart}-\d+.\d+.\d+$" \
+              --tag-filter-pattern "^${chart}(-main)?-\d+.\d+.\d+$" \
               --next-tag ${tag} \
               -o /tmp/${chart}-new-section.md \
               ${tag}

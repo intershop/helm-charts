@@ -1,0 +1,30 @@
+name: 'Integration test pwa chart'
+on:
+  pull_request:
+    paths:
+      - 'charts/pwa/**'
+      - '.github/workflows/lint-test_pwa-integrationtest.yml'
+      - '.github/template/base/**'
+      - 'ct_pwa.yaml'
+      - 'kind.yaml'
+
+jobs:
+  lint-test-pwa-integrationtest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Base
+        uses: ./.github/template/base
+
+      # No `ct list-changed` gate: ct_pwa.yaml pins `charts: [charts/pwa]`, and the path filter
+      # above already limits this workflow to PWA-related changes (including the CI config).
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.15.1
+        with:
+          config: kind.yaml
+
+      - name: Run chart-testing (install)
+        run: ct install --config ct_pwa.yaml --upgrade
