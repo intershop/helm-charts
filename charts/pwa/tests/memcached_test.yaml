@@ -1,0 +1,91 @@
+suite: shared Memcached cache
+templates:
+  - templates/memcached-deployment.yaml
+  - templates/memcached-service.yaml
+  - templates/proxy-deployment.yaml
+release:
+  name: pwa
+tests:
+  - it: renders the Memcached deployment with the configured defaults
+    template: templates/memcached-deployment.yaml
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.name
+          value: pwa-memcached
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: memcached:1.6.45
+      - equal:
+          path: spec.template.spec.containers[0].args
+          value:
+            - -m
+            - '2900'
+            - -I
+            - 10M
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.memory
+          value: 1G
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.memory
+          value: 3G
+
+  - it: exposes Memcached only through its cluster service
+    template: templates/memcached-service.yaml
+    asserts:
+      - isKind:
+          of: Service
+      - equal:
+          path: metadata.name
+          value: pwa-memcached
+      - equal:
+          path: spec.type
+          value: ClusterIP
+      - equal:
+          path: spec.ports[0].port
+          value: 11211
+      - equal:
+          path: spec.selector["app.kubernetes.io/component"]
+          value: memcached
+
+  - it: points the proxy at the Memcached service
+    template: templates/proxy-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: MEMCACHED_HOSTNAME
+            value: pwa-memcached
+
+  - it: accepts image, arguments, and resource overrides
+    template: templates/memcached-deployment.yaml
+    set:
+      proxy.memcached.image: custom/memcached:1.6.30
+      proxy.memcached.args: '["-m", "512"]'
+      proxy.memcached.memoryRequest: 512Mi
+      proxy.memcached.memoryLimit: 1Gi
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: custom/memcached:1.6.30
+      - equal:
+          path: spec.template.spec.containers[0].args
+          value:
+            - -m
+            - '512'
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.memory
+          value: 512Mi
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.memory
+          value: 1Gi
+
+  - it: accepts a Memcached Service type override
+    template: templates/memcached-service.yaml
+    set:
+      proxy.memcached.service.type: NodePort
+    asserts:
+      - equal:
+          path: spec.type
+          value: NodePort

@@ -7,7 +7,7 @@ description: |
 type: application
 icon: https://avatars.githubusercontent.com/u/39526063
 # Chart version (bump on chart changes, independent of the app).
-version: 1.0.0
+version: 1.0.0-memcached.1
 
 # Version of the Intershop PWA this chart deploys by default.
 appVersion: '13.0.0'

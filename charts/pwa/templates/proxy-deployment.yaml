@@ -1,4 +1,4 @@
-{{- $managed := dict "HELM_RELEASE_REVISION" "the chart sets it" "UPSTREAM_PWA" "the chart points it at the app Service" "ICM_BASE_URL" "use `config.icmBaseUrl`" "LOGLEVEL" "use `proxy.logging.level`" "LOGFORMAT" "use `proxy.logging.format`" }}
+{{- $managed := dict "HELM_RELEASE_REVISION" "the chart sets it" "UPSTREAM_PWA" "the chart points it at the app Service" "MEMCACHED_HOSTNAME" "the chart points it at the Memcached Service" "ICM_BASE_URL" "use `config.icmBaseUrl`" "LOGLEVEL" "use `proxy.logging.level`" "LOGFORMAT" "use `proxy.logging.format`" }}
 {{- if .Values.config.icmBaseUrlSsr }}{{ $_ := set $managed "ICM_BASE_URL_SSR" "it is set from `config.icmBaseUrlSsr`" }}{{ end }}
 {{- if and .Values.hybrid.enabled .Values.hybrid.pwaExternalPort }}{{ $_ := set $managed "HYBRID_FORWARDED_PORT" "it is set from `hybrid.pwaExternalPort`" }}{{ end }}
 {{- if include "pwa.proxyMetricsEnabled" . }}{{ $_ := set $managed "PROMETHEUS" "it is set by `proxy.metrics.enabled`/`monitoring.enabled`" }}{{ end }}
@@ -79,6 +79,8 @@ spec:
               value: "{{ .Release.Revision }}"
             - name: UPSTREAM_PWA
               value: {{ include "pwa.appUpstream" . | quote }}
+            - name: MEMCACHED_HOSTNAME
+              value: {{ include "pwa.componentName" (dict "root" . "component" "memcached") | quote }}
             - name: ICM_BASE_URL
               value: {{ .Values.config.icmBaseUrl | quote }}
             {{- if .Values.config.icmBaseUrlSsr }}

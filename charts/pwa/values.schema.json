@@ -123,7 +123,7 @@
     "imagePullSecrets": {
       "type": "array",
       "title": "Image pull secrets",
-      "description": "Image pull secrets applied to both tiers' pods.",
+      "description": "Image pull secrets applied to the app, proxy, and Memcached pods.",
       "items": {
         "type": "object",
         "additionalProperties": false,
@@ -210,6 +210,46 @@
               "type": "string",
               "title": "Ignored cache query parameters configuration",
               "description": "nginx ignores query parameters during caching"
+            },
+            "memcached": {
+              "type": "object",
+              "title": "Shared Memcached cache",
+              "additionalProperties": false,
+              "properties": {
+                "image": {
+                  "type": "string",
+                  "title": "Memcached image",
+                  "default": "memcached:1.6.45"
+                },
+                "args": {
+                  "type": "string",
+                  "title": "Memcached container arguments as a JSON array",
+                  "default": "[\"-m\", \"2900\", \"-I\", \"10M\"]"
+                },
+                "memoryRequest": {
+                  "type": "string",
+                  "title": "Memcached memory request",
+                  "default": "1G"
+                },
+                "memoryLimit": {
+                  "type": "string",
+                  "title": "Memcached memory limit",
+                  "default": "3G"
+                },
+                "service": {
+                  "type": "object",
+                  "title": "Memcached Service",
+                  "additionalProperties": false,
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "title": "Memcached Service type",
+                      "enum": ["ClusterIP", "NodePort", "LoadBalancer"],
+                      "default": "ClusterIP"
+                    }
+                  }
+                }
+              }
             },
             "reset": {
               "type": "object",

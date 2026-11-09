@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "pwa.componentName" (dict "root" . "component" "memcached") }}
+  labels:
+    {{- include "pwa.commonLabels" . | nindent 4 }}
+    app.kubernetes.io/component: memcached
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "pwa.selectorLabels" (dict "root" . "component" "memcached") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "pwa.selectorLabels" (dict "root" . "component" "memcached") | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: memcached
+          image: {{ .Values.proxy.memcached.image | quote }}
+          imagePullPolicy: IfNotPresent
+          command: ["memcached"]
+          args: {{ .Values.proxy.memcached.args }}
+          ports:
+            - name: memcached
+              containerPort: 11211
+              protocol: TCP
+          env:
+            - name: HELM_RELEASE_REVISION
+              value: "{{ .Release.Revision }}"
+          resources:
+            requests:
+              memory: {{ .Values.proxy.memcached.memoryRequest | quote }}
+            limits:
+              memory: {{ .Values.proxy.memcached.memoryLimit | quote }}

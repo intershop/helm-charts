@@ -29,6 +29,16 @@ Supported sources are pwa-main 0.7.0 and later. The mapping mirrors charts/pwa/d
   * <=0.9 hybrid.backend, 0.10+ hybrid.icmInternalURL           -> config.icmBaseUrlSsr (when hybrid enabled)
   * 0.11 cache.reset.image "repo:tag" string                    -> proxy.reset.image.{repository,tag}
   * cache.init.enabled: false                                   -> proxy.reset.enabled: false
+  Memcached chart build (pwa-main 0.7.1-memcached.N -> pwa 1.0.0-memcached.N):
+  * chart version -> 1.0.0-memcached.1 (not the official 1.0.0) unless --target-version is given
+  * cache.memcached -> proxy.memcached (numeric memory values and list args become strings)
+  * proxy.env[MEMCACHED_HOSTNAME] -> removed (the chart points it at the Memcached Service)
+  * non-ClusterIP cache.service.type (also used by the 0.x Memcached Service) -> warning only
+  * the Memcached Service is renamed (<release>-pwa-main-memcached -> e.g. <release>-pwa-memcached);
+    references in the same folder (e.g. a memcached-exporter address) are reported and, when the new
+    name is known, rewritten with --write. Pass --subst KEY=VALUE to resolve Flux variables such
+    as ${namespace} in the release name. Without it, found references are listed with an ACTION
+    hint.
 
 Migrated ``pwa-main`` Flux HelmReleases additionally get ``proxy.reset.image`` set to the Flux
 substitution variables ``${pwa_proxy_reset_image_repo}``/``${pwa_proxy_reset_image_tag}``
@@ -52,10 +62,12 @@ Options:
   -o, --output-suffix S  Instead of in-place, write to <stem><S> (e.g. .1.0.0.yaml).
   -r, --recursive        Recurse into directories.
       --glob PATTERN     File pattern when scanning directories (default *.y*ml).
-      --target-version V Chart version to set (default 1.0.0).
+      --target-version V Chart version to set (default 1.0.0, or 1.0.0-memcached.1 for
+                         0.x-memcached.N releases).
       --no-lift-env      Keep ICM_BASE_URL_SSR/ALLOWED_HOSTS in app.env (don't lift to config).
       --no-reset-image-vars
                          Don't set proxy.reset.image to the Flux substitution variables.
+      --subst KEY=VALUE  Resolve ${KEY} in release names to compute renamed Memcached Services.
       --show-diff        Print a unified diff of the changes.
 """
 from __future__ import annotations
@@ -63,6 +75,7 @@ from __future__ import annotations
 import argparse
 import difflib
 import io
+import json
 import os
 import re
 import shutil
@@ -131,6 +144,11 @@ RESET_IMAGE_VARS = {
     "tag": "${pwa_proxy_reset_image_tag}",
 }
 RESET_IMAGE_PULL_POLICY = "IfNotPresent"
+# Memcached chart build (special/pwa-memcached): published as pwa-main 0.7.1-memcached.N, now pwa 1.0.0-memcached.N.
+MEMCACHED_TARGET_VERSION = f"{DEFAULT_TARGET_VERSION}-memcached.1"
+MEMCACHED_KEYS = ("image", "args", "memoryRequest", "memoryLimit", "service")
+MEMCACHED_SUFFIX = "memcached"
+FLUX_VAR_RE = re.compile(r"\$\{(\w+)\}")
 
 
 class Report:
@@ -144,6 +162,8 @@ class Report:
         self.warnings: list[str] = []
         self.info: list[str] = []
         self.targets: list = []   # migrated values maps, for optional --validate
+        self.target_version = None  # chart version set on a migrated HelmRelease (for --add-schema)
+        self.memcached_renames: list[dict] = []  # Memcached Service renames, see _record_memcached_rename
 
     def map(self, src: str, dst: str) -> None:
         self.maps.append((src, dst))
@@ -508,8 +528,228 @@ def _drop_config_managed_env(node: CommentedMap, tier: str, config: CommentedMap
         node.pop("env")
 
 
+def _migrate_memcached(proxy: CommentedMap, report: Report, memcached_build: bool) -> None:
+    """Normalize proxy.memcached (from cache.memcached) and drop env/service settings the chart now owns."""
+    if "memcached" in proxy:
+        node = proxy["memcached"]
+        if node is None or (isinstance(node, dict) and not node):
+            proxy.pop("memcached")
+            report.remove("cache.memcached", "empty; the chart defaults apply")
+        elif not isinstance(node, dict):
+            report.warn(f"proxy.memcached is a {type(node).__name__}, not a mapping; left unchanged -- review manually")
+        else:
+            for key in list(node.keys()):
+                if key not in MEMCACHED_KEYS:
+                    report.warn(f"proxy.memcached.{key} is not a known key (allowed: {', '.join(MEMCACHED_KEYS)}); "
+                                f"left unchanged, which the schema rejects -- review manually")
+            for key in ("memoryRequest", "memoryLimit", "image"):
+                if isinstance(node.get(key), (int, float)) and not isinstance(node.get(key), bool):
+                    node[key] = str(node[key])
+                    report.map(f"proxy.memcached.{key} (number)", f"proxy.memcached.{key} (string)")
+            if isinstance(node.get("args"), list):
+                node["args"] = json.dumps([str(a) for a in node["args"]])
+                report.map("proxy.memcached.args (list)", "proxy.memcached.args (JSON string)")
+    if not (memcached_build or "memcached" in proxy):
+        return
+    env = proxy.get("env")
+    if isinstance(env, list):
+        for i in range(len(env) - 1, -1, -1):
+            if isinstance(env[i], dict) and env[i].get("name") == "MEMCACHED_HOSTNAME":
+                del env[i]
+                report.remove("proxy.env[MEMCACHED_HOSTNAME]", "set by the chart to the Memcached Service")
+        if len(env) == 0:
+            proxy.pop("env")
+    service = proxy.get("service")
+    svc_type = service.get("type") if isinstance(service, dict) else None
+    if svc_type not in (None, "ClusterIP"):
+        report.warn(f"cache.service.type {svc_type} also applied to the 0.x Memcached Service; "
+                    f"proxy.memcached.service.type now defaults to ClusterIP -- set it explicitly if needed")
+
+
+def _parse_subst(args) -> dict:
+    result = {}
+    for item in getattr(args, "subst", None) or []:
+        key, sep, value = item.partition("=")
+        if not sep or not key:
+            raise SystemExit(f"--subst expects KEY=VALUE, got {item!r}")
+        result[key.strip()] = value
+    return result
+
+
+def _resolve_vars(text: str, subst: dict):
+    """Replace ${KEY} with --subst values; None if any variable stays unresolved."""
+    unresolved = []
+
+    def repl(m):
+        if m.group(1) in subst:
+            return subst[m.group(1)]
+        unresolved.append(m.group(1))
+        return m.group(0)
+
+    resolved = FLUX_VAR_RE.sub(repl, text)
+    return None if unresolved else resolved
+
+
+def _trim_dash(text: str) -> str:
+    return text[:-1] if text.endswith("-") else text
+
+
+def _chart_fullname(release: str, chart: str, values: dict, subst: dict):
+    """Helm `<chart>.fullname` as (template text, resolved text); None if a Flux variable is unresolved."""
+    override = values.get("fullnameOverride") if isinstance(values, dict) else None
+    if override:
+        template = str(override)
+    else:
+        name = str((values.get("nameOverride") if isinstance(values, dict) else None) or chart)
+        resolved_release, resolved_name = _resolve_vars(release, subst), _resolve_vars(name, subst)
+        if resolved_release is None or resolved_name is None:
+            return None
+        template = release if resolved_name in resolved_release else f"{release}-{name}"
+    resolved = _resolve_vars(template, subst)
+    return None if resolved is None else (template, resolved)
+
+
+def _memcached_service_names(release: str, values: dict, subst: dict):
+    """Old (pwa-main 0.7.1-memcached) and new (pwa 1.0.0-memcached) Memcached Service names, or None."""
+    old = _chart_fullname(release, MIGRATABLE_CHART, values, subst)
+    new = _chart_fullname(release, NEW_CHART_NAME, values, subst)
+    if old is None or new is None:
+        return None
+    # Keep Flux variables in the names unless Helm truncation cuts into them.
+    old_tmpl, old_res = old
+    old_base = old_tmpl if len(old_res) <= 63 and not old_res.endswith("-") else _trim_dash(old_res[:63])
+    new_tmpl, new_res = new
+    limit = 62 - len(MEMCACHED_SUFFIX)
+    new_base = new_tmpl if len(new_res) <= limit and not new_res.endswith("-") else _trim_dash(new_res[:limit])
+    return f"{old_base}-{MEMCACHED_SUFFIX}", f"{new_base}-{MEMCACHED_SUFFIX}"
+
+
+def _contains_without_subst(release: str, name: str):
+    """Decide `name in release` from the literal parts of a release name with unresolved variables, or None."""
+    literal = FLUX_VAR_RE.sub("\0", release)
+    return True if name in literal else None
+
+
+def _record_memcached_rename(release, values, args, report: Report) -> None:
+    """Record the Memcached Service rename of a migrated memcached release; references are handled after the scan."""
+    entry = {"source": report.label, "release": release, "pairs": [], "search": None, "options": None, "vars": []}
+    if not release:
+        entry["search"] = []
+        report.memcached_renames.append(entry)
+        return
+    subst = _parse_subst(args)
+    names = _memcached_service_names(release, values, subst)
+    if names is None:
+        overrides = isinstance(values, dict) and (values.get("fullnameOverride") or values.get("nameOverride"))
+        # With an override both charts build the same fullname, so the Service name does not change.
+        if overrides or _contains_without_subst(release, MIGRATABLE_CHART):
+            return
+        old = f"{release}-{MIGRATABLE_CHART}-{MEMCACHED_SUFFIX}"
+        if _contains_without_subst(release, NEW_CHART_NAME):
+            names = (old, f"{release}-{MEMCACHED_SUFFIX}")
+        else:
+            entry["search"] = [old]
+            entry["options"] = (f"{release}-{MEMCACHED_SUFFIX}", f"{release}-{NEW_CHART_NAME}-{MEMCACHED_SUFFIX}")
+            entry["vars"] = sorted({v for v in FLUX_VAR_RE.findall(release) if v not in subst})
+            report.note(f"Memcached Service {old} is renamed in 1.0.0; the new name depends on the value of "
+                        + ", ".join(f"${{{v}}}" for v in entry["vars"]) + " (references are checked after the scan)")
+            report.memcached_renames.append(entry)
+            return
+    old, new = names
+    if old == new:
+        return
+    report.note(f"Memcached Service renamed: {old} -> {new} (references are checked after the scan)")
+    entry["pairs"] = [(old, new)]
+    old_res, new_res = _resolve_vars(old, subst), _resolve_vars(new, subst)
+    if old_res is not None and new_res is not None and (old_res, new_res) != (old, new):
+        entry["pairs"].append((old_res, new_res))
+    report.memcached_renames.append(entry)
+
+
+def _name_pattern(name: str):
+    return re.compile(r"(?<![\w$-])" + re.escape(name) + r"(?![\w-])")
+
+
+def _find_references(texts: dict, name: str):
+    """Yield (path, line number) of every reference to `name` in the scanned files."""
+    pattern = _name_pattern(name)
+    for path, text in texts.items():
+        for m in pattern.finditer(text):
+            yield path, text.count("\n", 0, m.start()) + 1
+
+
+def rewrite_memcached_references(paths, renames, args) -> int:
+    """Rewrite or report references to renamed Memcached Services in the scanned files of the release's folder.
+
+    Returns (files changed, references that still need manual action).
+    """
+    if not renames:
+        return 0, 0
+    texts = {}
+    for path, _ in iter_paths(paths, args.recursive, args.glob):
+        try:
+            texts[path] = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            continue
+    originals = dict(texts)
+    elsewhere = ("references outside this folder (other folders, dashboards, alert rules) are not checked "
+                 "-- update them manually")
+    pending = 0
+    for entry in renames:
+        header = f"\n=== Memcached Service rename: release {entry['release'] or '(unknown)'} ({entry['source']}) ==="
+        # Deployment folders are per environment: only files next to the HelmRelease can reference its Service.
+        folder = Path(entry["source"]).resolve().parent
+        local = {p: t for p, t in originals.items() if p.resolve().parent == folder}
+        if entry["search"] is None:
+            # New name known: rewrite every reference.
+            refs = [(old, new, ref) for old, new in entry["pairs"] for ref in _find_references(local, old)]
+            print(header)
+            (old, new), *resolved = entry["pairs"]
+            shown = f"  renamed  {old}  ->  {new}"
+            if resolved:
+                shown += f"  (resolved: {resolved[0][0]} -> {resolved[0][1]})"
+            print(shown)
+            verb = "updated" if args.write else "would update (dry-run, use --write)"
+            for _old, _new, (path, line) in refs:
+                print(f"  {verb}  {path}:{line}")
+            for old, new in entry["pairs"]:
+                texts.update({p: _name_pattern(old).sub(lambda _m, n=new: n, texts[p]) for p in local})
+            if not refs:
+                print(f"  note     no references found in this folder; {elsewhere}")
+            continue
+        if not entry["release"]:
+            pending += 1
+            print(header)
+            print("  WARNING  the release name is unknown, so the old and new Memcached Service names cannot be "
+                  f"determined -- ACTION: update any reference to the Memcached Service manually ({elsewhere})")
+            continue
+        old = entry["search"][0]
+        refs = [ref for name in entry["search"] for ref in _find_references(local, name)]
+        if not refs:
+            print(header)
+            print(f"  note     {old} is renamed in 1.0.0; no references found in this folder, nothing to "
+                  f"do. Note: {elsewhere}")
+            continue
+        pending += len(refs)
+        print(header)
+        contains, otherwise = entry["options"]
+        variables = ", ".join(f"${{{v}}}" for v in entry["vars"])
+        subst_hint = " ".join(f"--subst {v}=<value>" for v in entry["vars"])
+        for path, line in refs:
+            print(f"  WARNING  {path}:{line} references {old}, which is renamed in 1.0.0 -- NOT updated")
+        print(f"  ACTION   the new name depends on the value of {variables}: {contains} if it contains "
+              f"'{NEW_CHART_NAME}', otherwise {otherwise}.")
+        print(f"           Re-run with {subst_hint} (the value Flux substitutes, e.g. the target namespace), "
+              f"or change the reference(s) above manually.")
+    changed = [p for p in texts if texts[p] != originals[p]]
+    if args.write:
+        for path in changed:
+            path.write_text(texts[path], encoding="utf-8")
+    return len(changed), pending
+
+
 def migrate_values(values: CommentedMap, report: Report, lift_env: bool = True, release=None,
-                   source_version=None, fragment: bool = False) -> bool:
+                   source_version=None, fragment: bool = False, memcached_build: bool = False) -> bool:
     """Transform a 0.x values mapping in place. Returns True if anything changed.
 
     `release` (Helm release name) and `source_version` (0.x chart version tuple) are only needed
@@ -634,6 +874,7 @@ def migrate_values(values: CommentedMap, report: Report, lift_env: bool = True, 
 
     _lift_managed_env(app, "app", report)
     _lift_managed_env(proxy, "proxy", report)
+    _migrate_memcached(proxy, report, memcached_build)
 
     _migrate_hybrid(values, config, report, release, source_version)
     _migrate_ingress(values, report, fragment)
@@ -745,20 +986,32 @@ def migrate_doc(doc, args, report: Report, allow_bare: bool = False) -> bool:
         source_version = _version_tuple(ver)
         if source_version is not None and source_version < MIN_SOURCE_VERSION:
             report.warn(f"source chart version {ver} is older than 0.7.0 and not supported -- review the result manually")
+        memcached_build = MEMCACHED_SUFFIX in ver
+        has_memcached = (isinstance(values, dict) and isinstance(values.get("cache"), dict)
+                         and "memcached" in values["cache"])
+        if has_memcached and not memcached_build:
+            report.warn(f"cache.memcached is set but chart version {ver!r} is not a memcached build -- "
+                        f"proxy.memcached needs pwa {MEMCACHED_TARGET_VERSION}; check spec.chart.spec.version")
         if ver.startswith("0."):
-            chartspec["version"] = args.target_version
-            report.map(f"version: {ver}", f"version: {args.target_version}")
+            target = args.target_version or (MEMCACHED_TARGET_VERSION if memcached_build
+                                             else DEFAULT_TARGET_VERSION)
+            chartspec["version"] = target
+            report.target_version = target
+            report.map(f"version: {ver}", f"version: {target}")
         if "valuesFrom" in spec:
             report.warn("spec.valuesFrom present -- external values are NOT migrated by this tool")
         if values is None and getattr(args, "reset_image_vars", True):
             values = CommentedMap()
             spec["values"] = values
         if isinstance(values, dict):
+            release = _flux_release_name(doc, spec)
             migrate_values(values, report, lift_env=not args.no_lift_env,
-                           release=_flux_release_name(doc, spec), source_version=source_version)
+                           release=release, source_version=source_version, memcached_build=memcached_build)
             if getattr(args, "reset_image_vars", True):
                 _set_reset_image_vars(values, report)
             report.targets.append(values)
+            if memcached_build:
+                _record_memcached_rename(release, values, args, report)
         return report.changed
 
     # Chart-less HelmRelease -- e.g. a Kustomize strategic-merge patch that only overrides
@@ -1071,7 +1324,7 @@ def fold_hpas_in_directory(directory: Path, args, report: Report) -> int:
     return folded
 
 
-def process_file(path: Path, args, explicit: bool = False) -> bool:
+def process_file(path: Path, args, explicit: bool = False, renames: list | None = None) -> bool:
     yaml = _new_yaml()
     original = path.read_text(encoding="utf-8")
     try:
@@ -1097,6 +1350,8 @@ def process_file(path: Path, args, explicit: bool = False) -> bool:
         print(report.render())
     if not changed:
         return False
+    if renames is not None:
+        renames.extend(report.memcached_renames)
 
     if args.validate:
         for idx, vals in enumerate(report.targets, 1):
@@ -1112,7 +1367,8 @@ def process_file(path: Path, args, explicit: bool = False) -> bool:
     new_text = _with_pre_doc_comments(original, _dump_all(yaml, docs))
     if args.add_schema and report.targets:
         is_hr = any(isinstance(d, dict) and d.get("kind") == "HelmRelease" for d in docs)
-        new_text = _with_schema_modeline(new_text, args.target_version, is_hr)
+        new_text = _with_schema_modeline(new_text, report.target_version or args.target_version or DEFAULT_TARGET_VERSION,
+                                         is_hr)
     if args.show_diff:
         diff = difflib.unified_diff(
             original.splitlines(keepends=True), new_text.splitlines(keepends=True),
@@ -1156,11 +1412,16 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("-o", "--output-suffix", help="write to <stem><suffix> instead of in place")
     ap.add_argument("-r", "--recursive", action="store_true", help="recurse into directories")
     ap.add_argument("--glob", default="*.y*ml", help="file pattern for directories (default *.y*ml)")
-    ap.add_argument("--target-version", default=DEFAULT_TARGET_VERSION, help="chart version to set")
+    ap.add_argument("--target-version",
+                    help=f"chart version to set (default {DEFAULT_TARGET_VERSION}, "
+                         f"or {MEMCACHED_TARGET_VERSION} for 0.x-memcached.N releases)")
     ap.add_argument("--no-lift-env", action="store_true", help="keep ICM_BASE_URL_SSR/ALLOWED_HOSTS in app.env")
     ap.add_argument("--no-reset-image-vars", dest="reset_image_vars", action="store_false",
                     help="don't set proxy.reset.image to ${pwa_proxy_reset_image_repo}/${pwa_proxy_reset_image_tag} "
                          "in migrated Flux HelmReleases")
+    ap.add_argument("--subst", action="append", metavar="KEY=VALUE",
+                    help="value of a Flux variable ${KEY} used in release names (repeatable); needed to compute "
+                         "the renamed Memcached Service when the release name uses variables")
     ap.add_argument("--show-diff", action="store_true", help="print a unified diff of changes")
     ap.add_argument("-v", "--verbose", action="store_true", help="also report files that were skipped/unchanged")
     ap.add_argument("--validate", action="store_true",
@@ -1170,11 +1431,13 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--add-schema", action="store_true",
                     help="prepend a yaml-language-server $schema modeline (flux/values schema, pinned to --target-version)")
     args = ap.parse_args(argv)
+    _parse_subst(args)
 
     total = changed = 0
+    renames: list[dict] = []
     for path, explicit in iter_paths(args.paths, args.recursive, args.glob):
         total += 1
-        if process_file(path, args, explicit):
+        if process_file(path, args, explicit, renames):
             changed += 1
 
     # Folder mode only: fold standalone HPA manifests into their HelmRelease's values.
@@ -1184,9 +1447,17 @@ def main(argv: list[str] | None = None) -> int:
         if p.is_dir():
             hpa_folded += fold_hpas_in_directory(p, args, Report(f"HPA folding: {p}"))
 
+    refs, pending = rewrite_memcached_references(args.paths, renames, args)
+
     print(f"\nSummary: migrated {changed} of {total} scanned file(s).")
     if hpa_folded:
         print(f"Folded {hpa_folded} HorizontalPodAutoscaler(s) into HelmRelease values.")
+    if refs:
+        verb = "Updated" if args.write else "Would update (dry-run)"
+        print(f"{verb} Memcached Service references in {refs} file(s).")
+    if pending:
+        print(f"ACTION REQUIRED: {pending} Memcached Service reference(s) could not be updated -- "
+              f"see 'ACTION'/'WARNING' under 'Memcached Service rename' above.")
     return 0
 
 

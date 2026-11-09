@@ -36,7 +36,7 @@ It is intentionally **not** part of the published chart package, so you must get
 Download just the file (pin to the release tag or use `main` for the latest):
 
 ```bash
-curl -fsSLO https://raw.githubusercontent.com/intershop/helm-charts/pwa-1.0.0/charts/pwa/scripts/migrate-to-1.0.0.py
+curl -fsSLO https://raw.githubusercontent.com/intershop/helm-charts/pwa-1.0.0-memcached.1/charts/pwa/scripts/migrate-to-1.0.0.py
 ```
 
 Alternatively, clone the repository and run it from there (recommended if you want `--validate`, since a local copy of the chart is then available):
@@ -129,7 +129,7 @@ Adjust the path to wherever you saved the script (e.g., `python charts/pwa/scrip
 - **`--validate`** renders each migrated result against the chart (`helm template`) so that any remaining issue (including a pre-existing typo) surfaces immediately.
   It needs a local copy of the chart: from a repo clone, the default works; if you downloaded only the script, point it at a chart with `--chart-dir` (e.g., `helm pull intershop/pwa --untar` first).
 
-- **`--add-schema`** prepends a `# yaml-language-server: $schema=…` line so that editors with the YAML extension validate the file live as you edit. HelmRelease files get the Flux schema, bare values files the values schema, pinned to `--target-version`.
+- **`--add-schema`** prepends a `# yaml-language-server: $schema=…` line so that editors with the YAML extension validate the file live as you edit. HelmRelease files get the Flux schema, bare values files the values schema, pinned to the chart version set on the HelmRelease (`--target-version`, or its default for the release).
   Any existing modeline is replaced.
 
 - **Not handled:**
@@ -138,6 +138,37 @@ Adjust the path to wherever you saved the script (e.g., `python charts/pwa/scrip
   Unknown/custom keys are left unchanged and are handled later by schema validation.
 
 Run `MIGRATE --help` for the full list of options.
+
+### Memcached Builds
+
+The special `pwa-main` `0.7.1-memcached.N` chart builds are migrated to the matching `pwa` `1.0.0-memcached.N` build, not to the official `1.0.0` chart, which has no Memcached support.
+
+| 0.7.1-memcached.N                                     | 1.0.0-memcached.N                                                                                                    |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `version: 0.7.1-memcached.N`                          | `version: 1.0.0-memcached.1` (default for Memcached builds; override with `--target-version`)                        |
+| `cache.memcached.*`                                   | `proxy.memcached.*`; numeric `memoryRequest`/`memoryLimit` and list `args` become strings. An empty block is dropped |
+| `cache.extraEnvVars` entry `MEMCACHED_HOSTNAME`       | **Removed** (the chart sets it to the Memcached Service)                                                             |
+| `cache.service.type` (also used by Memcached Service) | Not copied: `proxy.memcached.service.type` defaults to `ClusterIP`. The script warns if the type was different       |
+| Service `<pwa-main fullname>-memcached`               | Service `<pwa fullname>-memcached`, e.g., `pwa-shop-pwa-main-memcached` becomes `pwa-shop-memcached`                 |
+
+Because the Memcached Service is renamed, references outside the HelmRelease, such as the `memcached.address` of a `prometheus-memcached-exporter` HelmRelease, must change too.
+In directory mode, the script searches the scanned files in the same folder as the HelmRelease for the old Service name and rewrites it with `--write`.
+If a release name uses Flux variables (e.g., `releaseName: ${namespace}`), the script needs their values to apply the chart's naming rule.
+Pass them with `--subst`; the variables are kept in the rewritten names:
+
+```bash
+MIGRATE environments/prd/pwa -r --write --validate --subst namespace=pwa-shop-prd
+# memcached-exporter.yaml: ${namespace}-pwa-main-memcached:11211 -> ${namespace}-memcached:11211
+```
+
+Without `--subst`, the script still searches for the old name, which it can derive without the variable values:
+
+- **No reference found:** a note says that there is nothing to do.
+- **Reference found:** each one is listed as `WARNING <file>:<line> … NOT updated`, with an `ACTION` line that names the two possible new names and the exact `--subst` option to pass.
+  The run ends with `ACTION REQUIRED: N Memcached Service reference(s) could not be updated`.
+  Re-run with `--subst` or change the references manually.
+
+Only files in the HelmRelease's folder are checked, because each deployment folder holds one environment; references elsewhere (other folders, dashboards, alert rules) must be updated manually.
 
 ## Values Mapping (0.13.0 to 1.0.0)
 

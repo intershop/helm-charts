@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "pwa.componentName" (dict "root" . "component" "memcached") }}
+  labels:
+    {{- include "pwa.commonLabels" . | nindent 4 }}
+    app.kubernetes.io/component: memcached
+spec:
+  type: {{ .Values.proxy.memcached.service.type }}
+  ports:
+    - name: memcached
+      protocol: TCP
+      port: 11211
+      targetPort: 11211
+  selector:
+    {{- include "pwa.selectorLabels" (dict "root" . "component" "memcached") | nindent 4 }}

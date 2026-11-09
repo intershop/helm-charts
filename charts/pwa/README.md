@@ -103,7 +103,7 @@ _README.md_ is no longer edited directly.
 | config.allowedHosts | string | `nil` | Comma-separated ALLOWED_HOSTS for the SSR app. Optional; leave unset to skip the ALLOWED_HOSTS env var. e.g. "shop.example.com,*.example.com" |
 | hybrid.enabled | bool | `false` | Enable the PWA Hybrid Approach deployment. |
 | hybrid.pwaExternalPort | int | `nil` | External PWA port forwarded to Responsive Starter Store requests. Optional; defaults to the standard port when unset. e.g. 443 |
-| imagePullSecrets | list | `[]` | Image pull secrets applied to both tiers' pods. |
+| imagePullSecrets | list | `[]` | Image pull secrets applied to the app, proxy, and Memcached pods. |
 | serviceAccount.create | bool | `true` | Create a ServiceAccount, Role, and RoleBinding. Limit access to `get` on the PWA app Endpoints resource. |
 | serviceAccount.automount | bool | `true` | Mount the Kubernetes API token in Pods. The proxy cache clearer uses it to read the app Endpoints resource. |
 | serviceAccount.name | string | `""` | Name of the ServiceAccount to use. Generated if empty and create=true. |
@@ -150,6 +150,7 @@ _README.md_ is no longer edited directly.
 | proxy.multiChannel | string | `""` | Multi-channel/-site routing configuration (YAML string). |
 | proxy.additionalHeaders | string | `""` | Additional response headers configuration (YAML string). |
 | proxy.cacheIgnoreParams | string | `""` | Query parameters nginx ignores when caching (YAML string). |
+| proxy.memcached | object | see [values.yaml](./values.yaml) | Shared Memcached server used by the proxy cache. |
 | proxy.reset | object | see [values.yaml](./values.yaml) | Post-upgrade job that restarts the proxy to purge cached SSR pages. |
 | proxy.podSecurityContext | object | see [values.yaml](./values.yaml) | Pod security context for the proxy (master runs as root). |
 | proxy.securityContext | object | see [values.yaml](./values.yaml) | Container security context for the proxy (adds CHOWN/SETGID/SETUID/DAC_OVERRIDE). |
@@ -188,7 +189,7 @@ For the more common Intershop PWA deployments via Flux, the repository also prov
 Reference this file in the PWA Flux deployment configuration files with a reference to the appropriate version as follows:
 
 ```yaml
-# yaml-language-server: $schema=https://raw.githubusercontent.com/intershop/helm-charts/pwa-1.0.0/charts/pwa/values-flux.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/intershop/helm-charts/pwa-1.0.0-memcached.1/charts/pwa/values-flux.schema.json
 ```
 
 ## Hybrid Approach
@@ -368,6 +369,25 @@ proxy:
 
 When enabled, the job runs automatically after each `helm upgrade` operation, ensuring the cache is fresh and consistent with the latest PWA SSR container deployment.
 
+## Shared Memcached Cache
+
+The proxy tier can use a shared Memcached instance so cached content is available across proxy replicas. The chart deploys one Memcached pod and a cluster-internal Service, and sets `MEMCACHED_HOSTNAME` in the proxy container to that Service's name.
+
+```yaml
+proxy:
+  memcached:
+    image: memcached:1.6.45
+    args: '["-m", "2900", "-I", "10M"]'
+    memoryRequest: 1G
+    memoryLimit: 3G
+    service:
+      type: ClusterIP
+```
+
+`proxy.memcached.args` is a JSON array represented as a string. The image, memory request and limit, and Service type can be overridden. Memcached is internal to the cluster by default.
+
+When migrating from `pwa-main` `0.7.1-memcached.N`, the migration script maps `cache.memcached` to `proxy.memcached` and targets this chart version. The Memcached Service is renamed: for example, for the release `pwa-shop`, `pwa-shop-pwa-main-memcached` becomes `pwa-shop-memcached`. See [Memcached Builds](docs/migrate-to-1.0.0.md#memcached-builds).
+
 ## Prometheus Metrics
 
 To expose the metrics of the app (SSR) and proxy (nginx) containers, both support a per-tier `metrics` configuration.
@@ -427,7 +447,7 @@ spec:
     spec:
       # pwa helm chart, version from https://github.com/intershop/helm-charts
       chart: pwa
-      version: 1.0.0
+      version: 1.0.0-memcached.1
       # Source reference to the HelmChart Repo
       sourceRef:
         kind: HelmRepository

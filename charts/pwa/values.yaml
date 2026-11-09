@@ -30,7 +30,7 @@ hybrid:
   # e.g. 443
   pwaExternalPort:
 
-# -- Image pull secrets applied to both tiers' pods.
+# -- Image pull secrets applied to the app, proxy, and Memcached pods.
 imagePullSecrets: []
 # - name: regcred
 
@@ -262,6 +262,16 @@ proxy:
   #     - utm_campaign
   # -- Query parameters nginx ignores when caching (YAML string).
   cacheIgnoreParams: ''
+
+  # -- Shared Memcached server used by the proxy cache.
+  memcached:
+    image: memcached:1.6.45
+    # JSON array rendered as the container args list.
+    args: '["-m", "2900", "-I", "10M"]'
+    memoryRequest: 1G
+    memoryLimit: 3G
+    service:
+      type: ClusterIP
 
   # -- Post-upgrade job that restarts the proxy to purge cached SSR pages.
   # @default -- see [values.yaml](./values.yaml)

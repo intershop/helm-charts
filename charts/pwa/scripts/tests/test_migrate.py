@@ -733,3 +733,219 @@ def test_hpa_folding_dry_run_writes_nothing(tmp_path):
     live = _plain(_load(dst / "release-live.yaml"))
     assert "autoscaling" not in live["spec"]["values"].get("app", {})
 
+
+
+# --- memcached builds (pwa-main 0.7.1-memcached.N -> pwa 1.0.0-memcached.N) ----
+
+MEMCACHED_RELEASE = """\
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pwa
+spec:
+  releaseName: ${namespace}
+  targetNamespace: ${namespace}
+  chart:
+    spec:
+      chart: pwa-main
+      version: 0.7.1-memcached.4
+  values:
+    cache:
+      service:
+        type: NodePort
+      extraEnvVars:
+        - name: MEMCACHED_HOSTNAME
+          value: old-memcached
+        - name: FOO
+          value: bar
+      memcached:
+        image: 'memcached:1.6.21'
+        args: ["-m", "2900", "-I", "10m"]
+        memoryRequest: 1
+        memoryLimit: 3Gi
+"""
+
+MEMCACHED_EXPORTER = """\
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: memcached-exporter
+spec:
+  chart:
+    spec:
+      chart: prometheus-memcached-exporter
+  values:
+    extraArgs:
+      memcached.address: "${namespace}-pwa-main-memcached:11211"
+      other: "${namespace}-pwa-main-memcached-x"
+"""
+
+
+def _memcached_args(**kw):
+    args = _args(target_version=kw.get("target_version"))
+    args.subst = kw.get("subst")
+    return args
+
+
+def test_memcached_release_migration():
+    doc = _yaml().load(MEMCACHED_RELEASE)
+    report = migrate.Report("memcached")
+
+    assert migrate.migrate_doc(doc, _memcached_args(subst=["namespace=pwa-shop-prd"]), report) is True
+
+    assert doc["spec"]["chart"]["spec"]["version"] == "1.0.0-memcached.1"
+    assert report.target_version == "1.0.0-memcached.1"
+    proxy = doc["spec"]["values"]["proxy"]
+    assert _plain(proxy["memcached"]) == {
+        "image": "memcached:1.6.21",
+        "args": '["-m", "2900", "-I", "10m"]',
+        "memoryRequest": "1",
+        "memoryLimit": "3Gi",
+    }
+    assert [e["name"] for e in proxy["env"]] == ["FOO"]
+    assert "proxy.env[MEMCACHED_HOSTNAME]" in report.removed
+    assert any("proxy.memcached.service.type now defaults to ClusterIP" in w for w in report.warnings)
+    [entry] = report.memcached_renames
+    assert entry["search"] is None
+    assert entry["pairs"] == [
+        ("${namespace}-pwa-main-memcached", "${namespace}-memcached"),
+        ("pwa-shop-prd-pwa-main-memcached", "pwa-shop-prd-memcached"),
+    ]
+
+
+def test_explicit_target_version_overrides_memcached_default():
+    doc = _yaml().load(MEMCACHED_RELEASE)
+    report = migrate.Report("memcached")
+
+    migrate.migrate_doc(doc, _memcached_args(target_version="1.0.0-memcached.2"), report)
+
+    assert doc["spec"]["chart"]["spec"]["version"] == "1.0.0-memcached.2"
+
+
+def test_memcached_without_subst_records_undecided_rename_without_warning():
+    doc = _yaml().load(MEMCACHED_RELEASE)
+    report = migrate.Report("memcached")
+
+    migrate.migrate_doc(doc, _memcached_args(), report)
+
+    [entry] = report.memcached_renames
+    assert entry["search"] == ["${namespace}-pwa-main-memcached"]
+    assert entry["options"] == ("${namespace}-memcached", "${namespace}-pwa-memcached")
+    assert entry["vars"] == ["namespace"]
+    # Only a reference that is actually found needs action; the warning is issued after the scan.
+    assert not any("renamed" in w for w in report.warnings)
+
+
+@pytest.mark.parametrize("release, expected", [
+    ("pwa-${namespace}", ("pwa-${namespace}-pwa-main-memcached", "pwa-${namespace}-memcached")),
+    ("pwa-main-${namespace}", None),
+])
+def test_memcached_rename_decided_from_literal_release_parts(release, expected):
+    doc = _yaml().load(MEMCACHED_RELEASE.replace("releaseName: ${namespace}", f"releaseName: {release}"))
+    report = migrate.Report("memcached")
+
+    migrate.migrate_doc(doc, _memcached_args(), report)
+
+    if expected is None:
+        assert report.memcached_renames == []
+    else:
+        assert report.memcached_renames[0]["pairs"] == [expected]
+
+
+@pytest.mark.parametrize("release, overrides, expected", [
+    ("shop", {}, ("shop-pwa-main-memcached", "shop-pwa-memcached")),
+    ("pwa-shop", {}, ("pwa-shop-pwa-main-memcached", "pwa-shop-memcached")),
+    ("pwa-main-shop", {}, ("pwa-main-shop-memcached", "pwa-main-shop-memcached")),
+    ("shop", {"fullnameOverride": "store"}, ("store-memcached", "store-memcached")),
+    ("shop", {"nameOverride": "web"}, ("shop-web-memcached", "shop-web-memcached")),
+])
+def test_memcached_service_names(release, overrides, expected):
+    assert migrate._memcached_service_names(release, overrides, {}) == expected
+
+
+def test_memcached_on_official_chart_version_warns():
+    doc = _yaml().load(MEMCACHED_RELEASE.replace("0.7.1-memcached.4", "0.7.1"))
+    report = migrate.Report("memcached")
+
+    migrate.migrate_doc(doc, _memcached_args(), report)
+
+    assert doc["spec"]["chart"]["spec"]["version"] == "1.0.0"
+    assert any("not a memcached build" in w for w in report.warnings)
+    assert report.memcached_renames == []
+
+
+def test_empty_memcached_block_is_dropped():
+    values = _yaml().load("cache:\n  memcached: {}\n  replicaCount: 2\n")
+    report = migrate.Report("empty")
+
+    migrate.migrate_values(values, report, memcached_build=True)
+
+    assert "memcached" not in values["proxy"]
+    assert "cache.memcached" in report.removed
+
+
+def test_memcached_folder_rewrites_references_and_is_idempotent(tmp_path):
+    (tmp_path / "prd-live.yaml").write_text(MEMCACHED_RELEASE, encoding="utf-8")
+    exporter = tmp_path / "memcached-exporter.yaml"
+    exporter.write_text(MEMCACHED_EXPORTER, encoding="utf-8")
+    argv = [str(tmp_path), "-r", "--write", "--subst", "namespace=pwa-shop-prd"]
+
+    assert migrate.main(argv) == 0
+    text = exporter.read_text(encoding="utf-8")
+    assert '"${namespace}-memcached:11211"' in text
+    assert '"${namespace}-pwa-main-memcached-x"' in text  # a longer name is not a reference
+    assert "1.0.0-memcached.1" in (tmp_path / "prd-live.yaml").read_text(encoding="utf-8")
+
+    before = {p.name: p.read_text(encoding="utf-8") for p in tmp_path.iterdir()}
+    migrate.main(argv)
+    assert {p.name: p.read_text(encoding="utf-8") for p in tmp_path.iterdir()} == before
+
+
+def test_memcached_references_untouched_without_subst_or_write(tmp_path):
+    (tmp_path / "prd-live.yaml").write_text(MEMCACHED_RELEASE, encoding="utf-8")
+    exporter = tmp_path / "memcached-exporter.yaml"
+    exporter.write_text(MEMCACHED_EXPORTER, encoding="utf-8")
+
+    migrate.main([str(tmp_path), "-r", "--subst", "namespace=pwa-shop-prd"])  # dry-run
+    assert exporter.read_text(encoding="utf-8") == MEMCACHED_EXPORTER
+
+    migrate.main([str(tmp_path), "-r", "--write"])  # no --subst
+    assert exporter.read_text(encoding="utf-8") == MEMCACHED_EXPORTER
+
+
+def test_memcached_reference_without_subst_requires_action(tmp_path, capsys):
+    (tmp_path / "prd-live.yaml").write_text(MEMCACHED_RELEASE, encoding="utf-8")
+    (tmp_path / "memcached-exporter.yaml").write_text(MEMCACHED_EXPORTER, encoding="utf-8")
+
+    migrate.main([str(tmp_path), "-r"])
+
+    out = capsys.readouterr().out
+    assert "memcached-exporter.yaml:11 references ${namespace}-pwa-main-memcached" in out
+    assert "${namespace}-memcached if it contains 'pwa', otherwise ${namespace}-pwa-memcached" in out
+    assert "--subst namespace=<value>" in out
+    assert "ACTION REQUIRED: 1 Memcached Service reference(s)" in out
+
+
+def test_memcached_without_references_needs_no_action(tmp_path, capsys):
+    (tmp_path / "int-live.yaml").write_text(MEMCACHED_RELEASE, encoding="utf-8")
+
+    migrate.main([str(tmp_path), "-r"])
+
+    out = capsys.readouterr().out
+    assert "no references found in this folder, nothing to do" in out
+    assert "ACTION" not in out
+
+
+def test_memcached_references_are_checked_only_in_the_release_folder(tmp_path, capsys):
+    for env in ("int", "prd"):
+        (tmp_path / env).mkdir()
+        (tmp_path / env / f"{env}-live.yaml").write_text(MEMCACHED_RELEASE, encoding="utf-8")
+    exporter = tmp_path / "prd" / "memcached-exporter.yaml"
+    exporter.write_text(MEMCACHED_EXPORTER, encoding="utf-8")
+
+    migrate.main([str(tmp_path), "-r"])
+
+    out = capsys.readouterr().out
+    int_block = out.split(f"({tmp_path / 'int' / 'int-live.yaml'}) ===")[1].split("===")[0]
+    assert "no references found in this folder, nothing to do" in int_block
+    assert "ACTION REQUIRED: 1 Memcached Service reference(s)" in out

@@ -1,6 +1,6 @@
 suite: chart-managed env vars are rejected in app.env / proxy.env
 # Complements fail-fast_test.yaml, which covers PORT, LOGLEVEL, ICM_BASE_URL, ICM_BASE_URL_SSR (app),
-# LOGFORMAT, UPSTREAM_PWA, MULTI_CHANNEL_SOURCE (proxy) and PROMETHEUS (proxy, metrics off).
+# LOGFORMAT, UPSTREAM_PWA, MEMCACHED_HOSTNAME, MULTI_CHANNEL_SOURCE (proxy) and PROMETHEUS (proxy, metrics off).
 templates:
   - templates/app-deployment.yaml
   - templates/proxy-deployment.yaml
@@ -115,6 +115,16 @@ tests:
     asserts:
       - failedTemplate:
           errorPattern: '`HELM_RELEASE_REVISION` must not be set in `proxy.env`; the chart sets it'
+
+  - it: rejects MEMCACHED_HOSTNAME in proxy.env
+    template: templates/proxy-deployment.yaml
+    set:
+      proxy.env:
+        - name: MEMCACHED_HOSTNAME
+          value: memcached.example.com
+    asserts:
+      - failedTemplate:
+          errorPattern: '`MEMCACHED_HOSTNAME` must not be set in `proxy.env`; the chart points it at the Memcached Service'
 
   - it: rejects ICM_BASE_URL in proxy.env
     template: templates/proxy-deployment.yaml
@@ -252,7 +262,7 @@ tests:
                 name: pwa-secrets
                 key: token
 
-  # Default chart-managed proxy env: HELM_RELEASE_REVISION, UPSTREAM_PWA, ICM_BASE_URL, LOGLEVEL, LOGFORMAT.
+  # Default chart-managed proxy env: HELM_RELEASE_REVISION, UPSTREAM_PWA, MEMCACHED_HOSTNAME, ICM_BASE_URL, LOGLEVEL, LOGFORMAT.
   - it: appends user proxy.env entries after the chart-managed ones
     template: templates/proxy-deployment.yaml
     set:
@@ -262,12 +272,12 @@ tests:
     asserts:
       - lengthEqual:
           path: spec.template.spec.containers[0].env
-          count: 6
+          count: 7
       - equal:
-          path: spec.template.spec.containers[0].env[4].name
+          path: spec.template.spec.containers[0].env[5].name
           value: LOGFORMAT
       - equal:
-          path: spec.template.spec.containers[0].env[5]
+          path: spec.template.spec.containers[0].env[6]
           value:
             name: CACHE_DURATION
             value: 10m
