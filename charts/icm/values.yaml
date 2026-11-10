@@ -122,6 +122,7 @@ mailhog:
 # See https://github.com/valkey-io/valkey-helm
 valkey:
   enabled: false
+  deploymentStrategy: Recreate
   # Pure cache: no persistence (save ""), evict any key when full (allkeys-lru),
   # free memory asynchronously to avoid blocking the main thread.
   valkeyConfig: |
