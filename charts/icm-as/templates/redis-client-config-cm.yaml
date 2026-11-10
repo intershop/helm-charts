@@ -15,6 +15,6 @@ data:
       timeout: 50
       retryAttempts: 1
       retryInterval: 50
-      address: {{ printf "redis://%s-valkey:6379" .Release.Name }}
+      address: {{ printf "redis://%s:6379" (ternary .Release.Name (printf "%s-valkey" .Release.Name) (contains "valkey" .Release.Name) | trunc 63 | trimSuffix "-") }}
   {{- end -}}
 {{- end -}}
