@@ -1,0 +1,173 @@
+# Kubernetes ClusterRole restricting the ServiceAccount used by Flux CD (helm-controller,
+# via `spec.serviceAccountName` / impersonation on the HelmRelease) to only the
+# resource kinds that the "icm" umbrella Helm chart (charts/icm) can create,
+# update or delete.
+#
+# This is a ClusterRole (not namespaced) so it can be reused across multiple
+# release namespaces without duplication. Namespace isolation is enforced by
+# binding it via a namespaced RoleBinding (not a ClusterRoleBinding) in each
+# namespace where an "icm" release is installed - this grants the permissions
+# defined here only within that namespace.
+#
+# Usage:
+#   Create a RoleBinding in the target release namespace (the same namespace
+#   referenced by the HelmRelease/Kustomization) with:
+#     roleRef.kind: ClusterRole
+#     roleRef.name: flux-icm
+#   binding it to the ServiceAccount configured in
+#   `HelmRelease.spec.serviceAccountName` for the icm release.
+#
+# "icm" is an umbrella chart (charts/icm/Chart.yaml) with dependencies:
+#   - icm-as (charts/icm-as, always installed)
+#   - icm-web (charts/icm-web, condition icm-web.enabled, true by default)
+#   - ingress-haproxy / kubernetes-ingress (condition ingress-haproxy.enabled, false by default)
+#   - mailhog (condition mailhog.enabled, false by default)
+#   - redis (condition redis.enabled, false by default)
+#   - redis-cluster (condition redis-cluster.enabled, false by default)
+#
+# Resource kinds below were derived by inspecting charts/icm-as/templates/**,
+# charts/icm-web/templates/**, and the packaged subcharts under
+# charts/icm/charts/*.tgz.
+#
+# IMPORTANT - cluster-scoped resources are intentionally NOT granted here:
+# a namespaced RoleBinding can only ever grant access to namespaced resources
+# within that namespace; Kubernetes RBAC ignores rules for cluster-scoped kinds
+# when the binding is a (namespaced) RoleBinding, even if bound to a ClusterRole.
+# The following features of these charts require cluster-scoped objects and
+# CANNOT be managed by this per-namespace Flux ServiceAccount:
+#   - persistence.*.type: "cluster" | "local" | "nfs" (icm-as, icm-web) creates
+#     a StorageClass (storage.k8s.io) and, for "local"/"nfs", a PersistentVolume
+#     (v1) directly. Prefer persistence type "static" (references a
+#     pre-provisioned PV/StorageClass created out-of-band by a cluster admin)
+#     for namespace-isolated GitOps releases.
+#   - icm-as jgroups discovery "kube_ping" (charts/icm-as/templates/jgroups-kubeping-*.yaml)
+#     creates a cluster-scoped ClusterRole "jgroups-kubeping-pod-reader" and a
+#     ClusterRoleBinding. This should be provisioned once, cluster-wide, by a
+#     cluster admin (it is not release-specific) rather than by this Role.
+#   - The "ingress-haproxy" (kubernetes-ingress) subchart deploys a shared
+#     ingress controller: ClusterRole, ClusterRoleBinding, IngressClass,
+#     Namespace, PodSecurityPolicy and (optionally) ServiceMonitor/PodMonitor -
+#     all cluster-scoped or cluster-shared resources. Do not enable this
+#     dependency through a namespace-isolated release; deploy ingress
+#     controllers as separate, dedicated shared infrastructure instead.
+#   - redis / redis-cluster (bitnami) optionally render a cluster-scoped
+#     PodSecurityPolicy when `podSecurityPolicy.create` is enabled. Leave this
+#     disabled; PSP is deprecated/removed on modern Kubernetes versions anyway.
+#   - The ICMJob custom resource (batch.core.intershop.de/v1) used by
+#     icm-as job servers requires its CustomResourceDefinition and its
+#     controller (charts/icm-job, ClusterRole "icm-manager-role", etc.) to
+#     already be installed cluster-wide by a cluster admin. This Role only
+#     grants rights to create/manage "icmjobs" objects, not the controller.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: flux-icm
+rules:
+  # Core resources templated by icm-as / icm-web (secrets, config, networking)
+  # and by the optional mailhog / redis / redis-cluster subcharts.
+  - apiGroups: [""]
+    resources:
+      - configmaps
+      - services
+      - persistentvolumeclaims
+      - serviceaccounts
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # Helm release storage (Secrets) plus chart-templated Secrets (as-secret.yaml,
+  # jwt/auto-generated secrets, mailhog auth/smtp secrets, redis auth secrets).
+  - apiGroups: [""]
+    resources:
+      - secrets
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # Deployments (icm-as, icm-web wa/waa, mssql, mailhog) and StatefulSets
+  # (optional redis / redis-cluster).
+  - apiGroups: [apps]
+    resources:
+      - deployments
+      - statefulsets
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # Jobs, only required by the optional redis-cluster subchart
+  # (update-cluster.yaml, a post-upgrade cluster-resize hook). CronJobs are
+  # granted for icm-specific scheduled rollouts (e.g. periodic maintenance/
+  # restart jobs managed alongside icm releases).
+  - apiGroups: [batch]
+    resources:
+      - jobs
+      - cronjobs
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # Ingress (icm-as, icm-web, mailhog) and NetworkPolicy (optional redis /
+  # redis-cluster).
+  - apiGroups: [networking.k8s.io]
+    resources:
+      - ingresses
+      - networkpolicies
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # Namespaced Role/RoleBinding created by redis / redis-cluster subcharts for
+  # their own service accounts. Deliberately excludes ClusterRole/
+  # ClusterRoleBinding - see the jgroups kube_ping note above.
+  - apiGroups: [rbac.authorization.k8s.io]
+    resources:
+      - roles
+      - rolebindings
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # PodDisruptionBudget, only required by the optional redis / redis-cluster
+  # subcharts.
+  - apiGroups: [policy]
+    resources:
+      - poddisruptionbudgets
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # HorizontalPodAutoscaler, only required by the optional redis /
+  # redis-cluster subcharts.
+  - apiGroups: [autoscaling]
+    resources:
+      - horizontalpodautoscalers
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # SecretProviderClass (Azure Key Vault CSI driver), used by icm-as and
+  # icm-web for SSL certificate retrieval (ssl-certificate-spc.yaml). This CRD
+  # is namespaced, unlike most of the cluster-scoped kinds excluded above.
+  - apiGroups: [secrets-store.csi.x-k8s.io]
+    resources:
+      - secretproviderclasses
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # ICMJob custom resource (icm-as job servers). Namespaced CRD; its
+  # CustomResourceDefinition and controller must already exist cluster-wide.
+  - apiGroups: [batch.core.intershop.de]
+    resources:
+      - icmjobs
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # Optional: Prometheus Operator CRDs, only relevant if the redis /
+  # redis-cluster subcharts are enabled with metrics.serviceMonitor / metrics.prometheusRule,
+  # and only take effect if the Prometheus Operator CRDs are installed on the cluster.
+  - apiGroups: [monitoring.coreos.com]
+    resources:
+      - servicemonitors
+      - prometheusrules
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # Read-only access to Pods spawned transiently during install/upgrade
+  # (Helm test hook Pods under templates/tests/, redis-cluster update-cluster
+  # Job Pods), used for `--wait` readiness checks and failure log retrieval.
+  - apiGroups: [""]
+    resources:
+      - pods
+    verbs: [get, list, watch]
+  - apiGroups: [""]
+    resources:
+      - pods/log
+    verbs: [get]
+
+  # Read-only access to Events for troubleshooting transient resources created
+  # during install/upgrade.
+  - apiGroups: [""]
+    resources:
+      - events
+    verbs: [get, list, watch]
