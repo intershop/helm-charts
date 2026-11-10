@@ -17258,6 +17258,30 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-1.0.0/pwa-1.0.0.tgz
     version: 1.0.0
+  - apiVersion: v2
+    appVersion: 13.0.0
+    created: "2026-11-10T13:27:41.192251384Z"
+    description: 'Helm chart for the Intershop Progressive Web App. Deploys two peer
+      tiers: the "app" Angular SSR application server (Node.js) behind the proxy and
+      the "proxy" reverse-proxy (nginx/OpenResty) as the public front door. '
+    digest: 7fd158b08086a7a22ad2e2a3c484f17ea18499b6055998f6820ee2d2f8db2113
+    icon: https://avatars.githubusercontent.com/u/39526063
+    keywords:
+    - intershop
+    - pwa
+    - angular
+    - ssr
+    - ecommerce
+    kubeVersion: '>=1.23.0-0'
+    maintainers:
+    - name: Intershop PWA Team
+    name: pwa
+    sources:
+    - https://github.com/intershop/intershop-pwa
+    type: application
+    urls:
+    - https://github.com/intershop/helm-charts/releases/download/pwa-1.0.0-memcached.1/pwa-1.0.0-memcached.1.tgz
+    version: 1.0.0-memcached.1
   pwa-main:
   - apiVersion: v2
     created: "2026-06-02T15:27:53.348792776Z"
@@ -17527,4 +17551,4 @@ entries:
     urls:
     - https://github.com/intershop/helm-charts/releases/download/pwa-main-0.2.3/pwa-main-0.2.3.tgz
     version: 0.2.3
-generated: "2026-11-06T12:35:59.276089514Z"
+generated: "2026-11-10T13:27:41.193735095Z"
