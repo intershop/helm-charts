@@ -122,10 +122,24 @@ mailhog:
 # See https://github.com/valkey-io/valkey-helm
 valkey:
   enabled: false
+  # Pure cache: no persistence (save ""), evict any key when full (allkeys-lru),
+  # free memory asynchronously to avoid blocking the main thread.
   valkeyConfig: |
     maxmemory 2g
-    maxmemory-policy volatile-lru
+    maxmemory-policy allkeys-lru
+    save ""
+    lazyfree-lazy-eviction yes
+    lazyfree-lazy-expire yes
+    lazyfree-lazy-server-del yes
+    slowlog-log-slower-than 5000
   auth:
     enabled: false
   metrics:
     enabled: true
+  # The memory limit must be well above maxmemory (overhead, fragmentation).
+  # resources:
+  #   requests:
+  #     memory: 2560Mi
+  #     cpu: 250m
+  #   limits:
+  #     memory: 3Gi
