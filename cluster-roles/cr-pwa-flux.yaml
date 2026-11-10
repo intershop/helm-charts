@@ -70,7 +70,7 @@ rules:
   # Core resources directly templated by the chart
   # (proxy-configmap.yaml, app-service.yaml, proxy-service.yaml,
   # serviceaccount.yaml, proxy-reset-job.yaml, monitoring/*.yaml).
-  - apiGroups: [""]
+  - apiGroups: ['']
     resources:
       - configmaps
       - services
@@ -80,7 +80,7 @@ rules:
 
   # Helm release storage (Secrets) - required even though the chart itself does
   # not template a Secret, because Helm/Flux persist release state as Secrets.
-  - apiGroups: [""]
+  - apiGroups: ['']
     resources:
       - secrets
     verbs: [get, list, watch, create, update, patch, delete]
@@ -127,7 +127,7 @@ rules:
   # creates a Role granting "get" on endpoints to the app ServiceAccount. Flux's
   # own permissions must be a superset of that Role's rules to satisfy
   # Kubernetes RBAC escalation checks when creating/patching the Role.
-  - apiGroups: [""]
+  - apiGroups: ['']
     resources:
       - endpoints
     verbs: [get, list, watch]
@@ -136,18 +136,18 @@ rules:
   # (Helm test hook Pods in templates/tests/test-connection.yaml, proxy-reset
   # hook Job Pods), used for `--wait` readiness checks and hook failure log
   # retrieval.
-  - apiGroups: [""]
+  - apiGroups: ['']
     resources:
       - pods
     verbs: [get, list, watch]
-  - apiGroups: [""]
+  - apiGroups: ['']
     resources:
       - pods/log
     verbs: [get]
 
   # Read-only access to Events for troubleshooting transient resources created
   # during install/upgrade.
-  - apiGroups: [""]
+  - apiGroups: ['']
     resources:
       - events
     verbs: [get, list, watch]

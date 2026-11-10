@@ -44,7 +44,7 @@ metadata:
 rules:
   # Core resources templated by the iom chart (newrelic-config, jwt auto
   # secret) and the optional mailpit / iom-tests / postgres subcharts.
-  - apiGroups: [""]
+  - apiGroups: ['']
     resources:
       - configmaps
       - services
@@ -54,7 +54,7 @@ rules:
 
   # Helm release storage (Secrets) plus chart-templated Secrets
   # (jwt-autosecret.yaml, mailpit auth secrets if enabled).
-  - apiGroups: [""]
+  - apiGroups: ['']
     resources:
       - secrets
     verbs: [get, list, watch, create, update, patch, delete]
@@ -105,18 +105,18 @@ rules:
   # Read-only access to Pods spawned transiently during install/upgrade
   # (Helm test hook Pods under templates/tests/, patch-downtime hook Job
   # Pods), used for `--wait` readiness checks and failure log retrieval.
-  - apiGroups: [""]
+  - apiGroups: ['']
     resources:
       - pods
     verbs: [get, list, watch]
-  - apiGroups: [""]
+  - apiGroups: ['']
     resources:
       - pods/log
     verbs: [get]
 
   # Read-only access to Events for troubleshooting transient resources created
   # during install/upgrade.
-  - apiGroups: [""]
+  - apiGroups: ['']
     resources:
       - events
     verbs: [get, list, watch]

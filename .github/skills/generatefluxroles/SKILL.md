@@ -50,6 +50,12 @@ these four choices: `pwa`, `icm`, `iom`, `all`.
   resource kind found for it, with `verbs: [get, list, watch, create, update,
 patch, delete]` for anything the chart creates/manages. Add a comment above
   each rule naming the template file(s) it came from.
+- **Formatting**: Generated or modified YAML files must comply with the repository's
+  Prettier configuration in [.prettierrc](../../../.prettierrc) (e.g. `singleQuote: true`,
+  `tabWidth: 2`, `printWidth: 120`, and `endOfLine: lf`). Any quoted YAML strings
+  (such as `apiGroups: ['']`) must use single quotes rather than double quotes.
+  When changes are made, ensure the file is formatted according to Prettier
+  (`npx prettier --write cluster-roles/cr-<app>-flux.yaml`).
 - **Always add, even if not directly templated**:
   - Core `secrets`, full CRUD - required because Helm 3 stores release
     history as Secrets (`sh.helm.release.v1.<release>.v<revision>`) in the
@@ -174,7 +180,8 @@ already covered by the base rule set.
      to the same file, preserving the established header-comment structure: purpose
      statement, ClusterRole + namespaced-RoleBinding usage snippet,
      resource-kind-to-template mapping, and a clearly marked section documenting
-     cluster-scoped exclusions and the reasoning/workarounds for each.
+     cluster-scoped exclusions and the reasoning/workarounds for each. Format the
+     resulting manifest according to [.prettierrc](../../../.prettierrc) (notably `singleQuote: true`).
 4. Merge rules (non-negotiable, backwards compatibility):
    - **Never remove** an existing `apiGroup` / resource / verb grant. If the chart
      no longer creates or manages a resource (or a verb is no longer needed), keep

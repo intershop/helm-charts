@@ -65,7 +65,7 @@ metadata:
 rules:
   # Core resources templated by icm-as / icm-web (secrets, config, networking)
   # and by the optional mailhog / redis / redis-cluster subcharts.
-  - apiGroups: [""]
+  - apiGroups: ['']
     resources:
       - configmaps
       - services
@@ -75,7 +75,7 @@ rules:
 
   # Helm release storage (Secrets) plus chart-templated Secrets (as-secret.yaml,
   # jwt/auto-generated secrets, mailhog auth/smtp secrets, redis auth secrets).
-  - apiGroups: [""]
+  - apiGroups: ['']
     resources:
       - secrets
     verbs: [get, list, watch, create, update, patch, delete]
@@ -156,18 +156,18 @@ rules:
   # Read-only access to Pods spawned transiently during install/upgrade
   # (Helm test hook Pods under templates/tests/, redis-cluster update-cluster
   # Job Pods), used for `--wait` readiness checks and failure log retrieval.
-  - apiGroups: [""]
+  - apiGroups: ['']
     resources:
       - pods
     verbs: [get, list, watch]
-  - apiGroups: [""]
+  - apiGroups: ['']
     resources:
       - pods/log
     verbs: [get]
 
   # Read-only access to Events for troubleshooting transient resources created
   # during install/upgrade.
-  - apiGroups: [""]
+  - apiGroups: ['']
     resources:
       - events
     verbs: [get, list, watch]
