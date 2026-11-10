@@ -6,42 +6,52 @@ metadata:
     {{- include "icm-as.labels" . | nindent 4 }}
 data:
   jgroups-config.xml:  |-
-    <!--
-      Default stack using IP multicasting. It is similar to the "udp"
-      stack in stacks.xml, but doesn't use streaming state transfer and flushing
-      author: Bela Ban
-
-      ISH-addition: use different discovery types
-    -->
+    <!-- ISH stack with selectable transport and discovery protocols. -->
     <config xmlns="urn:org:jgroups"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="urn:org:jgroups http://www.jgroups.org/schema/jgroups.xsd"
-            version="5.3.0.Final">
-        <UDP
-            bind_port="7800"
-            ip_mcast="false"
-            tos="8"
-            ucast_recv_buf_size="20000000"
-            ucast_send_buf_size="640000"
-            mcast_recv_buf_size="25000000"
-            mcast_send_buf_size="640000"
+            version="5.5.5.Final">
+{{- if eq (include "icm-as.jgroups.transport" .) "tcp" }}
+        <TCP
+            bind_port="{{ .Values.jgroups.bindPort }}"
+            port_range="{{ .Values.jgroups.portRange }}"
+            use_vthreads="{{ .Values.jgroups.useVirtualThreads }}"
+            recv_buf_size="20000000"
+            send_buf_size="640000"
             bundler.max_size="64000"
-
-            ip_ttl="${jgroups.udp.ip_ttl:2}"
-
             thread_naming_pattern="cl"
             thread_pool.enabled="true"
             thread_pool.min_threads="4"
             thread_pool.max_threads="64"
             thread_pool.keep_alive_time="10000"
         />
+{{- else }}
+        <UDP
+            bind_port="{{ .Values.jgroups.bindPort }}"
+            port_range="{{ .Values.jgroups.portRange }}"
+            use_vthreads="{{ .Values.jgroups.useVirtualThreads }}"
+            ip_mcast="false"
+            tos="8"
+            ucast_recv_buf_size="{{ int .Values.jgroups.udp.receiveBufferSize }}"
+            ucast_send_buf_size="{{ int .Values.jgroups.udp.sendBufferSize }}"
+            mcast_recv_buf_size="{{ int .Values.jgroups.udp.receiveBufferSize }}"
+            mcast_send_buf_size="{{ int .Values.jgroups.udp.sendBufferSize }}"
+            bundler.max_size="64000"
+            ip_ttl="${jgroups.udp.ip_ttl:2}"
+            thread_naming_pattern="cl"
+            thread_pool.enabled="true"
+            thread_pool.min_threads="4"
+            thread_pool.max_threads="64"
+            thread_pool.keep_alive_time="10000"
+        />
+{{- end }}
 
 {{- if eq (include "icm-as.jgroups.discovery" .) "kube_ping" }}
         <!-- discover nodes using KUBE_PING -->
         <org.jgroups.protocols.kubernetes.KUBE_PING
           namespace="{{.Release.Namespace}}"
           labels="jgroupscluster={{- .Values.jgroups.clusterLabel | default .Release.Name -}}"
-          port_range="{{- .Values.jgroups.portRange | default 5 -}}"
+          port_range="{{ .Values.jgroups.portRange }}"
 {{- else if eq (include "icm-as.jgroups.discovery" .) "file_ping" }}
         <!-- discover nodes by shared FS -->
         <FILE_PING

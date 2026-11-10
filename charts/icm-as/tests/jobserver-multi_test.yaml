@@ -33,6 +33,12 @@ tests:
           content:
             name: INTERSHOP_JOB_JOBSERVERGROUPS
             value: JOB
+      - contains:
+          path: spec.jobTemplate.spec.template.spec.containers[0].ports
+          content:
+            name: jgroups-7800
+            containerPort: 7800
+            protocol: TCP
 
   - it: renders one ICMJob per job.servers entry
     release:

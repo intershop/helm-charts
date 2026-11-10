@@ -620,15 +620,28 @@ replication:
 #      # this database user will be granted access to the database schema of the source replication system
 #      databaseUser: <targetDatabaseUser>
 
-# Configuration of messaging via jgroups
+# Configuration of messaging via JGroups
 jgroups:
+  # transport used for cluster communication (tcp or udp)
+  # TCP is recommended for Kubernetes and Azure environments
+  transport: tcp
+  # use Java virtual threads for JGroups transport tasks (requires Java 21+ and JGroups 5.5+)
+  useVirtualThreads: true
+  # transport bind port and inclusive port range (bindPort through bindPort + portRange)
+  bindPort: 7800
+  portRange: 5
+  # UDP socket buffers in bytes; conservative defaults avoid exceeding common Linux limits
+  udp:
+    sendBufferSize: 200000
+    receiveBufferSize: 200000
+
   # the discovery protocol to use
-  # supported values are file_ping or kube_ping. Defaults to file_ping, but kube_ping | azure_ping is recommended
-  # file_ping (default) requires a mounted file system
-  # kube_ping (recommended) please set serviceAccount.create to create service account if not exists to allow icm to talk with k8s api server
+  # supported values are file_ping, kube_ping, azure_ping, or dns_ping. Defaults to kube_ping
+  # kube_ping requires service account access to the Kubernetes API (the chart creates the required role)
+  # file_ping requires a file system shared between all application server pods
   # azure_ping (playground) mounts azure storage directly
-  # dns_ping (playground) declared dns query
-  discovery: file_ping
+  # dns_ping (playground) uses a DNS query
+  discovery: kube_ping
 
   # location allows to set a different (optional) directory for file_ping discovery protocol
   # it needs to point into an existing e.g. mounted file system storage that is shared to other application servers
@@ -644,8 +657,6 @@ jgroups:
 
   # label for multiple clusters in a release (default: .Release.Name)
   clusterLabel:
-  # adaption of ports in case a different range is needed
-  portRange:
 # tolerations for icm-as pods
 tolerations: null
 

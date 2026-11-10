@@ -12,6 +12,7 @@ tests:
     values:
       - ../values.yaml
     set:
+      jgroups.discovery: file_ping
       persistence.jgroups.type: emptyDir
     template: templates/as-deployment.yaml
     asserts:
@@ -30,6 +31,7 @@ tests:
     values:
       - ../values.yaml
     set:
+      jgroups.discovery: file_ping
       persistence.jgroups.type: existingClaim
       persistence.jgroups.size: 1.5Gi
       persistence.jgroups.existingClaim: custom-claim
@@ -51,6 +53,7 @@ tests:
     values:
       - ../values.yaml
     set:
+      jgroups.discovery: file_ping
       persistence.jgroups.type: existingClaim
       persistence.jgroups.size: 1.5Gi
       persistence.jgroups.existingClaim: custom-claim
@@ -72,6 +75,7 @@ tests:
     values:
       - ../values.yaml
     set:
+      jgroups.discovery: file_ping
       persistence.jgroups.type: cluster
       persistence.jgroups.cluster.storageClass.create: false
       persistence.jgroups.cluster.storageClass.existingClass: "custom-storage-class-name"
@@ -94,6 +98,7 @@ tests:
     values:
       - ../values.yaml
     set:
+      jgroups.discovery: file_ping
       persistence.jgroups.type: cluster
       persistence.jgroups.cluster.removePvcOnUninstall: false
     template: templates/cluster-jgroups-pvc.yaml
@@ -114,6 +119,7 @@ tests:
     values:
       - ../values.yaml
     set:
+      jgroups.discovery: file_ping
       persistence.jgroups.type: cluster
       persistence.jgroups.cluster.removePvcOnUninstall: true
     template: templates/cluster-jgroups-pvc.yaml
@@ -132,6 +138,7 @@ tests:
     values:
       - ../values.yaml
     set:
+      jgroups.discovery: file_ping
       persistence.jgroups.type: cluster
       persistence.jgroups.cluster.storageClass.create: true
       persistence.jgroups.cluster.storageClass.existingClass: ""
@@ -190,6 +197,7 @@ tests:
     values:
       - ../values.yaml
     set:
+      jgroups.discovery: file_ping
       persistence.jgroups.type: azurefiles
       persistence.jgroups.azurefiles.shareName: custom-share
       persistence.jgroups.azurefiles.secretName: custom-secret

@@ -111,6 +111,18 @@ tests:
             name: jmx
             containerPort: 7747
             protocol: TCP
+      - contains:
+          path: spec.template.spec.containers[0].ports
+          content:
+            name: jgroups-7800
+            containerPort: 7800
+            protocol: TCP
+      - contains:
+          path: spec.template.spec.containers[0].ports
+          content:
+            name: jgroups-7805
+            containerPort: 7805
+            protocol: TCP
       #spec.template.spec.containers[0].resources
       - equal:
           path: spec.template.spec.containers[0].resources.limits.cpu
@@ -135,11 +147,6 @@ tests:
           content:
             mountPath: /intershop/customizations
             name: customizations-volume
-      - contains:
-          path: spec.template.spec.containers[0].volumeMounts
-          content:
-            mountPath: /intershop/jgroups-share
-            name: jgroups-volume
       #spec.template.spec.containers[0].lifecycle
       - equal:
           path: spec.template.spec.containers[0].lifecycle.preStop.httpGet.port
@@ -233,11 +240,6 @@ tests:
       - contains:
           path: spec.template.spec.volumes
           content:
-            name: jgroups-volume
-            emptyDir: {}
-      - contains:
-          path: spec.template.spec.volumes
-          content:
             name: sites-volume
             persistentVolumeClaim:
               claimName: "icm-as-local-sites-pvc"
@@ -246,6 +248,30 @@ tests:
           content:
             name: customizations-volume
             emptyDir: {}
+
+  - it: JGroups declares UDP ports when UDP transport is selected
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      jgroups.transport: udp
+    template: templates/as-deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].ports
+          content:
+            name: jgroups-7800
+            containerPort: 7800
+            protocol: UDP
+      - contains:
+          path: spec.template.spec.containers[0].ports
+          content:
+            name: jgroups-7805
+            containerPort: 7805
+            protocol: UDP
 
   - it: as-service is correct
     release:

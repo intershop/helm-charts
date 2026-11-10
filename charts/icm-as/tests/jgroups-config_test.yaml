@@ -2,7 +2,7 @@ suite: test correctness of jgroups-configuration
 templates:
   - templates/jgroups-config-xml-cm.yaml
 tests:
-  - it: jgroups-config.xml default values uses FILE_PING
+  - it: jgroups-config.xml defaults to TCP and KUBE_PING
     release:
       name: icm-as
     chart:
@@ -13,10 +13,74 @@ tests:
     asserts:
       - matchRegex:
           path: data["jgroups-config.xml"]
-          pattern: <FILE_PING*
+          pattern: version="5\.5\.5\.Final"
+      - matchRegex:
+          path: data["jgroups-config.xml"]
+          pattern: <TCP\s+bind_port="7800"\s+port_range="5"\s+use_vthreads="true"
+      - matchRegex:
+          path: data["jgroups-config.xml"]
+          pattern: <org.jgroups.protocols.kubernetes.KUBE_PING
+      - matchRegex:
+          path: data["jgroups-config.xml"]
+          pattern: port_range="5"
+  - it: jgroups-config.xml keeps UDP and FILE_PING available
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: templates/jgroups-config-xml-cm.yaml
+    set:
+      jgroups.transport: udp
+      jgroups.discovery: file_ping
+    asserts:
+      - matchRegex:
+          path: data["jgroups-config.xml"]
+          pattern: <UDP\s+bind_port="7800"\s+port_range="5"\s+use_vthreads="true"
+      - matchRegex:
+          path: data["jgroups-config.xml"]
+          pattern: ucast_recv_buf_size="200000"
+      - matchRegex:
+          path: data["jgroups-config.xml"]
+          pattern: ucast_send_buf_size="200000"
+      - matchRegex:
+          path: data["jgroups-config.xml"]
+          pattern: mcast_recv_buf_size="200000"
+      - matchRegex:
+          path: data["jgroups-config.xml"]
+          pattern: mcast_send_buf_size="200000"
+      - matchRegex:
+          path: data["jgroups-config.xml"]
+          pattern: <FILE_PING
       - matchRegex:
           path: data["jgroups-config.xml"]
           pattern: location="/intershop/jgroups-share"
+  - it: jgroups-config.xml allows UDP socket buffers to be customized
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    template: templates/jgroups-config-xml-cm.yaml
+    set:
+      jgroups.transport: udp
+      jgroups.udp.sendBufferSize: 500000
+      jgroups.udp.receiveBufferSize: 1500000
+    asserts:
+      - matchRegex:
+          path: data["jgroups-config.xml"]
+          pattern: ucast_recv_buf_size="1500000"
+      - matchRegex:
+          path: data["jgroups-config.xml"]
+          pattern: mcast_recv_buf_size="1500000"
+      - matchRegex:
+          path: data["jgroups-config.xml"]
+          pattern: ucast_send_buf_size="500000"
+      - matchRegex:
+          path: data["jgroups-config.xml"]
+          pattern: mcast_send_buf_size="500000"
   - it: jgroups-config.xml FILE_PING optional location
     release:
       name: icm-as
@@ -26,6 +90,7 @@ tests:
       - ../values.yaml
     template: templates/jgroups-config-xml-cm.yaml
     set:
+      jgroups.discovery: file_ping
       jgroups.location: "/intershop/other-jgroups-directory"
     asserts:
       - matchRegex:
@@ -41,10 +106,19 @@ tests:
     template: templates/jgroups-config-xml-cm.yaml
     set:
       jgroups.discovery: "kube_ping"
+      jgroups.bindPort: 7900
+      jgroups.portRange: 2
+      jgroups.useVirtualThreads: false
     asserts:
       - matchRegex:
           path: data["jgroups-config.xml"]
           pattern: <org.jgroups.protocols.kubernetes.KUBE_PING
+      - matchRegex:
+          path: data["jgroups-config.xml"]
+          pattern: <TCP\s+bind_port="7900"\s+port_range="2"\s+use_vthreads="false"
+      - matchRegex:
+          path: data["jgroups-config.xml"]
+          pattern: (?s)<org\.jgroups\.protocols\.kubernetes\.KUBE_PING.*?port_range="2"
   - it: jgroups-config.xml configured to use AZURE_PING
     release:
       name: icm-as
