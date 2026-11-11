@@ -1,11 +1,12 @@
 
-Compare with previous release: [icm-replication-test-2.1.4...icm-replication-test-2.2.0](https://github.com/intershop/helm-charts/compare/icm-replication-test-2.1.4...icm-replication-test-2.2.0)
+Compare with previous release: [icm-replication-test-2.2.1...icm-replication-test-3.0.0](https://github.com/intershop/helm-charts/compare/icm-replication-test-2.2.1...icm-replication-test-3.0.0)
 
 ## Features
 
-* **icm:** support to keep persistent volume claims on helm uninstall ([#1379](https://github.com/intershop/helm-charts/issues/1379))
+* **icm:** replace Bitnami Redis with Valkey for caching ([#1419](https://github.com/intershop/helm-charts/issues/1419))
 
-## Bug Fixes
+## BREAKING CHANGE
 
-* **icm:** update resource requests and limits for icm tests ([#1382](https://github.com/intershop/helm-charts/issues/1382))
+
+this is a complete replacement of redis with valkey
 
