@@ -17,6 +17,9 @@ tests:
       - matchRegex:
           path: data["redis-client-config.yaml"]
           pattern: singleServerConfig:.*
+      - matchRegex:
+          path: data["redis-client-config.yaml"]
+          pattern: "address: redis://RELEASE-NAME-valkey:6379"
   - it: should render the specified config if one is present
     template: templates/redis-client-config-cm.yaml
     set:

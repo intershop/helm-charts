@@ -1,11 +1,12 @@
 
-Compare with previous release: [icm-as-3.0.1...icm-as-3.1.0](https://github.com/intershop/helm-charts/compare/icm-as-3.0.1...icm-as-3.1.0)
+Compare with previous release: [icm-as-3.1.0...icm-as-4.0.0](https://github.com/intershop/helm-charts/compare/icm-as-3.1.0...icm-as-4.0.0)
 
 ## Features
 
-* **icm:** support to keep persistent volume claims on helm uninstall ([#1379](https://github.com/intershop/helm-charts/issues/1379))
+* **icm:** replace Bitnami Redis with Valkey for caching ([#1419](https://github.com/intershop/helm-charts/issues/1419))
 
-## Bug Fixes
+## BREAKING CHANGE
 
-* **icm:** fix cluster role binding ([#1401](https://github.com/intershop/helm-charts/issues/1401))
+
+this is a complete replacement of redis with valkey
 

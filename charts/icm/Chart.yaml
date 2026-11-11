@@ -3,10 +3,10 @@ appVersion: "14.0.1"
 description: Intershop Commerce Management - ICM
 # name and version must be in this exact order, otherwise bump2version won't work
 name: icm
-version: 3.2.1
+version: 4.0.0
 dependencies:
   - name: icm-as
-    version: 3.1.0
+    version: 4.0.0
     repository: file://../icm-as
   - name: icm-web
     version: 1.2.1
@@ -21,11 +21,7 @@ dependencies:
     version: 5.2.0
     repository: https://codecentric.github.io/helm-charts
     condition: mailhog.enabled
-  - name: redis
-    version: 17.15.2
-    repository: https://charts.bitnami.com/bitnami
-    condition: redis.enabled
-  - name: redis-cluster
-    version: 8.6.12
-    repository: https://charts.bitnami.com/bitnami
-    condition: redis-cluster.enabled
+  - name: valkey
+    version: 0.12.1
+    repository: https://valkey.io/valkey-helm/
+    condition: valkey.enabled
