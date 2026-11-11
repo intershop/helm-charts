@@ -1,4 +1,20 @@
 
+<a name="icm-replication-test-3.0.0"></a>
+# [icm-replication-test-3.0.0](https://github.com/intershop/helm-charts/releases/tag/icm-replication-test-3.0.0) (2026-11-11)
+
+Compare with previous release: [icm-replication-test-2.2.1...icm-replication-test-3.0.0](https://github.com/intershop/helm-charts/compare/icm-replication-test-2.2.1...icm-replication-test-3.0.0)
+
+## Features
+
+* **icm:** replace Bitnami Redis with Valkey for caching ([#1419](https://github.com/intershop/helm-charts/issues/1419))
+
+## BREAKING CHANGE
+
+
+this is a complete replacement of redis with valkey
+
+
+
 <a name="icm-replication-test-2.2.0"></a>
 # [icm-replication-test-2.2.0](https://github.com/intershop/helm-charts/releases/tag/icm-replication-test-2.2.0) (2026-10-20)
 
