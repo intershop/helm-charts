@@ -1,10 +1,12 @@
 
-<a name="icm-3.1.0"></a>
-## [icm-3.1.0](https://github.com/intershop/helm-charts/compare/icm-3.0.0...icm-3.1.0)
+Compare with previous release: [icm-3.2.1...icm-4.0.0](https://github.com/intershop/helm-charts/compare/icm-3.2.1...icm-4.0.0)
 
-> 2026-09-09
+## Features
 
-### Documentation
+* **icm:** replace Bitnami Redis with Valkey for caching ([#1419](https://github.com/intershop/helm-charts/issues/1419))
 
-* **ICM:** fix documentation for configMapMounts in icm-web chart ([#1294](https://github.com/intershop/helm-charts/issues/1294))
+## BREAKING CHANGE
+
+
+this is a complete replacement of redis with valkey
 
