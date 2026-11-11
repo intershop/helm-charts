@@ -19,7 +19,7 @@ operationalContext:
 
 webadapter:
   image:
-    repository: intershophub/icm-webadapter:2.10.2
+    repository: intershophub/icm-webadapter:2.10.3
     pullPolicy: IfNotPresent
   # disable HTTP/2 protocol support if required
   disableHTTP2: false
