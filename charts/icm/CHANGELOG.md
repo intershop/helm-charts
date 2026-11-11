@@ -1,4 +1,20 @@
 
+<a name="icm-4.0.0"></a>
+# [icm-4.0.0](https://github.com/intershop/helm-charts/releases/tag/icm-4.0.0) (2026-11-11)
+
+Compare with previous release: [icm-3.2.1...icm-4.0.0](https://github.com/intershop/helm-charts/compare/icm-3.2.1...icm-4.0.0)
+
+## Features
+
+* **icm:** replace Bitnami Redis with Valkey for caching ([#1419](https://github.com/intershop/helm-charts/issues/1419))
+
+## BREAKING CHANGE
+
+
+this is a complete replacement of redis with valkey
+
+
+
 <a name="icm-3.1.1"></a>
 # [icm-3.1.1](https://github.com/intershop/helm-charts/releases/tag/icm-3.1.1) (2026-09-15)
 
