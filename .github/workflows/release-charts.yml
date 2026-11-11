@@ -36,7 +36,7 @@ jobs:
           helm dependency update charts/icm
           helm dependency update charts/icm-test
 
-          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo add valkey https://valkey.io/valkey-helm/
           helm repo add codecentric https://codecentric.github.io/helm-charts
           helm repo add intershop https://intershop.github.io/helm-charts
           helm repo add mailpit https://jouve.github.io/charts/

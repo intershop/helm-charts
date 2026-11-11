@@ -46,10 +46,10 @@ singleServerConfig:
   timeout: 50
   retryAttempts: 1
   retryInterval: 50
-  address: "redis://<.Release.Name>-redis-headless:6379" <1>
+  address: "redis://<.Release.Name>-valkey:6379" <1>
 ----
 
-<1> Requires a redis server to be running and accessible at the given address.
+<1> Requires a redis compatible server (e.g. https://valkey.io/[Valkey], deployed via `valkey.enabled=true` in the `icm` chart) to be running and accessible at the given address.
 
 === Example
 
