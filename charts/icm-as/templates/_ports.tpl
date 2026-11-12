@@ -22,4 +22,12 @@ ports:
 - name: jmx
   containerPort: 7747
   protocol: TCP
+{{- $bindPort := int .Values.jgroups.bindPort }}
+{{- $portRange := int .Values.jgroups.portRange }}
+{{- $transport := upper (include "icm-as.jgroups.transport" .) }}
+{{- range $port := untilStep $bindPort (int (add $bindPort (add $portRange 1))) 1 }}
+- name: jgroups-{{ $port }}
+  containerPort: {{ $port }}
+  protocol: {{ $transport }}
+{{- end }}
 {{- end -}}

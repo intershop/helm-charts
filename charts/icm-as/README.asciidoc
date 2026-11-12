@@ -35,7 +35,9 @@ The default is `local`, where `persistence.sites.local.path` must be set to a va
 ==== jGroups
 
 `local`, `cluster`, `azurefiles`, `nfs`, `existingClaim` are possible persistence options.
-The default is `emptyDir`.
+This storage is only used with FILE_PING; the default is `emptyDir`, which is not shared between pods.
+
+The application-server and job-server JGroups defaults use TCP transport and Kubernetes pod discovery (`KUBE_PING`). Ensure network policies and firewalls allow TCP ports 7800-7805 between cluster pods. See link:docs/values-yaml/jgroups.asciidoc[JGroups values] to configure transport, ports, or use FILE_PING with shared storage.
 
 === Database
 

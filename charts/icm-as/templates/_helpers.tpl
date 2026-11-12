@@ -250,11 +250,22 @@ The discovery mode of jgroups messaging
   {{- if .Values.jgroups.discovery -}}
     {{- .Values.jgroups.discovery -}}
   {{- else -}}
-    {{- printf "file_ping" }}
+    {{- printf "kube_ping" }}
   {{- end -}}
 {{- else -}}
-    {{- printf "file_ping" }}
+    {{- printf "kube_ping" }}
 {{- end -}}
+{{- end -}}
+
+{{/*
+The transport used by JGroups messaging
+*/}}
+{{- define "icm-as.jgroups.transport" -}}
+{{- $transport := .Values.jgroups.transport | default "tcp" -}}
+{{- if not (has $transport (list "tcp" "udp")) -}}
+  {{- fail (printf "jgroups.transport must be tcp or udp, got %q" $transport) -}}
+{{- end -}}
+{{- $transport -}}
 {{- end -}}
 
 {{/*

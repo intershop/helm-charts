@@ -10,6 +10,8 @@ tests:
       version: 0.8.15
     values:
       - ../values.yaml
+    set:
+      jgroups.discovery: file_ping
     asserts:
       - hasDocuments:
           count: 0
