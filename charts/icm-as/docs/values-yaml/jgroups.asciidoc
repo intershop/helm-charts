@@ -34,7 +34,7 @@ The transport ports are declared on application-server and job-server containers
 
 UDP buffer values are requested socket-buffer sizes, not guaranteed allocations; the node OS can cap them. The defaults are intentionally conservative to avoid common Linux socket-buffer warnings. Increase them only if UDP traffic measurements indicate buffer drops or bursts that need more queue capacity, and align the values with the node's socket-buffer limits. These settings do not affect TCP.
 
-The defaults change from FILE_PING over UDP to KUBE_PING over TCP. Existing installations that rely on FILE_PING must explicitly retain `jgroups.discovery: file_ping` and configure storage shared by all cluster pods.
+The defaults change from FILE_PING over UDP to KUBE_PING over TCP. To preserve the previous stack during an upgrade, explicitly set both `jgroups.transport: udp` and `jgroups.discovery: file_ping`, and retain storage shared by all cluster pods. TCP and UDP members cannot communicate within the same JGroups cluster. When switching transport, stop all existing application-server and job-server pods before starting pods with the new transport instead of using a rolling update.
 ====
 
 === Example
