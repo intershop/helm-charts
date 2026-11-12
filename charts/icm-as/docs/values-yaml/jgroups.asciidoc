@@ -30,7 +30,7 @@ Configures the transport and discovery technology used by http://www.jgroups.org
 ====
 If `discovery=kube_ping`, the `icm-as-server` containers require access to the Kubernetes API. The chart creates a service account when required and deploys a role granting access to pod listings.
 
-The transport ports are declared on application-server and job-server containers. Network policies or firewalls must allow the selected transport protocol and the inclusive range from `bindPort` through `bindPort + portRange` between cluster pods. Kubernetes container port declarations do not open traffic in network policies.
+The transport ports are declared on application-server and job-server containers. Network policies or firewalls must allow the selected transport protocol and the inclusive range from `bindPort` through `bindPort + portRange` between cluster pods. The stack also uses `FD_SOCK` with a separate, dynamically allocated TCP listener; peer-to-peer traffic to that listener must be permitted even when the transport is UDP. Allowing only the transport range is insufficient. Kubernetes container port declarations do not open traffic in network policies.
 
 UDP buffer values are requested socket-buffer sizes, not guaranteed allocations; the node OS can cap them. The defaults are intentionally conservative to avoid common Linux socket-buffer warnings. Increase them only if UDP traffic measurements indicate buffer drops or bursts that need more queue capacity, and align the values with the node's socket-buffer limits. These settings do not affect TCP.
 
