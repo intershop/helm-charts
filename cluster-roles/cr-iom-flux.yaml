@@ -1,0 +1,122 @@
+# Kubernetes ClusterRole restricting the ServiceAccount used by Flux CD (helm-controller,
+# via `spec.serviceAccountName` / impersonation on the HelmRelease) to only the
+# resource kinds that the "iom" Helm chart (charts/iom) can create, update or
+# delete.
+#
+# This is a ClusterRole (not namespaced) so it can be reused across multiple
+# release namespaces without duplication. Namespace isolation is enforced by
+# binding it via a namespaced RoleBinding (not a ClusterRoleBinding) in each
+# namespace where an "iom" release is installed - this grants the permissions
+# defined here only within that namespace.
+#
+# Usage:
+#   Create a RoleBinding in the target release namespace (the same namespace
+#   referenced by the HelmRelease/Kustomization) with:
+#     roleRef.kind: ClusterRole
+#     roleRef.name: flux-iom
+#   binding it to the ServiceAccount configured in
+#   `HelmRelease.spec.serviceAccountName` for the iom release.
+#
+# "iom" has dependencies (charts/iom/Chart.yaml), all disabled by default:
+#   - mailpit          (condition mailpit.enabled, false by default; remote chart, not vendored)
+#   - iom-tests        (condition iom-tests.enabled, false by default; charts/iom/charts/iom-tests)
+#   - postgres         (condition postgres.enabled, false by default; charts/iom/charts/postgres)
+#
+# Resource kinds below were derived by inspecting charts/iom/templates/**,
+# charts/iom/charts/iom-tests/templates/** and charts/iom/charts/postgres/templates/**.
+#
+# IMPORTANT - cluster-scoped resources are intentionally NOT granted here:
+# a namespaced RoleBinding can only ever grant access to namespaced resources
+# within that namespace; Kubernetes RBAC ignores rules for cluster-scoped kinds
+# when the binding is a (namespaced) RoleBinding, even if bound to a ClusterRole.
+# The following features require cluster-scoped objects and CANNOT be managed
+# by this per-namespace Flux ServiceAccount:
+#   - persistence.provisioning: "local" (iom core chart and the postgres
+#     subchart, templates/persistenceLocal.yaml) creates a StorageClass
+#     (storage.k8s.io) and a PersistentVolume (v1) directly. Prefer
+#     provisioning "static" (references a pre-provisioned PV/StorageClass
+#     created out-of-band by a cluster admin) or "dynamic" (uses an existing
+#     StorageClass) for namespace-isolated GitOps releases.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: flux-iom
+rules:
+  # Core resources templated by the iom chart (newrelic-config, jwt auto
+  # secret) and the optional mailpit / iom-tests / postgres subcharts.
+  - apiGroups: ['']
+    resources:
+      - configmaps
+      - services
+      - persistentvolumeclaims
+      - serviceaccounts
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # Helm release storage (Secrets) plus chart-templated Secrets
+  # (jwt-autosecret.yaml, mailpit auth secrets if enabled).
+  - apiGroups: ['']
+    resources:
+      - secrets
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # StatefulSet (iom main workload, statefulset.yaml) and Deployment (optional
+  # mailpit / iom-tests / postgres subcharts).
+  - apiGroups: [apps]
+    resources:
+      - statefulsets
+      - deployments
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # CronJob (connection-monitor.yaml) and Job (patch-downtime.yaml post-install/
+  # post-upgrade hook).
+  - apiGroups: [batch]
+    resources:
+      - cronjobs
+      - jobs
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # Ingress (iom core chart, mailpit, postgres, iom-tests).
+  - apiGroups: [networking.k8s.io]
+    resources:
+      - ingresses
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # Namespaced Role/RoleBinding created by the patch-downtime post-install/
+  # post-upgrade hook (templates/patch-downtime.yaml). No ClusterRole/
+  # ClusterRoleBinding is templated anywhere in this chart.
+  - apiGroups: [rbac.authorization.k8s.io]
+    resources:
+      - roles
+      - rolebindings
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # PodDisruptionBudget (iom core chart, postgres and iom-tests subcharts).
+  - apiGroups: [policy]
+    resources:
+      - poddisruptionbudgets
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # HorizontalPodAutoscaler, only required by the optional iom-tests subchart.
+  - apiGroups: [autoscaling]
+    resources:
+      - horizontalpodautoscalers
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # Read-only access to Pods spawned transiently during install/upgrade
+  # (Helm test hook Pods under templates/tests/, patch-downtime hook Job
+  # Pods), used for `--wait` readiness checks and failure log retrieval.
+  - apiGroups: ['']
+    resources:
+      - pods
+    verbs: [get, list, watch]
+  - apiGroups: ['']
+    resources:
+      - pods/log
+    verbs: [get]
+
+  # Read-only access to Events for troubleshooting transient resources created
+  # during install/upgrade.
+  - apiGroups: ['']
+    resources:
+      - events
+    verbs: [get, list, watch]
