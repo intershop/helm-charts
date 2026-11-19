@@ -271,7 +271,11 @@ icm-test:
           set -x
           export PATH=$ROOTPATH
           logfile=${RESULT_DIRECTORY}/istestrunner.log
-          sh /intershop/bin/testrunner.sh -s=${TESTSUITE} -o=${RESULT_DIRECTORY} 2>&1 | tee outfile $logfile &
+          rcfile=${RESULT_DIRECTORY}/testrunner.rc
+          rm -f $rcfile
+          # write the exit code of testrunner.sh to a file, because $! / wait only return the exit code of tee
+          # (no pipefail in dash); exit codes: 0 = passed, 1 = test failures, 2 = no tests found
+          ( sh /intershop/bin/testrunner.sh -s=${TESTSUITE} -o=${RESULT_DIRECTORY} 2>&1; echo $? > $rcfile ) | tee $logfile &
           main_pid=$!
 
           prev_size=0
@@ -288,7 +292,9 @@ icm-test:
           }
           update_modified_date &
           wait $main_pid
-          PROCESS_ERROR_LEVEL=$?
+          # use exit code of testrunner.sh; treat missing/empty rc file as failure
+          PROCESS_ERROR_LEVEL=$(cat $rcfile 2>/dev/null)
+          [ -z "$PROCESS_ERROR_LEVEL" ] && PROCESS_ERROR_LEVEL=1
 
           TEST_EXECUTION_RESULT_STATUS="failed"
           if [ "${PROCESS_ERROR_LEVEL}" -eq 0 ];
