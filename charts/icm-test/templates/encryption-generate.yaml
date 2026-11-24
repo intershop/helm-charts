@@ -1,0 +1,129 @@
+{{- /*
+Generates a production-like encryption configuration (intershop.keystore, random, encryption.properties)
+for the nested icm-as before it starts, so that it can run with intershop.encryption.strictMode.enabled=true.
+
+The files are written by the Intershop encryption tool into a dedicated PVC, which icm-as then mounts as
+its encryption volume (persistence.encryption.type=existingClaim). Every icm-test instance (e.g. the
+icm-edit and icm-live aliases of icm-replication-test) renders its own PVC and Job and therefore gets its
+own keys, as in production.
+
+Both resources are pre-install hooks, so the files exist before icm-as starts:
+- the PVC is kept on upgrade (keys stay valid) and is replaced on the next install of the same release
+- helm uninstall does NOT delete the PVC (hook resources are not managed by the release)
+*/ -}}
+{{- if .Values.encryptionGenerate.enabled }}
+{{- $icmAsValues := index .Values.icm "icm-as" -}}
+{{- $encryption := $icmAsValues.persistence.encryption -}}
+{{- $values := .Values.encryptionGenerate -}}
+{{- if ne $encryption.type "existingClaim" }}
+{{- fail (printf "encryptionGenerate.enabled=true requires icm.icm-as.persistence.encryption.type=existingClaim, but is '%s'" $encryption.type) }}
+{{- end }}
+{{- if or (not $encryption.existingClaim) (hasPrefix "<" $encryption.existingClaim) }}
+{{- fail "encryptionGenerate.enabled=true requires icm.icm-as.persistence.encryption.existingClaim to be set" }}
+{{- end }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $encryption.existingClaim | quote }}
+  labels:
+    helm.sh/chart: {{ include "icm-test.chart" . }}
+    app.kubernetes.io/name: {{ template "icm-test.fullname" . }}-encryption
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "-10"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  accessModes:
+    {{- toYaml $values.accessModes | nindent 4 }}
+  {{- if $values.storageClass }}
+  storageClassName: {{ $values.storageClass | quote }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ $values.size }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "icm-test.fullname" . }}-encryption-generate
+  labels:
+    helm.sh/chart: {{ include "icm-test.chart" . }}
+    app.kubernetes.io/name: {{ template "icm-test.fullname" . }}-encryption-generate
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ template "icm-test.fullname" . }}-encryption-generate
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      restartPolicy: Never
+      {{- if $icmAsValues.nodeSelector }}
+      nodeSelector:
+        {{- toYaml $icmAsValues.nodeSelector | trim | nindent 8 }}
+      {{- end }}
+      {{- if $icmAsValues.imagePullSecrets }}
+      imagePullSecrets:
+        {{- range $icmAsValues.imagePullSecrets }}
+        - name: {{ . | quote }}
+        {{- end }}
+      {{- end }}
+      initContainers:
+      # the encryption tool writes intershop.keystore, random and encryption.properties into /intershop/target
+      - name: encryption-generate
+        image: {{ $values.image.repository | quote }}
+        imagePullPolicy: {{ $values.image.pullPolicy | default "IfNotPresent" }}
+        {{- with $values.args }}
+        args:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        securityContext:
+          runAsUser: 0
+        {{- with $values.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        volumeMounts:
+        - name: encryption-volume
+          mountPath: /intershop/target
+      containers:
+      # verifies the generated files and hands them over to the icm-as user
+      # (never print the file contents, they contain the keystore password and passphrase)
+      - name: encryption-verify
+        image: {{ $values.verifyImage.repository | quote }}
+        imagePullPolicy: {{ $values.verifyImage.pullPolicy | default "IfNotPresent" }}
+        command:
+        - "/bin/sh"
+        - "-c"
+        - |
+          set -e
+          cd /intershop/target
+          for f in intershop.keystore random encryption.properties; do
+            if [ ! -s "$f" ]; then
+              echo "ERROR: encryption file '$f' has not been generated"
+              exit 1
+            fi
+          done
+          chown {{ $values.fileOwner }} intershop.keystore random encryption.properties || echo "WARN: chown not supported by this volume"
+          chmod 0640 intershop.keystore random encryption.properties || echo "WARN: chmod not supported by this volume"
+          ls -l
+        securityContext:
+          runAsUser: 0
+        {{- with $values.verifyResources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        volumeMounts:
+        - name: encryption-volume
+          mountPath: /intershop/target
+      volumes:
+      - name: encryption-volume
+        persistentVolumeClaim:
+          claimName: {{ $encryption.existingClaim | quote }}
+{{- end }}

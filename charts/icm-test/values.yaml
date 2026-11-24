@@ -17,3 +17,42 @@ dumpfileRestore:
     repository: mcr.microsoft.com/mssql-tools:latest
   # Max seconds to wait for MSSQL to become ready
   waitTimeout: 120
+
+# Generate a production-like encryption configuration (intershop.keystore, random, encryption.properties)
+# with the Intershop encryption tool before icm-as starts (helm pre-install hook).
+# Allows to run icm-as with strict mode enabled (default), see https://knowledge.intershop.com/kb/312S25
+# Requires icm.icm-as.persistence.encryption.type=existingClaim, the claim is created by this chart.
+encryptionGenerate:
+  enabled: false
+  image:
+    repository: intershophub/icm-as-libraries-encryption:3.1.1
+    pullPolicy: IfNotPresent
+  # arguments passed to the encryption tool, files are generated into /intershop/target
+  args:
+    - generate
+  # PVC holding the generated files (mounted as encryption volume by icm-as and its job pods)
+  size: 1Gi
+  # empty = cluster default storage class
+  storageClass: ""
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  # image used to verify the generated files and to hand them over to the icm-as user
+  verifyImage:
+    repository: busybox:1.36.1
+    pullPolicy: IfNotPresent
+  # owner (uid:gid) of the generated files, must match the user running the icm-as
+  fileOwner: "150:150"
+  verifyResources:
+    requests:
+      cpu: 10m
+      memory: 16Mi
+    limits:
+      cpu: 50m
+      memory: 32Mi

@@ -37,6 +37,29 @@ kubectl create secret docker-registry <yourDockerRegistryName> --docker-server=<
 `local`, `cluster`, `azurefiles`, `nfs`, `existingClaim` are possible persistence options.
 The default is `local`, where `persistence.sites.local.path` must be set to a valid local folder.
 
+==== Encryption
+
+To test with a production-like encryption configuration (strict mode enabled, which is the default of the ICM), the chart can generate the encryption files (`intershop.keystore`, `random`, `encryption.properties`) with the Intershop encryption tool before the ICM starts, see https://knowledge.intershop.com/kb/312S25[Cookbook - Encryption].
+
+[source,yaml]
+----
+icm:
+  icm-as:
+    persistence:
+      encryption:
+        type: existingClaim
+        existingClaim: my-release-encryption # PVC is created by this chart
+encryptionGenerate:
+  enabled: true
+  storageClass: azurefile # empty = default storage class
+----
+
+* The PVC and the generator job are Helm `pre-install` hooks, so the files exist before the ICM starts. The image is configured in `encryptionGenerate.image.repository` (default `intershophub/icm-as-libraries-encryption:3.1.1`).
+* The keys stay valid on `helm upgrade`. A new `helm install` with the same release name replaces the PVC and generates new keys.
+* `helm uninstall` does *not* delete the PVC (Helm does not manage hook resources). Delete it with `kubectl delete pvc <existingClaim>` if the release name is not reused.
+* Each chart instance gets its own keys. `icm-replication-test` therefore runs edit and live with different keystores, as in production. All pods of one instance (appserver and job servers) share the same PVC, so `accessModes` defaults to `ReadWriteMany`.
+* The ISTE templates (`values-iste_linux.tmpl`) enable this. The local templates (`values-test-local.tmpl`) switch to the default storage class with `ReadWriteOnce`.
+
 === Database
 
 The necessary database connection can be configured in the `database` section. The chart also supports deploying a (containerized) MSSQL database. If enabled, the deployed MSSQL database is used instead of the one configured in the `database` section.
