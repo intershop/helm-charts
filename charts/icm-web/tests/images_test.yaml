@@ -1,0 +1,60 @@
+suite: test image references of webadapter, webadapteragent and wa-monitoring
+tests:
+  - it: should render default images from separate repository and tag
+    template: templates/wa-deployment.yaml
+    asserts:
+      - matchRegex:
+          path: spec.template.spec.containers[?(@.name == "icm-web-wa")].image
+          pattern: ^intershophub/icm-webadapter:\d+\.\d+\.\d+$
+      - matchRegex:
+          path: spec.template.spec.containers[?(@.name == "icm-web-wa-monitoring")].image
+          pattern: ^intershophub/icm-wa-monitoring-exporter:\d+\.\d+\.\d+$
+
+  - it: should render default webadapteragent image from separate repository and tag
+    template: templates/wa-deployment.yaml
+    asserts:
+      - matchRegex:
+          path: spec.template.spec.containers[?(@.name == "icm-web-agent")].image
+          pattern: ^intershophub/icm-webadapteragent:\d+\.\d+\.\d+$
+
+  - it: should combine custom repository and tag
+    template: templates/wa-deployment.yaml
+    set:
+      webadapter.image.repository: my-registry:5000/my/icm-webadapter
+      webadapter.image.tag: "1.2.3"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "icm-web-wa")].image
+          value: my-registry:5000/my/icm-webadapter:1.2.3
+
+  - it: should ignore tag if repository already contains one
+    template: templates/wa-deployment.yaml
+    set:
+      webadapter.image.repository: intershophub/icm-webadapter:2.5.0
+      waMonitoring.image.repository: intershophub/icm-wa-monitoring-exporter:1.0.0
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "icm-web-wa")].image
+          value: intershophub/icm-webadapter:2.5.0
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "icm-web-wa-monitoring")].image
+          value: intershophub/icm-wa-monitoring-exporter:1.0.0
+
+  - it: should ignore tag if repository already contains a digest
+    template: templates/wa-deployment.yaml
+    set:
+      agent.image.repository: intershophub/icm-webadapteragent@sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "icm-web-agent")].image
+          value: intershophub/icm-webadapteragent@sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+
+  - it: should render repository only if tag is empty
+    template: templates/wa-deployment.yaml
+    set:
+      agent.image.repository: intershophub/icm-webadapteragent:6.0.1
+      agent.image.tag: ""
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "icm-web-agent")].image
+          value: intershophub/icm-webadapteragent:6.0.1

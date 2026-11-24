@@ -9,7 +9,7 @@
   {{- if not $waMonImageRepository }}
     {{- fail "Error: missing value at waMonitoring.image.repository." -}}
   {{- end }}
-  image: {{- if $waMonImageTag }} {{ printf "%s:%s" $waMonImageRepository $waMonImageTag | quote }}{{- else }} {{ $waMonImageRepository | quote }}{{- end }}
+  image: {{ include "icm-web.imageRef" (dict "repository" $waMonImageRepository "tag" $waMonImageTag) | quote }}
   imagePullPolicy: {{ (dig "image" "pullPolicy" "IfNotPresent" $waMon) | quote }}
   env:
   - name: WA_CONFIG

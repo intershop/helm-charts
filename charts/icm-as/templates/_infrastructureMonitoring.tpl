@@ -5,7 +5,9 @@ Creates init-containers
 {{- define "icm-as.infrastructureMonitoringContainer" -}}
 {{- if .Values.infrastructureMonitoring.enabled }}
 - name: infrastructure-monitoring
-  image: {{ .Values.infrastructureMonitoring.image.repository }}
+  {{- $imRepository := .Values.infrastructureMonitoring.image.repository }}
+  {{- $imTag := .Values.infrastructureMonitoring.image.tag | default "" | toString }}
+  image: {{ if and $imTag (not (contains ":" (splitList "/" $imRepository | last))) }}{{ printf "%s:%s" $imRepository $imTag | quote }}{{ else }}{{ $imRepository | quote }}{{ end }}
   imagePullPolicy: {{ .Values.infrastructureMonitoring.imagePullPolicy | default "IfNotPresent" }}
   env:
   {{- if .Values.mssql.enabled }}

@@ -160,11 +160,7 @@ spec:
         {{- end }}
       containers:
         - name: "{{ .Chart.Name }}-wa"
-          {{- if .Values.webadapter.image.tag }}
-          image: "{{ .Values.webadapter.image.repository }}:{{ .Values.webadapter.image.tag }}"
-          {{- else }}
-          image: "{{ .Values.webadapter.image.repository }}"
-          {{- end }}
+          image: {{ include "icm-web.imageRef" .Values.webadapter.image | quote }}
           imagePullPolicy: {{ .Values.webadapter.image.pullPolicy }}
           env:
           - name: ICM_ICMSERVLETURLS

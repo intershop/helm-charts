@@ -158,9 +158,10 @@ tests:
       - equal:
           path: spec.template.spec.containers[1].name
           value: infrastructure-monitoring
-      - equal:
+      # tag is bumped by Dependabot, so only its format is asserted
+      - matchRegex:
           path: spec.template.spec.containers[1].image
-          value: intershophub/infrastructure-probing:3.0.0
+          pattern: ^intershophub/infrastructure-probing:\d+\.\d+\.\d+$
       - equal:
           path: spec.template.spec.containers[1].imagePullPolicy
           value: IfNotPresent

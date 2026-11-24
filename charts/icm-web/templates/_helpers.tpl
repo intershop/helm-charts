@@ -83,3 +83,18 @@ Create the name of the service
 {{- define "icm-web.waServiceName" -}}
 {{- printf "%s-wa" (include "icm-web.fullname" .) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Renders an image reference from a dict with "repository" and "tag".
+The tag is ignored if the repository already contains one (or a digest), so overrides like
+"repository: my/image:1.0" keep working while defaults use separate repository/tag.
+*/}}
+{{- define "icm-web.imageRef" -}}
+{{- $repository := .repository | default "" -}}
+{{- $tag := .tag | default "" | toString -}}
+{{- if and $tag (not (contains ":" (splitList "/" $repository | last))) -}}
+{{- printf "%s:%s" $repository $tag -}}
+{{- else -}}
+{{- $repository -}}
+{{- end -}}
+{{- end -}}

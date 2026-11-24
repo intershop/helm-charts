@@ -3,11 +3,7 @@
 Creates the container for the WAA
 */}}
 {{- define "icm-waa.container" -}}
-{{- if .Values.agent.image.tag }}
-image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
-{{- else }}
-image: "{{ .Values.agent.image.repository }}"
-{{- end }}
+image: {{ include "icm-web.imageRef" .Values.agent.image | quote }}
 imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
 env:
 - name: ICM_ICMSERVLETURLS

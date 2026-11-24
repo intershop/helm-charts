@@ -128,8 +128,10 @@ infrastructureMonitoring:
   image:
     # pull policy
     pullPolicy: IfNotPresent
-    # repository (incl. tag)
-    repository: "intershophub/infrastructure-probing:3.0.0"
+    # repository (a tag included here takes precedence over "tag")
+    repository: "intershophub/infrastructure-probing"
+    # image tag
+    tag: "3.0.0"
   # section for database latency metrics
   databaseLatency:
     # enabled/disabled (default=false)

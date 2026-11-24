@@ -98,6 +98,9 @@ tests:
                 name: "logs-volume"
 
   - it: should inject wa-monitoring container with default values
+    set:
+      # default tag is bumped by Dependabot; pinned here to keep the full-content assertion stable
+      waMonitoring.image.tag: "1.2.0"
     asserts:
       - contains:
           path: spec.template.spec.containers
@@ -144,6 +147,7 @@ tests:
       operationalContext.customerId: "acme"
       operationalContext.environmentType: "uat"
       operationalContext.stagingType: "live"
+      waMonitoring.image.tag: "1.2.0"
     asserts:
       - contains:
           path: spec.template.spec.containers
@@ -188,6 +192,7 @@ tests:
   - it: should inject wa-monitoring container with value from urlMappingPrefix
     set:
       urlMappingPrefix: "/CUSTOMPREFIX"
+      waMonitoring.image.tag: "1.2.0"
     asserts:
       - contains:
           path: spec.template.spec.containers

@@ -38,6 +38,23 @@ tests:
           path: spec.template.spec.containers[1].imagePullPolicy
           value: Always
 
+  - it: image tag is customizable
+    template: templates/as-deployment.yaml
+    release:
+      name: icm-as
+    chart:
+      version: 0.8.15
+    values:
+      - ../values.yaml
+    set:
+      infrastructureMonitoring.enabled: true
+      infrastructureMonitoring.image.repository: "my-registry:5000/infrastructure-probing"
+      infrastructureMonitoring.image.tag: "9.9.9"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[1].image
+          value: my-registry:5000/infrastructure-probing:9.9.9
+
   - it: probes are customizable
     template: templates/as-deployment.yaml
     release:

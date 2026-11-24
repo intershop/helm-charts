@@ -1,0 +1,50 @@
+suite: test image reference of icm-job-operator
+templates:
+  - templates/icm-job.yaml
+tests:
+  - it: should render default image from separate repository and tag
+    documentSelector:
+      path: kind
+      value: Deployment
+    asserts:
+      # tag is bumped by Dependabot, so only its format is asserted
+      - matchRegex:
+          path: spec.template.spec.containers[0].image
+          pattern: ^intershophub/icm-job-operator:\d+\.\d+\.\d+$
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: IfNotPresent
+
+  - it: should combine custom repository and tag
+    set:
+      image.repository: my-registry:5000/my/icm-job-operator
+      image.tag: "9.9.9"
+    documentSelector:
+      path: kind
+      value: Deployment
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: my-registry:5000/my/icm-job-operator:9.9.9
+
+  - it: should ignore tag if repository already contains one
+    set:
+      image.repository: intershophub/icm-job-operator:1.0.0
+    documentSelector:
+      path: kind
+      value: Deployment
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: intershophub/icm-job-operator:1.0.0
+
+  - it: should apply custom pull policy
+    set:
+      image.imagePullPolicy: Always
+    documentSelector:
+      path: kind
+      value: Deployment
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: Always
