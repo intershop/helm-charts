@@ -1,0 +1,153 @@
+# Kubernetes ClusterRole restricting the ServiceAccount used by Flux CD (helm-controller,
+# via `spec.serviceAccountName` / impersonation on the HelmRelease) to only the
+# resource kinds that the "pwa" Helm chart (charts/pwa) can create, update or delete.
+#
+# This is a ClusterRole (not namespaced) so it can be reused across multiple
+# release namespaces without duplication. Namespace isolation is enforced by
+# binding it via a namespaced RoleBinding (not a ClusterRoleBinding) in each
+# namespace where the "pwa" release is installed - this grants the permissions
+# defined here only within that namespace.
+#
+# Usage:
+#   Create a RoleBinding in the target release namespace (the same namespace
+#   referenced by the HelmRelease/Kustomization) with:
+#     roleRef.kind: ClusterRole
+#     roleRef.name: flux-pwa
+#   binding it to the ServiceAccount configured in
+#   `HelmRelease.spec.serviceAccountName` for the pwa release.
+#
+# Resource kinds are derived from charts/pwa/templates/**:
+#   - proxy-configmap.yaml, monitoring/*.yaml                  -> ConfigMap
+#   - app-deployment.yaml, proxy-deployment.yaml, monitoring/*.yaml -> Deployment
+#   - app-service.yaml, proxy-service.yaml, monitoring/*.yaml -> Service
+#   - ingress.yaml, monitoring/*.yaml                         -> Ingress
+#   - app-hpa.yaml, proxy-hpa.yaml                            -> HorizontalPodAutoscaler
+#     (also covers separately managed companion HPAs targeting PWA deployments)
+#   - monitoring/grafana.yaml, monitoring/prometheus.yaml      -> PersistentVolumeClaim
+#   - serviceaccount.yaml                                     -> ServiceAccount, Role, RoleBinding
+#   - proxy-reset-job.yaml                                    -> ServiceAccount, Role, RoleBinding, Job
+#     (post-upgrade hook, "helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded"
+#     means Flux must be able to create AND delete these on every upgrade)
+#   - tests/test-connection.yaml                              -> Pod (Helm test hook, read-only)
+#   - prefetch-job.yaml                                       -> CronJob
+#     (retained: no longer templated, kept for older releases)
+#   - redis-flush-job.yaml                                    -> Job
+#     (retained: no longer templated, kept for older releases; Job is also templated by proxy-reset-job.yaml)
+#   - configmap_nginx.yaml, deployment.yaml, deployment_cache.yaml,
+#     service.yaml, service_cache.yaml, job_cache-reset.yaml
+#     (retained: older template filenames superseded by app-* and proxy-* templates)
+#
+# IMPORTANT - cluster-scoped resources:
+# a namespaced RoleBinding can only ever grant access to namespaced resources
+# within that namespace; Kubernetes RBAC ignores rules for cluster-scoped kinds
+# when the binding is a (namespaced) RoleBinding, even if bound to a ClusterRole.
+# The pwa chart templates no cluster-scoped resources (no ClusterRole,
+# ClusterRoleBinding, StorageClass, PersistentVolume, IngressClass, or CRDs).
+# Namespace isolation via a namespaced RoleBinding is therefore fully preserved.
+#
+# Additional, non-chart-template permissions needed for transient behavior during
+# `helm install`/`helm upgrade`:
+#   - Secrets: Helm3 stores release history as Secrets named
+#     "sh.helm.release.v1.<release-name>.v<revision>" in the release namespace.
+#     Full CRUD is required so Flux can record new releases, prune old revisions
+#     (release history pruning) and roll back.
+#   - Endpoints (read-only): required because templates/serviceaccount.yaml
+#     creates a Role granting "get" on endpoints to the app ServiceAccount.
+#     Flux's own permissions must be a superset of that Role's rules to pass
+#     Kubernetes RBAC escalation checks when creating/patching the Role.
+#   - Pods (+ pods/log), read-only: transient Pods spawned during install/upgrade
+#     (Helm test hook Pods, hook Jobs like proxy-reset) schedule Pods that Flux/Helm
+#     does not create directly (the Job controller does), but Flux needs read
+#     access to watch them for `--wait` readiness checks and to fetch logs when
+#     a hook Job fails, for troubleshooting.
+#   - Events, read-only: used by health checks / troubleshooting of the above
+#     transient objects during install/upgrade.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: flux-pwa
+rules:
+  # Core resources directly templated by the chart
+  # (proxy-configmap.yaml, app-service.yaml, proxy-service.yaml,
+  # serviceaccount.yaml, proxy-reset-job.yaml, monitoring/*.yaml).
+  - apiGroups: ['']
+    resources:
+      - configmaps
+      - services
+      - persistentvolumeclaims
+      - serviceaccounts
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # Helm release storage (Secrets) - required even though the chart itself does
+  # not template a Secret, because Helm/Flux persist release state as Secrets.
+  - apiGroups: ['']
+    resources:
+      - secrets
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # Deployments (app-deployment.yaml, proxy-deployment.yaml, monitoring/*.yaml).
+  - apiGroups: [apps]
+    resources:
+      - deployments
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # Jobs (proxy-reset-job.yaml post-upgrade hook) and CronJobs.
+  - apiGroups: [batch]
+    resources:
+      - jobs
+      - cronjobs # retained: no longer templated, kept for older releases
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # Ingress (ingress.yaml, monitoring/*.yaml).
+  - apiGroups: [networking.k8s.io]
+    resources:
+      - ingresses
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # Role/RoleBinding created by templates/serviceaccount.yaml (endpoints-reader)
+  # and the proxy-reset post-upgrade hook (proxy-reset-job.yaml, formerly
+  # job_cache-reset.yaml). Flux's own permissions must be a superset of these
+  # rules (deployments get/patch and endpoints get are granted elsewhere in this
+  # ClusterRole), otherwise Kubernetes RBAC escalation checks would reject the
+  # creation.
+  - apiGroups: [rbac.authorization.k8s.io]
+    resources:
+      - roles
+      - rolebindings
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # HorizontalPodAutoscaler (app-hpa.yaml, proxy-hpa.yaml). Also covers
+  # separately managed companion HPAs targeting PWA deployments.
+  - apiGroups: [autoscaling]
+    resources:
+      - horizontalpodautoscalers
+    verbs: [get, list, watch, create, update, patch, delete]
+
+  # Read-only access to Endpoints: required because templates/serviceaccount.yaml
+  # creates a Role granting "get" on endpoints to the app ServiceAccount. Flux's
+  # own permissions must be a superset of that Role's rules to satisfy
+  # Kubernetes RBAC escalation checks when creating/patching the Role.
+  - apiGroups: ['']
+    resources:
+      - endpoints
+    verbs: [get, list, watch]
+
+  # Read-only access to Pods spawned transiently during install/upgrade
+  # (Helm test hook Pods in templates/tests/test-connection.yaml, proxy-reset
+  # hook Job Pods), used for `--wait` readiness checks and hook failure log
+  # retrieval.
+  - apiGroups: ['']
+    resources:
+      - pods
+    verbs: [get, list, watch]
+  - apiGroups: ['']
+    resources:
+      - pods/log
+    verbs: [get]
+
+  # Read-only access to Events for troubleshooting transient resources created
+  # during install/upgrade.
+  - apiGroups: ['']
+    resources:
+      - events
+    verbs: [get, list, watch]
