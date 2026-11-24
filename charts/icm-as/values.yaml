@@ -131,7 +131,7 @@ infrastructureMonitoring:
     # repository (a tag included here takes precedence over "tag")
     repository: "intershophub/infrastructure-probing"
     # image tag
-    tag: "3.0.0"
+    tag: "3.0.2"
   # section for database latency metrics
   databaseLatency:
     # enabled/disabled (default=false)

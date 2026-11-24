@@ -22,7 +22,7 @@ webadapter:
     # repository (a tag included here takes precedence over "tag")
     repository: intershophub/icm-webadapter
     # image tag
-    tag: 2.10.3
+    tag: 2.10.4
     pullPolicy: IfNotPresent
   # disable HTTP/2 protocol support if required
   disableHTTP2: false
@@ -123,7 +123,7 @@ agent:
     # repository (a tag included here takes precedence over "tag")
     repository: intershophub/icm-webadapteragent
     # image tag
-    tag: 6.0.1
+    tag: 6.1.2
     pullPolicy: IfNotPresent
   # define the number of replicas being deployed (int, > 0, default=1)
   replicaCount: 1
