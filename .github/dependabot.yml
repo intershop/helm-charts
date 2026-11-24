@@ -3,6 +3,15 @@
 # (Helm CLI, chart-testing, helm-unittest, git-chglog) are not Dependabot-trackable and
 # are managed manually.
 version: 2
+registries:
+  # ICM images on Docker Hub are private; requires Dependabot secrets DOCKER_USERNAME/DOCKER_PASSWORD
+  dockerhub:
+    type: docker-registry
+    url: https://registry.hub.docker.com
+    username: ${{ secrets.DOCKER_USERNAME }}
+    password: ${{ secrets.DOCKER_PASSWORD }}
+    replaces-base: true
+
 updates:
   - package-ecosystem: 'github-actions'
     # "/" covers .github/workflows; the composite actions are listed explicitly.
@@ -31,3 +40,32 @@ updates:
           - '*'
     commit-message:
       prefix: 'chore'
+
+  - package-ecosystem: 'helm'
+    # Default ICM sidecar/helper images in values.yaml. Images must be declared as
+    # image.repository + image.tag, otherwise Dependabot cannot detect them.
+    # Reviewers are assigned via .github/CODEOWNERS.
+    directories:
+      - '/charts/icm-as'
+      - '/charts/icm-job'
+      - '/charts/icm-web'
+    schedule:
+      interval: 'weekly'
+    target-branch: 'develop/icm'
+    commit-message:
+      prefix: 'chore'
+    registries:
+      - dockerhub
+    labels:
+      - 'dependencies'
+      - 'icm'
+    allow:
+      - dependency-name: 'intershophub/icm-webadapter'
+      - dependency-name: 'intershophub/icm-webadapteragent'
+      - dependency-name: 'intershophub/icm-wa-monitoring-exporter'
+      - dependency-name: 'intershophub/icm-job-operator'
+      - dependency-name: 'intershophub/infrastructure-probing'
+    ignore:
+      # major versions may change behavior/compatibility and are bumped manually
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
