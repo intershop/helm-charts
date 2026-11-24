@@ -38,6 +38,17 @@ tests:
           path: spec.template.spec.containers[0].image
           value: intershophub/icm-job-operator:1.0.0
 
+  - it: should not append a colon if the tag is empty
+    set:
+      image.tag: ""
+    documentSelector:
+      path: kind
+      value: Deployment
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: intershophub/icm-job-operator
+
   - it: should apply custom pull policy
     set:
       image.imagePullPolicy: Always

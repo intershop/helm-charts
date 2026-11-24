@@ -268,9 +268,9 @@ spec:
         - --health-probe-bind-address=:8081
         - --metrics-bind-address=:8443
         {{- $repository := .Values.image.repository -}}
-        {{- $tag := (.Values.image.tag | default .Chart.AppVersion) -}}
+        {{- $tag := (.Values.image.tag | default .Chart.AppVersion | default "" | toString) -}}
         {{- $imageName := (splitList "/" $repository | last) -}}
-        {{- if contains ":" $imageName }}
+        {{- if or (contains ":" $imageName) (not $tag) }}
         image: "{{ $repository }}"
         {{- else }}
         image: "{{ $repository }}:{{ $tag }}"
