@@ -1,0 +1,179 @@
+suite: tests encryptionGenerate pvc and job
+templates:
+  - templates/encryption-generate.yaml
+tests:
+  - it: encryption generation is absent by default
+    release:
+      name: icm
+    chart:
+      version: 0.8.15
+    template: templates/encryption-generate.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: iste renders pvc and job as pre-install hooks
+    release:
+      name: icm
+    chart:
+      version: 0.8.15
+    values:
+      - ../values-iste_linux.tmpl
+    template: templates/encryption-generate.yaml
+    asserts:
+      - hasDocuments:
+          count: 2
+      # pvc
+      - isKind:
+          of: PersistentVolumeClaim
+        documentIndex: 0
+      - equal:
+          path: metadata.name
+          value: "${HELM_JOB_NAME}-encryption"
+        documentIndex: 0
+      - equal:
+          path: metadata.annotations["helm.sh/hook"]
+          value: pre-install
+        documentIndex: 0
+      - equal:
+          path: metadata.annotations["helm.sh/hook-weight"]
+          value: "-10"
+        documentIndex: 0
+      - equal:
+          path: metadata.annotations["helm.sh/hook-delete-policy"]
+          value: before-hook-creation
+        documentIndex: 0
+      - equal:
+          path: spec.storageClassName
+          value: azurefile
+        documentIndex: 0
+      - equal:
+          path: spec.accessModes
+          value:
+            - ReadWriteMany
+        documentIndex: 0
+      # job
+      - isKind:
+          of: Job
+        documentIndex: 1
+      - equal:
+          path: metadata.name
+          value: icm-icm-test-encryption-generate
+        documentIndex: 1
+      - equal:
+          path: metadata.annotations["helm.sh/hook"]
+          value: pre-install
+        documentIndex: 1
+      - equal:
+          path: metadata.annotations["helm.sh/hook-weight"]
+          value: "-5"
+        documentIndex: 1
+      - equal:
+          path: spec.template.spec.initContainers[0].image
+          value: intershophub/icm-as-libraries-encryption:3.1.1
+        documentIndex: 1
+      - equal:
+          path: spec.template.spec.initContainers[0].args
+          value:
+            - generate
+        documentIndex: 1
+      - equal:
+          path: spec.template.spec.initContainers[0].volumeMounts[0].mountPath
+          value: /intershop/target
+        documentIndex: 1
+      - equal:
+          path: spec.template.spec.nodeSelector.agentpool
+          value: agentpool2
+        documentIndex: 1
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: encryption-volume
+            persistentVolumeClaim:
+              claimName: "${HELM_JOB_NAME}-encryption"
+        documentIndex: 1
+
+  - it: verify step never prints file contents
+    release:
+      name: icm
+    chart:
+      version: 0.8.15
+    values:
+      - ../values-iste_linux.tmpl
+    template: templates/encryption-generate.yaml
+    documentIndex: 1
+    asserts:
+      - notMatchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: "\\b(cat|head|tail|more|less)\\b"
+
+  - it: job runs as icm-as user with fsGroup instead of root
+    release:
+      name: icm
+    chart:
+      version: 0.8.15
+    values:
+      - ../values-iste_linux.tmpl
+    template: templates/encryption-generate.yaml
+    documentIndex: 1
+    asserts:
+      - equal:
+          path: spec.template.spec.securityContext
+          value:
+            runAsUser: 150
+            runAsGroup: 150
+            runAsNonRoot: true
+            fsGroup: 150
+            fsGroupChangePolicy: OnRootMismatch
+      - notExists:
+          path: spec.template.spec.initContainers[0].securityContext
+      - notExists:
+          path: spec.template.spec.containers[0].securityContext
+      - notMatchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: "\\bchown\\b"
+
+  - it: local overlay uses default storage class and ReadWriteOnce
+    release:
+      name: icm
+    chart:
+      version: 0.8.15
+    values:
+      - ../values-iste_linux.tmpl
+      - ../values-test-local.tmpl
+    template: templates/encryption-generate.yaml
+    documentIndex: 0
+    asserts:
+      - notExists:
+          path: spec.storageClassName
+      - equal:
+          path: spec.accessModes
+          value:
+            - ReadWriteOnce
+
+  - it: fails if encryption volume is not an existingClaim
+    release:
+      name: icm
+    chart:
+      version: 0.8.15
+    values:
+      - ../values-iste_linux.tmpl
+    set:
+      icm.icm-as.persistence.encryption.type: emptyDir
+    template: templates/encryption-generate.yaml
+    asserts:
+      - failedTemplate:
+          errorMessage: "encryptionGenerate.enabled=true requires icm.icm-as.persistence.encryption.type=existingClaim, but is 'emptyDir'"
+
+  - it: fails if encryption claim name is the placeholder
+    release:
+      name: icm
+    chart:
+      version: 0.8.15
+    set:
+      encryptionGenerate.enabled: true
+      icm.icm-as.persistence.encryption.type: existingClaim
+    template: templates/encryption-generate.yaml
+    asserts:
+      - failedTemplate:
+          errorMessage: "encryptionGenerate.enabled=true requires icm.icm-as.persistence.encryption.existingClaim to be set"
