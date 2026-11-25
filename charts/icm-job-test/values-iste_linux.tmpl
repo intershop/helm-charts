@@ -124,11 +124,6 @@ icm-test:
         podAnnotations:
           # as long as there is no new cache system we need this annotation for icm-web
           "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
-        image:
-          repository: "${ICM_WEBSERVER_IMAGE}"
-      agent:
-        image:
-          repository: "${ICM_WEBADAPTER_AGENT_IMAGE}"
       environment:
         HELM_DIRECTORY: "${HELM_DIRECTORY}"
         SERVER_DIRECTORY_USER: "${SERVER_DIRECTORY_USER}"
