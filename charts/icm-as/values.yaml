@@ -129,7 +129,7 @@ infrastructureMonitoring:
     # pull policy
     pullPolicy: IfNotPresent
     # repository (incl. tag)
-    repository: "intershophub/infrastructure-probing:3.0.0"
+    repository: "intershophub/infrastructure-probing:3.0.2"
   # section for database latency metrics
   databaseLatency:
     # enabled/disabled (default=false)

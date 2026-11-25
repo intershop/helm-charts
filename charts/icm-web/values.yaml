@@ -19,7 +19,7 @@ operationalContext:
 
 webadapter:
   image:
-    repository: intershophub/icm-webadapter:2.10.3
+    repository: intershophub/icm-webadapter:2.10.4
     pullPolicy: IfNotPresent
   # disable HTTP/2 protocol support if required
   disableHTTP2: false
@@ -115,7 +115,7 @@ agent:
   # in some REST-based environment the webadapteragent isn't mandatory
   enabled: true
   image:
-    repository: intershophub/icm-webadapteragent:6.0.1
+    repository: intershophub/icm-webadapteragent:6.1.2
     pullPolicy: IfNotPresent
   # define the number of replicas being deployed (int, > 0, default=1)
   replicaCount: 1

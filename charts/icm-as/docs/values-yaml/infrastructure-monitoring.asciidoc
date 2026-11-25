@@ -32,7 +32,7 @@ The `Image` type configures the Docker image to be used for the sidecar. It cont
 [cols="1,3,1,1,1",options="header"]
 |===
 |Attribute |Description |Type |Mandatory |Default Value
-|repository|https://kubernetes.io/docs/concepts/containers/images/#image-names[image] to be used.|Image reference|{optional}|`intershophub/infrastructure-probing:3.0.0`
+|repository|https://kubernetes.io/docs/concepts/containers/images/#image-names[image] to be used.|Image reference|{optional}|`intershophub/infrastructure-probing:3.0.2`
 |pullPolicy|https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy[image pull policy]|Enum {`IfNotPresent`, `Always`, `Never`}|{optional}|`IfNotPresent`
 |===
 
@@ -42,7 +42,7 @@ The `Image` type configures the Docker image to be used for the sidecar. It cont
 ----
 image:
   pullPolicy: IfNotPresent
-  repository: "intershophub/infrastructure-probing:3.0.0"
+  repository: "intershophub/infrastructure-probing:3.0.2"
 ----
 
 [#_databaseLatency]
