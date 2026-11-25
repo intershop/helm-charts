@@ -106,9 +106,32 @@ tests:
       - notMatchRegex:
           path: spec.template.spec.containers[0].command[2]
           pattern: "\\b(cat|head|tail|more|less)\\b"
-      - matchRegex:
+
+  - it: job runs as icm-as user with fsGroup instead of root
+    release:
+      name: icm
+    chart:
+      version: 0.8.15
+    values:
+      - ../values-iste_linux.tmpl
+    template: templates/encryption-generate.yaml
+    documentIndex: 1
+    asserts:
+      - equal:
+          path: spec.template.spec.securityContext
+          value:
+            runAsUser: 150
+            runAsGroup: 150
+            runAsNonRoot: true
+            fsGroup: 150
+            fsGroupChangePolicy: OnRootMismatch
+      - notExists:
+          path: spec.template.spec.initContainers[0].securityContext
+      - notExists:
+          path: spec.template.spec.containers[0].securityContext
+      - notMatchRegex:
           path: spec.template.spec.containers[0].command[2]
-          pattern: "chown 150:150"
+          pattern: "\\bchown\\b"
 
   - it: local overlay uses default storage class and ReadWriteOnce
     release:

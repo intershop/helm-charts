@@ -43,12 +43,19 @@ encryptionGenerate:
     limits:
       cpu: 500m
       memory: 512Mi
-  # image used to verify the generated files and to hand them over to the icm-as user
+  # image used to verify the generated files and to restrict their permissions
   verifyImage:
     repository: busybox:1.36.1
     pullPolicy: IfNotPresent
-  # owner (uid:gid) of the generated files, must match the user running the icm-as
-  fileOwner: "150:150"
+  # security context of the job pod: all containers run as the icm-as user (no root required),
+  # fsGroup makes the volume writable for this user and the generated files are owned by it
+  # (volumes without fsGroup support, e.g. azurefile, rely on their mount options instead)
+  podSecurityContext:
+    runAsUser: 150
+    runAsGroup: 150
+    runAsNonRoot: true
+    fsGroup: 150
+    fsGroupChangePolicy: OnRootMismatch
   verifyResources:
     requests:
       cpu: 10m

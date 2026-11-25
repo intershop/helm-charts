@@ -59,6 +59,7 @@ encryptionGenerate:
 * `helm uninstall` does *not* delete the PVC (Helm does not manage hook resources). Delete it with `kubectl delete pvc <existingClaim>` if the release name is not reused.
 * Each chart instance gets its own keys. `icm-replication-test` therefore runs edit and live with different keystores, as in production. All pods of one instance (appserver and job servers) share the same PVC, so `accessModes` defaults to `ReadWriteMany`.
 * The ISTE templates (`values-iste_linux.tmpl`) enable this. The local templates (`values-test-local.tmpl`) switch to the default storage class with `ReadWriteOnce`.
+* The generator job does not run as root. It runs as the icm-as user (`encryptionGenerate.podSecurityContext`, default UID/GID `150`) and uses `fsGroup` to make the volume writable. Volumes that ignore `fsGroup` (e.g. `azurefile`) must be writable for this user through their mount options (the `azurefile` default `0777` is sufficient).
 
 === Database
 
