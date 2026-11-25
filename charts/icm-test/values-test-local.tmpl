@@ -60,6 +60,12 @@ testrunner:
       local:
         dir: ${LOCAL_MOUNT_BASE}/testdata
 
+encryptionGenerate:
+  # local cluster: default storage class, single node
+  storageClass: ""
+  accessModes:
+  - ReadWriteOnce
+
 dumpfileRestore:
   enabled: true
   dumpfileDir: /data/dumpfile
