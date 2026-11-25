@@ -37,6 +37,12 @@ icm-edit:
     valkey:
       enabled: false
 
+  encryptionGenerate:
+    # local cluster: default storage class, single node
+    storageClass: ""
+    accessModes:
+    - ReadWriteOnce
+
   dumpfileRestore:
     enabled: true
     dumpfileDir: /data/dumpfile
@@ -98,6 +104,12 @@ icm-live:
         type: local
         local:
           dir: ${LOCAL_MOUNT_BASE}/testdata
+
+  encryptionGenerate:
+    # local cluster: default storage class, single node
+    storageClass: ""
+    accessModes:
+    - ReadWriteOnce
 
   dumpfileRestore:
     enabled: true
